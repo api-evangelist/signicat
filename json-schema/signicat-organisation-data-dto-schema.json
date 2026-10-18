@@ -1,0 +1,746 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organisation-data-dto-schema.json",
+  "title": "OrganisationDataDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-openapi.yml#/components/schemas/OrganisationDataDto",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country associated with the organisation."
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name of the organisation."
+    },
+    "added": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date and time when the organisation data was added.",
+      "format": "date-time"
+    },
+    "lastUpdate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date and time of the last update for the organisation data.",
+      "format": "date-time"
+    },
+    "organisationNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Unique identification number associated with the organisation."
+    },
+    "operationalStatus": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Operational status of the organisation."
+    },
+    "externalId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "External identifier associated with the organisation."
+    },
+    "alias": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Alias associated with the organisation."
+    },
+    "legalForm": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Legal form of the organisation, representing its structure or type."
+    },
+    "vatNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "VAT number of the organisation."
+    },
+    "email": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Email address associated with the organisation."
+    },
+    "registrationDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date when the organisation was registered.",
+      "format": "date-time"
+    },
+    "phone": {
+      "$ref": "#/$defs/Phone"
+    },
+    "addresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Address"
+      },
+      "description": "Collection of addresses associated with the organisation."
+    },
+    "industries": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Industry"
+      },
+      "description": "List of industries associated with the organisation."
+    },
+    "names": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/OrganisationName"
+      },
+      "description": "Collection of names associated with the organisation."
+    },
+    "countryAffiliationsList": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CountryAffiliations"
+      },
+      "description": "List of country affiliations associated with the organisation."
+    },
+    "screening": {
+      "$ref": "#/$defs/RiskScreening"
+    },
+    "finance": {
+      "$ref": "#/$defs/FinancialInfo"
+    },
+    "roles": {
+      "$ref": "#/$defs/RolesInfo"
+    },
+    "sourceSpecific": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "description": "Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.\nA source is omitted entirely when it has no source-specific data."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the type of the address. The type is used to specify the categorization\nor purpose of the address, such as registered, residential, business, or other.\nThe default value is `Unknown`."
+        },
+        "country": {
+          "pattern": "^$|^[A-Za-z]{2,3}$",
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the country associated with the address. The value must be a valid\nISO 3166 alpha-2 or alpha-3 country code if provided. This property is used\nto specify the country where the address is located."
+        },
+        "postCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the postal code of the address. The postal code is used to identify\nspecific geographic areas within a country or region and is commonly part of\nthe addressing system for mail delivery."
+        },
+        "postPlace": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the postal location or city corresponding to the address.\nTypically used in combination with the postal code to identify the area\nof the address. This property may be null if the information is unavailable."
+        },
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the street name of an address. This property holds the specific street\ninformation associated with the address, such as the road name. It is a part\nof the standard formatting for identifying a location."
+        },
+        "addressLine": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents a specific part or line of the address, often used to provide\nadditional details about the address location. This property may include\ninformation such as building names, apartment numbers, or other\ndescriptive elements that complement the main street or post details."
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the start date associated with the address. This property is\nused to indicate the date from which the address becomes valid or applicable.\nThe value can be `null`, indicating that no specific start date is set.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the last date associated with the validity or applicability\nof the address. This property indicates when the address is no longer\nin use or relevant. If not set, the end date is considered undefined.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CompanyRole": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name associated with the company role."
+        },
+        "roles": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/RoleInfo"
+          },
+          "description": "Collection of roles associated with the company."
+        },
+        "organisationNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Organisation number associated with the company role."
+        }
+      },
+      "additionalProperties": false
+    },
+    "CountryAffiliations": {
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the code of a country using its standardized abbreviation."
+        },
+        "affiliation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the type or description of a connection or association to a specific country."
+        }
+      },
+      "additionalProperties": false
+    },
+    "CreditRating": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Description of the credit rating."
+        },
+        "score": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Score of the credit rating."
+        },
+        "scoringSystem": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Scoring system used for determining credit ratings."
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "URL associated with the credit rating."
+        },
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Year associated with the credit rating.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Financial": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Currency representation associated with financial data."
+        },
+        "grossProfit": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Gross profit value, representing the total revenue minus the cost of goods sold (COGS).",
+          "format": "double"
+        },
+        "netProfit": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Net-profit value derived from financial calculations.",
+          "format": "double"
+        },
+        "netProfitAfterTax": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Net profit of a financial entity after accounting for taxes.",
+          "format": "double"
+        },
+        "turnover": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Turnover value associated with financial performance.",
+          "format": "double"
+        },
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Year associated with financial data.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FinancialInfo": {
+      "type": "object",
+      "properties": {
+        "creditRating": {
+          "$ref": "#/$defs/CreditRating"
+        },
+        "financials": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/Financial"
+          },
+          "description": "Represents a collection of financial records.\nProvides detailed financial information associated with an entity or organization."
+        },
+        "paymentRemarkInfo": {
+          "$ref": "#/$defs/PaymentRemarkInfo"
+        }
+      },
+      "additionalProperties": false
+    },
+    "IdNumber": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-1 alpha-2 country code associated with the ID number."
+        },
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Numerical identifier associated with the ID number."
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Category or classification associated with the ID number."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Industry": {
+      "type": "object",
+      "properties": {
+        "naceCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "NACE code associated with the industry."
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Description of the industry.\nThe description provides a textual representation or details about the specific industry."
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Section of the industry classification.\nThe section represents a higher-level categorization of economic activities,\ntypically grouping industries into broader segments or divisions."
+        },
+        "level": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Hierarchical level of the industry.\nThis value indicates the depth or position of the industry\nwithin a structured classification framework.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OrganisationName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the organisation."
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Type or category of the organisation."
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start date associated with the organisation.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End date associated with the organisation.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OtherRole": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Identifier for the role."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name associated with the role."
+        },
+        "roles": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/RoleInfo"
+          },
+          "description": "Collection of roles associated with the object."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PaymentRemarkInfo": {
+      "type": "object",
+      "properties": {
+        "numberOfRemarks": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Total number of remarks associated with a payment.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PersonName": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "First name of a person."
+        },
+        "middle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Middle name of a person."
+        },
+        "last": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Last name of a person."
+        },
+        "full": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Full name of a person."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PersonRole": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/$defs/Address"
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the date of birth of the person associated with the role."
+        },
+        "identityNumber": {
+          "$ref": "#/$defs/IdNumber"
+        },
+        "name": {
+          "$ref": "#/$defs/PersonName"
+        },
+        "nationality": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the nationality of the person associated with the role."
+        },
+        "roles": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/RoleInfo"
+          },
+          "description": "Represents the collection of roles associated with the person."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Phone": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the phone number associated with a phone object."
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the geographical region associated with a phone object."
+        }
+      },
+      "additionalProperties": false
+    },
+    "RiskScreening": {
+      "type": "object",
+      "properties": {
+        "matchStrength": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Represents the strength of a match in risk screening results.",
+          "format": "int32"
+        },
+        "listType": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Specifies the type of list associated with a risk screening process. (e.g., `PEP`, `SANCTION`)"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the source of information used in risk screenings or monitoring processes."
+        },
+        "externalUrls": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": "Represents a collection of external URLs associated with the screening entity."
+        }
+      },
+      "additionalProperties": false
+    },
+    "RoleInfo": {
+      "type": "object",
+      "properties": {
+        "roleCategory": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the category or classification associated with a role."
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Provides additional information or details about a specific role."
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the date on which a specific role becomes effective or begins.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Specifies the date and time when the role is expected to end or expire.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RolesInfo": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/CompanyRole"
+          },
+          "description": "Company roles associated with the entity."
+        },
+        "persons": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/PersonRole"
+          },
+          "description": "Collection of person roles associated with the entity."
+        },
+        "others": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/OtherRole"
+          },
+          "description": "Collection of additional roles associated with the entity.\nThese roles provide supplementary or specialized functionalities\nnot covered by primary role definitions."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

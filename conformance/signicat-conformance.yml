@@ -1,0 +1,49 @@
+generated: '2026-10-18'
+method: searched
+source: openapi/ (23 document(s), 232 mutating operations), documentation at https://developer.signicat.com/docs/
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.0
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.1
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.4
+- id: openapi-3.1
+  conforms: true
+  evidence: the document declares 3.1.0
+- id: openapi-3.1
+  conforms: true
+  evidence: the document declares 3.1.1
+- id: oauth2
+  conforms: true
+  evidence: 'securitySchemes: Access token with client with MobileID Config Editor role (http), Access token with client with Signicat MobileID
+    Config Admin role (http), Bearer (apiKey), JWT (apiKey), JWTBearerAuth (http), Signicat-OIDC (oauth2), Token (oauth2), basicAuth (http), bearerAuth
+    (http), signrestOauth2Security (oauth2'
+- id: rfc9457
+  conforms: true
+  evidence: application/problem+json on 87 response(s), e.g. GET /accounts 200
+- id: idempotency
+  conforms: false
+  evidence: no idempotency key parameter on mutating operations
+- id: pagination
+  conforms: true
+  evidence: list operations take cursor, limit, offset, page
+- id: eidas
+  conforms: true
+  evidence: Documentation mentions eIDAS compliance for authentication levels (Low, Substantial, High)
+  source: https://developer.signicat.com/docs/eid-hub/authentication/authentication-levels.mdx
+- id: psd2
+  conforms: true
+  evidence: Documentation mentions PSD2 Dynamic Linking requirements compliance for Digital Evidence Management
+  source: https://developer.signicat.com/docs/digital-evidence-management/
+- id: iso3166
+  conforms: true
+  evidence: APIs use ISO 3166 country codes for country parameters
+  source: Multiple API specifications
+- id: iso8601
+  conforms: true
+  evidence: APIs use ISO 8601 date strings for timestamps
+  source: Multiple API specifications

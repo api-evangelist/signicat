@@ -1,0 +1,190 @@
+openapi: 3.2.0
+info:
+  title: Signicat File API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged File across 2 of this provider''s published API definitions: archive-openapi.json, signicat-archive-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /
+  description: ''
+security:
+- JWT: []
+tags:
+- name: File
+paths:
+  /archive/{objectId}/file:
+    get:
+      operationId: api_archive_objectIdfile_get
+      tags:
+      - File
+      responses:
+        '200':
+          description: Binary file
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/Error400'
+        '404':
+          $ref: '#/components/responses/Error404'
+      summary: Download archived file
+      description: Returns any binary file (PDF, image, zip...)
+      parameters:
+      - name: objectId
+        in: path
+        description: File identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    post:
+      operationId: api_archive_objectIdfile_post
+      tags:
+      - File
+      responses:
+        '202':
+          description: File resource created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/File'
+          links: {}
+        '400':
+          $ref: '#/components/responses/Error400'
+        '422':
+          description: Unprocessable entity
+      summary: Creates a File resource
+      description: Creates a File resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: File identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-disposition
+        in: header
+        description: "The Content-Disposition header specifying how the content should be handled. \n                    Mapped to the object field File.Name. Format should be: attachment; filename=\"filename.ext\""
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          name: test
+          example: attachment; filename="filename.ext"
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-digest
+        in: header
+        description: "The Content-Digest header contains a SHA-256 hash of the content, used to verify its \n                    integrity and ensure that the data has not been tampered with during transmission. \n                    The hash value must be encoded in base64 format."
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: 'sha-256=:base64-value:'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-type
+        in: header
+        description: The MIME type of the file being uploaded.
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: application/pdf
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: Upload a binary file (e.g., image, document).
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/File'
+        required: true
+      deprecated: false
+    servers:
+    - url: /
+      description: ''
+components:
+  schemas:
+    File:
+      type: object
+      description: ''
+      deprecated: false
+  responses:
+    Error404:
+      description: Not Found. The server can not find the requested resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              code:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+                format: uri
+              traceId:
+                type: string
+            required:
+            - status
+            - code
+            - title
+            - type
+            - traceId
+    Error400:
+      description: "Bad Request. The server cannot or will not process the request due to something \n            that is perceived to be a client error."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              code:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+                format: uri
+              traceId:
+                type: string
+            required:
+            - status
+            - code
+            - title
+            - type
+            - traceId
+  securitySchemes:
+    JWT:
+      type: apiKey
+      description: Value for the Authorization header parameter.
+      name: Authorization
+      in: header
+x-refined-from:
+- archive-openapi.json
+- signicat-archive-openapi.yml

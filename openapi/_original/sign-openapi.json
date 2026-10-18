@@ -1,0 +1,2070 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Signicat Sign API v2",
+    "version": "1.5.2",
+    "contact": "",
+    "license": "",
+    "description": "\n- **Base URL**: `https://api.signicat.com/sign/`\n- **Documentation**: See the [Sign API v2](/docs/electronic-signing/sign-api-v2/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Sign API v2 is a REST API using European identity providers for creating electronic signatures on contracts, declarations, forms and other documents.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n\n# Get started\n\nBefore you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).\n\n## Audit logs\n\nUse the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.\n\n- Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)\n- For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.\n\n## Errors\n\nWhen you make an API call to Signicat and an error occurs, you will receive a response message with an error code.\n\n- For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.\n- For errors specific to this service, see the Sign API v2 [Error codes](/docs/electronic-signing/sign-api-v2/error-codes/) documentation.\n\n## Events (callback)\n\nUse the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.\n\n- Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)\n- For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.\n\n> **Note**: This is often referred to as callback.\n",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "https://api.signicat.com/sign",
+      "description": "Sign API"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/documents": {
+      "post": {
+        "summary": "Upload a new document",
+        "description": "Uploads the document as a binary stream; MIME type is defined by the\nContent-Type header. The response will be the resulting document reference.\n",
+        "tags": [
+          "Documents"
+        ],
+        "operationId": "uploadDocument",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "description": "Content type header",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "text/markdown": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "application/pdf": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful upload, returns new document ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDocumentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/documents/{documentId}": {
+      "parameters": [
+        {
+          "name": "documentId",
+          "description": "The unique ID of the document.",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a single document",
+        "description": "Returns the binary contents of the stored document.",
+        "operationId": "getDocument",
+        "tags": [
+          "Documents"
+        ],
+        "responses": {
+          "200": {
+            "description": "The binary contents of the stored document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "Unknown document ID",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Permanently delete a single document and its metadata",
+        "description": "Deletes the document and all associated metadata permanently.",
+        "operationId": "deleteDocument",
+        "tags": [
+          "Documents"
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful removal of the document"
+          },
+          "400": {
+            "description": "Empty document ID",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown document ID",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/documents/{documentId}/metadata": {
+      "parameters": [
+        {
+          "name": "documentId",
+          "description": "The unique ID of the document.",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "patch": {
+        "summary": "Store optional descriptive data about a stored document",
+        "description": "Updates the optional metadata fields (filename, title, description) for a stored document.",
+        "operationId": "updateDocumentMetadata",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Document"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful update of optional data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Trying to change read-only fields",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown document ID",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve all information stored about a single document",
+        "description": "Returns all available information about a document except for the document itself.",
+        "operationId": "getDocumentInfo",
+        "tags": [
+          "Documents"
+        ],
+        "responses": {
+          "200": {
+            "description": "All available information except for the document itself was successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "Unknown document ID",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/document-collections": {
+      "post": {
+        "operationId": "createDocumentCollection",
+        "tags": [
+          "Document collections"
+        ],
+        "summary": "Create a new document collection",
+        "description": "Creates new document collection. A document collection is a logical grouping of documents that will be signed together.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentCollection"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The document collection was created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/document-collections/{documentCollectionId}": {
+      "get": {
+        "operationId": "getDocumentCollection",
+        "tags": [
+          "Document collections"
+        ],
+        "summary": "Retrieve a document collection",
+        "description": "Returns the document collection with the given ID.",
+        "parameters": [
+          {
+            "name": "documentCollectionId",
+            "description": "The unique ID of the document collection.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The document collection was successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDocumentCollectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "The document collection was not found.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document collection not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteDocumentCollection",
+        "tags": [
+          "Document collections"
+        ],
+        "summary": "Delete a document collection",
+        "description": "Deletes the document collection with the given ID.",
+        "parameters": [
+          {
+            "name": "documentCollectionId",
+            "description": "The unique ID of the document collection.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The document collection was successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "The document collection was not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Document collection not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/signing-sessions": {
+      "post": {
+        "operationId": "createSigningSession",
+        "tags": [
+          "Signing sessions"
+        ],
+        "summary": "Create a new signing session",
+        "description": "Creates a new signing session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SigningSessions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The signing session was created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SigningSessions"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "operationId": "listSigningSessions",
+        "tags": [
+          "Signing sessions"
+        ],
+        "summary": "Retrieve a paginated list of signing sessions",
+        "description": "Returns a paginated list of signing sessions, with optional controls for `offset`, `limit` and `sort`.",
+        "parameters": [
+          {
+            "name": "offset",
+            "description": "Number of rows to skip before returning results.",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0,
+              "maximum": 100000
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Maximum number of rows to return.",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting field. Default value is -createdAt. E.g., +dueDate",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "createdDateFrom",
+            "in": "query",
+            "description": "Filter signing sessions created on or after this date and time",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01T00:00:00Z"
+          },
+          {
+            "name": "createdDateTo",
+            "in": "query",
+            "description": "Filter signing sessions created on or before this date and time",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-12-31T23:59:59Z"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "Search field for state. Multiple values allowed. E.g., BLOCKED, READY. See also SessionState enum for possible values.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "READY",
+                "BLOCKED"
+              ]
+            }
+          },
+          {
+            "name": "dueDateFrom",
+            "in": "query",
+            "description": "Filter signing sessions with due date on or after this date and time",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-06-01T00:00:00Z"
+          },
+          {
+            "name": "dueDateTo",
+            "in": "query",
+            "description": "Filter signing sessions with due date on or before this date and time",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-06-30T23:59:59Z"
+          },
+          {
+            "name": "sessionTitleLike",
+            "in": "query",
+            "description": "Filter signing sessions by title using partial text matching (case-insensitive)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Contract"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of signing sessions was successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSigningSessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/signing-sessions/{sessionId}": {
+      "get": {
+        "operationId": "getSigningSession",
+        "tags": [
+          "Signing sessions"
+        ],
+        "summary": "Retrieve a signing session",
+        "description": "Returns the signing session with the given ID.",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "description": "The unique ID of the session.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The signing session was successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SigningSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "The signing session was not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Signing session not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSigningSession",
+        "tags": [
+          "Signing sessions"
+        ],
+        "summary": "Delete a signing session",
+        "description": "Deletes the signing session with the given ID.",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "description": "The unique ID of the session.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The signing session was successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "description": "The signing session was not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "example": {
+                  "status": 404,
+                  "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+                  "title": "Not found",
+                  "code": "not_found",
+                  "detail": "Signing session not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patchSigningSession",
+        "tags": [
+          "Signing sessions"
+        ],
+        "summary": "Update an existing signing session",
+        "description": "Updates an existing signing session.",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "description": "The unique ID of the session.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SigningSessionPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The signing session was updated successfully"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The signing session was not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/merchant-signing": {
+      "post": {
+        "summary": "Sign document(s) with merchant certificate",
+        "description": "Enables business to business (B2B) signing with a merchant certificate from a specified vendor.",
+        "tags": [
+          "Merchant signing"
+        ],
+        "operationId": "merchantSign",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantSignRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful signing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantSignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "description": "Access token for protecting the API.",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            },
+            "example": {
+              "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+              "title": "Bad request",
+              "status": 400,
+              "code": "bad_request",
+              "detail": "The request was malformed."
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            },
+            "example": {
+              "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+              "title": "Not Found",
+              "status": 404,
+              "code": "not_found",
+              "detail": "Not found"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Unexpected error",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            },
+            "example": {
+              "type": "https://developer.signicat.com/docs/error-codes/#generic-error-codes",
+              "title": "Unexpected error",
+              "status": 500,
+              "code": "unexpected_error",
+              "detail": "An unexpected error occurred."
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "MerchantSignRequest": {
+        "type": "object",
+        "required": [
+          "vendor",
+          "toBeSignedDocuments"
+        ],
+        "properties": {
+          "vendor": {
+            "$ref": "#/components/schemas/VendorEnum"
+          },
+          "toBeSignedDocuments": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/ToBeSignedDocument"
+            }
+          }
+        }
+      },
+      "ToBeSignedDocument": {
+        "type": "object",
+        "required": [
+          "documentId",
+          "mimetype",
+          "format",
+          "description"
+        ],
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1234567-89ab-cdef-0123-456789abcdef"
+          },
+          "mimetype": {
+            "type": "string",
+            "maxLength": 50,
+            "example": "application/pdf"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "PADES",
+              "SDO"
+            ],
+            "example": "PADES"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "Merchant description"
+          }
+        }
+      },
+      "MerchantSignResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MerchantSignResult"
+        }
+      },
+      "MerchantSignResult": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentResultId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "mimeType": {
+            "type": "string",
+            "readOnly": true,
+            "example": "application/pdf"
+          },
+          "documentId": {
+            "type": "string",
+            "readOnly": true,
+            "example": "d1234567-89ab-cdef-0123-456789abcdef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-04-12T10:30:00Z"
+          },
+          "documentHash": {
+            "readOnly": true,
+            "$ref": "#/components/schemas/DocumentHash"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "A name to use if the document is to be stored as a file. Optional metadata about the stored document which the customer can supply.",
+            "example": "invoice_001.pdf"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "A description of the document for display purposes. Optional metadata about the stored document which the customer can supply.",
+            "example": "Invoice for order #001"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "A title of the document for display purposes. Optional metadata about the stored document which the customer can supply.",
+            "example": "Invoice #001"
+          }
+        }
+      },
+      "PostDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "mimeType": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The MIME type of the uploaded document. Supported types are text/plain, text/markdown and application/pdf.",
+            "example": "application/pdf"
+          },
+          "documentId": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The unique ID of the uploaded document.",
+            "example": "d1234567-89ab-cdef-0123-456789abcdef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "The date and time when the document was uploaded.",
+            "example": "2023-04-12T10:30:00Z"
+          },
+          "documentHash": {
+            "readOnly": true,
+            "description": "The calculated hash of the document. This contains the following two items.",
+            "$ref": "#/components/schemas/DocumentHash"
+          }
+        }
+      },
+      "DocumentCollection": {
+        "type": "object",
+        "required": [
+          "documents"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The unique ID of the document collection.",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0858"
+          },
+          "documents": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "nullable": false,
+            "items": {
+              "$ref": "#/components/schemas/DocumentReference"
+            }
+          },
+          "packageTo": {
+            "description": "A list of formats the collection should be packaged to when all sessions connected to it are signed.",
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/PackageType"
+            }
+          },
+          "output": {
+            "$ref": "#/components/schemas/CollectionOutput"
+          },
+          "serialSigning": {
+            "type": "boolean",
+            "description": "Whether to enable serial signing for the document collection.",
+            "example": true
+          }
+        }
+      },
+      "DocumentReference": {
+        "type": "object",
+        "required": [
+          "documentId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the uploaded document.",
+            "example": "15197b79-6333-4fa5-9e4c-23b9392a838f"
+          }
+        }
+      },
+      "GetDocumentCollectionResponse": {
+        "$ref": "#/components/schemas/DocumentCollection"
+      },
+      "SigningSessions": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "nullable": false,
+        "items": {
+          "$ref": "#/components/schemas/SigningSession"
+        }
+      },
+      "SigningSession": {
+        "type": "object",
+        "required": [
+          "title",
+          "documents",
+          "signingSetup"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0852"
+          },
+          "signatureUrl": {
+            "type": "string",
+            "readOnly": true,
+            "example": "https://signtest-account.sandbox.signicat.com/sign/?sessionId=8ce3dac2-74b3-429c-adf7-fe6d277186d0"
+          },
+          "signatureUrlTTL": {
+            "type": "integer",
+            "deprecated": true,
+            "example": 5,
+            "description": "Deprecated! Use signatureUrlTimeToLive instead. Time-to-live for the signature URL in minutes",
+            "minimum": 5,
+            "maximum": 525600
+          },
+          "signatureUrlTimeToLive": {
+            "type": "string",
+            "description": "Time-to-live for the signature URL. Must be an ISO 8601 duration and a maximum of 45 days.",
+            "example": "PT1M30S"
+          },
+          "signatureUrlExpiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2026-01-15T14:05:00Z"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "Rental agreement",
+            "description": "A title for the signing session."
+          },
+          "signText": {
+            "type": "string",
+            "maxLength": 2048,
+            "example": "Please sign this document",
+            "description": "Text displayed when starting the signing process. The signer must explicitly consent to this text before signing."
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-04-01T17:32:28Z",
+            "description": "The deadline for signing the document(s). Optional; if omitted, defaults to 30 days after session creation. You can explicitly set a deadline up to 45 days into the future."
+          },
+          "documents": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "nullable": false,
+            "items": {
+              "$ref": "#/components/schemas/SessionDocument"
+            }
+          },
+          "lifecycle": {
+            "$ref": "#/components/schemas/SessionLifecycle",
+            "readOnly": true
+          },
+          "output": {
+            "$ref": "#/components/schemas/SessionOutput"
+          },
+          "externalReference": {
+            "type": "string",
+            "maxLength": 1024,
+            "description": "Custom identifier for linking the signing session to your internal process. Passed back in redirect URLs.",
+            "nullable": true
+          },
+          "signingSetup": {
+            "description": "The user interaction setups for this signing session describing which IDPs are available for the end-user.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SigningSetup"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "nullable": false
+          },
+          "subsequentTo": {
+            "description": "IDs of signing sessions that must be signed before this one.",
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0858"
+            }
+          },
+          "packageTo": {
+            "description": "A list of formats the signing session should be packaged to when signed.",
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/PackageType"
+            }
+          },
+          "sealTo": {
+            "description": "A list of formats the signing session should be sealed to when signed.",
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/SealPackageType"
+            }
+          },
+          "signer": {
+            "description": "The intended signer of the signing Session.",
+            "$ref": "#/components/schemas/Signer"
+          },
+          "archive": {
+            "description": "Defines what objects should be added to archive. To use this functionality you must contact <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://dashboard.signicat.com/contact-us/tickets/new\">Signicat Support</a>.",
+            "$ref": "#/components/schemas/ArchiveSettings"
+          },
+          "preAuthentication": {
+            "description": "Sets up authentication of the signer before presenting documents.",
+            "$ref": "#/components/schemas/PreAuthentication"
+          },
+          "ui": {
+            "description": "Defines UI settings for the signing session.",
+            "$ref": "#/components/schemas/Ui"
+          },
+          "intentionText": {
+            "description": "A text indicating the end-user's intention when signing a document. Applicable when using flow PKISIGNING",
+            "$ref": "#/components/schemas/IntentionText"
+          },
+          "redirectSettings": {
+            "description": "Defines URLs for redirects.",
+            "$ref": "#/components/schemas/RedirectSettings"
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "description": "Defines SMS and EMAIL notifications.",
+              "$ref": "#/components/schemas/NotificationMessage"
+            }
+          },
+          "usageTags": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "description": "A list of tags to emit with events for the sign sessions"
+          },
+          "forwarding": {
+            "$ref": "#/components/schemas/Forwarding"
+          }
+        }
+      },
+      "SigningSessionPatch": {
+        "type": "object",
+        "properties": {
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-31T23:59:59Z"
+          }
+        }
+      },
+      "Ui": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "description": "Specifies the language to be used in the signing UI.",
+            "$ref": "#/components/schemas/LanguageEnum"
+          },
+          "hideWelcomeScreen": {
+            "type": "boolean",
+            "description": "Hides the welcome dialog in the signing UI"
+          },
+          "minimalTextMode": {
+            "type": "boolean",
+            "description": "Enables a minimal UI mode for a single and short text/plain document"
+          }
+        }
+      },
+      "IntentionText": {
+        "type": "object",
+        "required": [
+          "value",
+          "format"
+        ],
+        "properties": {
+          "value": {
+            "type": "string",
+            "maxLength": 1024,
+            "description": "Intention text value to display in the UI"
+          },
+          "format": {
+            "description": "Format of the intention text to display in the UI",
+            "$ref": "#/components/schemas/IntentionTextFormat"
+          }
+        }
+      },
+      "IntentionTextFormat": {
+        "type": "string",
+        "enum": [
+          "TEXT",
+          "MARKDOWN"
+        ]
+      },
+      "DocumentCollectionDocument": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "SessionDocument": {
+        "type": "object",
+        "required": [
+          "documentCollectionId",
+          "action",
+          "documentId"
+        ],
+        "properties": {
+          "documentCollectionId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0853",
+            "description": "The unique ID of the document collection this document belongs to."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "VIEW",
+              "SIGN"
+            ],
+            "example": "SIGN",
+            "description": "The action the signer is meant to perform on this document."
+          },
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0857",
+            "description": "The unique ID of the uploaded document."
+          }
+        }
+      },
+      "ProblemDetail": {
+        "title": "ProblemDetail",
+        "description": "The common error object. Adheres to RFC7807",
+        "type": "object",
+        "additionalProperties": true,
+        "readOnly": true,
+        "required": [
+          "type",
+          "title",
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "HTTP Status",
+            "example": 500
+          },
+          "type": {
+            "type": "string",
+            "description": "An RFC3986 URI reference to the documentation that identifies the problem",
+            "example": "https://developer.signicat.com/errors?code=internal_server_error"
+          },
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the problem",
+            "example": "Internal server error"
+          },
+          "code": {
+            "type": "string",
+            "description": "A short machine-readable string indicating the error code",
+            "example": "internal_server_error"
+          },
+          "traceId": {
+            "type": "string",
+            "description": "The request identifier",
+            "example": "ffb75ca1385ecb0a362ff9cd029d23de"
+          },
+          "invalidParams": {
+            "type": "array",
+            "description": "Used when handling validation errors. Can report multiple errors in the same call",
+            "items": {
+              "$ref": "#/components/schemas/InvalidParamDetail"
+            },
+            "example": [
+              {
+                "name": "version",
+                "reason": "must be greater than 0"
+              }
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the problem",
+            "example": "An internal server error happened."
+          }
+        }
+      },
+      "InvalidParamDetail": {
+        "type": "object",
+        "description": "Contains information about how validation failed for a parameter",
+        "readOnly": true,
+        "required": [
+          "name",
+          "reason"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the parameter that failed validation",
+            "example": "SigningSession.title"
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason why the validation failed",
+            "example": "title cannot exceed 255 characters"
+          }
+        }
+      },
+      "ArtifactType": {
+        "type": "string",
+        "enum": [
+          "XADES",
+          "PADES"
+        ]
+      },
+      "SessionSignature": {
+        "type": "object",
+        "required": [
+          "resultDocumentId",
+          "signatureType"
+        ],
+        "properties": {
+          "documentCollectionId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0854"
+          },
+          "resultDocumentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0855"
+          },
+          "originalDocumentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0856"
+          },
+          "resultArchiveId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0857"
+          },
+          "signatureType": {
+            "$ref": "#/components/schemas/ArtifactType"
+          }
+        }
+      },
+      "SessionState": {
+        "type": "string",
+        "enum": [
+          "BLOCKED",
+          "READY",
+          "SIGNED",
+          "REJECTED"
+        ]
+      },
+      "SessionOutput": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "signatures": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SessionSignature"
+            }
+          },
+          "packages": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SessionPackage"
+            }
+          },
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfo",
+            "nullable": true
+          },
+          "seals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SessionSeal"
+            }
+          }
+        }
+      },
+      "SessionPackage": {
+        "type": "object",
+        "description": "Contains session package metadata",
+        "properties": {
+          "packageId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0863"
+          },
+          "resultDocumentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0863"
+          },
+          "resultArchiveId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0863"
+          },
+          "packageType": {
+            "$ref": "#/components/schemas/PackageType"
+          }
+        }
+      },
+      "CollectionOutput": {
+        "readOnly": true,
+        "type": "object",
+        "properties": {
+          "packages": {
+            "type": "array",
+            "minItems": 1,
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SessionPackage"
+            }
+          },
+          "serialSigning": {
+            "type": "array",
+            "minItems": 1,
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SerialSigningOutput"
+            }
+          }
+        }
+      },
+      "SessionLifecycle": {
+        "type": "object",
+        "description": "Contains session lifecycle metadata.",
+        "readOnly": true,
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/SessionState"
+          },
+          "stateIsFinal": {
+            "type": "boolean"
+          },
+          "rejectReason": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1024
+          }
+        }
+      },
+      "SigningFlow": {
+        "type": "string",
+        "enum": [
+          "AUTHENTICATION_BASED",
+          "PKISIGNING"
+        ]
+      },
+      "SigningSetup": {
+        "type": "object",
+        "description": "What IdPs are available to the end-user and what type of signing flow should take place.",
+        "properties": {
+          "vendor": {
+            "$ref": "#/components/schemas/VendorEnum"
+          },
+          "identityProviders": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/IdentityProvider"
+            },
+            "description": "The list of identity providers (IdPs) available for the end-user to choose from. If not specified, all configured IdPs on the account will be shown as options."
+          },
+          "signingFlow": {
+            "$ref": "#/components/schemas/SigningFlow",
+            "description": "The type of signing flow to be  performed. `AUTHENTICATION_BASED` is a simple flow which  uses authentication evidence as input for displaying information in the PAdES/XAdES.\n"
+          },
+          "additionalParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "description": "Additional parameters that modify the authentication flow. Depends on selected IdP. See <a href=\"https://developer.signicat.com/identity-methods/\">developer documentation</a> for details.\n",
+            "nullable": true
+          },
+          "requestedAttributes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Requested Attributes from IDP (name and idp attributes are default)",
+            "nullable": true,
+            "example": [
+              "nin",
+              "dateOfBirth"
+            ]
+          }
+        },
+        "required": [
+          "signingFlow",
+          "identityProviders"
+        ]
+      },
+      "VendorEnum": {
+        "type": "string",
+        "enum": [
+          "NBID"
+        ]
+      },
+      "IdentityProvider": {
+        "type": "object",
+        "properties": {
+          "idpName": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "idpName"
+        ]
+      },
+      "PackageType": {
+        "type": "string",
+        "enum": [
+          "PADES_CONTAINER"
+        ]
+      },
+      "SealPackageType": {
+        "type": "string",
+        "enum": [
+          "XADES_CONTAINER"
+        ]
+      },
+      "DocumentHash": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "hash": {
+            "type": "string"
+          },
+          "hashAlgorithm": {
+            "$ref": "#/components/schemas/HashAlgorithmEnum"
+          }
+        }
+      },
+      "HashAlgorithmEnum": {
+        "type": "string",
+        "readOnly": true,
+        "enum": [
+          "SHA256"
+        ],
+        "example": "SHA256"
+      },
+      "Signer": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 6,
+            "maxLength": 127,
+            "example": "mail@example.org"
+          },
+          "mobile": {
+            "type": "string",
+            "maxLength": 20,
+            "example": "+47 123 45 678"
+          },
+          "nationalIdentificationNumber": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "username": {
+            "type": "string",
+            "example": "username123"
+          },
+          "prefill": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignerPrefillEnum"
+            }
+          },
+          "validations": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "$ref": "#/components/schemas/SignerValidationEnum"
+            },
+            "uniqueItems": true
+          }
+        }
+      },
+      "SignerValidationEnum": {
+        "type": "string",
+        "enum": [
+          "NATIONAL_IDENTIFICATION_NUMBER"
+        ]
+      },
+      "SignerPrefillEnum": {
+        "type": "string",
+        "enum": [
+          "NATIONAL_IDENTIFICATION_NUMBER"
+        ]
+      },
+      "ArchiveSettings": {
+        "type": "object",
+        "required": [
+          "retentionPeriod"
+        ],
+        "properties": {
+          "sendSignatureResultsToArchive": {
+            "type": "boolean",
+            "example": true
+          },
+          "sendPackagingResultToArchive": {
+            "type": "boolean",
+            "example": true
+          },
+          "sendSealingResultToArchive": {
+            "type": "boolean",
+            "description": "Whether generated sealing results should be sent to Archive.",
+            "example": true
+          },
+          "retentionPeriod": {
+            "type": "string",
+            "description": "How long the archived documents should be stored, in ISO 8601 duration format. Maximum 50 years.",
+            "example": "P1Y"
+          },
+          "archiveTags": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "description": "A list of tags to associate with the archived document."
+          }
+        }
+      },
+      "PreAuthentication": {
+        "type": "object",
+        "required": [
+          "enabled"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "identityProviders": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/IdentityProvider"
+            },
+            "description": "The identity providers offered to the signer during pre-authentication."
+          }
+        }
+      },
+      "LanguageEnum": {
+        "type": "string",
+        "enum": [
+          "da",
+          "de",
+          "en",
+          "fi",
+          "nb",
+          "nn",
+          "sv"
+        ]
+      },
+      "ForwardingFlow": {
+        "type": "string",
+        "enum": [
+          "FORWARD_AND_CONTINUE",
+          "NONE"
+        ]
+      },
+      "Forwarding": {
+        "type": "object",
+        "properties": {
+          "flow": {
+            "$ref": "#/components/schemas/ForwardingFlow"
+          },
+          "parentSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The ID of the session that was forwarded to create this session"
+          },
+          "childSessionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "readOnly": true,
+            "description": "List of child session IDs created by forwarding this session"
+          },
+          "senderAddress": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The email address that the person forwarded to receives email notifications from."
+          }
+        }
+      },
+      "RedirectSettings": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 2048,
+            "example": "http://example.com/error"
+          },
+          "cancel": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 2048,
+            "example": "http://example.com/cancel"
+          },
+          "success": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 2048,
+            "example": "http://example.com/complete"
+          },
+          "reject": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 2048,
+            "nullable": true,
+            "example": "http://example.com/reject"
+          }
+        },
+        "required": [
+          "error",
+          "cancel",
+          "success"
+        ]
+      },
+      "PaginatedSigningSessionResponse": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Number of items per page",
+            "example": 100
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Page number",
+            "example": 0
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of items in current page",
+            "example": 100
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items",
+            "example": 1000
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SigningSession"
+            }
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "description": "The subject attributes of the signer, as described by the IdP.",
+        "properties": {
+          "signingTime": {
+            "type": "string",
+            "example": "2026-01-20T10:30:00Z"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string"
+          },
+          "nin": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CommunicationMethod": {
+        "type": "string",
+        "enum": [
+          "SMS",
+          "EMAIL"
+        ]
+      },
+      "NotificationCategory": {
+        "type": "string",
+        "enum": [
+          "SIGNING_NOTIFICATION",
+          "FORWARDING_NOTIFICATION"
+        ]
+      },
+      "NotificationMessage": {
+        "type": "object",
+        "required": [
+          "communicationMethod",
+          "category"
+        ],
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/NotificationCategory"
+          },
+          "communicationMethod": {
+            "$ref": "#/components/schemas/CommunicationMethod"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "string",
+              "maxLength": 50
+            }
+          },
+          "message": {
+            "description": "Message settings for the notification",
+            "$ref": "#/components/schemas/NotificationMessageContent"
+          }
+        }
+      },
+      "NotificationMessageContent": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "language": {
+            "description": "Specifies the language to be used in the notification",
+            "$ref": "#/components/schemas/LanguageEnum"
+          },
+          "header": {
+            "type": "string",
+            "example": "Document ready for signing"
+          },
+          "text": {
+            "type": "string",
+            "example": "A signing session has been created and is ready for your signature."
+          },
+          "senderAddress": {
+            "type": "string"
+          },
+          "senderName": {
+            "type": "string"
+          },
+          "includeFile": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionSeal": {
+        "type": "object",
+        "description": "Contains session seal metadata",
+        "properties": {
+          "sealId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultDocumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultArchiveId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "packageType": {
+            "$ref": "#/components/schemas/SealPackageType"
+          },
+          "originalDocumentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "SerialSigningType": {
+        "type": "string",
+        "enum": [
+          "PADES"
+        ],
+        "description": "The serial signing signature format."
+      },
+      "SerialSigningOutput": {
+        "type": "object",
+        "description": "Contains metadata of a completed serial signing.",
+        "properties": {
+          "originalDocumentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the original document that was signed.",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0851"
+          },
+          "archiveResultId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the archived result document.",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0852"
+          },
+          "resultDocumentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the signed document stored in Docstore.",
+            "example": "f05d0dce-a7af-432b-b6b8-e455ab7c0858"
+          },
+          "numberOfSignatures": {
+            "type": "integer",
+            "description": "The number of signatures added to the document.",
+            "example": 2
+          },
+          "signatureType": {
+            "$ref": "#/components/schemas/SerialSigningType"
+          }
+        }
+      }
+    }
+  }
+}

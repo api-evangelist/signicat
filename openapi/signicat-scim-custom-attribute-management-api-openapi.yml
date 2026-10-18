@@ -1,0 +1,761 @@
+openapi: 3.2.0
+info:
+  title: Signicat SCIM - Custom attribute management API
+  version: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged SCIM - Custom attribute management across 2 of this provider''s published API definitions: siam-openapi.json, signicat-siam-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/ownidp
+  description: Generated server url
+security:
+- bearerAuth: []
+tags:
+- name: SCIM - Custom attribute management
+paths:
+  /api/scim/v2/SubjectAttributeDefinition:
+    post:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Create Subject Custom Attribute
+      description: Create a new Custom Attribute Definition for Subject
+      operationId: createSubjectCustomAttributeDefinition
+      parameters:
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCustomAttributeDefinitionResource'
+        required: true
+      responses:
+        '201':
+          description: Subject Custom Attribute Definition created
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/SubjectCustomAttributeDefinitionResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/OrganizationUserAttributeDefinition:
+    post:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Create Organization User Custom Attribute
+      description: Create a new Custom Attribute Definition for Organization User
+      operationId: createOrganizationUserCustomAttributeDefinition
+      parameters:
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipCustomAttributeDefinitionResource'
+        required: true
+      responses:
+        '201':
+          description: Organization User Custom Attribute Definition created
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/MembershipCustomAttributeDefinitionResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/OrganizationAttributeDefinition:
+    post:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Create Organization Custom Attribute
+      description: Create a new Custom Attribute Definition for Organization
+      operationId: createOrganizationCustomAttributeDefinition
+      parameters:
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCustomAttributeDefinitionResource'
+        required: true
+      responses:
+        '201':
+          description: Organization Custom Attribute Definition created
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/GroupCustomAttributeDefinitionResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/UserAttributeDefinition/{definitionId}:
+    delete:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Delete User Custom Attribute
+      description: Delete a Custom Attribute Definition for User
+      operationId: deleteUserCustomAttributeDefinition
+      parameters:
+      - name: definitionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: User Custom Attribute Definition deleted
+          content:
+            application/scim+json:
+              schema:
+                type: object
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/OrganizationUserAttributeDefinition/{definitionId}:
+    delete:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Delete Organization User Custom Attribute
+      description: Delete a Custom Attribute Definition for Organization User
+      operationId: deleteOrganizationUserCustomAttributeDefinition
+      parameters:
+      - name: definitionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Organization User Custom Attribute Definition deleted
+          content:
+            application/scim+json:
+              schema:
+                type: object
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/OrganizationAttributeDefinition/{definitionId}:
+    delete:
+      tags:
+      - SCIM - Custom attribute management
+      summary: Delete Organization Custom Attribute
+      description: Delete a Custom Attribute Definition for Organization
+      operationId: deleteOrganizationCustomAttributeDefinition
+      parameters:
+      - name: definitionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Organization Custom Attribute Definition deleted
+          content:
+            application/scim+json:
+              schema:
+                type: object
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+components:
+  schemas:
+    ErrorResponse:
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        code:
+          type: string
+        timestamp:
+          type: string
+        traceId:
+          type: string
+        spanId:
+          type: string
+        detail:
+          type: string
+        type:
+          type: string
+        requestUri:
+          type: string
+    SubjectCustomAttributeDefinitionResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+          maxLength: 36
+          minLength: 0
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type: string
+          minLength: 1
+        type:
+          type: string
+        required:
+          type: boolean
+        editableByAdmin:
+          type:
+          - boolean
+          - 'null'
+        editableByUser:
+          type:
+          - boolean
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        presentOnForms:
+          type: array
+          items:
+            type: string
+            enum:
+            - invitation
+            - selfRegistration
+            - userProfile
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - displayName
+      - externalId
+    Meta:
+      type: 'null'
+      properties:
+        resourceType:
+          type:
+          - string
+          - 'null'
+        created:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          format: uri
+        version:
+          type:
+          - string
+          - 'null'
+        createdMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+        lastModifiedMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+    GroupCustomAttributeDefinitionResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+          maxLength: 36
+          minLength: 0
+        name:
+          type: string
+          maxLength: 256
+          minLength: 0
+        description:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type: string
+          maxLength: 256
+          minLength: 0
+        type:
+          type: string
+        required:
+          type:
+          - boolean
+          - 'null'
+        editableByAdmin:
+          type:
+          - boolean
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - displayName
+      - externalId
+      - name
+    MembershipCustomAttributeDefinitionResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+          maxLength: 36
+          minLength: 0
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type: string
+          minLength: 1
+        type:
+          type: string
+        required:
+          type:
+          - boolean
+          - 'null'
+        editableByAdmin:
+          type:
+          - boolean
+          - 'null'
+        editableByUser:
+          type:
+          - boolean
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        isStandardAttribute:
+          type: boolean
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - displayName
+      - externalId
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- siam-openapi.json
+- signicat-siam-openapi.yml

@@ -1,0 +1,49 @@
+generated: '2026-10-18'
+method: searched
+source: https://developer.signicat.com/docs/dashboard/error-codes.md
+format: application/problem+json
+envelope:
+  type: type
+  title: title
+  status: status
+  detail: detail
+  code: code
+  invalidParams: invalidParams
+  traceId: traceId
+problems:
+- status: 400
+  title: Invalid authentication token
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: The authentication token provided in the API request is invalid
+  code: invalid_token
+- status: 400
+  title: Invalid request parameter
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: Request body parameters have failed validation
+  code: invalid_request_parameter
+- status: 400
+  title: Account disabled
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: The account is disabled and cannot be used for this operation
+  code: account_disabled
+- status: 404
+  title: Not found
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: The service you requested was not found
+  code: not_found
+- status: 403
+  title: Insufficient permission
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: You do not have the required permission to perform this operation on the target resource
+  code: missing_permission
+- status: 429
+  title: Quota limit exceeded
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: The rate of API requests exceeds the quota limit
+  code: quota_usage_over_limit
+  remediation: Wait for the duration specified in the Retry-After header before retrying
+- status: 500
+  title: Unexpected error
+  type: https://developer.signicat.com/docs/dashboard/error-codes/
+  description: An unexpected error occurred in a Signicat service and it is not handled properly
+  code: unexpected_error

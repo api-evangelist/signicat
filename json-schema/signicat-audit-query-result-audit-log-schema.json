@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-audit-query-result-audit-log-schema.json",
+  "title": "AuditQueryResult_AuditLog",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-audit-logs-openapi.yml#/components/schemas/AuditQueryResult_AuditLog",
+  "required": [
+    "data"
+  ],
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AuditLog"
+      },
+      "description": "The contents of the current page."
+    },
+    "next": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "URL to the next page, if more data may be available."
+    },
+    "from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "to": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AuditLog": {
+      "required": [
+        "cursor"
+      ],
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "type": "string",
+          "description": "Globally unique reference to this specific audit log item"
+        },
+        "accountId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of the target account"
+        },
+        "organizationId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of the target organization, or the target account's parent organization"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the event which triggered the audit log occurred",
+          "format": "date-time"
+        },
+        "serviceName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Identifier for the service which triggered the audit log"
+        },
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Short human-readable description of the event"
+        },
+        "sandbox": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the target account is a sandbox or production account"
+        },
+        "userId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of the user who performed the action"
+        },
+        "messageId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Unique ID identifying this audit event"
+        },
+        "referenceId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Reference ID used to correlate multiple events happening on the same resource"
+        },
+        "ipAddress": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "IP address of user"
+        },
+        "traceId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Trace ID"
+        },
+        "eventType": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Identifier for this kind of audit event"
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of the client used to perform the action"
+        },
+        "jwtId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of the JWT used to authenticate the user or client"
+        },
+        "expiresAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Timestamp of when this audit log will be permanently deleted from our systems",
+          "format": "date-time"
+        },
+        "data": {
+          "description": "Additional arbitrary data specific to this audit event",
+          "nullable": true
+        },
+        "indexedData": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Additional arbitrary data specific to this audit event which is queryable"
+        },
+        "mayHaveMoreData": {
+          "type": "boolean",
+          "description": "If true, there may be more data available for this audit log by calling the cursor endpoint."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

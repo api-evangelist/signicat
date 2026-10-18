@@ -1,0 +1,379 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-share-response-dto-schema.json",
+  "title": "ShareResponseDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-secure-share-openapi.yml#/components/schemas/ShareResponseDto",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contactDetails",
+    "providerPath"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "guid"
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "externalReference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "usageReference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recipients": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/RecipientDto"
+      }
+    },
+    "files": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/UploadFileDto"
+      }
+    },
+    "expires": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "contactDetails": {
+      "$ref": "#/$defs/ContactDetailsDto"
+    },
+    "tags": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "requestDomain": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "completedRecipients": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "status": {
+      "$ref": "#/$defs/ShareStatus"
+    },
+    "providerPath": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "AuthenticationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityProvider": {
+          "type": "string"
+        },
+        "idpId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "ContactDetailsDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 1,
+          "pattern": "^[^@]+@[^@]+$",
+          "nullable": false
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notificationOptions": {
+          "nullable": true,
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SenderNotificationDto"
+            }
+          ]
+        }
+      }
+    },
+    "FileAccessInfosDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "lastDownloadedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "FileStatus": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Pending",
+        "UploadedToQuarantine",
+        "Scanning",
+        "Success",
+        "Failed",
+        "VirusFound",
+        "Skipped"
+      ],
+      "enum": [
+        "Pending",
+        "UploadedToQuarantine",
+        "Scanning",
+        "Success",
+        "Failed",
+        "VirusFound",
+        "Skipped"
+      ]
+    },
+    "Language": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ],
+      "enum": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ]
+    },
+    "NotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sendSms": {
+          "type": "boolean"
+        },
+        "language": {
+          "$ref": "#/$defs/Language"
+        }
+      }
+    },
+    "RecipientDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "externalReference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fileAccessInfos": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/FileAccessInfosDto"
+          }
+        },
+        "fileRestrictions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "format": "guid"
+          }
+        },
+        "authentication": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/AuthenticationDto"
+          }
+        },
+        "loggedInTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notification": {
+          "nullable": true,
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NotificationDto"
+            }
+          ]
+        }
+      }
+    },
+    "SenderNotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sendSms": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ShareStatus": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Active",
+        "Expired",
+        "Completed",
+        "Empty"
+      ],
+      "enum": [
+        "Active",
+        "Expired",
+        "Completed",
+        "Empty"
+      ]
+    },
+    "UploadFileDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/FileStatus"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

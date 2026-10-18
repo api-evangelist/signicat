@@ -1,0 +1,107 @@
+openapi: 3.2.0
+info:
+  title: Signicat Archive Document API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged archive-document across 2 of this provider''s published API definitions: signing-enterprise-openapi.json, signicat-signing-enterprise-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/enterprise/sign
+tags:
+- name: archive-document
+  description: Archived documents are stored long-term in Signicat's document archive. Archived documents are referenced by an *archiveID*.
+paths:
+  /archive-documents/{archiveId}:
+    get:
+      tags:
+      - archive-document
+      summary: Get archived document
+      description: Get a document from Signicat's document archive
+      operationId: getArchiveDocument
+      parameters:
+      - name: archiveId
+        in: path
+        description: The ID of the document stored in Signicat's document archive.
+        required: true
+        schema:
+          type: string
+        example: 200320193lrce4j85hpgdns4ivbuts5dy7pgarm1e0iozjq4qh2tey77jv
+      responses:
+        '200':
+          description: The archived document was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    delete:
+      tags:
+      - archive-document
+      summary: Delete archived document
+      description: Delete a document from Signicat's document archive
+      operationId: deleteArchivedDocument
+      parameters:
+      - name: archiveId
+        in: path
+        description: The ID of the document stored in Signicat's document archive.
+        required: true
+        schema:
+          type: string
+        example: 200320193lrce4j85hpgdns4ivbuts5dy7pgarm1e0iozjq4qh2tey77jv
+      responses:
+        '204':
+          description: The archived document was successfully deleted.
+        '404':
+          description: The document was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/enterprise/sign
+components:
+  schemas:
+    ClientProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        type:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+  securitySchemes:
+    signrestOauth2Security:
+      type: oauth2
+      description: Signicat Oauth security with clientCredentials
+      in: header
+      flows:
+        clientCredentials:
+          tokenUrl: /oidc/token
+          scopes:
+            signicat-api: Manage signing orders
+      openIdConnectUrl: /oidc
+externalDocs:
+  description: Getting started with electronic signatures
+  url: https://developer.signicat.com/docs/electronic-signing/
+x-refined-from:
+- signing-enterprise-openapi.json
+- signicat-signing-enterprise-openapi.yml

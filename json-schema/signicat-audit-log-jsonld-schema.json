@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-audit-log-jsonld-schema.json",
+  "title": "AuditLog.jsonld",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-archive-openapi.yml#/components/schemas/AuditLog.jsonld",
+  "type": "object",
+  "deprecated": false,
+  "properties": {
+    "@id": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "@type": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "clientId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "userId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "message": {
+      "type": "string"
+    },
+    "messageId": {
+      "type": "string"
+    },
+    "eventType": {
+      "type": "string"
+    }
+  }
+}

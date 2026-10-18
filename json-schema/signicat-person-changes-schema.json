@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-person-changes-schema.json",
+  "title": "PersonChanges",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-person-openapi.yml#/components/schemas/PersonChanges",
+  "type": "object",
+  "properties": {
+    "changeId": {
+      "type": "integer",
+      "description": "Sequential ID of the change.",
+      "format": "int32"
+    },
+    "status": {
+      "$ref": "#/$defs/MonitorPersonStatus"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "changeDetected": {
+      "type": "string",
+      "description": "Date and time when the change was detected.",
+      "format": "date-time"
+    },
+    "referenceKey": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Person's reference key."
+    },
+    "changes": {
+      "$ref": "#/$defs/MonitorPersonChange"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "MonitorPersonChange": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new first name."
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new last name."
+        },
+        "middleName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new middle name, if available."
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new date of birth, if available.",
+          "format": "yyyy-MM-dd"
+        },
+        "nationalIdentityNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new national identity number, if available."
+        },
+        "address": {
+          "$ref": "#/$defs/PersonAddress"
+        },
+        "isAddressProtected": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the person's address is protected"
+        },
+        "isProtected": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the person's information is protected"
+        },
+        "screening": {
+          "$ref": "#/$defs/PersonScreening"
+        },
+        "dateOfDeath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The person's new date of death, if available.",
+          "format": "yyyy-MM-dd"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Relevant person changes. Only changed fields contain data."
+    },
+    "MonitorPersonStatus": {
+      "enum": [
+        "unknown",
+        "ok",
+        "invalid"
+      ],
+      "type": "string",
+      "description": "Status of the person"
+    },
+    "PersonAddress": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "maxLength": 400,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Address line."
+        },
+        "zipCode": {
+          "maxLength": 20,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Zip code / Postal code."
+        },
+        "city": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City."
+        },
+        "country": {
+          "maxLength": 3,
+          "minLength": 2,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country (ISO 3166-1 alpha-2)."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The person's address"
+    },
+    "PersonScreening": {
+      "type": "object",
+      "properties": {
+        "riskLevel": {
+          "maximum": 5,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int32"
+        },
+        "listType": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "Attribute providing information about the Screening status of the person"
+    },
+    "Source": {
+      "enum": [
+        "nationalRegistry",
+        "trapets"
+      ],
+      "type": "string",
+      "description": "What kind of sources to use for monitoring"
+    }
+  }
+}

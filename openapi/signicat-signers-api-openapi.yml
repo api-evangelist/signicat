@@ -1,0 +1,1264 @@
+openapi: 3.2.0
+info:
+  title: Signicat Signers API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Signers across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Signers
+paths:
+  /documents/{documentId}/signers/{signerId}:
+    get:
+      tags:
+      - Signers
+      summary: Retrieve signer
+      description: Retrieves the details of a single signer.
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignerResponse'
+              example:
+                id: caff2320-d541-47df-8141-b6ab5b07cfa8
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SignerResponse'
+              example:
+                id: caff2320-d541-47df-8141-b6ab5b07cfa8
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+      operationId: getDocumentsByDocumentIdSignersBySignerId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Signers
+      summary: Delete signer
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+      operationId: deleteDocumentsByDocumentIdSignersBySignerId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Signers
+      summary: Update signer
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateSignerRequest'
+            example:
+              signerInfo:
+                firstName: Updated
+                lastName: Name
+              order: 0
+              required: false
+              signUrlExpires: '2026-10-18T14:13:00Z'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSignerRequest'
+            example:
+              signerInfo:
+                firstName: Updated
+                lastName: Name
+              order: 0
+              required: false
+              signUrlExpires: '2026-10-18T14:13:00Z'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSignerRequest'
+            example:
+              signerInfo:
+                firstName: Updated
+                lastName: Name
+              order: 0
+              required: false
+              signUrlExpires: '2026-10-18T14:13:00Z'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateSignerRequest'
+            example:
+              signerInfo:
+                firstName: Updated
+                lastName: Name
+              order: 0
+              required: false
+              signUrlExpires: '2026-10-18T14:13:00Z'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSignerResponse'
+              example:
+                signerInfo:
+                  firstName: Updated
+                  lastName: Name
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-18T14:13:00Z'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSignerResponse'
+              example:
+                signerInfo:
+                  firstName: Updated
+                  lastName: Name
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-18T14:13:00Z'
+      operationId: patchDocumentsByDocumentIdSignersBySignerId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/signers:
+    get:
+      tags:
+      - Signers
+      summary: List signers
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignerResponse'
+              example:
+              - id: 2f201fdc-c1d1-473f-8a4c-35c677b78bb2
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignerResponse'
+              example:
+              - id: 2f201fdc-c1d1-473f-8a4c-35c677b78bb2
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+      operationId: getDocumentsByDocumentIdSigners
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Signers
+      summary: Create signer
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/SignerRequest'
+            example:
+              externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+              redirectSettings:
+                redirectMode: donot_redirect
+              signatureType:
+                mechanism: pkisignature
+              ui:
+                language: EN
+                dialogs:
+                  before:
+                    useCheckBox: false
+                    title: Info
+                    message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                styling:
+                  colorTheme: Pink
+                  spinner: Cubes
+                  hideTopBar: false
+              order: 0
+              required: false
+              getSocialSecurityNumber: false
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignerRequest'
+            example:
+              externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+              redirectSettings:
+                redirectMode: donot_redirect
+              signatureType:
+                mechanism: pkisignature
+              ui:
+                language: EN
+                dialogs:
+                  before:
+                    useCheckBox: false
+                    title: Info
+                    message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                styling:
+                  colorTheme: Pink
+                  spinner: Cubes
+                  hideTopBar: false
+              order: 0
+              required: false
+              getSocialSecurityNumber: false
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SignerRequest'
+            example:
+              externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+              redirectSettings:
+                redirectMode: donot_redirect
+              signatureType:
+                mechanism: pkisignature
+              ui:
+                language: EN
+                dialogs:
+                  before:
+                    useCheckBox: false
+                    title: Info
+                    message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                styling:
+                  colorTheme: Pink
+                  spinner: Cubes
+                  hideTopBar: false
+              order: 0
+              required: false
+              getSocialSecurityNumber: false
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SignerRequest'
+            example:
+              externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+              redirectSettings:
+                redirectMode: donot_redirect
+              signatureType:
+                mechanism: pkisignature
+              ui:
+                language: EN
+                dialogs:
+                  before:
+                    useCheckBox: false
+                    title: Info
+                    message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                styling:
+                  colorTheme: Pink
+                  spinner: Cubes
+                  hideTopBar: false
+              order: 0
+              required: false
+              getSocialSecurityNumber: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignerResponse'
+              example:
+                id: 3e133970-42c0-4340-84b2-e75c6bc74d18
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SignerResponse'
+              example:
+                id: 3e133970-42c0-4340-84b2-e75c6bc74d18
+                url: https://sign-test.signicat.io/init?jwt=...
+                externalSignerId: aoijfnmo032q223
+                redirectSettings:
+                  redirectMode: redirect
+                  error: https://signicat.io#error
+                  cancel: https://signicat.io#cancel
+                  success: https://signicat.io#success
+                signatureType:
+                  mechanism: pkisignature
+                order: 0
+                required: false
+                signUrlExpires: '2026-10-19T14:13:00Z'
+                getSocialSecurityNumber: false
+      operationId: postDocumentsByDocumentIdSigners
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/signers/{signerId}/signature:
+    delete:
+      tags:
+      - Signers
+      summary: Delete signature
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+      operationId: deleteDocumentsByDocumentIdSignersBySignerIdSignature
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    UIResponse:
+      type: object
+      properties:
+        dialogs:
+          $ref: '#/components/schemas/DialogsResponse'
+        language:
+          $ref: '#/components/schemas/Language'
+        styling:
+          $ref: '#/components/schemas/Styling'
+      additionalProperties: false
+    Dialogs:
+      type: object
+      properties:
+        before:
+          $ref: '#/components/schemas/DialogBefore'
+        after:
+          $ref: '#/components/schemas/DialogAfter'
+      additionalProperties: false
+      description: Dialogs that will be prestented to the signer in the signature process.
+    AddonSignerRequest:
+      type: object
+      properties:
+        types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignerAddon'
+          description: A list of the addons you want to order, see documentation for more information. Additional cost will incur
+      additionalProperties: false
+    Link:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+        rel:
+          type:
+          - string
+          - 'null'
+        contentType:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - string
+          - 'null'
+        resourceStatus:
+          $ref: '#/components/schemas/ResourceStatus'
+      additionalProperties: false
+    AuthMechanism:
+      enum:
+      - 'off'
+      - eid
+      - smsOtp
+      - eidAndSmsOtp
+      type: string
+    Notifications:
+      type: object
+      properties:
+        setup:
+          type:
+          - object
+          - 'null'
+          properties:
+            request:
+              $ref: '#/components/schemas/NotificationSetting'
+            reminder:
+              $ref: '#/components/schemas/NotificationSetting'
+            signatureReceipt:
+              $ref: '#/components/schemas/NotificationSetting'
+            finalReceipt:
+              $ref: '#/components/schemas/NotificationSetting'
+            canceled:
+              $ref: '#/components/schemas/NotificationSetting'
+            expired:
+              $ref: '#/components/schemas/NotificationSetting'
+          additionalProperties: false
+          description: Notification setup for the signer. All notifications defaults to `"off"`.
+        mergeFields:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: "If you create your own notifications texts (See the root object -> Notification), you can create your own merge fields with your own keys. \nYou can then specify the text you want to insert in these fields per signer in this dictionary. Set the dictionary key to the same value as the merge field value in your notification text, and the value to the text you want us to merge in."
+      additionalProperties: false
+      description: Email/SMS notification settings for the signer.
+    SignatureType:
+      required:
+      - mechanism
+      type: object
+      properties:
+        signatureMethods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignatureMethod'
+          description: 'A list of signature methods that the signer is allowed to use when signing the document.
+
+            If not specified, all available signature methods for your Idfy account will be displayed to the signer.'
+        mechanism:
+          $ref: '#/components/schemas/Mechanisms'
+      additionalProperties: false
+      description: Settings for the allowed signature methods.
+    SignerExtraInfo:
+      enum:
+      - personLookup
+      type: string
+    SignerAddon:
+      enum:
+      - secureShare
+      type: string
+    DialogBeforeResponse:
+      type: object
+      properties:
+        useCheckBox:
+          type: boolean
+          description: Determines if a the user must confirm that the dialog message has been read before they can continue.
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+    TopBarMode:
+      enum:
+      - Default
+      - Visible
+      - OnlyMenu
+      - Hidden
+      type: string
+    Authentication:
+      type: object
+      properties:
+        mechanism:
+          $ref: '#/components/schemas/AuthMechanism'
+        socialSecurityNumber:
+          type:
+          - string
+          - 'null'
+          description: The signer's social security number.
+        signatureMethodUniqueId:
+          type:
+          - string
+          - 'null'
+          description: The signer's unique ID for a signature method (for example the Norwegian BankID PID).
+      additionalProperties: false
+      description: Authentication settings for the signer.
+    Mobile:
+      type: object
+      properties:
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: The country calling code, e.g. `+47` for a norwegian number. <a href="https://en.wikipedia.org/wiki/List_of_country_calling_codes" target="_blank">Country calling codes on Wikipedia</a>
+        number:
+          type:
+          - string
+          - 'null'
+          description: The mobile number.
+      additionalProperties: false
+      description: The signer's mobile number. Define this if you are using notifications.
+    PersonalInfoOrigin:
+      enum:
+      - unknown
+      - eid
+      - userFormInput
+      type: string
+    DialogsResponse:
+      type: object
+      properties:
+        before:
+          $ref: '#/components/schemas/DialogBeforeResponse'
+        after:
+          $ref: '#/components/schemas/DialogAfter'
+      additionalProperties: false
+    OrganizationInfo:
+      type: object
+      properties:
+        orgNo:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+        companyName:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+          description: Which company does the signer represent? Can merged into the PadES-frontpage (in PadES setting set)
+        countryCode:
+          maxLength: 10
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: The signer's organization info.
+    NotificationSetting:
+      enum:
+      - 'off'
+      - sendSms
+      - sendEmail
+      - sendBoth
+      type: string
+    ExtraInfoSignerRequest:
+      type: object
+      properties:
+        types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignerExtraInfo'
+          description: A list of the extra information you want to order, in production this has to be configured on your account by Signicat. Additional cost may incur.
+      additionalProperties: false
+      description: Settings for extra information to collect about the signer.
+    SignatureMethod:
+      enum:
+      - no_buypass
+      - se_bankid
+      - dk_nemid
+      - fi_eid
+      - sms_otp
+      - unknown
+      - no_bankid_mobile
+      - no_bankid_netcentric
+      - itsme
+      - idin
+      - digid
+      - eherkenning
+      - mitid
+      - no_bankid_oidc
+      - sk_mobileid
+      - sk_smartid
+      - et_smartcard
+      - no_bankid_csc
+      type: string
+    RedirectSettings:
+      required:
+      - redirectMode
+      type: object
+      properties:
+        redirectMode:
+          $ref: '#/components/schemas/RedirectMode'
+        domain:
+          type:
+          - string
+          - 'null'
+          description: 'The domain your website is hosted on.  <span style="color: red;">Required if you specify one of the iframe redirect modes for the signer.</span>'
+        error:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to if something goes wrong. <span style="color: red;">Required if you use redirect for the signer.</span>'
+        cancel:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to if the signing is cancelled. <span style="color: red;">Required if you use redirect for the signer.</span>'
+        success:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to after a successful signing. <span style="color: red;">Required if you use redirect for the signer.</span>'
+      additionalProperties: false
+      description: Settings for redirect.
+    RedirectMode:
+      enum:
+      - donot_redirect
+      - redirect
+      - iframe_with_webmessaging
+      - iframe_with_redirect
+      - iframe_with_redirect_and_webmessaging
+      type: string
+    SignerRequest:
+      required:
+      - externalSignerId
+      - redirectSettings
+      - signatureType
+      type: object
+      properties:
+        externalSignerId:
+          maxLength: 255
+          minLength: 4
+          type: string
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        ui:
+          $ref: '#/components/schemas/UI'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).
+
+            Requires eid with permission to retrieve social security number'
+        verifySocialSecurityNumber:
+          type:
+          - boolean
+          - 'null'
+          description: 'Get and verify social security number for this signer, if there is a mismatch the signature will fail.
+
+            Requirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.
+
+            If the eID does not return a social security number this property will be ignored.'
+      additionalProperties: false
+    UpdateSignerRequest:
+      type: object
+      properties:
+        externalSignerId:
+          maxLength: 255
+          minLength: 4
+          type:
+          - string
+          - 'null'
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        ui:
+          $ref: '#/components/schemas/UIResponse'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+      additionalProperties: false
+    Mechanisms:
+      enum:
+      - pkisignature
+      - identification
+      - handwritten
+      - handwritten_with_identification
+      type: string
+    Organization:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        organizationNumber:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 country code.
+      additionalProperties: false
+    SocialSecurityNumber:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+          description: The social security number.
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 Alfa-2 (2 letters) country code.
+      additionalProperties: false
+      description: The signer's social security number. Will be retrieved only when `getSocialSecurityNumber` is specified when creating the document.
+    UpdateSignerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The signer's unique identifier.
+          format: uuid
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL that the signer must use to sign the document.
+        documentSignature:
+          $ref: '#/components/schemas/DocumentSignature'
+        links:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Link'
+          description: HATEOAS extrainfo links retrieved for signer.
+        ui:
+          $ref: '#/components/schemas/UIResponse'
+        externalSignerId:
+          type:
+          - string
+          - 'null'
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).
+
+            Requires eid with permission to retrieve social security number'
+        verifySocialSecurityNumber:
+          type:
+          - boolean
+          - 'null'
+          description: 'Get and verify social security number for this signer, if there is a mismatch the signature will fail.
+
+            Requirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.
+
+            If the eID does not return a social security number this property will be ignored.'
+      additionalProperties: false
+    DialogAfter:
+      type: object
+      properties:
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+      description: A dialog that will be presented after the document is signed.
+    SignerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The signer's unique identifier.
+          format: uuid
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL that the signer must use to sign the document.
+        documentSignature:
+          $ref: '#/components/schemas/DocumentSignature'
+        links:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Link'
+          description: HATEOAS extrainfo links retrieved for signer.
+        ui:
+          $ref: '#/components/schemas/UIResponse'
+        externalSignerId:
+          type:
+          - string
+          - 'null'
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).
+
+            Requires eid with permission to retrieve social security number'
+        verifySocialSecurityNumber:
+          type:
+          - boolean
+          - 'null'
+          description: 'Get and verify social security number for this signer, if there is a mismatch the signature will fail.
+
+            Requirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.
+
+            If the eID does not return a social security number this property will be ignored.'
+      additionalProperties: false
+    ResourceStatus:
+      enum:
+      - Unknown
+      - NotReady
+      - Success
+      - Error
+      - NotFound
+      - BadInput
+      - ServiceUnavailable
+      - Unauthorized
+      - TimeOut
+      type: string
+    DocumentSignature:
+      type: object
+      properties:
+        signatureMethod:
+          $ref: '#/components/schemas/SignatureMethod'
+        fullName:
+          type:
+          - string
+          - 'null'
+          description: The signer's full name, retrieved from the signature-method provider.
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: The signer's first name.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: The signer's last name.
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: The signer's middle name.
+        signedTime:
+          type:
+          - string
+          - 'null'
+          description: Time at which the signature was registered (ISO 8601).
+          format: date-time
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The signer's date of birth (yyyy-MM-dd).
+        signatureMethodUniqueId:
+          type:
+          - string
+          - 'null'
+          description: The signature method unique ID.
+        socialSecurityNumber:
+          $ref: '#/components/schemas/SocialSecurityNumber'
+        clientIp:
+          type:
+          - string
+          - 'null'
+          description: The IP address of the signer.
+        mechanism:
+          $ref: '#/components/schemas/Mechanisms'
+        personalInfoOrigin:
+          $ref: '#/components/schemas/PersonalInfoOrigin'
+        organization:
+          $ref: '#/components/schemas/Organization'
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: Additional signature attributes
+      additionalProperties: false
+      description: The document signature.
+    Spinner:
+      enum:
+      - Document
+      - Classic
+      - Cubes
+      - Bounce
+      type: string
+    SignerInfo:
+      type: object
+      properties:
+        firstName:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's first name.
+        lastName:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's last name.
+        email:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's email adress. Define this if you are using notifications.
+          format: email
+        socialSecurityNumber:
+          maxLength: 30
+          type:
+          - string
+          - 'null'
+          description: Can be used to verify signer's identity by also setting the signer.VerifySocialSecurityNumber, or to prefill ssn/national Id in some of the eId's.
+        dateOfBirth:
+          maxLength: 10
+          pattern: ^((?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])
+          type:
+          - string
+          - 'null'
+          description: 'Can be used to prefill/autostart some of the eids, must follow this pattern: YYYY-MM-DD'
+        title:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+          description: Give the signer a title (i.e CTO, Buyer, Customer, Lord..), this title may be merged into the PAdES-frontpage (in PAdES setting set)
+        mobile:
+          $ref: '#/components/schemas/Mobile'
+        organizationInfo:
+          $ref: '#/components/schemas/OrganizationInfo'
+      additionalProperties: false
+      description: Information about the signer.
+    DialogBefore:
+      type: object
+      properties:
+        useCheckBox:
+          type: boolean
+          description: Determines if a the user must confirm that the dialog message has been read before they can continue.
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+      description: A dialog that will be presented before the document is signed.
+    UI:
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+        dialogs:
+          $ref: '#/components/schemas/Dialogs'
+        styling:
+          $ref: '#/components/schemas/Styling'
+      additionalProperties: false
+      description: UI settings for the signature process.
+    ThemeMode:
+      enum:
+      - Default
+      - Light
+      - Dark
+      type: string
+    Styling:
+      type: object
+      properties:
+        colorTheme:
+          $ref: '#/components/schemas/Theme'
+        themeMode:
+          $ref: '#/components/schemas/ThemeMode'
+        spinner:
+          $ref: '#/components/schemas/Spinner'
+        topBar:
+          $ref: '#/components/schemas/TopBarMode'
+        backgroundColor:
+          type:
+          - string
+          - 'null'
+          description: Override the application background color (use hexadecimal value)
+      additionalProperties: false
+      description: Customize styling to make the the signature application look perfect in combination with your own application.
+    Theme:
+      enum:
+      - Default
+      - Black
+      - Blue
+      - Cyan
+      - Dark
+      - Lime
+      - Neutral
+      - Pink
+      - Purple
+      - Red
+      - Teal
+      - Indigo
+      - LightBlue
+      - DeepPurple
+      - Green
+      - LightGreen
+      - Yellow
+      - Amber
+      - Orange
+      - DeepOrange
+      - Brown
+      - Gray
+      - BlueGray
+      - OceanGreen
+      - GreenOcean
+      - Idfy
+      - Signicat
+      type: string
+    Language:
+      enum:
+      - EN
+      - 'NO'
+      - DA
+      - SV
+      - FI
+      - NL
+      - DE
+      type: string
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

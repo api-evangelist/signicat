@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-subscription-update-schema.json",
+  "title": "SubscriptionUpdate",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-events-openapi.yml#/components/schemas/SubscriptionUpdate",
+  "required": [
+    "name",
+    "type",
+    "typeConfiguration"
+  ],
+  "type": "object",
+  "properties": {
+    "name": {
+      "maxLength": 64,
+      "minLength": 3,
+      "type": "string"
+    },
+    "active": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "type": {
+      "maxLength": 64,
+      "minLength": 3,
+      "enum": [
+        "GooglePubSub",
+        "Mint",
+        "Webhook",
+        "AzureServiceBus"
+      ],
+      "type": "string",
+      "description": "The type of subscription. This value may not be changed."
+    },
+    "eventNameFilter": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "tagFilter": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "typeConfiguration": {
+      "properties": {
+        "googlePubSub": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/GooglePubSubConfigurationUpdate"
+            }
+          ],
+          "description": "Required when `type` equals `GooglePubSub`, otherwise ignored."
+        },
+        "mint": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MintSubscriptionConfigurationUpdate"
+            }
+          ],
+          "description": "Required when `type` equals `Mint`, otherwise ignored."
+        },
+        "webhook": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/WebhookConfigurationUpdate"
+            }
+          ],
+          "description": "Required when `type` equals `Webhook`, otherwise ignored."
+        },
+        "azureServiceBus": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AzureServiceBusConfigurationUpdate"
+            }
+          ],
+          "description": "Required when `type` equals `AzureServiceBus`, otherwise ignored."
+        }
+      }
+    },
+    "messageAuthentication": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/MessageAuthenticationOptions"
+        }
+      ],
+      "nullable": true
+    },
+    "expiresAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AzureServiceBusConfigurationUpdate": {
+      "required": [
+        "queueName"
+      ],
+      "type": "object",
+      "properties": {
+        "connectionString": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "pattern": "^\\S+$",
+          "type": "string"
+        },
+        "queueName": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "pattern": "^\\S+$",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GooglePubSubConfigurationUpdate": {
+      "required": [
+        "topicName"
+      ],
+      "type": "object",
+      "properties": {
+        "topicName": {
+          "minLength": 1,
+          "pattern": "^projects/[a-z0-9-]{4,30}/topics/(?!goog)[A-Za-z0-9-+_.%~]{3,255}$",
+          "type": "string"
+        },
+        "credential": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "HmacSha256AuthenticationOptions": {
+      "type": "object",
+      "properties": {
+        "secret": {
+          "maxLength": 64,
+          "minLength": 16,
+          "pattern": "^\\S+$",
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Secret used for HmacSha256 authentication."
+        }
+      },
+      "additionalProperties": false
+    },
+    "MessageAuthenticationOptions": {
+      "type": "object",
+      "properties": {
+        "authenticationType": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MessageAuthenticationType"
+            }
+          ],
+          "description": "Which authentication method to use for events. Defaults to None."
+        },
+        "hmacSha256": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HmacSha256AuthenticationOptions"
+            }
+          ],
+          "description": "Options for HmacSha256 authentication. Required when `AuthenticationType` equals `HmacSha256`.",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "MessageAuthenticationType": {
+      "enum": [
+        "None",
+        "HmacSha256"
+      ],
+      "type": "string"
+    },
+    "MintSubscriptionConfigurationUpdate": {
+      "type": "object",
+      "properties": {
+        "workflowDefinitionId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workflowDefinitionAccountId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "WebhookConfigurationUpdate": {
+      "required": [
+        "target"
+      ],
+      "type": "object",
+      "properties": {
+        "target": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "pattern": "^\\S+$",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

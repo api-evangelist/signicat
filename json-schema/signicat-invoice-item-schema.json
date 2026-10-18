@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-invoice-item-schema.json",
+  "title": "InvoiceItem",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-account-management-openapi.yml#/components/schemas/InvoiceItem",
+  "required": [
+    "invoiceDate",
+    "invoiceNumber",
+    "lines"
+  ],
+  "type": "object",
+  "properties": {
+    "organizationId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of the Organization who was invoiced"
+    },
+    "organizationName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "usageOrganizationId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of the Organization who the usage was registered at"
+    },
+    "usageOrganizationName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceNumber": {
+      "type": "string"
+    },
+    "invoiceDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invoiceAddressCountryRegionISOCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceAddressZipCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "totalTaxAmount": {
+      "type": "number",
+      "format": "double"
+    },
+    "invoiceAddressStreetNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceAddressStreet": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "totalChargeAmount": {
+      "type": "number",
+      "format": "double"
+    },
+    "totalDiscountAmount": {
+      "type": "number",
+      "format": "double"
+    },
+    "currencyCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "salesOrderNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceAddressCity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceHeaderTaxAmount": {
+      "type": "number",
+      "format": "double"
+    },
+    "invoiceAddressState": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceAddressCountryRegionId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "customersOrderReference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "totalInvoiceAmount": {
+      "type": "number",
+      "format": "double"
+    },
+    "paymentId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invoiceCustomerAccountNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sigContractRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sigDocumentRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "settled": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InvoiceLineItem"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "InvoiceLineItem": {
+      "type": "object",
+      "properties": {
+        "lineTotalDiscountAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "lineTotalTaxAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "currencyCode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "salesPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "salesUnitSymbol": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lineTotalChargeAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "invoicedQuantity": {
+          "type": "number",
+          "format": "double"
+        },
+        "lineAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "productName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revRecContractStartDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "revRecContractEndDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "sigContractStart": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "sigContractEnd": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "itemNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

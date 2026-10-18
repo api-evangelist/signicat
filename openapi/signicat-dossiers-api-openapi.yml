@@ -1,0 +1,854 @@
+openapi: 3.2.0
+info:
+  title: Signicat Dossiers API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Dossiers across 2 of this provider''s published API definitions: id-document-and-biometric-verification-openapi.json, signicat-id-document-and-biometric-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/assure
+  description: Generated server url
+security:
+- basicAuth: []
+tags:
+- name: Dossiers
+paths:
+  /dossiers/{dossierId}/userdata:
+    get:
+      tags:
+      - Dossiers
+      summary: Get user data
+      description: Use this service to get the existing data in the dossier about the end-user. You will also get information about when this data was last updated.
+      operationId: getUserData
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      responses:
+        '200':
+          description: The user data in the dossier was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDataResponse'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The user data in the dossier was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/userdata -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type: application/json'';'
+    put:
+      tags:
+      - Dossiers
+      summary: Update user data
+      description: Use this service to update the data about the end-user in the dossier. This service will update existing fields and add new fields if they don't exist in the user data. If you want to delete some information from the user data, you must send that field as an empty string.
+      operationId: updateUserData
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      requestBody:
+        description: Userdata payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataRequest'
+        required: true
+      responses:
+        '204':
+          description: The user data in the dossier was successfully updated.
+        '400':
+          description: The user data does not provide a valid request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The user data in the dossier was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X PUT  https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/userdata -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type: application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    post:
+      tags:
+      - Dossiers
+      summary: Set user data
+      description: Use this service to add data about the end-user into the dossier (e.g. data the end-user entered in a form).
+      operationId: setUserData
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      requestBody:
+        description: Userdata payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataRequest'
+        required: true
+      responses:
+        '201':
+          description: The user data was successfully added to the dossier.
+        '400':
+          description: The user data does not provide a valid request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The user data in the dossier was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+        '409':
+          description: The user data in the dossier has already been created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionConflict'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/userdata -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type: application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    delete:
+      tags:
+      - Dossiers
+      summary: Delete user data
+      description: Use this service to delete all data about the end-user from the dossier.
+      operationId: deleteUserData
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      responses:
+        '204':
+          description: The userdata in the dossier was successfully deleted.
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The user data in the dossier was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/userdata -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type:application/json'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers:
+    get:
+      tags:
+      - Dossiers
+      summary: Get all dossiers
+      description: You can use this service to check the last 100 dossiers you have created (and that have not yet been deleted).
+      operationId: getDossiers
+      responses:
+        '200':
+          description: The dossier information was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dossier'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/dossiers -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    post:
+      tags:
+      - Dossiers
+      summary: Create dossier
+      description: You should create a new dossier for each new end-user to perform identity verification for that user. A dossier can have more than one process inside and each process can use a different provider (e.g. Onfido, ReadID etc).
+      operationId: createDossier
+      requestBody:
+        description: Dossier payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DossierRequest'
+      responses:
+        '201':
+          description: The dossier was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/dossiers -H ''Authorization: Bearer ACCESS_TOKEN'' -H ''Content-Type: application/json'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers/{dossierId}/files:
+    get:
+      tags:
+      - Dossiers
+      summary: Get file from dossier
+      description: 'Use this service to retrieve files in the dossier.
+
+
+        Supported depiction types are `front` and `back` images of the ID document and `selfie` images of the end-user.
+
+
+        Supported file formats are jpg/png.
+
+
+        For more information, see the Files in dossier in the integration documentation.'
+      operationId: getFile
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      - name: depiction
+        in: query
+        description: The type of image to be retrieved from the dossier.
+        required: true
+        schema:
+          type: string
+          enum:
+          - front
+          - back
+          - selfie
+        example: front
+      responses:
+        '200':
+          description: The image was successfully retrieved.
+          content:
+            application/octet-stream: {}
+        '400':
+          description: This dossier does not provide the requested image type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The dossier was not found.     |     The image was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET ''https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/files?depiction=<DEPICTION-TYPE>'' -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    post:
+      tags:
+      - Dossiers
+      summary: Set files to the dossier
+      description: 'Use this service to upload files to the dossier.
+
+
+        Supported depiction types are `front` and `back` images of the ID document and `selfie` images of the end-user.
+
+
+        Supported file formats are jpg/png. The file must be sent using the dataURL scheme.
+
+
+        You can send one or more files at the same time. If the same depiction type (e.g. selfie) is sent more than once, only the last one is kept.
+
+
+        If you want to copy an image from the process into the dossier, you must define the processId parameter in the body. Then the file will be uploaded from the process.
+
+
+        For more information, see the Files in dossier section in the integration documentation.'
+      operationId: setFiles
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      requestBody:
+        description: Upload image payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileRequest'
+        required: true
+      responses:
+        '201':
+          description: The files were successfully uploaded.
+        '400':
+          description: Image encoded is in the wrong format. It must be follow thedataURL format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: Dossier not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/files/ -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type: application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    delete:
+      tags:
+      - Dossiers
+      summary: Delete files from dossier
+      description: All files uploaded to the dossier will be deleted.
+      operationId: deleteFiles
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      responses:
+        '204':
+          description: The files were successfully deleted.
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: The dossier was not found.     |     The image was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/files -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type:application/json'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers/{dossierId}:
+    get:
+      tags:
+      - Dossiers
+      summary: Get dossier
+      description: Use this service to get all the information about a dossier, including a summarized view of all the processes in it (e.g. Process ID, Status code, Provider...)
+      operationId: getDossier
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      responses:
+        '200':
+          description: The dossier information was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierResponse'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: Dossier not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/dossiers/<DOSSIER-ID> -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    delete:
+      tags:
+      - Dossiers
+      summary: Delete dossier
+      description: 'This service deletes all userData, files and processes in the given dossier (`dossierId`).
+
+
+        Warning: This is a destructive operation since you cannot do a rollback afterwards. You should only use this service after you have finished the end-user’s identification.
+
+
+        Note: For Onfido, you are not allowed to delete a dossier if there are still processes in the `processing` state (for more details about process statuses, see the Get process page in the integration documentation).'
+      operationId: deleteDossier
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      responses:
+        '204':
+          description: Dossier deleted successfully.
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: Dossier not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE https://api.signicat.com/assure/dossiers/<DOSSIER-ID> -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers/all:
+    delete:
+      tags:
+      - Dossiers
+      summary: Delete all dossiers
+      description: 'Warning: Normally, you should not use this service, since it deletes all dossiers associated with the OIDC client.'
+      operationId: deleteAllDossiers
+      responses:
+        '204':
+          description: Dossiers deleted successfully.
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '404':
+          description: Dossier not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE https://api.signicat.com/assure/dossiers/all -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type:application/json'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+components:
+  schemas:
+    StandardExceptionUnauthorized:
+      type: object
+      description: Standard Exception Unauthorized
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 401
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: The signature of the JWT could not be validated because the key was not found.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: The given JWT is signed by a key with key ID 'signing-key-aaaaaaaaaaaaaaaaaaaaaaaaaaa', but no such key was found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    FileRequest:
+      type: object
+      description: Dossier image request
+      properties:
+        front:
+          type: string
+          description: 'Image of the front of the identity document.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i>'
+          example: data:image/png;base64,iVBORw...
+        back:
+          type: string
+          description: 'Image of the back of the identity document.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i>'
+          example: data:image/png;base64,iVBORw...
+        selfie:
+          type: string
+          description: 'Selfie image of the end-user.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i>'
+          example: data:image/png;base64,iVBORw...
+        processId:
+          type: string
+          description: <code>processId</code> is obtained from the "Create process" response body.
+          example: 8afb3ac6-6780-42e4-bbc2-3713e2f6d97c
+    DossierRequest:
+      type: object
+      description: Create dossier payload
+      properties:
+        externalReference:
+          type: string
+          description: Customer specific reference to be associated with an ID of a dossier.
+          example: someReferenceExample
+    UserDataResponse:
+      type: object
+      description: Dossier user data response
+      properties:
+        dossierId:
+          type: string
+          description: This ID is obtained from the "Create dossier" response body.
+          example: 8afb3ac6-6780-42e4-bbc2-3713e2f6d97c
+        userData:
+          $ref: '#/components/schemas/UserData'
+        createdAt:
+          type: string
+          description: 'The date and time the data was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ.)'
+          example: '2021-10-04T09:35:19Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the data was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2021-10-04T09:35:19Z'
+    UserDataRequest:
+      type: object
+      description: Dossier user data payload
+      properties:
+        userData:
+          $ref: '#/components/schemas/UserData'
+    StandardExceptionConflict:
+      type: object
+      description: Standard Exception Conflict
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 409
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Conflict
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Conflict found while processing the request.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    StandardExceptionBadRequest:
+      type: object
+      description: Standard Exception Bad Request
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 400
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Malformed Authorization header.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Please provide a valid Bearer authentication.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    SlimProcess:
+      type: object
+      properties:
+        processId:
+          type: string
+          description: <code>processId</code> is obtained from the "Create process" response body.
+          example: 8afb3ac6-6780-42e4-bbc2-3713e2f6d97c
+        provider:
+          type: string
+          description: The ID of one of the supported providers.<br>
+          example: signicatvideoid
+        processType:
+          type: string
+          description: The process type created from the provider.
+          example: document
+        status:
+          type: string
+          description: This field allows you to filter the process list on one or more statuses. The default value is an empty string, which means it returns all processes with all statuses.
+          example: pending
+        createdAt:
+          type: string
+          description: 'The date and time the process was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T09:00:00Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the process was updated (ISO-8601  with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T10:30:00Z'
+    UserData:
+      type: object
+      description: Dossier user data
+      properties:
+        firstName:
+          type: string
+          description: The end-user's given name(s).
+          example: John
+          maxLength: 64
+          minLength: 0
+        lastName:
+          type: string
+          description: The end-user's surname(s).
+          example: Smith
+          maxLength: 64
+          minLength: 0
+        gender:
+          type: string
+          description: The end-user's sex.
+          enum:
+          - M
+          - F
+          example: M
+          pattern: '[FM]'
+        nationality:
+          type: string
+          description: The end-user's nationality (country code in ISO 3166 Alpha 3 format).
+          example: PRT
+        dateOfBirth:
+          type: string
+          description: The end-user's date of birth (YYYY-MM-DD).
+          example: '1988-08-18'
+        personalIdentificationNumber:
+          type: string
+          description: The end-user's national identity number.
+          example: '12123456'
+        placeOfBirth:
+          type: string
+          description: The end-user's birth place.
+          example: Aveiro
+        mobile:
+          type: string
+          description: The end-user's mobile phone number.
+          example: '+351939393953'
+        email:
+          type: string
+          description: The end-user's email address.
+          example: enduser@email.com
+        address:
+          $ref: '#/components/schemas/Address'
+    DossierResponse:
+      type: object
+      description: Dossiers are objects that contain end-user identity data, e.g. name, date of birth, ID document, etc. They also contain any processes that are created to verify that end-user’s identity.
+      properties:
+        dossierId:
+          type: string
+          description: This ID is obtained from the "Create dossier" response body.
+          example: 710a4326-ef7f-4bed-85c4-aa523f742742
+        externalReference:
+          type: string
+          description: Customer specific reference to be associated with an ID of a dossier.
+          example: someReferenceExample
+        createdAt:
+          type: string
+          description: 'The date and time the dossier was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T09:00:00Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the dossier was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T10:30:00Z'
+        processes:
+          type: array
+          description: List of processes associated with the dossier
+          items:
+            $ref: '#/components/schemas/SlimProcess'
+    StandardExceptionNotFound:
+      type: object
+      description: Standard Exception Not Found
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 404
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Not Found
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Dossier not found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    Dossier:
+      type: object
+      description: Dossiers are objects that contain end-user identity data, e.g. name, date of birth, ID document, etc. They also contain any processes that are created to verify that end-user’s identity.
+      properties:
+        dossierId:
+          type: string
+          description: This ID is obtained from the "Create dossier" response body.
+          example: 710a4326-ef7f-4bed-85c4-aa523f742742
+        externalReference:
+          type: string
+          description: Customer specific reference to be associated with an ID of a dossier.
+          example: someReferenceExample
+        createdAt:
+          type: string
+          description: 'The date and time the dossier was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T09:00:00Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the dossier was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T10:30:00Z'
+    Address:
+      type: object
+      description: User data address
+      properties:
+        formatted:
+          type: string
+          description: Full mailing address, formatted for display or use on a mailing label. This field may contain multiple lines, separated by newlines.
+          example: Street of Best streets nº8, 3810-88 Aveiro PRT
+        streetAddress:
+          type: string
+          description: Full street address component, which may include building number, street name, Post Office Box, and multi-line extended street address information. This field may contain multiple lines, separated by newlines.
+          example: Street of Best streets nº8
+        houseNumber:
+          type: string
+          description: House number component.
+          example: '8'
+        locality:
+          type: string
+          description: City or locality component.
+          example: Aveiro
+        region:
+          type: string
+          description: State, province, prefecture, or region component.
+          example: Beira Litoral
+        postalCode:
+          type: string
+          description: Zip code or postal code component.
+          example: 3810-88
+        country:
+          type: string
+          description: Country name component (ISO-3166 Alpha 3).
+          example: PRT
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: JWT Security Scheme
+      scheme: bearer
+      bearerFormat: JWT
+externalDocs:
+  description: See also the user docs on how to get started with the Assure API.
+  url: https://developer.signicat.com/docs/id-document-and-biometric-verification/guides/#set-up-an-api-integration
+x-refined-from:
+- id-document-and-biometric-verification-openapi.json
+- signicat-id-document-and-biometric-verification-openapi.yml

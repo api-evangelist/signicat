@@ -1,0 +1,243 @@
+openapi: 3.2.0
+info:
+  title: Signicat Signing certificates API
+  version: '1.0'
+  description: 'Operations tagged Signing certificates across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: Signing certificates
+  description: 'The MobileID Admin signing certificates API allows you to get signing certificates, which can be used for certificate verification.
+
+
+    ## Useful information
+
+    JSON Web Tokens (JWTs) are returned as a result of the MobileID signature operation, and are signed with a private key.
+
+
+    A signing certificate contains the corresponding public key, which can be used to verify the signature.
+
+
+    -----
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----'
+paths:
+  /signing-certs:
+    get:
+      tags:
+      - Signing certificates
+      summary: Get signing certificates
+      description: 'The **Get list of signing certificates** operation returns a list of signing certificates for MobileID.
+
+
+        You can specify the state of the signing certificates that you would like to list.
+
+
+        If a state (`state`) is not specified in the query parameters, then the operation will return a list containing the current signing certificates **and** the signing certificates that were used previously.
+
+
+        -----
+
+
+        **Note**: A previously used signing certificate is a certificate whose corresponding private key has at some point of time, been used for signing JWTs.
+
+
+        -----'
+      operationId: getSigningCertificates
+      parameters:
+      - name: state
+        in: query
+        description: 'The state of the signing certificates that you want to list.
+
+
+          This is an an enum, and can be either `ACTIVE` or `DEACTIVATED`.
+
+
+          If not provided, then **all** certificate types are listed.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The state of the signing certificates that you want to list.
+
+
+            This is an an enum, and can be either `ACTIVE` or `DEACTIVATED`.
+
+
+            If not provided, then **all** certificate types are listed.
+
+            '
+          example: ACTIVE
+        example: ACTIVE
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the list of signing certificates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigningCertificateList'
+              example:
+                signingCertificates:
+                - certificate: <PEM encoded Certificate>
+                  sha256Fingerprint: 29:ce:22:91:dc:82:3e:ce:c1:33:67:03:c5:af:b3:03:63:29:ce:22:91:dc:82:9a:8a:e9:49:1e:8a:e9:49:1e
+                  state: ACTIVE
+                  activatedAt: '2024-11-09T21:59:00.000Z'
+                - certificate: <PEM encoded Certificate>
+                  sha256Fingerprint: 11:22:a2:ce:7f:9d:3e:ce:c1:33:67:03:c5:af:b3:03:63:29:ce:22:91:dc:82:9a:8a:e9:49:1e:9b:d0:12:aa
+                  state: DEACTIVATED
+                  activatedAt: '2024-11-09T21:59:00.123Z'
+                  deactivatedAt: '2024-11-09T21:59:00.321Z'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with Signicat MobileID Config Admin role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    ActivatedPeriod:
+      type: object
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+    SigningCertificate:
+      type: object
+      properties:
+        certificate:
+          type: string
+          description: The signing certificate, in PEM format.
+          example: '-----BEGIN CERTIFICATE-----
+
+            MIICEjCCAXsCAg36MA0GCSqGSIb3DQEBBQUAMIGbMQswCQYDVQQGEwJKUDEOMAwG
+
+            A1UECBMFVG9reW8xEDAOBgNVBAcTB0NodW8ta3UxETAPBgNVBAoTCEZyYW5rNERE
+
+            MRgwFgYDVQQLEw9XZWJDZXJ0IFN1cHBvcnQxGDAWBgNVBAMTD0ZyYW5rNEREIFdl
+
+            YiBDQTEjMCEGCSqGSIb3DQEJARYUc3VwcG9ydEBmcmFuazRkZC5jb20wHhcNMTIw
+
+            ODIyMDUyNjU0WhcNMTcwODIxMDUyNjU0WjBKMQswCQYDVQQGEwJKUDEOMAwGA1UE
+
+            CAwFVG9reW8xETAPBgNVBAoMCEZyYW5rNEREMRgwFgYDVQQDDA93d3cuZXhhbXBs
+
+            ZS5jb20wXDANBgkqhkiG9w0BAQEFAANLADBIAkEAm/xmkHmEQrurE/0re/jeFRLl
+
+            8ZPjBop7uLHhnia7lQG/5zDtZIUC3RVpqDSwBuw/NTweGyuP+o8AG98HxqxTBwID
+
+            AQABMA0GCSqGSIb3DQEBBQUAA4GBABS2TLuBeTPmcaTaUW/LCB2NYOy8GMdzR1mx
+
+            8iBIu2H6/E2tiY3RIevV2OW61qY2/XRQg7YPxx3ffeUugX9F4J/iPnnu1zAxxyBy
+
+            2VguKv4SWjRFoRkIfIlHX0qVviMhSlNy2ioFLy7JcPZb+v3ftDGywUqcBiVDoea0
+
+            Hn+GmxZA
+
+            -----END CERTIFICATE-----'
+        sha256Fingerprint:
+          type: string
+          description: The SHA-256 fingerprint of the signing certificate.
+          example: 11:22:a2:ce:7f:9d:3e:ce:c1:33:67:03:c5:af:b3:03:63:29:ce:22:91:dc:82:9a:8a:e9:49:1e:9b:d0:12:aa
+        state:
+          type: string
+          description: 'The state of the signing certificate.
+
+
+            This is an an enum, and can be either `ACTIVE` or `DEACTIVATED`.
+
+
+            Only one signing certificate can have an active state; this is the one that is used for the signing.
+
+            '
+          enum:
+          - ACTIVE
+          - DEACTIVATED
+          example: ACTIVE
+        activatedAt:
+          type: string
+          description: 'The timestamp when the certificate became active.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21'
+        deactivatedAt:
+          type: string
+          description: 'The timestamp when the certificate was deactivated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-01-21'
+        activatedPeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivatedPeriod'
+        validFrom:
+          type: string
+          description: "  The timestamp when the certificate became valid.\n\n  **Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+          example: 2021-01-21'T'21:21:21.000Z
+        validTo:
+          type: string
+          description: "  The timestamp until the certificate is valid.\n\n  **Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+          example: 2024-01-21'T'21:21:21.000Z
+    SigningCertificateList:
+      type: object
+      properties:
+        signingCertificates:
+          type: array
+          description: A list of signing certificates.
+          items:
+            $ref: '#/components/schemas/SigningCertificate'
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

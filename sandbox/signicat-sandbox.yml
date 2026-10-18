@@ -1,0 +1,23 @@
+generated: '2026-10-18'
+method: searched
+source: https://developer.signicat.com/docs/dashboard/organisation-management/accounts.md
+description: Sandbox accounts for testing integrations with fake data
+docs: https://developer.signicat.com/docs/dashboard/organisation-management/accounts.md
+sandbox_accounts:
+  type: separate_sandbox_accounts
+  creation: Via Signicat Dashboard > Organisation > + Add account
+  purpose: Test integrations with any Signicat product using fake data
+  features:
+  - Separate environment from production
+  - No billing for transactions
+  - Test data only
+  - Email and SMS messages prepended with test warnings
+  - Required for testing before going live
+test_data:
+  - Fake data for testing
+  - No real transactions
+  - Test warnings on communications:
+    - Emails: Prepended with warning banner
+    - SMS: Prepended with "TEST SMS:"
+domains_required: true
+note: Sandbox accounts require associated domains for certain products. Must set up sandbox and production accounts separately.

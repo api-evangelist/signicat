@@ -1,0 +1,2370 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Signicat Secure Share API",
+    "version": "v1",
+    "description": "\n- **Base URL**: `https://api.signicat.com/secure-share/`\n- **Documentation**: See the [Secure Share](/docs/secure-share/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Secure Share API enables you to securely share files with other people in a programmatic way.\n\nYou can choose among different levels of security, ranging from weaker methods, such as One-Time Passwords (OTPs), to stronger methods, like using electronic IDs (eIDs).\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n\n# Get started\n\nBefore you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).\n\n## Audit logs\n\nUse the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.\n\n- Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)\n- For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.\n\n## Errors\n\nWhen you make an API call to Signicat and an error occurs, you will receive a response message with an error code.\n\n- For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.\n\n## Events (callback)\n\nUse the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.\n\n- Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)\n- For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.\n\n> **Note**: This is often referred to as callback.\n",
+    "contact": "",
+    "license": "",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "https://api.signicat.com/secure-share"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Shares",
+      "description": "Contains requests related to share objects"
+    },
+    {
+      "name": "Recipients",
+      "description": "Contains requests related to recipients"
+    },
+    {
+      "name": "Files",
+      "description": "Contains requests related to files"
+    }
+  ],
+  "paths": {
+    "/shares": {
+      "post": {
+        "tags": [
+          "Shares"
+        ],
+        "summary": "Create share",
+        "description": "Create a secure share to upload files into",
+        "operationId": "CreateShareEndpoint",
+        "requestBody": {
+          "x-name": "CreateShareDto",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShareDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "Share created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareResponseDto"
+                },
+                "example": {
+                  "id": "70a194c0-7611-4dd4-90e4-e152060b9e6d",
+                  "title": "Title of the share",
+                  "description": "Description of what this share contains",
+                  "externalReference": "25470687-d0b9-4659-8688-013ebf31065e",
+                  "usageReference": "c93d1b6a-3827-4eec-a454-e3fd2e809455",
+                  "recipients": [],
+                  "files": [],
+                  "expires": "2026-10-20T15:31:47.071875+00:00",
+                  "created": "2026-10-13T15:31:47.0792206+00:00",
+                  "contactDetails": {
+                    "email": "email@example.com",
+                    "name": "name",
+                    "mobile": null,
+                    "notificationOptions": null
+                  },
+                  "tags": [
+                    "custom-tag",
+                    "another-custom-tag"
+                  ],
+                  "requestDomain": "my-custom-domain",
+                  "completedRecipients": 0,
+                  "status": "Active",
+                  "providerPath": "secure-share"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Shares"
+        ],
+        "summary": "List shares",
+        "description": "List shares created by your account using filters",
+        "operationId": "ListSharesEndpoint",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Starting date for share create time",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "example": "2026-10-06T15:31:47.0951694+00:00"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Ending date for share create time",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "example": "2026-10-13T15:31:47.0952106+00:00"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of share to skip",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "example": 10
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of fetched shares",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "example": 50
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Supported fields: `title`, `created`, `expires`",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "example": null
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Keywords to search for in the share title",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "example": "important"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResultDtoOfShareResponseDto"
+                },
+                "example": {
+                  "limit": 50,
+                  "offset": 10,
+                  "count": 1,
+                  "total": 1,
+                  "data": [
+                    {
+                      "id": "8c2927f1-f340-4ff5-9a40-e2e9d4fc17ac",
+                      "title": "Title of the share",
+                      "description": "Description of the share",
+                      "externalReference": "b44f7dce-d336-4480-9477-7f7ac2d1d90c",
+                      "usageReference": "fffac269-9df1-4cf8-a24e-cdec26a01857",
+                      "recipients": [
+                        {
+                          "id": "21d59234-81ff-4092-b7c5-1c8e2205c694",
+                          "externalReference": "f278389e-bd47-4733-ba64-74b48974cd0b",
+                          "firstName": "John",
+                          "lastName": "Johnson",
+                          "email": "john.johnson@signicat.com",
+                          "mobile": "0777777777",
+                          "fileAccessInfos": [
+                            {
+                              "id": "a1e53c20-8870-4eb9-aec5-1545306b2dd8",
+                              "lastDownloadedAt": "2026-10-13T15:31:47.0955224+00:00"
+                            }
+                          ],
+                          "fileRestrictions": [
+                            "a1e53c20-8870-4eb9-aec5-1545306b2dd8"
+                          ],
+                          "authentication": [
+                            {
+                              "identityProvider": "otp-sms",
+                              "idpId": null,
+                              "nin": null
+                            },
+                            {
+                              "identityProvider": "otp-email",
+                              "idpId": null,
+                              "nin": null
+                            }
+                          ],
+                          "loggedInTime": "2026-10-13T15:26:47.095533+00:00",
+                          "url": null,
+                          "notification": {
+                            "sendEmail": true,
+                            "sendSms": true,
+                            "language": "En"
+                          }
+                        }
+                      ],
+                      "files": [
+                        {
+                          "id": "a1e53c20-8870-4eb9-aec5-1545306b2dd8",
+                          "name": "File1",
+                          "status": "Success",
+                          "size": 1234,
+                          "message": null
+                        },
+                        {
+                          "id": "e0c65d2b-fec5-45ca-af55-5b2d393f2472",
+                          "name": "File2",
+                          "status": "VirusFound",
+                          "size": 5023412,
+                          "message": "This file contains a malicious script"
+                        },
+                        {
+                          "id": "72f2cc80-24c2-4853-a0c9-eddb2df30ab6",
+                          "name": "File3",
+                          "status": "Failed",
+                          "size": 5678,
+                          "message": "Something went wrong uploading the file"
+                        },
+                        {
+                          "id": "173424b8-4a00-4918-9b75-50a306d55f7c",
+                          "name": "File4",
+                          "status": "Success",
+                          "size": 69420,
+                          "message": null
+                        }
+                      ],
+                      "expires": "2026-10-20T15:31:47.0955383+00:00",
+                      "created": "2026-10-13T15:31:47.0955385+00:00",
+                      "contactDetails": {
+                        "email": "email@example.com",
+                        "name": "John Musk",
+                        "mobile": null,
+                        "notificationOptions": null
+                      },
+                      "tags": [
+                        "custom-tag"
+                      ],
+                      "requestDomain": "my-custom-domain",
+                      "completedRecipients": 0,
+                      "status": "Active",
+                      "providerPath": "secure-share"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignicatValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}": {
+      "get": {
+        "tags": [
+          "Shares"
+        ],
+        "summary": "Get share",
+        "description": "Get a secure share object",
+        "operationId": "GetShareEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "fb3b90fc-0b90-4063-b7a8-b36218b4df5b"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareResponseDto"
+                },
+                "example": {
+                  "id": "84fbf8e1-853d-4fa5-89bc-c7f050a338a5",
+                  "title": "Title of the share",
+                  "description": "Description of the share",
+                  "externalReference": "70d0a4cf-af59-4732-8f3c-6b75c9712034",
+                  "usageReference": "247b8d6e-f243-4be6-9288-a2acf7b34d0e",
+                  "recipients": [
+                    {
+                      "id": "aa067628-13bf-41c9-a602-c994a77a568f",
+                      "externalReference": "35afe9a8-735e-4452-b8f7-e65af3cc57db",
+                      "firstName": "John",
+                      "lastName": "Johnson",
+                      "email": "john.johnson@signicat.com",
+                      "mobile": "0777777777",
+                      "fileAccessInfos": [
+                        {
+                          "id": "b8ed11f4-9554-4534-a406-53ed8cbde951",
+                          "lastDownloadedAt": "2026-10-13T15:31:47.0833227+00:00"
+                        }
+                      ],
+                      "fileRestrictions": [
+                        "b8ed11f4-9554-4534-a406-53ed8cbde951"
+                      ],
+                      "authentication": [
+                        {
+                          "identityProvider": "otp-sms",
+                          "idpId": null,
+                          "nin": null
+                        },
+                        {
+                          "identityProvider": "otp-email",
+                          "idpId": null,
+                          "nin": null
+                        }
+                      ],
+                      "loggedInTime": "2026-10-13T15:26:47.0906893+00:00",
+                      "url": null,
+                      "notification": {
+                        "sendEmail": true,
+                        "sendSms": true,
+                        "language": "En"
+                      }
+                    },
+                    {
+                      "id": "277870aa-588d-4b40-bea9-0eb8bc5e50e7",
+                      "externalReference": "b68c31c2-fa69-4de1-8f11-6580a91b6997",
+                      "firstName": "Mark",
+                      "lastName": "Markus",
+                      "email": "mark.markus@signicat.com",
+                      "mobile": "0771234567",
+                      "fileAccessInfos": [
+                        {
+                          "id": "b8ed11f4-9554-4534-a406-53ed8cbde951",
+                          "lastDownloadedAt": "2026-10-13T15:31:47.0908254+00:00"
+                        },
+                        {
+                          "id": "32de1f53-9e3e-42b1-8baa-40cfbfa0f8c1",
+                          "lastDownloadedAt": "2026-10-13T15:31:47.0911113+00:00"
+                        }
+                      ],
+                      "fileRestrictions": null,
+                      "authentication": [
+                        {
+                          "identityProvider": "nbid",
+                          "idpId": "1234-5678-7890",
+                          "nin": null
+                        },
+                        {
+                          "identityProvider": "mitid",
+                          "idpId": null,
+                          "nin": "12351246127"
+                        }
+                      ],
+                      "loggedInTime": "2026-10-13T15:26:47.0911198+00:00",
+                      "url": null,
+                      "notification": {
+                        "sendEmail": true,
+                        "sendSms": false,
+                        "language": "En"
+                      }
+                    }
+                  ],
+                  "files": [
+                    {
+                      "id": "b8ed11f4-9554-4534-a406-53ed8cbde951",
+                      "name": "File1",
+                      "status": "Success",
+                      "size": 1234,
+                      "message": null
+                    },
+                    {
+                      "id": "5e4b388c-0408-4bc9-9da2-e2db408915ea",
+                      "name": "File2",
+                      "status": "VirusFound",
+                      "size": 5023412,
+                      "message": "This file contains a malicious script"
+                    },
+                    {
+                      "id": "57b80b2a-81d6-480d-a2ff-2098f13e9b3b",
+                      "name": "File3",
+                      "status": "Failed",
+                      "size": 5678,
+                      "message": "Something went wrong uploading the file"
+                    },
+                    {
+                      "id": "32de1f53-9e3e-42b1-8baa-40cfbfa0f8c1",
+                      "name": "File4",
+                      "status": "Success",
+                      "size": 69420,
+                      "message": null
+                    }
+                  ],
+                  "expires": "2026-10-20T15:31:47.0911292+00:00",
+                  "created": "2026-10-13T15:31:47.0911296+00:00",
+                  "contactDetails": {
+                    "email": "email@example.com",
+                    "name": "John Musk",
+                    "mobile": null,
+                    "notificationOptions": null
+                  },
+                  "tags": [
+                    "custom-tag"
+                  ],
+                  "requestDomain": "my-custom-domain",
+                  "completedRecipients": 0,
+                  "status": "Active",
+                  "providerPath": "secure-share"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Share not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shares"
+        ],
+        "summary": "Delete share",
+        "description": "Remove a secure share with all the data in it (recipients/files)",
+        "operationId": "HardDeleteShareEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "efb57f5f-10e5-44aa-8d86-7c167e18ca9d"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Share deleted successfully"
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Share not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Shares"
+        ],
+        "summary": "Update share",
+        "description": "Update an existing share object",
+        "operationId": "Update share",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "79b73bb9-406e-4610-b71c-8ce4b85138ea"
+          }
+        ],
+        "requestBody": {
+          "x-name": "UpdateShareDto",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShareDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "Share updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareResponseDto"
+                },
+                "example": {
+                  "id": "3bc51528-c289-4f97-a725-2bb895e5c927",
+                  "title": "Title of the share",
+                  "description": "Description of what this share contains",
+                  "externalReference": "2c15730c-8342-41de-af45-5eddca224f90",
+                  "usageReference": "761df435-21a7-4afb-9669-9e46c394884f",
+                  "recipients": [],
+                  "files": [],
+                  "expires": "2026-10-13T15:31:47.0974166+00:00",
+                  "created": "2026-10-06T15:31:47.0974166+00:00",
+                  "contactDetails": {
+                    "email": "email@example.com",
+                    "name": "name",
+                    "mobile": null,
+                    "notificationOptions": null
+                  },
+                  "tags": [],
+                  "requestDomain": null,
+                  "completedRecipients": 0,
+                  "status": "Active",
+                  "providerPath": "secure-share"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}/recipients": {
+      "post": {
+        "tags": [
+          "Recipients"
+        ],
+        "summary": "Create recipient",
+        "description": "Create a recipient and add it to an existing share",
+        "operationId": "CreateRecipientEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "The identifier of the share this recipient belongs to",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "ad50fe53-e4a4-46e1-9f55-af81abc18521"
+          }
+        ],
+        "requestBody": {
+          "x-name": "CreateRecipientDto",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRecipientDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "Recipient created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipientDto"
+                },
+                "example": {
+                  "id": "597e005f-84df-42fd-8160-1a2989483d8f",
+                  "externalReference": "174d675c-cfc5-4251-89b9-b5398b46aa8b",
+                  "firstName": "John",
+                  "lastName": "Johnson",
+                  "email": "john.johnson@signicat.com",
+                  "mobile": "0777777777",
+                  "fileAccessInfos": [
+                    {
+                      "id": "9ecef354-a2e2-43ba-89fc-bb83d699ff65",
+                      "lastDownloadedAt": "2026-10-13T15:31:47.10028+00:00"
+                    }
+                  ],
+                  "fileRestrictions": [
+                    "9ecef354-a2e2-43ba-89fc-bb83d699ff65"
+                  ],
+                  "authentication": [
+                    {
+                      "identityProvider": "otp-sms",
+                      "idpId": null,
+                      "nin": null
+                    },
+                    {
+                      "identityProvider": "otp-email",
+                      "idpId": null,
+                      "nin": null
+                    }
+                  ],
+                  "loggedInTime": "2026-10-13T15:26:47.1002853+00:00",
+                  "url": null,
+                  "notification": {
+                    "sendEmail": true,
+                    "sendSms": true,
+                    "language": "En"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Share not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}/recipients/{recipientId}": {
+      "delete": {
+        "tags": [
+          "Recipients"
+        ],
+        "summary": "Delete recipient",
+        "description": "Remove a recipient from an existing share",
+        "operationId": "DeleteRecipientEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "3a852790-e854-4549-a86b-18d7e133d7be"
+          },
+          {
+            "name": "recipientId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Recipient identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "0cf3193a-39d9-4b21-b197-278612886771"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Recipient deleted successfully"
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipient not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Recipients"
+        ],
+        "summary": "Get recipient",
+        "description": "Get a recipient from an existing share",
+        "operationId": "GetRecipientEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "f6c11770-9326-4335-83cc-4bb08c0c5c2c"
+          },
+          {
+            "name": "recipientId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Recipient identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "b75b0146-ae2b-4b50-931f-4fa1112e2773"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipientDto"
+                },
+                "example": {
+                  "id": "f069c9f1-0365-491e-bca7-beea8f265651",
+                  "externalReference": "249fa90d-2f92-40dd-9d55-5218404eef59",
+                  "firstName": "John",
+                  "lastName": "Johnson",
+                  "email": "john.johnson@signicat.com",
+                  "mobile": "0777777777",
+                  "fileAccessInfos": [
+                    {
+                      "id": "ff1fb749-5113-4334-b34b-66af51096262",
+                      "lastDownloadedAt": "2026-10-13T15:31:47.1018858+00:00"
+                    }
+                  ],
+                  "fileRestrictions": [
+                    "ff1fb749-5113-4334-b34b-66af51096262"
+                  ],
+                  "authentication": [
+                    {
+                      "identityProvider": "otp-sms",
+                      "idpId": null,
+                      "nin": null
+                    },
+                    {
+                      "identityProvider": "otp-email",
+                      "idpId": null,
+                      "nin": null
+                    }
+                  ],
+                  "loggedInTime": "2026-10-13T15:26:47.1018913+00:00",
+                  "url": null,
+                  "notification": {
+                    "sendEmail": true,
+                    "sendSms": true,
+                    "language": "En"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipient not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Recipients"
+        ],
+        "summary": "Update recipient",
+        "description": "Update a recipient from an existing share",
+        "operationId": "UpdateRecipientEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "The identifier of the share this recipient belongs to",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "04815b4b-173f-4ef4-a855-f69d88cac87c"
+          },
+          {
+            "name": "recipientId",
+            "in": "path",
+            "required": true,
+            "description": "Unique recipient identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "9b35df3b-5683-4581-91e1-117e498c44a3"
+          }
+        ],
+        "requestBody": {
+          "x-name": "UpdateRecipientDto",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRecipientDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "Share updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipientDto"
+                },
+                "example": {
+                  "id": "c91c1388-a238-49a8-9429-4eebeb4c5998",
+                  "externalReference": "0f5b3473-86f2-4536-9818-6653b95e0710",
+                  "firstName": "John",
+                  "lastName": "Johnson",
+                  "email": "john.johnson@signicat.com",
+                  "mobile": "0777777777",
+                  "fileAccessInfos": [],
+                  "fileRestrictions": [],
+                  "authentication": [
+                    {
+                      "identityProvider": "sbid",
+                      "idpId": "5678-1234-3456",
+                      "nin": "10234567893"
+                    }
+                  ],
+                  "loggedInTime": "2026-10-13T15:26:47.1088365+00:00",
+                  "url": null,
+                  "notification": {
+                    "sendEmail": true,
+                    "sendSms": true,
+                    "language": "En"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}/recipients/{recipientId}/reminder": {
+      "get": {
+        "tags": [
+          "Recipients"
+        ],
+        "summary": "Remind recipient",
+        "description": "Send a reminder notification to a specific recipient",
+        "operationId": "ReminderNotificationEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "b190e4d5-e5c2-4f8e-a818-b80412dc5670"
+          },
+          {
+            "name": "recipientId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Recipient identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "2f03883b-3cbd-42ea-bb65-dcf63bf91a7e"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Recipient deleted successfully"
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipient not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}/files/{fileId}": {
+      "delete": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Delete file",
+        "description": "Remove a file from the storage",
+        "operationId": "DeleteFileEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "0c1f0a82-1d41-4c0c-8bd0-bd001022fd77"
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "description": "Unique File identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "ebbbf528-ff21-4c52-b202-5b877e0c3a27"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File deleted successfully"
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shares/{shareId}/files": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Upload file",
+        "description": "Upload a file(s) using multipart/form-data request body",
+        "operationId": "UploadFileEndpoint",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "description": "Unique Share identifier",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "example": "fbc60918-ed66-4636-bcc4-515d19b79262"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UploadFileDto"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "205cbf11-74dd-4028-a66f-21ebfb024e2f",
+                    "name": "File1",
+                    "status": "Success",
+                    "size": 1234,
+                    "message": null
+                  },
+                  {
+                    "id": "5ef88825-d19e-4a14-a805-c7941e101dc3",
+                    "name": "File2",
+                    "status": "VirusFound",
+                    "size": 5023412,
+                    "message": "This file contains a malicious script"
+                  },
+                  {
+                    "id": "bdea50b9-3c8d-483d-b824-0038eab22ab2",
+                    "name": "File3",
+                    "status": "Failed",
+                    "size": 5678,
+                    "message": "Something went wrong uploading the file"
+                  },
+                  {
+                    "id": "ad89697b-47b0-45c6-a057-0f7a8c9fbce8",
+                    "name": "File4",
+                    "status": "Success",
+                    "size": 69420,
+                    "message": null
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Share not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "example": {
+                  "type": null,
+                  "title": null,
+                  "status": null,
+                  "detail": null,
+                  "instance": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ShareResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contactDetails",
+          "providerPath"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "usageReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "recipients": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RecipientDto"
+            }
+          },
+          "files": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UploadFileDto"
+            }
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contactDetails": {
+            "$ref": "#/components/schemas/ContactDetailsDto"
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "requestDomain": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedRecipients": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ShareStatus"
+          },
+          "providerPath": {
+            "type": "string"
+          }
+        }
+      },
+      "RecipientDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileAccessInfos": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FileAccessInfosDto"
+            }
+          },
+          "fileRestrictions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
+          "authentication": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/AuthenticationDto"
+            }
+          },
+          "loggedInTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "notification": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NotificationDto"
+              }
+            ]
+          }
+        }
+      },
+      "FileAccessInfosDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "lastDownloadedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "AuthenticationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "identityProvider": {
+            "type": "string"
+          },
+          "idpId": {
+            "type": "string",
+            "nullable": true
+          },
+          "nin": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "NotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sendEmail": {
+            "type": "boolean"
+          },
+          "sendSms": {
+            "type": "boolean"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          }
+        }
+      },
+      "Language": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "En",
+          "No",
+          "Fi",
+          "De",
+          "Fr",
+          "Nl",
+          "Da",
+          "Sv"
+        ],
+        "enum": [
+          "En",
+          "No",
+          "Fi",
+          "De",
+          "Fr",
+          "Nl",
+          "Da",
+          "Sv"
+        ]
+      },
+      "UploadFileDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FileStatus"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FileStatus": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Pending",
+          "UploadedToQuarantine",
+          "Scanning",
+          "Success",
+          "Failed",
+          "VirusFound",
+          "Skipped"
+        ],
+        "enum": [
+          "Pending",
+          "UploadedToQuarantine",
+          "Scanning",
+          "Success",
+          "Failed",
+          "VirusFound",
+          "Skipped"
+        ]
+      },
+      "ContactDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "pattern": "^[^@]+@[^@]+$",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "notificationOptions": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SenderNotificationDto"
+              }
+            ]
+          }
+        }
+      },
+      "SenderNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sendEmail": {
+            "type": "boolean"
+          },
+          "sendSms": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ShareStatus": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Active",
+          "Expired",
+          "Completed",
+          "Empty"
+        ],
+        "enum": [
+          "Active",
+          "Expired",
+          "Completed",
+          "Empty"
+        ]
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateShareDto": {
+        "type": "object",
+        "example": {
+          "title": "Title of the share",
+          "description": "Description of what this share contains",
+          "externalReference": "25470687-d0b9-4659-8688-013ebf31065e",
+          "usageReference": "c93d1b6a-3827-4eec-a454-e3fd2e809455",
+          "recipients": [],
+          "contactDetails": {
+            "email": "email@example.com",
+            "name": "name",
+            "mobile": null,
+            "notificationOptions": null
+          },
+          "tags": [
+            "custom-tag",
+            "another-custom-tag"
+          ],
+          "expires": "2026-10-20T15:31:47.071875+00:00",
+          "requestDomain": "my-custom-domain"
+        },
+        "additionalProperties": false,
+        "required": [
+          "contactDetails"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the share",
+            "nullable": true,
+            "example": "Title of the share"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what this share contains",
+            "nullable": true,
+            "example": "Description of what this share contains"
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Create a reference to your own system, this value is also used for binding billing events",
+            "nullable": true,
+            "example": "25470687-d0b9-4659-8688-013ebf31065e"
+          },
+          "usageReference": {
+            "type": "string",
+            "nullable": true,
+            "example": "c93d1b6a-3827-4eec-a454-e3fd2e809455"
+          },
+          "recipients": {
+            "type": "array",
+            "description": "A list of recipients for this share, we recommend to add them later after you add the files",
+            "example": [],
+            "items": {
+              "$ref": "#/components/schemas/CreateShareRecipientDto"
+            }
+          },
+          "contactDetails": {
+            "description": "Sender contact details that the recipients can see after they authenticate",
+            "nullable": false,
+            "example": {
+              "email": "email@example.com",
+              "name": "name",
+              "mobile": null,
+              "notificationOptions": null
+            },
+            "$ref": "#/components/schemas/ContactDetailsDto"
+          },
+          "tags": {
+            "type": "array",
+            "description": "Keywords you can use for filtering your shares",
+            "nullable": true,
+            "example": [
+              "custom-tag",
+              "another-custom-tag"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "expires": {
+            "type": "string",
+            "description": "Expire date for this share, after that you and your recipients can't access the share anymore",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-20T15:31:47.071875+00:00"
+          },
+          "requestDomain": {
+            "type": "string",
+            "description": "This specifies the domain you want to use for this specific session. The domain will be visible in the end-user's browser. This domain needs to be correctly configured on your account!",
+            "nullable": true,
+            "example": "my-custom-domain"
+          }
+        }
+      },
+      "CreateShareRecipientDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "authentication"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^[^@]+@[^@]+$",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "authentication": {
+            "type": "array",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "$ref": "#/components/schemas/AuthenticationDto"
+            }
+          },
+          "notification": {
+            "$ref": "#/components/schemas/NotificationDto"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "GetShareRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "HardDeleteShareRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "PaginatedResultDtoOfShareResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ShareResponseDto"
+            }
+          }
+        }
+      },
+      "SignicatValidationProblemDetails": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "invalidParams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvalidParam"
+            }
+          }
+        }
+      },
+      "InvalidParam": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "reason"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "ListQueryDto": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "UpdateShareDto": {
+        "type": "object",
+        "example": {
+          "title": "Title of the share",
+          "description": "Description of what this share contains",
+          "contactDetails": {
+            "email": "email@example.com",
+            "name": "name",
+            "mobile": null,
+            "notificationOptions": null
+          },
+          "expires": "2026-10-13T15:31:47.0974166+00:00"
+        },
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the share",
+            "nullable": true,
+            "example": "Title of the share"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what this share contains",
+            "nullable": true,
+            "example": "Description of what this share contains"
+          },
+          "contactDetails": {
+            "nullable": true,
+            "example": {
+              "email": "email@example.com",
+              "name": "name",
+              "mobile": null,
+              "notificationOptions": null
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateContactDetailsDto"
+              }
+            ]
+          },
+          "expires": {
+            "type": "string",
+            "description": "Expire date for this share, after that you and your recipients can't access the share anymore",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-13T15:31:47.0974166+00:00"
+          }
+        }
+      },
+      "UpdateContactDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^[^@]+@[^@]+$",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "notificationOptions": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SenderNotificationDto"
+              }
+            ]
+          }
+        }
+      },
+      "CreateRecipientDto": {
+        "type": "object",
+        "example": {
+          "firstName": "John",
+          "lastName": "Johnson",
+          "email": "john.johnson@signicat.com",
+          "mobile": "+4771234567",
+          "fileRestrictions": [],
+          "authentication": [
+            {
+              "identityProvider": "nbid",
+              "idpId": "1234-3456-5678",
+              "nin": "12345678901"
+            }
+          ],
+          "notification": {
+            "sendEmail": true,
+            "sendSms": true,
+            "language": "En"
+          },
+          "externalReference": "f42a0230-bfa9-4021-8c9a-54ae832f981c"
+        },
+        "additionalProperties": false,
+        "required": [
+          "authentication"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Recipient first name",
+            "nullable": true,
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Recipient last name",
+            "nullable": true,
+            "example": "Johnson"
+          },
+          "email": {
+            "type": "string",
+            "description": "Recipient email. Email is required if mobile is not provided or if it used by authentications or notifications",
+            "format": "email",
+            "pattern": "^[^@]+@[^@]+$",
+            "nullable": true,
+            "example": "john.johnson@signicat.com"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Recipient mobile. Mobile is required if email is not provided or if it used by authentications or notifications",
+            "nullable": true,
+            "example": "+4771234567"
+          },
+          "fileRestrictions": {
+            "type": "array",
+            "description": "A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share",
+            "nullable": true,
+            "example": [],
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
+          "authentication": {
+            "type": "array",
+            "description": "List of authentication methods for a recipient",
+            "minLength": 1,
+            "nullable": false,
+            "example": [
+              {
+                "identityProvider": "nbid",
+                "idpId": "1234-3456-5678",
+                "nin": "12345678901"
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AuthenticationDto"
+            }
+          },
+          "notification": {
+            "description": "Recipient notification setup",
+            "nullable": true,
+            "example": {
+              "sendEmail": true,
+              "sendSms": true,
+              "language": "En"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NotificationDto"
+              }
+            ]
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Create a reference to your own system",
+            "nullable": true,
+            "example": "f42a0230-bfa9-4021-8c9a-54ae832f981c"
+          }
+        }
+      },
+      "DeleteRecipientRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "GetRecipientRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "ReminderNotificationRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "UpdateRecipientDto": {
+        "type": "object",
+        "example": {
+          "firstName": "John",
+          "lastName": "Johnson",
+          "email": "john.johnson@signicat.com",
+          "mobile": "+4771234567",
+          "externalReference": "5ec14035-18c6-4c94-ac3a-6678c821a5f1",
+          "fileRestrictions": [],
+          "authentication": [
+            {
+              "identityProvider": "sbid",
+              "idpId": "5678-1234-3456",
+              "nin": "10234567893"
+            }
+          ],
+          "notification": {
+            "sendEmail": true,
+            "sensSms": true,
+            "language": null
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Recipient first name",
+            "nullable": true,
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Recipient last name",
+            "nullable": true,
+            "example": "Johnson"
+          },
+          "email": {
+            "type": "string",
+            "description": "Recipient email",
+            "format": "email",
+            "pattern": "^[^@]+@[^@]+$",
+            "nullable": true,
+            "example": "john.johnson@signicat.com"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Recipient mobile",
+            "nullable": true,
+            "example": "+4771234567"
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Create a reference to your own system",
+            "nullable": true,
+            "example": "5ec14035-18c6-4c94-ac3a-6678c821a5f1"
+          },
+          "fileRestrictions": {
+            "type": "array",
+            "description": "A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share",
+            "nullable": true,
+            "example": [],
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
+          "authentication": {
+            "type": "array",
+            "description": "List of authentication methods for a recipient",
+            "nullable": true,
+            "example": [
+              {
+                "identityProvider": "sbid",
+                "idpId": "5678-1234-3456",
+                "nin": "10234567893"
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AuthenticationDto"
+            }
+          },
+          "notification": {
+            "description": "Recipient notification setup",
+            "nullable": true,
+            "example": {
+              "sendEmail": true,
+              "sensSms": true,
+              "language": null
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateNotificationDto"
+              }
+            ]
+          }
+        }
+      },
+      "UpdateNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sendEmail": {
+            "type": "boolean"
+          },
+          "sensSms": {
+            "type": "boolean"
+          },
+          "language": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteFileRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "UploadFileRequest": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "JWTBearerAuth": {
+        "type": "http",
+        "description": "Enter a JWT token to authorize the requests...",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))"
+}

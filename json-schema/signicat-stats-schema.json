@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-stats-schema.json",
+  "title": "Stats",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-digital-evidence-management-openapi.yml#/components/schemas/Stats",
+  "type": "object",
+  "properties": {
+    "collectionSize": {
+      "type": "string"
+    },
+    "avgRecordSize": {
+      "type": "string"
+    },
+    "totalRecords": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "totalRecordsByType": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

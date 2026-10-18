@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  title: Signicat Archive Direct API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Archive Direct across 2 of this provider''s published API definitions: archive-openapi.json, signicat-archive-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /
+  description: ''
+security:
+- JWT: []
+tags:
+- name: Archive Direct
+paths:
+  /archive/direct:
+    post:
+      operationId: api_archivedirect_post
+      tags:
+      - Archive Direct
+      responses:
+        '201':
+          description: Archive Direct resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+          links: {}
+        '400':
+          description: Invalid input
+        '422':
+          description: Unprocessable entity
+      summary: Creates Archive resource with direct file upload
+      description: Creates a Archive Direct resource.
+      parameters:
+      - name: signicat-archive-retention-period
+        in: header
+        description: "The duration for which the archive object should be retained, specified in ISO 8601\n                    duration format"
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: P1Y
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: signicat-archive-tags
+        in: header
+        description: "A comma-separated list of tags associated with the archive object for categorization\n                    or search purposes."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          nullable: true
+          example: assure, dossier
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: signicat-archive-keywords
+        in: header
+        description: "JSON formatted string for storing additional information regarding\n                    the archive object."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          nullable: true
+          example: '{"color": "blue", "size": "M"}'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-disposition
+        in: header
+        description: "The Content-Disposition header specifying how the content should be handled.\n                    Mapped to the object field File.Name. Format should be: attachment; filename=\"filename.ext\""
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: attachment; filename="filename.ext"
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-digest
+        in: header
+        description: "The Content-Digest header contains a SHA-256 hash of the content, used to verify its\n                    integrity and ensure that the data has not been tampered with during transmission.\n                    The hash value must be encoded in base64 format."
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: 'sha-256=:base64-value:'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-type
+        in: header
+        description: The MIME type of the file being uploaded.
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: application/pdf
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: Upload a binary file (e.g., image, document).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+          application/ld+json:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct.jsonld'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+        required: true
+      deprecated: false
+    servers:
+    - url: /
+      description: ''
+components:
+  schemas:
+    Archive.Direct.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+    Archive.Direct:
+      type: object
+      description: ''
+      deprecated: false
+  securitySchemes:
+    JWT:
+      type: apiKey
+      description: Value for the Authorization header parameter.
+      name: Authorization
+      in: header
+x-refined-from:
+- archive-openapi.json
+- signicat-archive-openapi.yml

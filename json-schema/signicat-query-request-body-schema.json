@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-query-request-body-schema.json",
+  "title": "QueryRequestBody",
+  "description": "An object containing up to three lists of <code>QueryCondition</code> objects. Each list represents a logic operator used to bind the <code>QueryCondition</code> objects into a statement. <br>The <code>'and'</code> list executes the QueryCondition objects with a logical AND operator, all conditions must be met. <br> The <code>'or'</code> list executes the QueryCondition objects with a logical OR operator, at least one of the conditions must be met. <br> The <code>'not'</code> list is currently not in use, but it will in the future execute the QueryCondition objects with a logical NOR operator.",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-digital-evidence-management-openapi.yml#/components/schemas/QueryRequestBody",
+  "type": "object",
+  "properties": {
+    "and": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QueryCondition"
+      }
+    },
+    "or": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QueryCondition"
+      }
+    },
+    "not": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QueryCondition"
+      }
+    }
+  },
+  "$defs": {
+    "QueryCondition": {
+      "type": "object",
+      "default": "##default",
+      "description": "Object describing a condition for a search. <br> It consists of three fields: ",
+      "properties": {
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {}
+      },
+      "required": [
+        "field",
+        "operator",
+        "value"
+      ]
+    }
+  }
+}

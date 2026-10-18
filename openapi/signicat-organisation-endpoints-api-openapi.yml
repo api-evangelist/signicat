@@ -1,0 +1,1158 @@
+openapi: 3.2.0
+info:
+  title: Signicat Organisation Endpoints API
+  version: ''
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged Organisation Endpoints across 2 of this provider''s published API definitions: ongoing-monitoring-openapi.json, signicat-ongoing-monitoring-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/
+tags:
+- name: Organisation Endpoints
+paths:
+  /info/monitor/{monitorId}/organisations/{referenceKey}:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Retrieves the most recent state of an organisation
+      description: This endpoint allows to get the organisation last snapshot by monitor id and reference key from the system.
+      operationId: GetLatestOrganizationSnapshot
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganisationDataDto'
+              example:
+                country: NOR
+                name: Organisation Name
+                added: '2026-10-15T14:12:59.0778992Z'
+                lastUpdate: '2026-10-16T14:12:59.0778999Z'
+                organisationNumber: '12345678'
+                operationalStatus: Active
+                externalId: 1454-15
+                alias: Organisation Alias
+                legalForm: Other
+                vatNumber: '12345678'
+                email: example@example.pt
+                registrationDate: '2026-10-15T14:12:59.0778999Z'
+                phone:
+                  number: '12345678'
+                  region: NOR
+                addresses:
+                - type: Registered
+                  country: NOR
+                  postCode: postcode
+                  postPlace: postplace
+                  street: Street
+                  addressLine: null
+                  startDate: '2026-10-15T14:12:59.0779021Z'
+                  endDate: '2026-10-17T14:12:59.077902Z'
+                industries:
+                - naceCode: '64.19'
+                  description: Other monetary intermediation
+                  section: L
+                  level: 4
+                names:
+                - name: Organisation Name
+                  type: Business
+                  startDate: '2026-10-15T14:12:59.0779033Z'
+                  endDate: '2026-10-17T14:12:59.0779033Z'
+                - name: Organisation Name
+                  type: Registered
+                  startDate: '2026-10-15T14:12:59.0779035Z'
+                  endDate: '2026-10-17T14:12:59.0779034Z'
+                countryAffiliationsList:
+                - countryCode: SWE
+                  affiliation: Jurisdiction
+                screening:
+                  matchStrength: 100
+                  listType: SANCTION
+                  source: EU_GLOBAL
+                  externalUrls: []
+                finance:
+                  creditRating:
+                    description: description
+                    score: '10'
+                    scoringSystem: System
+                    url: example.com
+                    year: 2025
+                  financials:
+                  - currency: EUR
+                    grossProfit: 12
+                    netProfit: 13
+                    netProfitAfterTax: 18
+                    turnover: 1
+                    year: 2024
+                  - currency: EUR
+                    grossProfit: 30.02
+                    netProfit: 31.902
+                    netProfitAfterTax: 32.98
+                    turnover: 2
+                    year: 2023
+                  paymentRemarkInfo:
+                    numberOfRemarks: 1
+                roles:
+                  companies:
+                  - name: Company
+                    roles:
+                    - roleCategory: Auditor
+                      description: description
+                      startDate: '2026-10-15T14:12:59.077909Z'
+                      endDate: '2026-10-17T14:12:59.0779089Z'
+                    organisationNumber: '12345678'
+                  persons:
+                  - address:
+                      type: Unknown
+                      country: NOR
+                      postCode: postcode
+                      postPlace: postplace
+                      street: Street
+                      addressLine: null
+                      startDate: null
+                      endDate: null
+                    dateOfBirth: '1986-10-16'
+                    identityNumber:
+                      country: NOR
+                      number: '12345'
+                      type: National
+                    name:
+                      first: first
+                      middle: middle
+                      last: last
+                      full: first middle last
+                    nationality: NOR
+                    roles:
+                    - roleCategory: Ceo
+                      description: description
+                      startDate: '2026-10-15T14:12:59.0779107Z'
+                      endDate: '2026-10-17T14:12:59.0779107Z'
+                  others:
+                  - id: '123'
+                    name: other
+                    roles:
+                    - roleCategory: Auditor
+                      description: description
+                      startDate: '2026-10-15T14:12:59.0779097Z'
+                      endDate: '2026-10-17T14:12:59.0779097Z'
+                sourceSpecific: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - Organisation Endpoints
+      summary: Delete organisation associated to a monitor
+      description: This endpoint allows to delete the organisation from the system in one specific monitor.
+      operationId: DeleteOrganization
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOperationResponse'
+              example:
+                status: 200
+                message: Entity with reference key spar01 is in the process of being delete
+                monitorId: 019e8cc8-bb2c-7f4d-fae0-1eaf7aaa0cc9
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+  /info/monitor/{monitorId}/organisations/{referenceKey}/changes:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Get organisation changes by monitor and reference key
+      description: 'This endpoint is deprecated and will be removed in a future version.
+
+        Use ''info/monitor//changes?referenceKey='' instead.'
+      operationId: GetOrganizationChanges
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: c2649887-b4ab-4952-a6b7-ddd29cf278a8
+                  detected: '2026-10-16T14:12:59.0804944Z'
+                  created: '2026-10-15T20:12:59.0804945Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      deprecated: true
+    servers:
+    - url: https://api.signicat.com/
+  /info/monitor/{monitorId}/organisations/changes:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Get organisation changes from monitor
+      description: 'This endpoint is deprecated and will be removed in a future version.
+
+        Use ''info/monitor//changes'' instead.'
+      operationId: GetOrganizationChangesByMonitorId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: 59957855-2df6-4389-ac3a-a9a24ed56590
+                  detected: '2026-10-16T14:12:59.0817132Z'
+                  created: '2026-10-15T20:12:59.0817134Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      deprecated: true
+    servers:
+    - url: https://api.signicat.com/
+  /info/monitor/{monitorId}/organisations:
+    post:
+      tags:
+      - Organisation Endpoints
+      summary: Add organisation
+      description: This endpoint allows the creation of a new organisation to monitor in the system.
+      operationId: AddOrganization
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: List of organisations to be added to monitor.
+        content:
+          application/json:
+            schema:
+              maxItems: 10000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/OrganisationRequestDto'
+            example:
+            - organisationNumber: '23432342'
+              source: Trapets
+              country: NOR
+              companyName: Signicat
+              referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+              externalId: NOR-23432342
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+components:
+  schemas:
+    Industry:
+      type: object
+      properties:
+        naceCode:
+          type:
+          - string
+          - 'null'
+          description: NACE code associated with the industry.
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Description of the industry.
+
+            The description provides a textual representation or details about the specific industry.'
+        section:
+          type:
+          - string
+          - 'null'
+          description: 'Section of the industry classification.
+
+            The section represents a higher-level categorization of economic activities,
+
+            typically grouping industries into broader segments or divisions.'
+        level:
+          type:
+          - integer
+          - 'null'
+          description: 'Hierarchical level of the industry.
+
+            This value indicates the depth or position of the industry
+
+            within a structured classification framework.'
+          format: int32
+      additionalProperties: false
+    PersonRole:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Represents the date of birth of the person associated with the role.
+        identityNumber:
+          $ref: '#/components/schemas/IdNumber'
+        name:
+          $ref: '#/components/schemas/PersonName'
+        nationality:
+          type:
+          - string
+          - 'null'
+          description: Represents the nationality of the person associated with the role.
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Represents the collection of roles associated with the person.
+      additionalProperties: false
+    OrganisationDataDto:
+      type: object
+      properties:
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country associated with the organisation.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the organisation.
+        added:
+          type:
+          - string
+          - 'null'
+          description: Date and time when the organisation data was added.
+          format: date-time
+        lastUpdate:
+          type:
+          - string
+          - 'null'
+          description: Date and time of the last update for the organisation data.
+          format: date-time
+        organisationNumber:
+          type:
+          - string
+          - 'null'
+          description: Unique identification number associated with the organisation.
+        operationalStatus:
+          type:
+          - string
+          - 'null'
+          description: Operational status of the organisation.
+        externalId:
+          type:
+          - string
+          - 'null'
+          description: External identifier associated with the organisation.
+        alias:
+          type:
+          - string
+          - 'null'
+          description: Alias associated with the organisation.
+        legalForm:
+          type:
+          - string
+          - 'null'
+          description: Legal form of the organisation, representing its structure or type.
+        vatNumber:
+          type:
+          - string
+          - 'null'
+          description: VAT number of the organisation.
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address associated with the organisation.
+        registrationDate:
+          type:
+          - string
+          - 'null'
+          description: Date when the organisation was registered.
+          format: date-time
+        phone:
+          $ref: '#/components/schemas/Phone'
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Address'
+          description: Collection of addresses associated with the organisation.
+        industries:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Industry'
+          description: List of industries associated with the organisation.
+        names:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrganisationName'
+          description: Collection of names associated with the organisation.
+        countryAffiliationsList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CountryAffiliations'
+          description: List of country affiliations associated with the organisation.
+        screening:
+          $ref: '#/components/schemas/RiskScreening'
+        finance:
+          $ref: '#/components/schemas/FinancialInfo'
+        roles:
+          $ref: '#/components/schemas/RolesInfo'
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: 'Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.
+
+            A source is omitted entirely when it has no source-specific data.'
+      additionalProperties: false
+    MonitorChangesDtoPagedCollection:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: Total number of items in the collection.
+          format: int32
+        nextCursor:
+          type:
+          - integer
+          - 'null'
+          description: Cursor that points to the start of the next page in a paginated collection.
+          format: int32
+        limit:
+          type: integer
+          description: Maximum number of items that can be returned in the collection.
+          format: int32
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MonitorChangesDto'
+          description: Collection of items.
+      additionalProperties: false
+    PersonName:
+      type: object
+      properties:
+        first:
+          type:
+          - string
+          - 'null'
+          description: First name of a person.
+        middle:
+          type:
+          - string
+          - 'null'
+          description: Middle name of a person.
+        last:
+          type:
+          - string
+          - 'null'
+          description: Last name of a person.
+        full:
+          type:
+          - string
+          - 'null'
+          description: Full name of a person.
+      additionalProperties: false
+    FinancialInfo:
+      type: object
+      properties:
+        creditRating:
+          $ref: '#/components/schemas/CreditRating'
+        financials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Financial'
+          description: 'Represents a collection of financial records.
+
+            Provides detailed financial information associated with an entity or organization.'
+        paymentRemarkInfo:
+          $ref: '#/components/schemas/PaymentRemarkInfo'
+      additionalProperties: false
+    Financial:
+      type: object
+      properties:
+        currency:
+          type:
+          - string
+          - 'null'
+          description: Currency representation associated with financial data.
+        grossProfit:
+          type:
+          - number
+          - 'null'
+          description: Gross profit value, representing the total revenue minus the cost of goods sold (COGS).
+          format: double
+        netProfit:
+          type:
+          - number
+          - 'null'
+          description: Net-profit value derived from financial calculations.
+          format: double
+        netProfitAfterTax:
+          type:
+          - number
+          - 'null'
+          description: Net profit of a financial entity after accounting for taxes.
+          format: double
+        turnover:
+          type:
+          - number
+          - 'null'
+          description: Turnover value associated with financial performance.
+          format: double
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Year associated with financial data.
+          format: int32
+      additionalProperties: false
+    ApiOperationResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Represents the status of the operation, typically corresponding to an HTTP status code.
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+          description: Provides a descriptive message related to the outcome of the API operation.
+        monitorId:
+          type:
+          - string
+          - 'null'
+          description: Represents the unique identifier of a monitor resource.
+          format: uuid
+      additionalProperties: false
+    CreditRating:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the credit rating.
+        score:
+          type:
+          - string
+          - 'null'
+          description: Score of the credit rating.
+        scoringSystem:
+          type:
+          - string
+          - 'null'
+          description: Scoring system used for determining credit ratings.
+        url:
+          type:
+          - string
+          - 'null'
+          description: URL associated with the credit rating.
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Year associated with the credit rating.
+          format: int32
+      additionalProperties: false
+    MonitorChangesDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the monitor changes.
+          format: int32
+        referenceKey:
+          type:
+          - string
+          - 'null'
+          description: Reference key associated with the entity.
+        monitorId:
+          type: string
+          description: Unique identifier associated with a monitor.
+          format: uuid
+        detected:
+          type: string
+          description: Date and time when the changes were detected at the source.
+          format: date-time
+        created:
+          type: string
+          description: Timestamp indicating when the monitor changes were created in our system.
+          format: date-time
+        changes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangesDto'
+          description: List of changes associated with the monitor.
+        source:
+          type:
+          - string
+          - 'null'
+          description: Name of the source that produced this batch of changes.
+      additionalProperties: false
+    OrganisationRequestDto:
+      required:
+      - organisationNumber
+      - referenceKey
+      - source
+      type: object
+      properties:
+        organisationNumber:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the unique identification number of an organisation.
+        source:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the source of the organisation information.
+        country:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Represents the country associated with the organisation.
+        companyName:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Represents the name of the company associated with the organisation.
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the unique key that identifies a specific reference for an organisation.
+        externalId:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Represents an optional external identifier for an organisation.
+      additionalProperties: false
+    CompanyRole:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name associated with the company role.
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Collection of roles associated with the company.
+        organisationNumber:
+          type:
+          - string
+          - 'null'
+          description: Organisation number associated with the company role.
+      additionalProperties: false
+    RoleInfo:
+      type: object
+      properties:
+        roleCategory:
+          type:
+          - string
+          - 'null'
+          description: Represents the category or classification associated with a role.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Provides additional information or details about a specific role.
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Represents the date on which a specific role becomes effective or begins.
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: Specifies the date and time when the role is expected to end or expire.
+          format: date-time
+      additionalProperties: false
+    CountryAffiliations:
+      type: object
+      properties:
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: Represents the code of a country using its standardized abbreviation.
+        affiliation:
+          type:
+          - string
+          - 'null'
+          description: Represents the type or description of a connection or association to a specific country.
+      additionalProperties: false
+    RiskScreening:
+      type: object
+      properties:
+        matchStrength:
+          type:
+          - integer
+          - 'null'
+          description: Represents the strength of a match in risk screening results.
+          format: int32
+        listType:
+          type:
+          - string
+          - 'null'
+          description: Specifies the type of list associated with a risk screening process. (e.g., `PEP`, `SANCTION`)
+        source:
+          type:
+          - string
+          - 'null'
+          description: Represents the source of information used in risk screenings or monitoring processes.
+        externalUrls:
+          type:
+          - array
+          - 'null'
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          description: Represents a collection of external URLs associated with the screening entity.
+      additionalProperties: false
+    Address:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the type of the address. The type is used to specify the categorization
+
+            or purpose of the address, such as registered, residential, business, or other.
+
+            The default value is `Unknown`.'
+        country:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: 'Represents the country associated with the address. The value must be a valid
+
+            ISO 3166 alpha-2 or alpha-3 country code if provided. This property is used
+
+            to specify the country where the address is located.'
+        postCode:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the postal code of the address. The postal code is used to identify
+
+            specific geographic areas within a country or region and is commonly part of
+
+            the addressing system for mail delivery.'
+        postPlace:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the postal location or city corresponding to the address.
+
+            Typically used in combination with the postal code to identify the area
+
+            of the address. This property may be null if the information is unavailable.'
+        street:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the street name of an address. This property holds the specific street
+
+            information associated with the address, such as the road name. It is a part
+
+            of the standard formatting for identifying a location.'
+        addressLine:
+          type:
+          - string
+          - 'null'
+          description: 'Represents a specific part or line of the address, often used to provide
+
+            additional details about the address location. This property may include
+
+            information such as building names, apartment numbers, or other
+
+            descriptive elements that complement the main street or post details.'
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the start date associated with the address. This property is
+
+            used to indicate the date from which the address becomes valid or applicable.
+
+            The value can be `null`, indicating that no specific start date is set.'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the last date associated with the validity or applicability
+
+            of the address. This property indicates when the address is no longer
+
+            in use or relevant. If not set, the end date is considered undefined.'
+          format: date-time
+      additionalProperties: false
+    IdNumber:
+      type: object
+      properties:
+        country:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 alpha-2 country code associated with the ID number.
+        number:
+          type:
+          - string
+          - 'null'
+          description: Numerical identifier associated with the ID number.
+        type:
+          type:
+          - string
+          - 'null'
+          description: Category or classification associated with the ID number.
+      additionalProperties: false
+    PaymentRemarkInfo:
+      type: object
+      properties:
+        numberOfRemarks:
+          type:
+          - integer
+          - 'null'
+          description: Total number of remarks associated with a payment.
+          format: int32
+      additionalProperties: false
+    RolesInfo:
+      type: object
+      properties:
+        companies:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CompanyRole'
+          description: Company roles associated with the entity.
+        persons:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PersonRole'
+          description: Collection of person roles associated with the entity.
+        others:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OtherRole'
+          description: 'Collection of additional roles associated with the entity.
+
+            These roles provide supplementary or specialized functionalities
+
+            not covered by primary role definitions.'
+      additionalProperties: false
+    OrganisationName:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the organisation.
+        type:
+          type:
+          - string
+          - 'null'
+          description: Type or category of the organisation.
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date associated with the organisation.
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date associated with the organisation.
+          format: date-time
+      additionalProperties: false
+    OtherRole:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier for the role.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name associated with the role.
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Collection of roles associated with the object.
+      additionalProperties: false
+    ChangesDto:
+      required:
+      - action
+      - attribute
+      - profile
+      type: object
+      properties:
+        profile:
+          minLength: 1
+          type: string
+          description: Represents the profile associated with a specific change entry.
+        attribute:
+          minLength: 1
+          type: string
+          description: Represents the specific attribute of a change entry.
+        action:
+          minLength: 1
+          type: string
+          description: 'This property is used to describe the operation associated with the change, such as addition,
+
+            update, or deletion of specific data.'
+        new:
+          enum:
+          - null
+          description: This property provides information about the updated or newly assigned value after a change has occurred.
+        old:
+          enum:
+          - null
+          description: 'This property captures the information prior to the modification, providing
+
+            a means to track and compare historical data.'
+      additionalProperties: false
+    Phone:
+      type: object
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          description: Represents the phone number associated with a phone object.
+        region:
+          type:
+          - string
+          - 'null'
+          description: Represents the geographical region associated with a phone object.
+      additionalProperties: false
+x-refined-from:
+- ongoing-monitoring-openapi.json
+- signicat-ongoing-monitoring-openapi.yml

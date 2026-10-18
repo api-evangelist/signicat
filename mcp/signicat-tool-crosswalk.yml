@@ -1,0 +1,116 @@
+generated: '2026-10-18'
+method: derived
+source: https://developer.signicat.com/docs/dashboard/connect-to-mcp.md
+crosswalk: []
+mcp_only:
+- tool: search_signicat_knowledge_sources
+  category: documentation
+  reason: Documentation search/retrieval on kapa.ai; no Signicat REST operation backs it.
+- tool: get_signicat_knowledge_documents
+  category: documentation
+  reason: Documentation search/retrieval on kapa.ai; no Signicat REST operation backs it.
+rest_only:
+- api: openapi/signicat-account-management-openapi.yml
+  title: Signicat Account API
+  operations: 23
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-archive-openapi.yml
+  title: Archiving API
+  operations: 10
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-audit-logs-openapi.yml
+  title: Signicat Audit API
+  operations: 4
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-data-verification-openapi.yml
+  title: Signicat Data Verification API
+  operations: 27
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-digital-evidence-management-openapi.yml
+  title: Digital Evidence Management API
+  operations: 10
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-domain-management-openapi.yml
+  title: Domain API
+  operations: 10
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-eid-hub-openapi.yml
+  title: Signicat Authentication REST API
+  operations: 3
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-events-openapi.yml
+  title: Signicat Events Management
+  operations: 12
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-id-document-and-biometric-verification-openapi.yml
+  title: 'ID Document and Biometric Verification: Assure API'
+  operations: 39
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-mint-openapi.yml
+  title: Signicat Mint API
+  operations: 42
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-mobileid-admin-openapi.yml
+  title: Signicat MobileID Admin API
+  operations: 27
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-mobileid-openapi.yml
+  title: Signicat MobileID API
+  operations: 29
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-oidc-config-openapi.yml
+  title: Signicat OIDC Config API
+  operations: 27
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-ongoing-monitoring-openapi.yml
+  title: Signicat Ongoing Monitoring API
+  operations: 13
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-ongoing-monitoring-person-openapi.yml
+  title: Person Monitoring (Deprecated)
+  operations: 13
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-reuseid-onboarding-openapi.yml
+  title: Signicat ReuseID Onboarding API
+  operations: 4
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-reuseid-openapi.yml
+  title: Signicat ReuseID API
+  operations: 48
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-secure-share-openapi.yml
+  title: Signicat Secure Share API
+  operations: 12
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-siam-openapi.yml
+  title: Signicat IAM SCIM API
+  operations: 43
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-sign-openapi.yml
+  title: Signicat Sign API v2
+  operations: 14
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-signing-enterprise-openapi.yml
+  title: Signicat Sign API
+  operations: 17
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-signing-express-openapi.yml
+  title: Signicat Signature API
+  operations: 33
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+- api: openapi/signicat-usage-openapi.yml
+  title: Signicat Usage Api
+  operations: 1
+  reason: No MCP tool exposes Signicat product APIs; the docs MCP server only searches documentation.
+surfaces:
+  openapi: openapi/ (23 Signicat product API contracts)
+  graphql: null
+  mcp:
+    url: https://signicat-documentation.mcp.kapa.ai
+    gated: true
+    note: tools/list requires OAuth (401 invalid_token); tool names from published docs table.
+coverage:
+  mcp_tools: 2
+  mapped_to_rest: 0
+  mcp_only: 2
+  rest_operations: 461

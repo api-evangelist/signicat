@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-public-key-dto-schema.json",
+  "title": "PublicKeyDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-oidc-config-openapi.yml#/components/schemas/PublicKeyDto",
+  "type": "object",
+  "properties": {
+    "id": {
+      "maxLength": 100,
+      "minLength": 8,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public key identifier"
+    },
+    "type": {
+      "enum": [
+        "X509Certificate",
+        "JWK"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public key type"
+    },
+    "usage": {
+      "enum": [
+        "Signing",
+        "Encryption"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The valid cryptographic uses of the certificate's public key"
+    },
+    "data": {
+      "maxLength": 2048,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public key data"
+    },
+    "name": {
+      "maxLength": 255,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public key name"
+    },
+    "notBefore": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The earliest time and date on which the certificate is valid",
+      "format": "date-time"
+    },
+    "notAfter": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The time and date past which the certificate is no longer valid",
+      "format": "date-time"
+    },
+    "version": {
+      "maxLength": 255,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Version of Public key"
+    }
+  },
+  "additionalProperties": false
+}

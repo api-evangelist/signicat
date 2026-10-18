@@ -1,0 +1,15 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat Sign API v2
+  version: 1.0.0
+extends: ../openapi/_original/signicat-sign-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-sign-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/electronic-signing/sign-api-v2/

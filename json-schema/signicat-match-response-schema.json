@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-match-response-schema.json",
+  "title": "MatchResponse",
+  "description": "Matching response",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-id-document-and-biometric-verification-openapi.yml#/components/schemas/MatchResponse",
+  "type": "object",
+  "properties": {
+    "dossierId": {
+      "type": "string",
+      "description": "Identifies the dossier ID where the matching was performed."
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "The date and time when the matching was performed."
+    },
+    "source": {
+      "$ref": "#/$defs/MatchComponent",
+      "description": "Data from source node."
+    },
+    "target": {
+      "$ref": "#/$defs/MatchComponent",
+      "description": "Data from target node."
+    },
+    "matchResult": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/FieldMatchResult"
+      },
+      "description": "Lists the fields that were matched between the source and target (ex: \"firstName\", \"lastName\", \"dateOfBirth)\"."
+    }
+  },
+  "$defs": {
+    "FieldMatchResult": {
+      "type": "object",
+      "description": "Matching result by field",
+      "properties": {
+        "sourceValue": {
+          "type": "string",
+          "description": "Data from source node."
+        },
+        "targetValue": {
+          "type": "string",
+          "description": "Data from target node."
+        },
+        "sourceNormalized": {
+          "type": "string",
+          "description": "Value string after the normalization is applied."
+        },
+        "targetNormalized": {
+          "type": "string",
+          "description": "Value string after the normalization is applied."
+        },
+        "editDistance": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Levenshtein distance between normalized values of source and target. Will be greater than 0 only if exactMatch = false."
+        },
+        "error": {
+          "type": "string",
+          "description": "(Exists only if an error occurred while performing match) Indicates why this field wasn't matched."
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "The matching algorithm configured.",
+          "enum": [
+            "levenshtein",
+            "fuzzy"
+          ]
+        },
+        "normalization": {
+          "type": "string",
+          "description": "The matching normalization configured.",
+          "enum": [
+            "none",
+            "upper",
+            "clean",
+            "cleanUpper",
+            "initialsUpper",
+            "numeric"
+          ]
+        },
+        "exactMatch": {
+          "type": "boolean",
+          "description": "True if values of source and data fully match, false otherwise. For more details on how to perform matching, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service\">integration documentation</a>."
+        },
+        "partialMatch": {
+          "type": "boolean",
+          "description": "True if values of source and data match partially, false otherwise. For more details on how to perform matching, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service\">integration documentation</a>."
+        }
+      }
+    },
+    "MatchComponent": {
+      "type": "object",
+      "description": "Matching result by component",
+      "properties": {
+        "processId": {
+          "type": "string",
+          "description": "Use only if dataNode is not `userData`. <br> The ID of the process that contains the data used for matching."
+        },
+        "dataNode": {
+          "type": "string",
+          "description": "Identifies the data node to be used as source/target data for the matching. This data node can be:<ul><li>`userData` in the dossier: In this case you can simply omit `processId` in this request. </li> <li> A data node from a process: It can be `finalResult`' for `onfido` processes. In this case you must also send `processId` in this request. The possible data nodes that can be used from each process depend on the provider of that process. </li> </ul> For more details on how to perform matching, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service\">integration documentation</a>.",
+          "enum": [
+            "userData",
+            "finalResult",
+            "userInfo"
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The date/time (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ) the match was executed. This field is returned only in the response."
+        }
+      },
+      "required": [
+        "dataNode"
+      ]
+    }
+  }
+}

@@ -1,0 +1,639 @@
+openapi: 3.2.0
+info:
+  title: Signicat Contact API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Contact across 2 of this provider''s published API definitions: account-management-openapi.json, signicat-account-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /account-management
+tags:
+- name: Contact
+  description: Provides management endpoints for contact persons.
+paths:
+  /contacts:
+    get:
+      tags:
+      - Contact
+      summary: List contacts
+      operationId: list_contacts
+      parameters:
+      - name: limit
+        in: query
+        description: Max results to return.
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      - name: page
+        in: query
+        description: Opaque pagination token.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_ContactListItem'
+              example:
+                data:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  firstName: Harald
+                  middleName: ''
+                  lastName: Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  phone: ''
+                  country: 'NO'
+                  roles: null
+                  organization:
+                    id: o-p-0TgcUq7CylltM7OkwB4t
+                    name: My Organization
+                    url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                next: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Page_ContactListItem'
+              example:
+                data:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  firstName: Harald
+                  middleName: ''
+                  lastName: Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  phone: ''
+                  country: 'NO'
+                  roles: null
+                  organization:
+                    id: o-p-0TgcUq7CylltM7OkwB4t
+                    name: My Organization
+                    url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                next: null
+    post:
+      tags:
+      - Contact
+      summary: Create contact
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ContactCreate'
+            example:
+              organizationId: o-p-0TgcUq7CylltM7OkwB4t
+              firstName: Harald
+              middleName: null
+              lastName: Hårfagre
+              email: harald@hårfagre.no
+              mobile: '+4799999999'
+              phone: null
+              country: 'NO'
+              roles: null
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+      operationId: postContacts
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /contacts/{contactId}:
+    get:
+      tags:
+      - Contact
+      summary: Retrieve contact
+      operationId: retrieve_contact
+      parameters:
+      - name: contactId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+    put:
+      tags:
+      - Contact
+      summary: Update contact
+      parameters:
+      - name: contactId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ContactWrite'
+            example:
+              organizationId: o-p-0TgcUq7CylltM7OkwB4t
+              firstName: Harald
+              middleName: null
+              lastName: Hårfagre
+              email: harald@hårfagre.no
+              mobile: '+4799999999'
+              phone: null
+              country: 'NO'
+              roles: null
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+      operationId: putContactsByContactId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Contact
+      summary: Update contact
+      parameters:
+      - name: contactId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ContactWrite'
+            example:
+              organizationId: o-p-0TgcUq7CylltM7OkwB4t
+              firstName: Harald
+              middleName: null
+              lastName: Hårfagre
+              email: harald@hårfagre.no
+              mobile: '+4799999999'
+              phone: null
+              country: 'NO'
+              roles: null
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ContactRead'
+              example:
+                id: c-p-5831eMDkMehkgq39L3KK
+                name: Harald Hårfagre
+                firstName: Harald
+                middleName: null
+                lastName: Hårfagre
+                email: harald@hårfagre.no
+                mobile: '+4799999999'
+                phone: null
+                country: 'NO'
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                roles: null
+      operationId: patchContactsByContactId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Contact
+      summary: Delete contact
+      parameters:
+      - name: contactId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+      operationId: deleteContactsByContactId
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+components:
+  schemas:
+    ContactCreate:
+      required:
+      - firstName
+      - lastName
+      type: object
+      properties:
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: Organization ID to place the contact under
+        firstName:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: First name
+        middleName:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Middle name
+        lastName:
+          maxLength: 80
+          minLength: 1
+          type: string
+          description: Last name
+        email:
+          maxLength: 80
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Email address
+        mobile:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Mobile phone number
+        phone:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Phone number
+        country:
+          maxLength: 2
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country the contact resides in
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContactRole'
+          description: Roles of the contact
+      additionalProperties: false
+    OrganizationChildListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of organization
+        name:
+          type: string
+          description: Name
+        url:
+          type: string
+          description: API URL to retrieve Organization object
+      additionalProperties: false
+      description: Suborganization of an organization.
+    ContactListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of contact
+        name:
+          type: string
+          description: Display name
+        url:
+          type: string
+          description: API URL to retrieve Contact object
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: First name
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: Middle name
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: Last name
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address
+        mobile:
+          type:
+          - string
+          - 'null'
+          description: Mobile phone number
+        phone:
+          type:
+          - string
+          - 'null'
+          description: Phone number
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country the contact resides in
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContactRole'
+          description: Roles of the contact
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The Organization the contact is linked to
+      additionalProperties: false
+    ContactWrite:
+      type: object
+      properties:
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: Organization ID to place the contact under
+        firstName:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: First name
+        middleName:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Middle name
+        lastName:
+          maxLength: 80
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Last name
+        email:
+          maxLength: 80
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Email address
+        mobile:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Mobile phone number
+        phone:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Phone number
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Country the contact resides in
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContactRole'
+          description: Roles of the contact
+      additionalProperties: false
+    ContactRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of contact
+        name:
+          type: string
+          description: Display name
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: First name
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: Middle name
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: Last name
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address
+        mobile:
+          type:
+          - string
+          - 'null'
+          description: Mobile phone number
+        phone:
+          type:
+          - string
+          - 'null'
+          description: Phone number
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country the contact resides in
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The Organization the contact is linked to
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContactRole'
+          description: Roles of the contact
+      additionalProperties: false
+    ContactRole:
+      enum:
+      - Other
+      - CommercialOwner
+      - MainTechnicalContact
+      - FinancialContact
+      type: string
+    Page_ContactListItem:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactListItem'
+          description: The contents of the current page.
+        next:
+          type:
+          - string
+          - 'null'
+          description: URL to the next page, if more data may be available.
+      additionalProperties: false
+x-refined-from:
+- account-management-openapi.json
+- signicat-account-management-openapi.yml

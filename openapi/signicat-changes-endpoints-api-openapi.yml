@@ -1,0 +1,247 @@
+openapi: 3.2.0
+info:
+  title: Signicat Changes Endpoints API
+  version: ''
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged Changes Endpoints across 2 of this provider''s published API definitions: ongoing-monitoring-openapi.json, signicat-ongoing-monitoring-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/
+tags:
+- name: Changes Endpoints
+paths:
+  /info/monitor/{monitorId}/changes:
+    get:
+      tags:
+      - Changes Endpoints
+      summary: Get changes by monitor
+      description: This endpoint allows to get the all changes by monitor id from the system.
+      operationId: GetChangesByMonitorId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      - name: referenceKey
+        in: query
+        description: Unique reference key of the entity.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: ae3be338-4b92-46d3-b46f-1ade3db7070f
+                  detected: '2026-10-16T14:12:59.0658247Z'
+                  created: '2026-10-15T20:12:59.0658249Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+  /info/monitor/{monitorId}/changes/{changeId}:
+    get:
+      tags:
+      - Changes Endpoints
+      summary: Get changes by monitor and change id
+      description: This endpoint allows to get the all changes by monitor id and change id from the system.
+      operationId: GetChangesByMonitorIdAndChangeId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: changeId
+        in: path
+        description: Id of the change.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDto'
+              example:
+                id: 1
+                referenceKey: referenceKey
+                monitorId: 05bee571-37ed-4af0-8d64-b91a0a86aa51
+                detected: '2026-10-16T14:12:59.0671202Z'
+                created: '2026-10-16T14:12:59.0671203Z'
+                changes:
+                - profile: profile
+                  attribute: attribute
+                  action: action
+                  new: new value
+                  old: old value
+                source: source
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+components:
+  schemas:
+    ChangesDto:
+      required:
+      - action
+      - attribute
+      - profile
+      type: object
+      properties:
+        profile:
+          minLength: 1
+          type: string
+          description: Represents the profile associated with a specific change entry.
+        attribute:
+          minLength: 1
+          type: string
+          description: Represents the specific attribute of a change entry.
+        action:
+          minLength: 1
+          type: string
+          description: 'This property is used to describe the operation associated with the change, such as addition,
+
+            update, or deletion of specific data.'
+        new:
+          enum:
+          - null
+          description: This property provides information about the updated or newly assigned value after a change has occurred.
+        old:
+          enum:
+          - null
+          description: 'This property captures the information prior to the modification, providing
+
+            a means to track and compare historical data.'
+      additionalProperties: false
+    MonitorChangesDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the monitor changes.
+          format: int32
+        referenceKey:
+          type:
+          - string
+          - 'null'
+          description: Reference key associated with the entity.
+        monitorId:
+          type: string
+          description: Unique identifier associated with a monitor.
+          format: uuid
+        detected:
+          type: string
+          description: Date and time when the changes were detected at the source.
+          format: date-time
+        created:
+          type: string
+          description: Timestamp indicating when the monitor changes were created in our system.
+          format: date-time
+        changes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangesDto'
+          description: List of changes associated with the monitor.
+        source:
+          type:
+          - string
+          - 'null'
+          description: Name of the source that produced this batch of changes.
+      additionalProperties: false
+    MonitorChangesDtoPagedCollection:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: Total number of items in the collection.
+          format: int32
+        nextCursor:
+          type:
+          - integer
+          - 'null'
+          description: Cursor that points to the start of the next page in a paginated collection.
+          format: int32
+        limit:
+          type: integer
+          description: Maximum number of items that can be returned in the collection.
+          format: int32
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MonitorChangesDto'
+          description: Collection of items.
+      additionalProperties: false
+x-refined-from:
+- ongoing-monitoring-openapi.json
+- signicat-ongoing-monitoring-openapi.yml

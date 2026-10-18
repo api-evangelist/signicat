@@ -1,0 +1,1205 @@
+openapi: 3.2.0
+info:
+  title: Signicat Statistics API
+  version: '1.0'
+  description: 'Operations tagged Statistics across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: Statistics
+paths:
+  /statistics/users/recentdays:
+    get:
+      tags:
+      - Statistics
+      summary: Get active users and devices (by day count)
+      description: This operation returns active user and device statistics for a Signicat account, aggregated over a period defined by a specified number of days counting back from the current date.
+      operationId: getUserAccountStatisticsByNumberOfDays
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: nrOfDays
+        in: query
+        description: The number of days over which to aggregate statistics, counting back from the current date.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: The number of days over which to aggregate statistics, counting back from the current date.
+          example: 150
+        example: 150
+      responses:
+        '200':
+          description: The request to fetch statistics was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistic'
+              example:
+                fromDate: '2022-08-01'
+                toDate: '2024-08-31'
+                users:
+                  total: 1234
+                  withActivatedState: 1111
+                  withLockedState: 123
+                devices:
+                  total: 2234
+                  withActivatedState: 1111
+                  withLockedState: 1123
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: lastUsed
+                      reason: lastUsed cannot be null or empty
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /statistics/users/dateinterval:
+    get:
+      tags:
+      - Statistics
+      summary: Get active users and devices (by date interval)
+      description: This operation returns active user and device statistics for a Signicat account, aggregated over a period defined by a specified start and end date.
+      operationId: getUserAccountStatistics
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: fromDate
+        in: query
+        description: 'The start date from when the device statistics are aggregated.
+
+
+          **Format**: `yyyy-MM-dd`.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The start date from when the device statistics are aggregated.
+
+
+            **Format**: `yyyy-MM-dd`.
+
+            '
+          example: '2024-04-04'
+        example: '2024-04-04'
+      - name: toDate
+        in: query
+        description: 'The end date to which the device statistics are aggregated.
+
+
+          **Format**: `yyyy-MM-dd`.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The end date to which the device statistics are aggregated.
+
+
+            **Format**: `yyyy-MM-dd`.
+
+            '
+          example: '2026-06-06'
+        example: '2026-06-06'
+      responses:
+        '200':
+          description: The request to fetch statistics was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistic'
+              example:
+                fromDate: '2022-08-01'
+                toDate: '2024-08-31'
+                users:
+                  total: 1234
+                  withActivatedState: 1111
+                  withLockedState: 123
+                devices:
+                  total: 2234
+                  withActivatedState: 1111
+                  withLockedState: 1123
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /statistics/devices:
+    get:
+      tags:
+      - Statistics
+      summary: Get detailed device statistics
+      description: This operation returns detailed device statistics for a Signicat account.
+      operationId: getAccountStatistics
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: type
+        in: query
+        description: 'The type of detailed device statistics that are obtained.
+
+
+          **Allowed values**: It must be either:
+
+
+          | **Allowed values** | **Description** |
+
+          | :-- | :-- |
+
+          | `sdk` | The Encap SDK version used. |
+
+          | `platform` | The mobile device platform. |
+
+          | `model` | The mobile device model name. |
+
+          | `version` | The mobile device operating system version. |
+
+          | `manufacturer` | The mobile device manufacturer. |
+
+          | `allbasic` | Returns `sdk` and `platform` statistics. |
+
+          | `alldetails` | Returns `model`, `version`, and `manufacturer` statistics. |
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The type of detailed device statistics that are obtained.
+
+
+            **Allowed values**: It must be either:
+
+
+            | **Allowed values** | **Description** |
+
+            | :-- | :-- |
+
+            | `sdk` | The Encap SDK version used. |
+
+            | `platform` | The mobile device platform. |
+
+            | `model` | The mobile device model name. |
+
+            | `version` | The mobile device operating system version. |
+
+            | `manufacturer` | The mobile device manufacturer. |
+
+            | `allbasic` | Returns `sdk` and `platform` statistics. |
+
+            | `alldetails` | Returns `model`, `version`, and `manufacturer` statistics. |
+
+            '
+          example: allbasic
+        example: allbasic
+      - name: platform
+        in: query
+        description: 'The platform for which the detailed device statistics should be obtained.
+
+
+          **Allowed values**: It must be either `ANDROID` or `IOS`.
+
+
+          **Note**: This parameter is required if you pass either `alldetails`, `model`, `version`, or `manufacturer` as the `type` in the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The platform for which the detailed device statistics should be obtained.
+
+
+            **Allowed values**: It must be either `ANDROID` or `IOS`.
+
+
+            **Note**: This parameter is required if you pass either `alldetails`, `model`, `version`, or `manufacturer` as the `type` in the request.
+
+            '
+          example: Android
+        example: Android
+      responses:
+        '200':
+          description: The request to fetch statistics was successful.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/AccountPlatformStatistic'
+                - $ref: '#/components/schemas/AccountSDKStatistic'
+                - $ref: '#/components/schemas/AccountPlatformModelStatistic'
+                - $ref: '#/components/schemas/AccountPlatformVersionStatistic'
+                - $ref: '#/components/schemas/AccountPlatformManufacturerStatistic'
+                - $ref: '#/components/schemas/AccountPlatformSDKStatistic'
+                - $ref: '#/components/schemas/AccountPlatformAllDetailsStatistic'
+                - $ref: '#/components/schemas/AccountAllBasicStatistic'
+              examples:
+                AllBasic:
+                  description: AllBasic
+                  value:
+                    accountId: a-sdge-UWPzmkeEVjkxJPkQtm0a
+                    aggregatedAt: '2026-04-10T10:32:42Z'
+                    total: 29
+                    platforms:
+                    - name: Android
+                      count: 29
+                      percentage: 100
+                    sdkversions:
+                    - name: '3.21'
+                      count: 29
+                      percentage: 100
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /statistics/device-hashes:
+    get:
+      tags:
+      - Statistics
+      summary: Get device hash statistics
+      description: 'This operation returns statistics about devices that have identical device hashes. It detects and flags all device hashes that belong to two or more users.
+
+
+        **Note**:
+
+        - Normally, each device should have a unique device hash.
+
+        - There are use cases where multiple devices share the same device hash.'
+      operationId: getDeviceHashStatistics
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: allowedNrOfUsersWithSameDeviceHash
+        in: query
+        description: 'The maximum number of users that can have devices with the same device hash without it being flagged as suspicious.<br /><br />**Allowed values**: The default value is `2`.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+          description: 'The maximum number of users that can have devices with the same device hash without it being flagged as suspicious.<br /><br />**Allowed values**: The default value is `2`.'
+          example: 3
+        example: 3
+      - name: detailed
+        in: query
+        description: 'Determines whether an extended response containing the full set of device IDs and corresponding states is returned.
+
+          '
+        required: false
+        schema:
+          type: boolean
+          description: 'Determines whether an extended response containing the full set of device IDs and corresponding states is returned.
+
+            '
+          example: true
+        example: true
+      responses:
+        '200':
+          description: The request to fetch statistics was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DHStatistics'
+              example:
+                accountId: a-sdge-UWPzmkeEVjkxJPkQtm0a
+                aggregatedAt: '2026-04-10T10:32:42Z'
+                count:
+                  total: 26
+                  uniqueDeviceHashes: 19
+                  activeUsers: 23
+                suspiciousDeviceHashes:
+                - deviceHash: wBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=
+                  users:
+                  - userId: b13069a0-408f-4981-bcdb-a42a8d1060ee
+                    devices:
+                    - deviceId: 3eb60ed3-970c-4cdb-8607-b4a5c8745d39
+                      state: 3
+                      lastUsed: '2026-03-31T08:08:48.607000'
+                      created: '2026-03-31T08:08:48.591000'
+                    - deviceId: 294ffdd7-4306-49dc-aa5e-72c4bed89d18
+                      state: 2
+                      lastUsed: '2026-03-31T08:21:40.584000'
+                      created: '2026-03-31T08:21:40.572000'
+                  - userId: 8ebc86af-c341-404b-8cf0-7077449d6cf4
+                    devices:
+                    - deviceId: 46af605e-a4c0-47da-9554-b6c0dc3fcd3a
+                      state: 3
+                      lastUsed: '2026-03-20T10:13:47.107000'
+                      created: '2026-03-20T10:13:47.094000'
+                    - deviceId: 1cf7985e-8dfd-4943-8f7c-878235296c20
+                      state: 3
+                      lastUsed: '2026-03-20T10:11:35.249000'
+                      created: '2026-03-20T10:11:35.230000'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /statistics/battery-level:
+    get:
+      tags:
+      - Statistics
+      summary: Get battery level statistics
+      description: This operation returns statistics about devices that have suspicious battery level patterns across transactions.
+      operationId: getBatteryLevelStatistics
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: minimalNumberOfTransactionsForDevice
+        in: query
+        description: 'The minimum number of transactions that one device must have in order for it to be evaluated for suspicious battery level patterns.<br /><br />**Allowed values**: The default value is `5`.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+          description: 'The minimum number of transactions that one device must have in order for it to be evaluated for suspicious battery level patterns.<br /><br />**Allowed values**: The default value is `5`.'
+          example: 12
+        example: 12
+      - name: detectionConfidenceLevel
+        in: query
+        description: 'Indicates how confident the detection should be before a device is flagged as suspicious.<br /><br />Higher values make the detection stricter. This means that fewer devices are flagged, but with higher certainty that they are suspicious.<br /><br />**Allowed values**: Service configured value, typically from `90` to `99`. The default value is `98`.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+          description: 'Indicates how confident the detection should be before a device is flagged as suspicious.<br /><br />Higher values make the detection stricter. This means that fewer devices are flagged, but with higher certainty that they are suspicious.<br /><br />**Allowed values**: Service configured value, typically from `90` to `99`. The default value is `98`.'
+          example: 95
+        example: 95
+      responses:
+        '200':
+          description: The request to fetch statistics was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BLStatistics'
+              example:
+                accountId: a-sdge-UWPzmkeEVjkxJPkQtm0b
+                aggregatedAt: '2026-10-06T02:20:13.478Z'
+                properties:
+                  minimalNrOfTransForDevice: 3
+                  detectionConfidenceLevel: 95
+                  ratioThreshold: 0.27
+                suspiciousDevices:
+                - deviceid: a17d43fe-d80b-4c4d-852d-66cf97e4b49e
+                  userId: 09f62205-3deb-4f1b-ba21-ab957ff368ac
+                  deviceHash: JqO9KFKCgQwyYXzAGflsQIqL1Q4SyPK99vZiOzaYWyg=
+                  deviceStandardDeviation: 0
+                  deviceMean: 78
+                  nrOfTrans: 8
+                  standardDeviationRatio: 0
+                  score: 100
+                  highlight: true
+                - deviceid: bbd61e9e-936c-49d2-a1a4-fd2d68f8d832
+                  userId: db4b1fc1-57fa-46fd-94c6-58aa2bd59d44
+                  deviceHash: vS6mkcZOsuG07EOPMHeTw60GeG14dLcmuR9flR3tSro=
+                  deviceStandardDeviation: 2.4
+                  deviceMean: 62
+                  nrOfTrans: 3
+                  standardDeviationRatio: 0.17
+                  score: 83
+                  highlight: false
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    AccountPlatformAllDetailsStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platform:
+          type: string
+          description: 'The platform for which the detailed device statistics were obtained.
+
+
+            **Possible values**: It can be either `ANDROID` or `IOS`.
+
+            '
+          example: Android
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        manufacturers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+    AccountPlatformModelStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platform:
+          type: string
+          description: 'The platform for which the detailed device statistics were obtained.
+
+
+            **Possible values**: It can be either `ANDROID` or `IOS`.
+
+            '
+          example: Android
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+    BLStatistics:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:33.456Z'
+        properties:
+          $ref: '#/components/schemas/BLProperties'
+          description: The properties used to calculate which devices were flagged as suspicious.
+        suspiciousDevices:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatteryLevelSusp'
+    BLProperties:
+      type: object
+      properties:
+        minimalNrOfTransForDevice:
+          type: integer
+          format: int64
+          description: 'The minimum number of transactions that one device must have in order for it to be evaluated for suspicious battery level patterns.<br /><br />**Allowed values**: The default value is `5`.'
+          example: 12
+        detectionConfidenceLevel:
+          type: integer
+          format: int64
+          description: 'Indicates how confident the detection should be before a device is flagged as suspicious.<br /><br />Higher values make the detection stricter. This means that fewer devices are flagged, but with higher certainty that they are suspicious.<br /><br />**Allowed values**: Service configured value, typically from `90` to `99`. The default value is `98`.'
+          example: 95
+        ratioThreshold:
+          type: number
+          format: double
+          description: 'The calculated threshold used to flag a device as suspicious.
+
+
+            Devices with a battery-level variation ratio below this value are considered suspicious.<br /><br />
+
+
+            **Note**: This is derived from `minimalNumberOfTransactionsForDevice` and `detectionConfidenceLevel`.
+
+            '
+          example: '0.42'
+    AccountPlatformStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+    DHObjCount:
+      type: object
+      properties:
+        devices:
+          type: integer
+          format: int64
+          description: The total number of devices in the specified aggregation period.
+          example: 201001
+        uniqueDeviceHashes:
+          type: integer
+          format: int64
+          description: The total number of unique device hashes in the aggregation period.
+          example: 200888
+        activeUsers:
+          type: integer
+          format: int64
+          description: The total number active users in the aggregation period.
+          example: 103112
+    AccountPlatformVersionStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platform:
+          type: string
+          description: 'The platform for which the detailed device statistics were obtained.
+
+
+            **Possible values**: It can be either `ANDROID` or `IOS`.
+
+            '
+          example: Android
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+          writeOnly: true
+    NamedStatistic:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The name of the property.
+
+
+            **Note**: The name depends on what is passed for the `type` and `platform` query parameters in the operation request.
+
+            '
+          example: '3.21'
+        count:
+          type: integer
+          format: int64
+          description: The number of devices with this property.
+          example: 2553
+        percentage:
+          type: integer
+          format: int32
+          description: The percentage of devices with this property.
+          example: 43
+    AccountSDKStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        sdkversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+    Statistic:
+      type: object
+      properties:
+        fromDate:
+          type: string
+          description: 'The start date from when the device statistics are aggregated.
+
+
+            **Format**: `yyyy-MM-dd`.'
+          example: '2022-08-01'
+        toDate:
+          type: string
+          description: 'The end date to which the device statistics are aggregated.
+
+
+            **Format**: `yyyy-MM-dd`.'
+          example: '2022-08-31'
+        users:
+          $ref: '#/components/schemas/StatisticUser'
+        devices:
+          $ref: '#/components/schemas/StatisticDevice'
+    AccountAllBasicStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        sdkversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+    AccountPlatformSDKStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platform:
+          type: string
+          description: 'The platform for which the detailed device statistics were obtained.
+
+
+            **Possible values**: It can be either `ANDROID` or `IOS`.
+
+            '
+          example: Android
+        sdkversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+          writeOnly: true
+    DHUserIdWithLstOfDevices:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DHDeviceProperties'
+    DHDeviceProperties:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        state:
+          type: integer
+          format: int64
+          description: The state of the device.
+          example: ACTIVE
+        lastUsed:
+          type: string
+          description: 'The timestamp when the user''s device last carried out an operation.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.221Z'
+        created:
+          type: string
+          description: 'The timestamp when the user''s device was originally activated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.338Z'
+    StatisticDevice:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of ReuseID devices in the specified aggregation period.
+          example: 2234
+        withActivatedState:
+          type: integer
+          format: int64
+          description: The total number of active ReuseID devices in the specified aggregation period.
+          example: 1111
+        withLockedState:
+          type: integer
+          format: int64
+          description: The total number of locked ReuseID devices in the specified aggregation period.
+          example: 1123
+    DHDeviceHashWithLstOfUsers:
+      type: object
+      properties:
+        deviceHash:
+          type: string
+          description: The device hash that has been flagged as suspicious.
+          example: wBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=
+        userCount:
+          type: integer
+          format: int64
+          description: The number of users that have devices with the suspicious device hash.
+          example: 2
+        deviceCount:
+          type: integer
+          format: int64
+          description: 'The number of devices with the suspicious device hash.
+
+
+            **Note**: These devices are owned by the users outlined in the `userCount`.
+
+            '
+          example: 5
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DHUserIdWithLstOfDevices'
+    AccountPlatformManufacturerStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2026-01-21T22:47:33.456Z'
+        total:
+          type: integer
+          format: int64
+          description: The total number of devices.
+          example: 264554
+        platform:
+          type: string
+          description: 'The platform for which the detailed device statistics were obtained.
+
+
+            **Possible values**: It can be either `ANDROID` or `IOS`.
+
+            '
+          example: Android
+        manufacturers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedStatistic'
+          writeOnly: true
+    StatisticUser:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of ReuseID users in the specified aggregation period.
+          example: 2234
+        withActivatedState:
+          type: integer
+          format: int64
+          description: The total number of active ReuseID users in the specified aggregation period.
+          example: 1111
+        withLockedState:
+          type: integer
+          format: int64
+          description: The total number of locked ReuseID users in the specified aggregation period.
+          example: 1123
+    DHStatistics:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The ID of the Signicat account, in a valid UUID format.
+          example: a-sdge-abcdefghijk123456789
+        aggregatedAt:
+          type: string
+          description: 'The timestamp when the statistics were aggregated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:33.456Z'
+        count:
+          $ref: '#/components/schemas/DHObjCount'
+        suspiciousDeviceHashes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DHDeviceHashWithLstOfUsers'
+    BatteryLevelSusp:
+      type: object
+      properties:
+        deviceid:
+          type: string
+          description: The device ID of the device that has been flagged as suspicious.
+          example: c14444b2-518f-6181-aadb-a21a3c2031ef
+        userId:
+          type: string
+          description: The user ID for the device that has been flagged as suspicious.
+          example: b13069a0-408f-4981-bcdb-a42a8d1060ee
+        deviceHash:
+          type: string
+          description: The device hash of the device that has been flagged as suspicious.
+          example: wBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=
+        deviceStandardDeviation:
+          type: number
+          format: float
+          description: The standard deviation of the device's battery level across all transactions, for the device flagged as suspicious.
+          example: '0.22'
+        deviceMean:
+          type: number
+          format: float
+          description: The average of the device's battery level across all transactions, for the device flagged as suspicious.
+          example: '0.22'
+        nrOfTrans:
+          type: integer
+          format: int64
+          description: The number of transactions for the device flagged as suspicious.
+          example: 52
+        standardDeviationRatio:
+          type: number
+          format: float
+          description: The ratio between the device's battery level standard deviation and the account's.
+          example: '0.42'
+        score:
+          type: number
+          format: float
+          description: "  A risk score derived from the `standardDeviationRatio`, which indicates how suspicious the device is.\n\n  The score ranges from 0-100, where higher values indicate a more suspicious device.\n\n  **Note**: Calculated using `(1 - standardDeviationRatio) * 100`.\n"
+          example: '58.0'
+        highlight:
+          type: boolean
+          description: 'Indicates whether the device is additionally flagged as highly suspicious, after calculation using the stricter reference confidence level (98).
+
+
+            **Note**: If the device is additionally flagged as highly suspicious, then `true` is returned.
+
+            '
+          example: false
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

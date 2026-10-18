@@ -1,0 +1,197 @@
+openapi: 3.2.0
+info:
+  title: Signicat Events API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Events across 2 of this provider''s published API definitions: events-openapi.json, signicat-events-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/events-management
+tags:
+- name: Events
+paths:
+  /events:
+    get:
+      tags:
+      - Events
+      summary: List events
+      description: 'The `event` query parameter may be used to search for a specific event, or a group of events relating to the same service.
+
+        Examples:
+
+        * Single event: `communication-api:email.delivered`
+
+        * All events from the communication service: `communication-api:*`'
+      operationId: list_events
+      parameters:
+      - name: before
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: after
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: event
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: ''
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: tail
+        in: query
+        description: If true, the next page URL will retrieve the latest events instead of earlier events. Not compatible with <see paramref="before" />
+        schema:
+          type: boolean
+      - name: page
+        in: query
+        description: Pagination token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_EventLogItem'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Page_EventLogItem'
+    servers:
+    - url: https://api.signicat.com/events-management
+  /events/{id}:
+    get:
+      tags:
+      - Events
+      summary: Retrieve event
+      operationId: get_event
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLogItem'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/EventLogItem'
+    servers:
+    - url: https://api.signicat.com/events-management
+components:
+  schemas:
+    EventLogItem:
+      required:
+      - event
+      - id
+      - replayUrl
+      - url
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID for this event log item
+        event:
+          allOf:
+          - $ref: '#/components/schemas/Event'
+          description: The raw event data
+        url:
+          type: string
+          description: API Url to retrieve Event object.
+        replayUrl:
+          type: string
+          description: API Url to replay Event object.
+      additionalProperties: false
+    Event:
+      required:
+      - accountId
+      - eventData
+      - eventName
+      - expiresAt
+      - id
+      - organizationId
+      - sender
+      - tags
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the event
+        timestamp:
+          type: string
+          description: Timestamp of when the event was generated
+          format: date-time
+        sender:
+          type: string
+          description: ID of the sending service
+        eventName:
+          type: string
+          description: Name of the event, unique per sender
+        eventData:
+          description: Arbitrary event data
+        accountId:
+          type:
+          - string
+          - 'null'
+          description: The target Account ID
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: The target Organization ID
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          description: The event's expiration tim
+          format: date-time
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The event's tags
+      additionalProperties: false
+      description: The event data
+    Page_EventLogItem:
+      required:
+      - data
+      - next
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLogItem'
+          description: The contents of the current page.
+        next:
+          type:
+          - string
+          - 'null'
+          description: URL to the next page, if more data may be available.
+      additionalProperties: false
+x-refined-from:
+- events-openapi.json
+- signicat-events-openapi.yml

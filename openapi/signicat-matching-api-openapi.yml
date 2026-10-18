@@ -1,0 +1,597 @@
+openapi: 3.2.0
+info:
+  title: Signicat Matching API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Matching across 2 of this provider''s published API definitions: id-document-and-biometric-verification-openapi.json, signicat-id-document-and-biometric-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/assure
+  description: Generated server url
+security:
+- basicAuth: []
+tags:
+- name: Matching
+paths:
+  /matching/configurations/{configurationId}:
+    get:
+      tags:
+      - Matching
+      summary: Get matching configuration
+      description: Gets an existing matching configuration in JSON format.
+      operationId: getMatchingConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a matching configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchingConfigurationResponse'
+        '404':
+          description: The resource requested cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: curl -X GET 'https://api.signicat.com/assure/matching/configurations/<CONFIGURATION-ID>“';
+    put:
+      tags:
+      - Matching
+      summary: Update matching configuration
+      description: Updates an existing matching configuration.
+      operationId: updateMatchingConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a matching configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      requestBody:
+        description: Matching configuration payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchingConfiguration'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchingConfigurationResponse'
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '409':
+          description: Conflict found while processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionConflict'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X PUT ''https://api.signicat.com/assure/matching/configurations/<CONFIGURATION-ID>'' -H ''Authorization: Bearer <ACCESS_TOKEN> -d ''<ADD-PAYLOAD-HERE>'';'
+    post:
+      tags:
+      - Matching
+      summary: Create matching configuration
+      description: Creates a new matching configuration.
+      operationId: createMatchingConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a matching configuration.
+        required: true
+        schema:
+          type: string
+          maxLength: 100
+          minLength: 0
+        example: Configuration1
+      requestBody:
+        description: Matching configuration payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchingConfiguration'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchingConfigurationResponse'
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '404':
+          description: The resource requested cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST ''https://api.signicat.com/assure/matching/configurations/<CONFIGURATION-ID>'' -H ''Authorization: Bearer <ACCESS_TOKEN> -d ''<ADD-PAYLOAD-HERE>'';'
+    delete:
+      tags:
+      - Matching
+      summary: Delete a matching configuration
+      description: Deletes a matching configuration.
+      operationId: deleteMatchingConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a matching configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      responses:
+        '204':
+          description: Deletes a matching configuration.
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '404':
+          description: The resource requested cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE ''https://api.signicat.com/assure/matching/configurations/<CONFIGURATION-ID>'' -H ''Authorization: Bearer <ACCESS_TOKEN>;'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers/{dossierId}/match:
+    post:
+      tags:
+      - Matching
+      summary: Perform matching
+      description: You can use this service to corroborate the end-user’s identity. This service matches different sources of information about the end-user.
+      operationId: match
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      requestBody:
+        description: Matching payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchRequest'
+        required: true
+      responses:
+        '200':
+          description: Matching was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchResponse'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchResponse'
+        '404':
+          description: The resource requested cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/match -H ''Authorization: Bearer <ACCESS_TOKEN>'' -d ''<ADD-PAYLOAD-HERE>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /matching/configurations:
+    get:
+      tags:
+      - Matching
+      summary: Get all available matching configuration IDs
+      description: Gets all existing matching configuration IDs.
+      operationId: getMatchingConfigurations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchingConfigurationResponse'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/matching/configurations -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+components:
+  schemas:
+    MatchingNormalization:
+      type: string
+      enum:
+      - none
+      - upper
+      - clean
+      - cleanUpper
+      - initialsUpper
+      - numeric
+    MatchingConfiguration:
+      type: object
+      description: Matching Configuration payload
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldConfiguration'
+    FieldConfiguration:
+      type: object
+      description: Matching Field Configuration payload
+      properties:
+        id:
+          type: string
+          description: The field to be compared.
+          example: fieldId1
+        sourceField:
+          type: string
+          description: Data from source node.
+          example: firstName
+        targetField:
+          type: string
+          description: Data from target node.
+          example: lastName
+        normalization:
+          $ref: '#/components/schemas/MatchingNormalization'
+          description: '<p>The normalization to be applied to source and target values.</p><li>''none'': No conversion - case sensitive scenario.<li>''upper'': Converts all characters to upper case - ignores case scenario.<li>''clean'': Converts into latin script - Following ICAO Doc 9303 Part 3 Section 6 recommendation.<li>''cleanUpper'': Apply clean an upper normalization.<li>''initialsUpper'': Converts to the first two initials from multiple words.<li>''numeric'': Converts to the 0-9 characters only.'
+          example: upper
+        algorithm:
+          $ref: '#/components/schemas/MatchingAlgorithm'
+          description: '<p>The matching algorithm to be used.</p><li>''levenshtein'': String compare normalized values</li><span>Exact match: True if all characters match<br>Partial match: True if the similarity ratio is above 90% of characters</span><li>''fuzzy'': String compare normalized values</li><span>Exact match: True if all characters match<br>Partial match: True if the similarity ratio is above 90% of characters or if one of multiple words are an exact match.</span>'
+          example: levenshtein
+    MatchRequestComponent:
+      type: object
+      description: Matching result by component
+      properties:
+        processId:
+          type: string
+          description: Use only if dataNode is not `userData`. <br> The ID of the process that contains the data used for matching.
+          example: a7f11597-19db-4ef0-84d5-268150f5c760
+        dataNode:
+          type: string
+          description: 'Identifies the data node to be used as source/target data for the matching. This data node can be:<ul><li>`userData` in the dossier: In this case you can simply omit `processId` in this request. </li> <li> A data node from a process: It can be `finalResult`'' for `onfido` processes. In this case you must also send `processId` in this request. The possible data nodes that can be used from each process depend on the provider of that process. </li> </ul> For more details on how to perform matching, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service">integration documentation</a>.'
+          enum:
+          - userData
+          - finalResult
+          - userInfo
+          - ocr
+          example: finalResult
+      required:
+      - dataNode
+    MatchRequest:
+      type: object
+      description: Matching request
+      example:
+        source:
+          dataNode: userData
+        target:
+          processId: 0338a9c5-e135-4c51-9557-dd8ac6ba9e5c
+          dataNode: finalResult
+      properties:
+        source:
+          $ref: '#/components/schemas/MatchRequestComponent'
+        target:
+          $ref: '#/components/schemas/MatchRequestComponent'
+        configurationId:
+          type: string
+          description: Optional field to specify a custom matching configuration.
+      required:
+      - source
+      - target
+    FieldMatchResult:
+      type: object
+      description: Matching result by field
+      properties:
+        sourceValue:
+          type: string
+          description: Data from source node.
+          example: John
+        targetValue:
+          type: string
+          description: Data from target node.
+          example: JOHN
+        sourceNormalized:
+          type: string
+          description: Value string after the normalization is applied.
+          example: JOHN
+        targetNormalized:
+          type: string
+          description: Value string after the normalization is applied.
+          example: JOHN
+        editDistance:
+          type: integer
+          format: int32
+          description: Levenshtein distance between normalized values of source and target. Will be greater than 0 only if exactMatch = false.
+          example: 0
+        error:
+          type: string
+          description: (Exists only if an error occurred while performing match) Indicates why this field wasn't matched.
+          example: Field not present in source/target.
+        algorithm:
+          type: string
+          description: The matching algorithm configured.
+          enum:
+          - levenshtein
+          - fuzzy
+          example: levenshtein
+        normalization:
+          type: string
+          description: The matching normalization configured.
+          enum:
+          - none
+          - upper
+          - clean
+          - cleanUpper
+          - initialsUpper
+          - numeric
+          example: upper
+        exactMatch:
+          type: boolean
+          description: True if values of source and data fully match, false otherwise. For more details on how to perform matching, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service">integration documentation</a>.
+          example: true
+        partialMatch:
+          type: boolean
+          description: True if values of source and data match partially, false otherwise. For more details on how to perform matching, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service">integration documentation</a>.
+          example: true
+    StandardExceptionBadRequest:
+      type: object
+      description: Standard Exception Bad Request
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 400
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Malformed Authorization header.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Please provide a valid Bearer authentication.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    StandardExceptionConflict:
+      type: object
+      description: Standard Exception Conflict
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 409
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Conflict
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Conflict found while processing the request.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    MatchingConfigurationResponse:
+      type: object
+      description: Matching Configuration Response
+      properties:
+        configuration:
+          $ref: '#/components/schemas/MatchingConfiguration'
+        id:
+          type: string
+          description: The ID of a capture configuration.
+          example: Configuration1
+          maxLength: 100
+        createdAt:
+          type: string
+          description: 'The date and time the data was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ.)'
+          example: '2021-10-04T09:35:19Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the data was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2021-10-04T09:35:19Z'
+    MatchingAlgorithm:
+      type: string
+      enum:
+      - levenshtein
+      - fuzzy
+    MatchComponent:
+      type: object
+      description: Matching result by component
+      properties:
+        processId:
+          type: string
+          description: Use only if dataNode is not `userData`. <br> The ID of the process that contains the data used for matching.
+          example: a7f11597-19db-4ef0-84d5-268150f5c760
+        dataNode:
+          type: string
+          description: 'Identifies the data node to be used as source/target data for the matching. This data node can be:<ul><li>`userData` in the dossier: In this case you can simply omit `processId` in this request. </li> <li> A data node from a process: It can be `finalResult`'' for `onfido` processes. In this case you must also send `processId` in this request. The possible data nodes that can be used from each process depend on the provider of that process. </li> </ul> For more details on how to perform matching, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/matching/#process-userdata-matching-service">integration documentation</a>.'
+          enum:
+          - userData
+          - finalResult
+          - userInfo
+          example: finalResult
+        updatedAt:
+          type: string
+          description: 'The date/time (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ) the match was executed. This field is returned only in the response.'
+          example: '2019-03-04T15:58:17Z'
+      required:
+      - dataNode
+    StandardExceptionNotFound:
+      type: object
+      description: Standard Exception Not Found
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 404
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Not Found
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Dossier not found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    MatchResponse:
+      type: object
+      description: Matching response
+      example:
+        dossierId: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+        createdAt: '2021-03-22T15:21:05.294087Z'
+        source:
+          dataNode: userData
+          updatedAt: '2021-03-22T15:21:02Z'
+        target:
+          processId: 0338a9c5-e135-4c51-9557-dd8ac6ba9e5c
+          dataNode: finalResult
+          updatedAt: '2021-03-22T15:11:57Z'
+        matchResult:
+          firstName:
+            sourceValue: John
+            targetValue: John Michael
+            sourceNormalized: JOHN
+            targetNormalized: JOHN MICHAEL
+            exactMatch: false
+            partialMatch: true
+            editDistance: 8
+          lastName:
+            sourceValue: McClane
+            targetValue: McClane
+            sourceNormalized: MCCLANE
+            targetNormalized: MCCLANE
+            exactMatch: true
+            partialMatch: true
+            editDistance: 0
+          gender:
+            sourceValue: M
+            targetValue: M
+            sourceNormalized: M
+            targetNormalized: M
+            exactMatch: true
+            partialMatch: true
+            editDistance: 0
+          dateOfBirth:
+            sourceValue: '1988-08-18'
+            targetValue: '1983-04-25'
+            sourceNormalized: '19880818'
+            targetNormalized: '19830425'
+            exactMatch: false
+            partialMatch: false
+            editDistance: 4
+      properties:
+        dossierId:
+          type: string
+          description: Identifies the dossier ID where the matching was performed.
+        createdAt:
+          type: string
+          description: The date and time when the matching was performed.
+        source:
+          $ref: '#/components/schemas/MatchComponent'
+          description: Data from source node.
+        target:
+          $ref: '#/components/schemas/MatchComponent'
+          description: Data from target node.
+        matchResult:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/FieldMatchResult'
+          description: 'Lists the fields that were matched between the source and target (ex: "firstName", "lastName", "dateOfBirth)".'
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: JWT Security Scheme
+      scheme: bearer
+      bearerFormat: JWT
+externalDocs:
+  description: See also the user docs on how to get started with the Assure API.
+  url: https://developer.signicat.com/docs/id-document-and-biometric-verification/guides/#set-up-an-api-integration
+x-refined-from:
+- id-document-and-biometric-verification-openapi.json
+- signicat-id-document-and-biometric-verification-openapi.yml

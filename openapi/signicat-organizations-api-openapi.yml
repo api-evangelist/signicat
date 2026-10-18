@@ -1,0 +1,4014 @@
+openapi: 3.2.0
+info:
+  title: Signicat Organizations API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Organizations across 2 of this provider''s published API definitions: data-verification-openapi.json, signicat-data-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/lookup
+tags:
+- name: Organizations
+  description: 'This API returns information about an organization.
+
+
+    Learn more about the different data sources in the developer documentation.
+
+    Also, refer to Sources section (below) to learn how to configure the data sources which you would like to use.'
+paths:
+  /countries/{country}/organizations/{id}:
+    get:
+      tags:
+      - Organizations
+      summary: Basic
+      description: Retrieve basic info about an organization
+      operationId: Organization_GetBasicOrganizationInfo_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.BasicInfoDto'
+              example:
+                name: SIGNICAT AS
+                names:
+                - name: SIGNICAT AS
+                  type: registered
+                  start: null
+                  end: null
+                organizationNumber: '989584022'
+                vatNumber: '989584022'
+                registrationDate: null
+                country:
+                  name: null
+                  alpha2: 'NO'
+                  alpha3: NOR
+                  numeric: '578'
+                businessAddress:
+                  street: Gryta 2A
+                  postalCode: '7010'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                addresses:
+                - type: postal
+                  startDate: null
+                  endDate: null
+                  isActive: true
+                  street: Postboks 1234
+                  postalCode: '0001'
+                  city: OSLO
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                - type: business
+                  startDate: null
+                  endDate: null
+                  isActive: true
+                  street: Gryta2A
+                  postalCode: '7010'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                organizationType:
+                  name: Aksjeselskap
+                  code: AS
+                  url: https://data.brreg.no/enhetsregisteret/api/organisasjonsformer
+                legalStatus: active
+                employees: 132
+                industries:
+                - code: '58.29'
+                  description: Other software publishing
+                  section: J
+                  level: 4
+                contact:
+                  phone:
+                    nationalNumber: '1283'
+                    countryCode: 1
+                    intlFormat: +1 1283
+                  email: example@example.com
+                metadata:
+                  sources:
+                  - no-brreg
+                  urls:
+                  - https://data.brreg.no/enhetsregisteret/api/enheter/989584022
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/{id}/authorization:
+    get:
+      tags:
+      - Organizations
+      summary: Authorization
+      description: 'This endpoint returns which people are allowed to sign and act on behalf of an organization.
+
+
+        If multiple people have to sign together, those people will be mentioned together in a so-called “combination”. If multiple combinations exist, they will all be calculated by the API and returned.
+
+        The API will report if it was able to calculate all combinations, only a part of the possible combinations, or no combinations.
+
+        The API will also return a list of the individual people with signing rights and their respective roles.'
+      operationId: Organization_GetAuthorization_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.AuthorizationDto'
+              example:
+                signature:
+                  status: complete
+                  description: Styret i fellesskap, Styrets leder alene
+                  combinations:
+                  - signers:
+                    - name:
+                        status: partial
+                        full: Anne Marie Dahl
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1970-04-02'
+                      role:
+                        code: boardLeader
+                        description: Styrets leder
+                      identityNumber:
+                        idNumber: '123432'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    - name:
+                        status: partial
+                        full: Lars Nilsen
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1983-10-26'
+                      role:
+                        code: boardMember
+                        description: Styremedlem
+                      identityNumber:
+                        idNumber: '123431'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    - name:
+                        status: partial
+                        full: Kari Elisabeth Strand
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1988-07-07'
+                      role:
+                        code: boardMember
+                        description: Styremedlem
+                      identityNumber:
+                        idNumber: '12343234'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    description: Styret i fellesskap
+                  - signers:
+                    - name:
+                        status: partial
+                        full: Anne Marie Dahl
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1970-04-02'
+                      role:
+                        code: boardLeader
+                        description: Styrets leder
+                      identityNumber:
+                        idNumber: '123423'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    description: Styrets leder alene
+                  basis:
+                    people:
+                    - name:
+                        status: partial
+                        full: Anne Marie Dahl
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1970-04-02'
+                      role:
+                        code: boardLeader
+                        description: Styrets leder
+                      roles:
+                      - code: boardLeader
+                        description: Styrets leder
+                      identityNumber:
+                        idNumber: '4535456'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    - name:
+                        status: partial
+                        full: Lars Nilsen
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1983-10-26'
+                      role:
+                        code: boardMember
+                        description: Styremedlem
+                      roles:
+                      - code: boardMember
+                        description: Styremedlem
+                      identityNumber:
+                        idNumber: '64564564'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    - name:
+                        status: partial
+                        full: Kari Elisabeth Strand
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1983-07-07'
+                      role:
+                        code: boardMember
+                        description: Styremedlem
+                      roles:
+                      - code: boardMember
+                        description: Styremedlem
+                      identityNumber:
+                        idNumber: '3242343'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    - name:
+                        status: partial
+                        full: Øystein Magnus Haugen
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1980-05-01'
+                      role:
+                        code: ceo
+                        description: Daglig leder/administrerende direktør
+                      roles:
+                      - code: ceo
+                        description: Daglig leder/administrerende direktør
+                      identityNumber:
+                        idNumber: '7686876'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                  metadata:
+                    sources:
+                    - no-brreg
+                    urls:
+                    - https://data.brreg.no/enhetsregisteret/api/enheter/989584022
+                    lastChanged: null
+                    rawJson: null
+                powerOfProcuration:
+                  status: complete
+                  description: Daglig leder alene
+                  combinations:
+                  - signers:
+                    - name:
+                        status: partial
+                        full: Øystein Magnus Haugen
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1980-05-01'
+                      role:
+                        code: ceo
+                        description: Daglig leder/administrerende direktør
+                      identityNumber:
+                        idNumber: '7686786'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                    description: Daglig leder alene
+                  basis:
+                    people:
+                    - name:
+                        status: partial
+                        full: Øystein Magnus Haugen
+                        first: null
+                        last: null
+                        middle: null
+                      dateOfBirth: '1980-05-01'
+                      role:
+                        code: ceo
+                        description: Daglig leder/administrerende direktør
+                      roles:
+                      - code: ceo
+                        description: Daglig leder/administrerende direktør
+                      identityNumber:
+                        idNumber: '7686876'
+                        type: unknown
+                        country:
+                          name: Norway
+                          alpha2: 'NO'
+                          alpha3: NOR
+                          numeric: '578'
+                  metadata:
+                    sources:
+                    - no-brreg
+                    urls:
+                    - https://data.brreg.no/enhetsregisteret/api/enheter/989584022/prokura
+                    lastChanged: null
+                    rawJson: null
+                metadata:
+                  accountingYear: null
+                  sources:
+                  - no-brreg
+                  urls:
+                  - https://data.brreg.no/fullmakt/enheter/989584022/prokura
+                  - https://data.brreg.no/fullmakt/enheter/989584022/signatur
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/{id}/ownership:
+    get:
+      tags:
+      - Organizations
+      summary: Ownership
+      description: Retrieve ownership info for an organization
+      operationId: Organization_GetOwnership_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.OwnershipDto'
+              example:
+                companies:
+                - name: SIGNICAT AS
+                  organizationNumber:
+                    domestic: '989584022'
+                    dunsNumber: null
+                    legalEntityIdentifier: null
+                  percentage: 75
+                  percentageRange:
+                    from: 10
+                    to: 75
+                  votingRights: 2
+                  votingRightsRange:
+                    from: 0.1
+                    to: 2
+                  integratedOwnership: 0.2
+                  integratedOwnershipRange:
+                    from: 0.1
+                    to: 0.2
+                  sourceSpecific: null
+                persons:
+                - name:
+                    status: partial
+                    full: LARS NILSEN
+                    first: null
+                    last: null
+                    middle: null
+                  dateOfBirth: '0000-00-00'
+                  percentage: 25
+                  percentageRange:
+                    from: 1
+                    to: 25
+                  votingRights: 2
+                  votingRightsRange:
+                    from: 0.1
+                    to: 2
+                  integratedOwnership: 10.1
+                  integratedOwnershipRange:
+                    from: 0.1
+                    to: 10.1
+                  sourceSpecific: null
+                otherShareholders:
+                - name: SIGNICAT AS
+                  id: '12345'
+                  percentage: 75
+                  percentageRange:
+                    from: 10
+                    to: 75
+                  votingRights: 2
+                  votingRightsRange:
+                    from: 0.1
+                    to: 2
+                  integratedOwnership: 0.2
+                  integratedOwnershipRange:
+                    from: 0.1
+                    to: 0.2
+                  sourceSpecific: null
+                sourceSpecific: null
+                metadata:
+                  sources:
+                  - no-bisnode
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/{id}/roles:
+    get:
+      tags:
+      - Organizations
+      summary: Roles
+      description: Retrieve information about roles in an organization
+      operationId: Organization_GetRoles_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Optionally request one or more attributes, by default all available attributes are included.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.RolesDto'
+              example:
+                persons:
+                - name:
+                    status: all
+                    full: SKJEGGESTAD THOMAS
+                    first: THOMAS
+                    last: SKJEGGESTAD
+                    middle: null
+                  address:
+                    street: KAMFJORDÅSEN 86
+                    postalCode: '3227'
+                    city: SANDEFJORD
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  dateOfBirth: '1956-02-03'
+                  nationality:
+                    name: Norway
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  identityNumber:
+                    idNumber: '21213'
+                    type: unknown
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  role: ceo
+                  roles:
+                  - role: ceo
+                    startDate: null
+                    endDate: null
+                    description: null
+                - name:
+                    status: all
+                    full: LANGLI MAIA ANNE
+                    first: MAIA
+                    last: LANGLI
+                    middle: ANNE
+                  address:
+                    street: EBBESENS GATE 191
+                    postalCode: '1636'
+                    city: FREDRIKSTAD
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  dateOfBirth: '1972-11-17'
+                  nationality:
+                    name: Norway
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  identityNumber:
+                    idNumber: '21213'
+                    type: unknown
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  role: boardLeader
+                  roles:
+                  - role: boardLeader
+                    startDate: null
+                    endDate: null
+                    description: null
+                - name:
+                    status: all
+                    full: SØRHAUG LINE HEDVIG
+                    first: LINE
+                    last: SØRHAUG
+                    middle: HEDVIG
+                  address:
+                    street: HAUGSTUA 204
+                    postalCode: '9017'
+                    city: TROMSØ
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  dateOfBirth: '1965-05-19'
+                  nationality:
+                    name: Norway
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  identityNumber:
+                    idNumber: '21213'
+                    type: unknown
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  role: boardMember
+                  roles:
+                  - role: boardMember
+                    startDate: null
+                    endDate: null
+                    description: null
+                - name:
+                    status: all
+                    full: JULIE BAUDIN
+                    first: JULIE
+                    last: BAUDIN
+                    middle: null
+                  address:
+                    street: UTVANDRET
+                    postalCode: null
+                    city: null
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  dateOfBirth: '1966-03-22'
+                  nationality:
+                    name: Norway
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  identityNumber:
+                    idNumber: '12342234'
+                    type: nationalIdentityNumber
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  role: boardMember
+                  roles:
+                  - role: boardMember
+                    startDate: null
+                    endDate: null
+                    description: null
+                companies:
+                - name: Ernst & Young AS
+                  organizationNumber:
+                    domestic: '976389387'
+                    dunsNumber: null
+                    legalEntityIdentifier: null
+                  role: accountant
+                  roles:
+                  - role: accountant
+                    startDate: null
+                    endDate: null
+                    description: null
+                - name: AZETS INSIGHT AS
+                  organizationNumber:
+                    domestic: '983338917'
+                    dunsNumber: null
+                    legalEntityIdentifier: null
+                  role: bookkeeper
+                  roles:
+                  - role: bookkeeper
+                    startDate: null
+                    endDate: null
+                    description: null
+                others: null
+                metadata:
+                  sources:
+                  - no-bisnode
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/{id}/ultimate-beneficial-owners:
+    get:
+      tags:
+      - Organizations
+      summary: Ultimate beneficial owners
+      description: Retrieve information about ultimate beneficial owners for an organization
+      operationId: Organization_GetUbo_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Ultimate beneficial owners was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.UboDto'
+              example:
+                ultimateBeneficiaryOwners:
+                - ownership:
+                    directOwnership: 100
+                    directOwnershipRange:
+                      from: 5
+                      to: 100
+                    indirectOwnership: null
+                    indirectOwnershipRange:
+                      from: 1
+                      to: 2.5
+                    integratedOwnership: null
+                    integratedOwnershipRange:
+                      from: 10
+                      to: 20
+                    votingRights: null
+                    votingRightsRange:
+                      from: 50
+                      to: 55
+                    votingPower: null
+                    votingPowerRange:
+                      from: 90
+                      to: 90.5
+                  name:
+                    status: partial
+                    full: HANNESTAD MARIE GRETE
+                    first: null
+                    last: null
+                    middle: null
+                  address:
+                    street: REDDALSVEIEN 146
+                    postalCode: '4886'
+                    city: GRIMSTAD
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  birth:
+                    monthOfBirth: '04'
+                    yearOfBirth: '1960'
+                    dateOfBirth: '1960-04-03'
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  gender: unknown
+                  identityNumber:
+                    idNumber: '21213'
+                    type: unknown
+                    country:
+                      name: Norway
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                  nationality:
+                    name: Norway
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  role: unknown
+                metadata:
+                  sources:
+                  - no-bisnode
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: No ultimate beneficial owners was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/{id}/finance:
+    get:
+      tags:
+      - Organizations
+      summary: Finance
+      description: Retrieve financial info for an organization
+      operationId: Organization_GetFinance_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the organization
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.FinanceDto'
+              example:
+                creditRating:
+                  score: AAA
+                  ratingSystem: Bisnode AAA
+                  description: Highest credit worthiness
+                  link: https://www.bisnode.com/about-bisnode/what-we-do/our-approach-to-risk-and-credit/credit-rating-model-company/
+                  year: 2020
+                numberOfPaymentRemarks: 0
+                profitAndLoss:
+                - turnover: 231750000
+                  grossProfit: 8305000
+                  netProfit: -2706000
+                  netProfitAfterTax: null
+                  year: 2019
+                  currency: SEK
+                - turnover: 231750000
+                  grossProfit: 8305000
+                  netProfit: -2706000
+                  netProfitAfterTax: null
+                  year: 2018
+                  currency: SEK
+                - turnover: 231750000
+                  grossProfit: 8305000
+                  netProfit: -2706000
+                  netProfitAfterTax: null
+                  year: 2017
+                  currency: SEK
+                netWorth: []
+                metadata:
+                  sources:
+                  - bisnode
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/organizations/accountnumber/{accountNumber}/verify:
+    get:
+      tags:
+      - Organizations
+      summary: Account Holder Verification
+      description: Retrieve account details if a bank account is found (using an IBAN) and it matches the name provided.
+      operationId: Organization_VerifyAccountNumber_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: accountNumber
+        in: path
+        description: Account number of the organization
+        required: true
+        schema:
+          type: string
+      - name: idList
+        in: query
+        description: Parameter used to specify a list of id checks. Allowed values are `NL_KVK`, `NL_KVK_BRANCH`, `EU_VAT`, `FR_SIREN`, `FR_SIRET` and `UK_CRN`. This parameter applies to a limited number of sources. For data sources in Italy, this is a required parameter and must be set to `EU_VAT`. Format to specify the attribute should be as follows NL_KVK, 01234565
+        schema:
+          type: array
+          items:
+            type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax`, `external`, `IBAN` and `branch`, defaults to `organization` or `IBAN` based on endpoint and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Company Name
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      - name: id
+        in: query
+        description: Id of the organization
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNumberVerificationResultDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /organizations/screening:
+    get:
+      tags:
+      - Organizations
+      summary: Screening
+      description: AML/CFT screening against lists with politically exposed persons (PEP), sanctions and adverse media.
+      operationId: OrganizationGlobal_Screening_GET
+      parameters:
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax` and `external`, defaults to `organization` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: countries
+        in: query
+        description: Comma-separated list of countries to include in the search - ISO 3166-1 format
+        schema:
+          maxLength: 50
+          type: string
+      - name: id
+        in: query
+        description: Id of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: name
+        in: query
+        description: Name of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      - name: listType
+        in: query
+        description: Comma-separated string of list types to screen against, defaults to all lists. Allowed values are `pep`, `sanction` and `adverseMedia`.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Used for paging
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Set how many results you want per page (max/default 100)
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening.ScreeningResultDto'
+              example:
+                offset: 0
+                limit: 100
+                size: 1
+                links:
+                  next: null
+                  previous: null
+                  first: http://api.signicat.com/information/organizations/screening?listType=pep%2csanction&name=OrgName&limit=100
+                  self: null
+                data:
+                - entityType: organization
+                  listType: sanction
+                  matchStrength:
+                    score: 20
+                    certainty: low
+                  sourceName: SCREENING_SOURCE
+                  name:
+                    status: partial
+                    full: OrgName AB
+                    first: null
+                    last: null
+                    middle: null
+                  gender: unknown
+                  aliases:
+                  - status: partial
+                    full: OrgName AB
+                    first: null
+                    last: null
+                    middle: null
+                  associates: []
+                  datesOfBirth: []
+                  addresses:
+                  - street: Hålebäcksvägen 7
+                    postalCode: '79026'
+                    city: ENVIKEN
+                    country:
+                      name: null
+                      alpha2: SE
+                      alpha3: SWE
+                      numeric: '752'
+                  comments: []
+                  functions: []
+                  media:
+                  - title: null
+                    excerpt: null
+                    url: https://google.com
+                    date: null
+                  roles:
+                  - roleType: Type of role
+                    organization: Organization Name
+                    description: Role description
+                    startDate: null
+                    endDate: null
+                metadata:
+                  sources:
+                  - trapets
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /organizations/search:
+    get:
+      tags:
+      - Organizations
+      summary: Search - Beta
+      description: 'Search for an organization.
+
+
+        Remarks when searching multiple sources:
+
+        Functionality is subject to change without prior notice.'
+      operationId: OrganizationGlobal_Search_GET
+      parameters:
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `organization`, `tax` and `external`, defaults to `organization` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: countries
+        in: query
+        description: Comma-separated list of countries to include in the search - ISO 3166-1 format
+        schema:
+          maxLength: 50
+          type: string
+      - name: id
+        in: query
+        description: Id of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: name
+        in: query
+        description: Name of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      - name: cursor
+        in: query
+        description: Cursor returned for paginating multiple sources, cannot be used together with `offset` and `limit`.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Used for paging
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Set how many results you want per page (max/default 100)
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization.SearchResultDto'
+              example:
+                offset: 0
+                limit: 100
+                size: 1
+                links:
+                  next: null
+                  previous: null
+                  first: https://api.signicat.com/info/lookup/organizations/search?countries=no&name=signicat&cursor=eyJpi45...
+                  self: https://api.signicat.com/info/lookup/organizations/search?countries=no&name=signicat&cursor=eyJpi45...
+                data:
+                - organizationNumber: '989584022'
+                  taxNumber: '832879'
+                  externalId: NO989584022
+                  name: SIGNICAT AS
+                  links:
+                    self: https://api.signicat.com/info/lookup/countries/NO/organizations/989584022
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  address:
+                    street: Bergen
+                    postalCode: '123'
+                    city: Bergen
+                    country:
+                      name: null
+                      alpha2: 'NO'
+                      alpha3: NOR
+                      numeric: '578'
+                metadata:
+                  sources:
+                  - no-brreg
+                  - opencorporates
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /organizations/documents:
+    get:
+      tags:
+      - Organizations
+      summary: Documents
+      description: Provides the link to download the documents(Registration, UBO map, Ownership map, Shareholders) from data registers.
+      operationId: OrganizationGlobal_Documents_GET
+      parameters:
+      - name: id
+        in: query
+        description: A unique identifier for the organization
+        schema:
+          type: string
+      - name: country
+        in: query
+        description: Country where the organisation is located.
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Optional filter for the organization name
+        schema:
+          type: string
+      - name: documentType
+        in: query
+        description: Specifies the type of document to retrieve
+        schema:
+          $ref: '#/components/schemas/DocumentType'
+      - name: deliveryMethod
+        in: query
+        description: Delivery method of the document
+        schema:
+          $ref: '#/components/schemas/DeliveryMethod'
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResultDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+components:
+  schemas:
+    Organization.UboDto:
+      type: object
+      properties:
+        ultimateBeneficiaryOwners:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.UltimateBeneficiaryOwnerDto'
+          description: Ultimate beneficiary owners
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    AccountDetailsDto:
+      type: object
+      properties:
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        accountStatus:
+          $ref: '#/components/schemas/AccountStatus'
+        isJoinedAccount:
+          type:
+          - boolean
+          - 'null'
+          description: If the account is shared
+        numberOfHolders:
+          type:
+          - integer
+          - 'null'
+          description: The number of account holders
+          format: int32
+        foreign:
+          type:
+          - boolean
+          - 'null'
+          description: If the account is foreign
+        countryOfAccount:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Account Type
+    Organization.SignerDto:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NameDto'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        role:
+          $ref: '#/components/schemas/Organization.SignerRole'
+        identityNumber:
+          $ref: '#/components/schemas/IdNumberDto'
+      additionalProperties: false
+    Organization.VotingPowerRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Voting power percentage range
+    Organization.BasicInfoDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Organization name
+        names:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.OrganizationNameDto'
+          description: List of organization names
+        organizationNumber:
+          type:
+          - string
+          - 'null'
+          description: The organization number
+        vatNumber:
+          type:
+          - string
+          - 'null'
+          description: VAT number of the organization
+        registrationDate:
+          type:
+          - string
+          - 'null'
+          description: Registration date of the organization
+          format: date-time
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        businessAddress:
+          $ref: '#/components/schemas/AddressDto'
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExtendedAddressDto'
+          description: Addresses
+        organizationType:
+          $ref: '#/components/schemas/Organization.OrganizationTypeDto'
+        legalStatus:
+          $ref: '#/components/schemas/Organization.LegalStatus'
+        employees:
+          type:
+          - integer
+          - 'null'
+          description: Number of employees
+          format: int32
+        industries:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.IndustryDto'
+          description: A list of industries the organization is involved in according to the NACE Rev. 2 classification;
+        contact:
+          $ref: '#/components/schemas/Organization.ContactInfoDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    Organization.RolesDto:
+      type: object
+      properties:
+        persons:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.PersonRoleDto'
+          description: A list of persons with roles
+        companies:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.CompanyRoleDto'
+          description: A list of companies with roles
+        others:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.OtherRoleDto'
+          description: Entities who's type is not known
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    MetadataDto:
+      type: object
+      properties:
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of sources for the data
+        urls:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Public urls to the sources
+        lastChanged:
+          type:
+          - string
+          - 'null'
+          description: The date the data was last changed
+          format: date-time
+        rawJson:
+          type:
+          - string
+          - 'null'
+          description: The raw JSON if it was requested and supported by the source
+        isCache:
+          type: boolean
+          description: Return boolean whether data is retrieved from cache.
+      additionalProperties: false
+      description: Metadata about the response
+    NameStatus:
+      enum:
+      - partial
+      - all
+      type: string
+      description: 'A hint to which attributes are set.
+
+        `partial` : only full name,
+
+        `all` : all attributes.'
+    Organization.SearchItemDto:
+      type: object
+      properties:
+        organizationNumber:
+          type:
+          - string
+          - 'null'
+          description: Organization number
+        taxNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Tax number of the entity (can be: TAX number, VAT number or Tax Identification Number (TIN))'
+        externalId:
+          type:
+          - string
+          - 'null'
+          description: External Id of the entity (internal source id)
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the entity
+        links:
+          $ref: '#/components/schemas/LinkDto'
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        address:
+          $ref: '#/components/schemas/AddressDto'
+      additionalProperties: false
+    Organization.ContactInfoDto:
+      type: object
+      properties:
+        phone:
+          $ref: '#/components/schemas/PhoneNumberDto'
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address
+      additionalProperties: false
+      description: Contact information for the organization
+    PhoneNumberDto:
+      type: object
+      properties:
+        nationalNumber:
+          type:
+          - string
+          - 'null'
+          description: The national number
+        countryCode:
+          type:
+          - integer
+          - 'null'
+          description: Country dial code if the national number was recognized as valid
+          format: int32
+        intlFormat:
+          type:
+          - string
+          - 'null'
+          description: The number formatted according to its locale if the national number was recognized as valid
+      additionalProperties: false
+      description: Phone number
+    Organization.SearchResultDto:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type: integer
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/PageLinks'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.SearchItemDto'
+          description: The result data
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    Organization.OrganizationTypeDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the organization type
+        code:
+          type:
+          - string
+          - 'null'
+          description: Code representation of the organization type
+        url:
+          type:
+          - string
+          - 'null'
+          description: Url containing different codes
+      additionalProperties: false
+      description: Organization type
+    Organization.RoleWithDateDto:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Organization.Role'
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date of the role
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date of the role
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the role
+      additionalProperties: false
+    MatchCertaintyDto:
+      enum:
+      - unknown
+      - high
+      - medium
+      - low
+      type: string
+    NameDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/NameStatus'
+        full:
+          type:
+          - string
+          - 'null'
+          description: Full name of the entity
+        first:
+          type:
+          - string
+          - 'null'
+          description: First/given name of the entity
+        last:
+          type:
+          - string
+          - 'null'
+          description: Last/surname of the entity
+        middle:
+          type:
+          - string
+          - 'null'
+          description: Middle name of the entity
+      additionalProperties: false
+      description: Name of the entity
+    Organization.IntegratedRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Shareholders integrated percentage range
+    Organization.OtherShareholderDto:
+      type: object
+      properties:
+        percentage:
+          type:
+          - number
+          - 'null'
+          description: Shareholding percentage in the organization
+          format: double
+        percentageRange:
+          $ref: '#/components/schemas/Organization.PercentageRangeDto'
+        votingRights:
+          type:
+          - number
+          - 'null'
+          description: Shareholders Voting rights percentage
+          format: double
+        votingRightsRange:
+          $ref: '#/components/schemas/Organization.VotingRightsRangeDto'
+        integratedOwnership:
+          type:
+          - number
+          - 'null'
+          description: Integrated shareholding percentage in the organization
+          format: double
+        integratedOwnershipRange:
+          $ref: '#/components/schemas/Organization.IntegratedRangeDto'
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          description: Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the entity
+        id:
+          type:
+          - string
+          - 'null'
+          description: Id of the entity
+      additionalProperties: false
+    FunctionDto:
+      type: object
+      properties:
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date
+          format: date-time
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name
+        function:
+          type:
+          - string
+          - 'null'
+          description: Type of function
+      additionalProperties: false
+    Organization.ProfitAndLossDto:
+      type: object
+      properties:
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Fiscal year
+          format: int32
+        currency:
+          type:
+          - string
+          - 'null'
+          description: ISO 4217 currency code
+        turnover:
+          type:
+          - integer
+          - 'null'
+          description: Gross revenue
+          format: int64
+        grossProfit:
+          type:
+          - integer
+          - 'null'
+          description: Revenue after deducting the cost of goods
+          format: int64
+        netProfit:
+          type:
+          - integer
+          - 'null'
+          description: Revenue after deducting operating, interest, and tax expenses
+          format: int64
+        netProfitAfterTax:
+          type:
+          - integer
+          - 'null'
+          description: Revenue after deducting tax expenses
+          format: int64
+      additionalProperties: false
+    Organization.SignerCombinations:
+      type: object
+      properties:
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.SignerDto'
+          description: The signers in a combination
+        description:
+          type:
+          - string
+          - 'null'
+          description: A description
+      additionalProperties: false
+    BirthDto:
+      type: object
+      properties:
+        monthOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Month of birth
+        yearOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Year of birth
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Birth information
+    Organization.OtherRoleDto:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Organization.Role'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.RoleWithDateDto'
+          description: Roles of the entity
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the entity
+        id:
+          type:
+          - string
+          - 'null'
+          description: Id of the entity
+      additionalProperties: false
+    Organization.PowerOfProcurationDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Organization.AuthorizationStatus'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description
+        combinations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.SignerCombinations'
+          description: List of signature combinations
+        basis:
+          $ref: '#/components/schemas/Organization.CombinationBasis'
+        metadata:
+          $ref: '#/components/schemas/Organization.SignatureMetadataDto'
+      additionalProperties: false
+      description: People with authorization to sign and to act on behalf of the business in some matters.
+    AccountNumberVerificationResultDto:
+      type: object
+      properties:
+        accountNumber:
+          type:
+          - string
+          - 'null'
+          description: Account Number
+        isValidAccountNumber:
+          type:
+          - boolean
+          - 'null'
+          description: If the Account Number is valid
+        validationDetails:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationDetailsDto'
+          description: Client details
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        accountDetails:
+          $ref: '#/components/schemas/AccountDetailsDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+      description: Iban validation
+    Organization.LegalStatus:
+      enum:
+      - unknown
+      - active
+      - inactive
+      - insolvent
+      - terminating
+      - terminated
+      - deleted
+      type: string
+    ExtendedAddressDto:
+      type: object
+      properties:
+        street:
+          type:
+          - string
+          - 'null'
+          description: Street address or PO box
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code
+        city:
+          type:
+          - string
+          - 'null'
+          description: City or place
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        type:
+          $ref: '#/components/schemas/AddressTypeDto'
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date of the address
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date of the address
+          format: date-time
+        isActive:
+          type: boolean
+          description: If the address is active based on the start and end date
+          readOnly: true
+      additionalProperties: false
+    AddressTypeDto:
+      enum:
+      - unknown
+      - registered
+      - business
+      - postal
+      type: string
+    Screening.ScreeningResultDto:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type: integer
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/PageLinks'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Screening.ScreenedItemDto'
+          description: The result data
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    IdNumberTypeDto:
+      enum:
+      - unknown
+      - nationalIdentityNumber
+      - socialSecurityNumber
+      - taxIdentificationNumber
+      - identificationDocumentNumber
+      type: string
+      description: The type of the identity number
+    Iso3166Dto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Country name
+        alpha2:
+          type:
+          - string
+          - 'null'
+          description: Two digit country code
+        alpha3:
+          type:
+          - string
+          - 'null'
+          description: Three digit country code
+        numeric:
+          type:
+          - string
+          - 'null'
+          description: Numeric country code
+      additionalProperties: false
+      description: ISO 3166-1 country codes
+    Organization.OwnershipRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Shareholding percentage range
+    ProblemDto:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: A code that identifies the type of error that occured
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code
+          format: int32
+        invalidParams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvalidParamDto'
+          description: A list of parameters that are invalid
+      additionalProperties: false
+    DocumentDto:
+      type: object
+      properties:
+        fileName:
+          type:
+          - string
+          - 'null'
+          description: Name of the file including extension.
+        type:
+          type:
+          - string
+          - 'null'
+          description: Type of the document (used for classification or filtering).
+        delivery:
+          $ref: '#/components/schemas/DeliveryDto'
+      additionalProperties: false
+    Organization.CombinationBasis:
+      type: object
+      properties:
+        people:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.BasisSignerDto'
+          description: The people
+      additionalProperties: false
+      description: Contains the data that was used to form the basis for the combinations
+    PageLinks:
+      type: object
+      properties:
+        self:
+          type:
+          - string
+          - 'null'
+        next:
+          type:
+          - string
+          - 'null'
+          description: Url of the next page
+        previous:
+          type:
+          - string
+          - 'null'
+          description: Url of the previous page
+        first:
+          type:
+          - string
+          - 'null'
+          description: Url of the first page
+      additionalProperties: false
+      description: Links for paging
+    InvalidParamDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of attribute that was invalid
+        reason:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this field
+      additionalProperties: false
+    Organization.CreditRatingDto:
+      type: object
+      properties:
+        score:
+          type:
+          - string
+          - 'null'
+          description: Credit rating score
+        ratingSystem:
+          type:
+          - string
+          - 'null'
+          description: Name of the rating system used
+        description:
+          type:
+          - string
+          - 'null'
+          description: A description of the code
+        link:
+          type:
+          - string
+          - 'null'
+          description: Link to the rating used if available
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Year of the score
+          format: int32
+      additionalProperties: false
+      description: Credit score information
+    Organization.UboRoleDto:
+      enum:
+      - unknown
+      - boardMember
+      - shareholder
+      - other
+      type: string
+      description: Role of the person
+    DocumentResultDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique number associated with organisation or document.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Legal name of the organization.
+        document:
+          $ref: '#/components/schemas/DocumentDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    Organization.OrganizationNameType:
+      enum:
+      - unknown
+      - tradeName
+      - registered
+      type: string
+    AddressDto:
+      type: object
+      properties:
+        street:
+          type:
+          - string
+          - 'null'
+          description: Street address or PO box
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code
+        city:
+          type:
+          - string
+          - 'null'
+          description: City or place
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Address of the entity
+    Organization.Role:
+      enum:
+      - unknown
+      - ceo
+      - boardLeader
+      - boardMember
+      - procuration
+      - signature
+      - bookkeeper
+      - accountant
+      - partner
+      - alternateMember
+      - auditor
+      - representative
+      - foreign
+      - legalEntity
+      - shareholder
+      - owner
+      - legalRepresentative
+      - taxRepresentative
+      - publicEntity
+      - houseManager
+      - ceoSubstitute
+      - viceBoardLeader
+      - deputyBoardMember
+      type: string
+      description: Role of the entity
+    Organization.OwnershipDto:
+      type: object
+      properties:
+        companies:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.ShareholderCompanyDto'
+          description: List of shareholding companies
+        persons:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.ShareholderPersonDto'
+          description: List of shareholding persons
+        otherShareholders:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.OtherShareholderDto'
+          description: List of shareholders who's type is not known
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          description: Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available.
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    OrganizationMetadataDto:
+      type: object
+      properties:
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of sources for the data
+        urls:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Public urls to the sources
+        lastChanged:
+          type:
+          - string
+          - 'null'
+          description: The date the data was last changed
+          format: date-time
+        rawJson:
+          type:
+          - string
+          - 'null'
+          description: The raw JSON if it was requested and supported by the source
+        isCache:
+          type: boolean
+          description: Return boolean whether data is retrieved from cache.
+        accountingYear:
+          type:
+          - integer
+          - 'null'
+          description: Accounting year of the data
+          format: int32
+      additionalProperties: false
+      description: Metadata about the response
+    Organization.IndirectOwnershipRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Direct and indirect ownership range
+    Organization.AuthorizationStatus:
+      enum:
+      - unknown
+      - error
+      - none
+      - incomplete
+      - complete
+      type: string
+      description: 'Describes the authorization response. Meaning of each status:
+
+
+        - "unknown": unknown value
+
+        - "error": no combinations could be generated
+
+        - "none": no combinations available
+
+        - "incomplete": the response contains combinations, but there may be more
+
+        - "complete": the response contains all possible combinations'
+    Organization.AuthorizationRole:
+      enum:
+      - unknown
+      - ceo
+      - boardLeader
+      - boardMember
+      - procuration
+      - signature
+      - bookkeeper
+      - accountant
+      - houseManager
+      - ceoSubstitute
+      - viceBoardLeader
+      - deputyBoardMember
+      - partner
+      - alternateMember
+      - foreign
+      - auditor
+      - legalRepresentative
+      - owner
+      - publicEntity
+      - representative
+      - taxRepresentative
+      - shareholder
+      - legalEntity
+      type: string
+      description: Role of the entity
+    Organization.UltimateBeneficiaryOwnerDto:
+      type: object
+      properties:
+        ownership:
+          $ref: '#/components/schemas/Organization.UboOwnershipDto'
+        name:
+          $ref: '#/components/schemas/NameDto'
+        address:
+          $ref: '#/components/schemas/AddressDto'
+        birth:
+          $ref: '#/components/schemas/BirthDto'
+        gender:
+          $ref: '#/components/schemas/GenderDto'
+        identityNumber:
+          $ref: '#/components/schemas/IdNumberDto'
+        nationality:
+          $ref: '#/components/schemas/Iso3166Dto'
+        role:
+          $ref: '#/components/schemas/Organization.UboRoleDto'
+      additionalProperties: false
+    MatchStrengthDto:
+      type: object
+      properties:
+        score:
+          type:
+          - integer
+          - 'null'
+          description: A score from 0 - 100 where higher values are more relevant
+          format: int32
+        certainty:
+          $ref: '#/components/schemas/MatchCertaintyDto'
+      additionalProperties: false
+      description: An indication of how relevant the result is
+    MatchType:
+      enum:
+      - unknown
+      - name
+      - id
+      type: string
+    Organization.NetWorthDto:
+      type: object
+      properties:
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Fiscal year
+          format: int32
+        currency:
+          type:
+          - string
+          - 'null'
+          description: ISO 4217 currency code
+        value:
+          type:
+          - integer
+          - 'null'
+          description: Value of the organization
+          format: int64
+      additionalProperties: false
+    Organization.SignerRole:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/Organization.AuthorizationRole'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Text description of the role
+      additionalProperties: false
+      description: Role of the signer
+    Organization.CompanyRoleDto:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Organization.Role'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.RoleWithDateDto'
+          description: Roles of the entity
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the company
+        organizationNumber:
+          $ref: '#/components/schemas/OrganizationNumberDto'
+      additionalProperties: false
+    DeliveryDto:
+      type: object
+      properties:
+        contentType:
+          type:
+          - string
+          - 'null'
+          description: pdf, video, zip etc
+        url:
+          type:
+          - string
+          - 'null'
+          description: Url for download the file
+        method:
+          type:
+          - string
+          - 'null'
+          description: 'Delivery method: "url", "base64", or "zip_url".'
+        content:
+          type:
+          - string
+          - 'null'
+          description: Base64-encoded content (used when method is "base64").
+      additionalProperties: false
+    MediaLinkDto:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the content
+        excerpt:
+          type:
+          - string
+          - 'null'
+          description: An excerpt of the content
+        url:
+          type:
+          - string
+          - 'null'
+          description: Url to the content
+        date:
+          type:
+          - string
+          - 'null'
+          description: Date of the content
+          format: date-time
+      additionalProperties: false
+    ApproximateBirthDto:
+      type: object
+      properties:
+        monthOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Month of birth
+        yearOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Year of birth
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        isApproximate:
+          type: boolean
+      additionalProperties: false
+    Organization.PercentageRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Shareholding percentage range
+    AccountType:
+      enum:
+      - unknown
+      - person
+      - organization
+      type: string
+    AssociateDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the associate
+        association:
+          type:
+          - string
+          - 'null'
+          description: Type of association
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Additional information / Detailed description
+      additionalProperties: false
+    IdNumberDto:
+      type: object
+      properties:
+        idNumber:
+          type:
+          - string
+          - 'null'
+          description: The identity number
+        type:
+          $ref: '#/components/schemas/IdNumberTypeDto'
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Identity number
+    Organization.VotingRightsRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Shareholders voting rights percentage range
+    Organization.ShareholderPersonDto:
+      type: object
+      properties:
+        percentage:
+          type:
+          - number
+          - 'null'
+          description: Shareholding percentage in the organization
+          format: double
+        percentageRange:
+          $ref: '#/components/schemas/Organization.PercentageRangeDto'
+        votingRights:
+          type:
+          - number
+          - 'null'
+          description: Shareholders Voting rights percentage
+          format: double
+        votingRightsRange:
+          $ref: '#/components/schemas/Organization.VotingRightsRangeDto'
+        integratedOwnership:
+          type:
+          - number
+          - 'null'
+          description: Integrated shareholding percentage in the organization
+          format: double
+        integratedOwnershipRange:
+          $ref: '#/components/schemas/Organization.IntegratedRangeDto'
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          description: Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available.
+        name:
+          $ref: '#/components/schemas/NameDto'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      additionalProperties: false
+    Organization.SignatureMetadataDto:
+      type: object
+      properties:
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of sources for the data
+        urls:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Public urls to the sources
+        lastChanged:
+          type:
+          - string
+          - 'null'
+          description: The date the data was last changed
+          format: date-time
+        rawJson:
+          type:
+          - string
+          - 'null'
+          description: The raw JSON if it was requested and supported by the source
+      additionalProperties: false
+      description: Metadata about the response
+    ListTypeDto:
+      enum:
+      - unknown
+      - pep
+      - sanction
+      - adverseMedia
+      type: string
+    Organization.OrganizationNameDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name
+        type:
+          $ref: '#/components/schemas/Organization.OrganizationNameType'
+        start:
+          type:
+          - string
+          - 'null'
+          description: Start date of the name
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: End date of the name
+          format: date-time
+      additionalProperties: false
+    DocumentType:
+      enum:
+      - basic
+      - shareholder
+      - registration
+      - financial
+      - tax
+      - ownership
+      - ubo
+      - board
+      - historical
+      - registerExtract
+      - other
+      - groupStructure
+      type: string
+    NamedValueDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EntityTypeDto:
+      enum:
+      - unknown
+      - organization
+      - person
+      type: string
+    ValidationDetailsDto:
+      type: object
+      properties:
+        isMatching:
+          type:
+          - boolean
+          - 'null'
+          description: If matches
+        matchType:
+          $ref: '#/components/schemas/MatchType'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Validation description
+      additionalProperties: false
+      description: Validation details
+    AccountStatus:
+      enum:
+      - unknown
+      - active
+      - inactive
+      - renumbered
+      type: string
+    Screening.ScreeningRolesDto:
+      type: object
+      properties:
+        roleType:
+          type:
+          - string
+          - 'null'
+          description: Screening type of role
+        organization:
+          type:
+          - string
+          - 'null'
+          description: Screening organization
+        description:
+          type:
+          - string
+          - 'null'
+          description: Screening description
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Screening role start date
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: Screening role end date
+          format: date-time
+      additionalProperties: false
+    Screening.ScreenedItemDto:
+      type: object
+      properties:
+        entityType:
+          $ref: '#/components/schemas/EntityTypeDto'
+        listType:
+          $ref: '#/components/schemas/ListTypeDto'
+        matchStrength:
+          $ref: '#/components/schemas/MatchStrengthDto'
+        sourceName:
+          type:
+          - string
+          - 'null'
+          description: Name of the source the item was found in
+        name:
+          $ref: '#/components/schemas/NameDto'
+        gender:
+          $ref: '#/components/schemas/GenderDto'
+        aliases:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NameDto'
+          description: Aliases for the item
+        associates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AssociateDto'
+          description: Associates of the item (Only for entityType "person")
+        datesOfBirth:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApproximateBirthDto'
+          description: Possible dates of birth (Only for entityType "person")
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressDto'
+          description: Addresses of the entity
+        comments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NamedValueDto'
+          description: Comments
+        functions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FunctionDto'
+          description: Functions
+        media:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaLinkDto'
+          description: Online content related to the item (Only for entityType "person")
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Screening.ScreeningRolesDto'
+          description: Person screening roles associated
+      additionalProperties: false
+    Organization.AuthorizationDto:
+      type: object
+      properties:
+        signature:
+          $ref: '#/components/schemas/Organization.SignatureDto'
+        powerOfProcuration:
+          $ref: '#/components/schemas/Organization.PowerOfProcurationDto'
+        metadata:
+          $ref: '#/components/schemas/OrganizationMetadataDto'
+      additionalProperties: false
+    Organization.ShareholderCompanyDto:
+      type: object
+      properties:
+        percentage:
+          type:
+          - number
+          - 'null'
+          description: Shareholding percentage in the organization
+          format: double
+        percentageRange:
+          $ref: '#/components/schemas/Organization.PercentageRangeDto'
+        votingRights:
+          type:
+          - number
+          - 'null'
+          description: Shareholders Voting rights percentage
+          format: double
+        votingRightsRange:
+          $ref: '#/components/schemas/Organization.VotingRightsRangeDto'
+        integratedOwnership:
+          type:
+          - number
+          - 'null'
+          description: Integrated shareholding percentage in the organization
+          format: double
+        integratedOwnershipRange:
+          $ref: '#/components/schemas/Organization.IntegratedRangeDto'
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          description: Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the company
+        organizationNumber:
+          $ref: '#/components/schemas/OrganizationNumberDto'
+      additionalProperties: false
+    LinkDto:
+      type: object
+      properties:
+        self:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Links to the item
+    Organization.IndustryDto:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: NACE Rev. 2 code
+        description:
+          type:
+          - string
+          - 'null'
+          description: NACE Rev. 2 description
+        section:
+          type:
+          - string
+          - 'null'
+          description: NACE Rev. 2 section (A-U) the code belongs to
+        level:
+          type: integer
+          description: Hierarchical level of the code
+          format: int32
+      additionalProperties: false
+      description: NACE Rev. 2 classification
+    Organization.IntegratedOwnershipRangeDto:
+      type: object
+      properties:
+        from:
+          type:
+          - number
+          - 'null'
+          description: Greater than or equal to
+          format: double
+        to:
+          type:
+          - number
+          - 'null'
+          description: Less than or equal to
+          format: double
+      additionalProperties: false
+      description: Direct and indirect ownership range
+    Organization.FinanceDto:
+      type: object
+      properties:
+        creditRating:
+          $ref: '#/components/schemas/Organization.CreditRatingDto'
+        numberOfPaymentRemarks:
+          type:
+          - integer
+          - 'null'
+          description: Number of payment remarks registered on the organization
+          format: int32
+        profitAndLoss:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.ProfitAndLossDto'
+          description: Account figures
+        netWorth:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.NetWorthDto'
+          description: Key figures
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    DeliveryMethod:
+      enum:
+      - base64
+      type: string
+    OrganizationNumberDto:
+      type: object
+      properties:
+        domestic:
+          type:
+          - string
+          - 'null'
+          description: The domestic organization number
+        dunsNumber:
+          type:
+          - string
+          - 'null'
+          description: Data Universal Numbering System (DUNS number) for the organization. https://en.wikipedia.org/wiki/Data_Universal_Numbering_System
+        legalEntityIdentifier:
+          type:
+          - string
+          - 'null'
+          description: Legal Entity Identifier (LEI) - global identifier of legal entities participating in financial transactions. https://en.wikipedia.org/wiki/Legal_Entity_Identifier
+      additionalProperties: false
+      description: Organization numbers in different formats
+    Organization.SignatureDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Organization.AuthorizationStatus'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description
+        combinations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.SignerCombinations'
+          description: List of signature combinations
+        basis:
+          $ref: '#/components/schemas/Organization.CombinationBasis'
+        metadata:
+          $ref: '#/components/schemas/Organization.SignatureMetadataDto'
+      additionalProperties: false
+      description: People with authorization to sign and to act on behalf of the business in all matters.
+    Organization.PersonRoleDto:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Organization.Role'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.RoleWithDateDto'
+          description: Roles of the entity
+        name:
+          $ref: '#/components/schemas/NameDto'
+        address:
+          $ref: '#/components/schemas/AddressDto'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        nationality:
+          $ref: '#/components/schemas/Iso3166Dto'
+        identityNumber:
+          $ref: '#/components/schemas/IdNumberDto'
+      additionalProperties: false
+    GenderDto:
+      enum:
+      - unknown
+      - female
+      - male
+      - other
+      type: string
+      description: Gender of the person (Only for entityType "person")
+    Organization.UboOwnershipDto:
+      type: object
+      properties:
+        directOwnership:
+          type:
+          - number
+          - 'null'
+          description: Shareholding percentage
+          format: double
+        directOwnershipRange:
+          $ref: '#/components/schemas/Organization.OwnershipRangeDto'
+        indirectOwnership:
+          type:
+          - number
+          - 'null'
+          description: Indirect ownership
+          format: double
+        indirectOwnershipRange:
+          $ref: '#/components/schemas/Organization.IndirectOwnershipRangeDto'
+        integratedOwnership:
+          type:
+          - number
+          - 'null'
+          description: Direct and indirect ownership
+          format: double
+        integratedOwnershipRange:
+          $ref: '#/components/schemas/Organization.IntegratedOwnershipRangeDto'
+        votingRights:
+          type:
+          - number
+          - 'null'
+          description: Voting rights of the person in percent
+          format: double
+        votingRightsRange:
+          $ref: '#/components/schemas/Organization.VotingRightsRangeDto'
+        votingPower:
+          type:
+          - number
+          - 'null'
+          description: Voting power in percent. The voting power may reflect the ability to influence the voting outcome or the extent of control over the company (the exact formula used to calculate this value may be different depending on the source).
+          format: double
+        votingPowerRange:
+          $ref: '#/components/schemas/Organization.VotingPowerRangeDto'
+      additionalProperties: false
+      description: Ownership information
+    Organization.BasisSignerDto:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NameDto'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        role:
+          $ref: '#/components/schemas/Organization.SignerRole'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization.SignerRole'
+          description: List of Roles associated to the Basis Signer
+        identityNumber:
+          $ref: '#/components/schemas/IdNumberDto'
+      additionalProperties: false
+x-refined-from:
+- data-verification-openapi.json
+- signicat-data-verification-openapi.yml

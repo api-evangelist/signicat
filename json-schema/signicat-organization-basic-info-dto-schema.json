@@ -1,0 +1,434 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organization-basic-info-dto-schema.json",
+  "title": "Organization.BasicInfoDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-data-verification-openapi.yml#/components/schemas/Organization.BasicInfoDto",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Organization name"
+    },
+    "names": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Organization.OrganizationNameDto"
+      },
+      "description": "List of organization names"
+    },
+    "organizationNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The organization number"
+    },
+    "vatNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "VAT number of the organization"
+    },
+    "registrationDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Registration date of the organization",
+      "format": "date-time"
+    },
+    "country": {
+      "$ref": "#/$defs/Iso3166Dto"
+    },
+    "businessAddress": {
+      "$ref": "#/$defs/AddressDto"
+    },
+    "addresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/ExtendedAddressDto"
+      },
+      "description": "Addresses"
+    },
+    "organizationType": {
+      "$ref": "#/$defs/Organization.OrganizationTypeDto"
+    },
+    "legalStatus": {
+      "$ref": "#/$defs/Organization.LegalStatus"
+    },
+    "employees": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Number of employees",
+      "format": "int32"
+    },
+    "industries": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Organization.IndustryDto"
+      },
+      "description": "A list of industries the organization is involved in according to the NACE Rev. 2 classification;"
+    },
+    "contact": {
+      "$ref": "#/$defs/Organization.ContactInfoDto"
+    },
+    "metadata": {
+      "$ref": "#/$defs/MetadataDto"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AddressDto": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Street address or PO box"
+        },
+        "postalCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Zip code / Postal code"
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City or place"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Address of the entity"
+    },
+    "AddressTypeDto": {
+      "enum": [
+        "unknown",
+        "registered",
+        "business",
+        "postal"
+      ],
+      "type": "string"
+    },
+    "ExtendedAddressDto": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Street address or PO box"
+        },
+        "postalCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Zip code / Postal code"
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City or place"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        },
+        "type": {
+          "$ref": "#/$defs/AddressTypeDto"
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start date of the address",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End date of the address",
+          "format": "date-time"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "If the address is active based on the start and end date",
+          "readOnly": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "Iso3166Dto": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country name"
+        },
+        "alpha2": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Two digit country code"
+        },
+        "alpha3": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Three digit country code"
+        },
+        "numeric": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Numeric country code"
+        }
+      },
+      "additionalProperties": false,
+      "description": "ISO 3166-1 country codes"
+    },
+    "MetadataDto": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of sources for the data"
+        },
+        "urls": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Public urls to the sources"
+        },
+        "lastChanged": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date the data was last changed",
+          "format": "date-time"
+        },
+        "rawJson": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The raw JSON if it was requested and supported by the source"
+        },
+        "isCache": {
+          "type": "boolean",
+          "description": "Return boolean whether data is retrieved from cache."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Metadata about the response"
+    },
+    "Organization.ContactInfoDto": {
+      "type": "object",
+      "properties": {
+        "phone": {
+          "$ref": "#/$defs/PhoneNumberDto"
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Email address"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Contact information for the organization"
+    },
+    "Organization.IndustryDto": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "NACE Rev. 2 code"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "NACE Rev. 2 description"
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "NACE Rev. 2 section (A-U) the code belongs to"
+        },
+        "level": {
+          "type": "integer",
+          "description": "Hierarchical level of the code",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false,
+      "description": "NACE Rev. 2 classification"
+    },
+    "Organization.LegalStatus": {
+      "enum": [
+        "unknown",
+        "active",
+        "inactive",
+        "insolvent",
+        "terminating",
+        "terminated",
+        "deleted"
+      ],
+      "type": "string"
+    },
+    "Organization.OrganizationNameDto": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Organization.OrganizationNameType"
+        },
+        "start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start date of the name",
+          "format": "date-time"
+        },
+        "end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End date of the name",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Organization.OrganizationNameType": {
+      "enum": [
+        "unknown",
+        "tradeName",
+        "registered"
+      ],
+      "type": "string"
+    },
+    "Organization.OrganizationTypeDto": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the organization type"
+        },
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Code representation of the organization type"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Url containing different codes"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Organization type"
+    },
+    "PhoneNumberDto": {
+      "type": "object",
+      "properties": {
+        "nationalNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The national number"
+        },
+        "countryCode": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Country dial code if the national number was recognized as valid",
+          "format": "int32"
+        },
+        "intlFormat": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The number formatted according to its locale if the national number was recognized as valid"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Phone number"
+    }
+  }
+}

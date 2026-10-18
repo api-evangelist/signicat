@@ -1,0 +1,236 @@
+openapi: 3.2.0
+info:
+  title: Signicat Business Registry API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged BusinessRegistry across 2 of this provider''s published API definitions: data-verification-openapi.json, signicat-data-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/lookup
+tags:
+- name: BusinessRegistry
+  description: This API returns information about a business registry.
+paths:
+  /businessregistry:
+    get:
+      tags:
+      - BusinessRegistry
+      summary: List registration authorities
+      description: Retrieves a list of business registration authorities globally
+      operationId: BusinessRegistry_ListRegistrationAuthorities_GET
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BusinessRegistry.RegistrationAuthorityItemDto'
+              example:
+              - self_url: https://api.signicat.com/info/lookup/businessregistry/RA000071
+                authorityCode: RA000071
+                countryCode: CM
+                country: Cameroon
+                localizedName: Planning and Regional De…t (Ministry of Economy)
+                internationalName: Planning and Regional De…t (Ministry of Economy)
+                jurisdiction: Cameroon
+              - self_url: https://api.signicat.com/info/lookup/businessregistry/RA000201
+                authorityCode: RA000201
+                countryCode: DE
+                country: Germany
+                localizedName: Handelsregister
+                internationalName: Commercial Register
+                jurisdiction: Ansbach
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /businessregistry/{authorityCode}:
+    get:
+      tags:
+      - BusinessRegistry
+      summary: Retrieve registration authority
+      description: Retrieves detailed information about a specific registration authority
+      operationId: BusinessRegistry_GetRegistrationAuthorityByAuthorityCode_GET
+      parameters:
+      - name: authorityCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessRegistry.RegistrationAuthorityDto'
+              example:
+                responsibleOrgLocalizedName: Centre National du Registre du Commerce (CNRC)
+                responsibleOrgInternationalName: National Center of the Trade Register
+                website: https://sidjilcom.cnrc.dz/web/cnrc/accueil
+                authorityCode: RA000003
+                countryCode: DZ
+                country: Algeria
+                localizedName: Registre du Commerce
+                internationalName: Trade Register
+                jurisdiction: Algeria
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+components:
+  schemas:
+    ProblemDto:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: A code that identifies the type of error that occured
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code
+          format: int32
+        invalidParams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvalidParamDto'
+          description: A list of parameters that are invalid
+      additionalProperties: false
+    BusinessRegistry.RegistrationAuthorityItemDto:
+      type: object
+      properties:
+        authorityCode:
+          type:
+          - string
+          - 'null'
+          description: Authority code
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 country codes
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country name
+        localizedName:
+          type:
+          - string
+          - 'null'
+          description: Localized name
+        internationalName:
+          type:
+          - string
+          - 'null'
+          description: International name
+        jurisdiction:
+          type:
+          - string
+          - 'null'
+          description: Jurisdiction
+        self_url:
+          type:
+          - string
+          - 'null'
+          description: Link to more information
+      additionalProperties: false
+    InvalidParamDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of attribute that was invalid
+        reason:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this field
+      additionalProperties: false
+    BusinessRegistry.RegistrationAuthorityDto:
+      type: object
+      properties:
+        authorityCode:
+          type:
+          - string
+          - 'null'
+          description: Authority code
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 country codes
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country name
+        localizedName:
+          type:
+          - string
+          - 'null'
+          description: Localized name
+        internationalName:
+          type:
+          - string
+          - 'null'
+          description: International name
+        jurisdiction:
+          type:
+          - string
+          - 'null'
+          description: Jurisdiction
+        responsibleOrgLocalizedName:
+          type:
+          - string
+          - 'null'
+          description: Localized name of the responsible organization
+        responsibleOrgInternationalName:
+          type:
+          - string
+          - 'null'
+          description: Name of the responsible organization
+        website:
+          type:
+          - string
+          - 'null'
+          description: Website
+      additionalProperties: false
+x-refined-from:
+- data-verification-openapi.json
+- signicat-data-verification-openapi.yml

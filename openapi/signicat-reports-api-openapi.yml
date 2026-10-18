@@ -1,0 +1,128 @@
+openapi: 3.2.0
+info:
+  title: Signicat Reports API
+  version: 1.0.0-SNAPSHOT
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged reports across 2 of this provider''s published API definitions: digital-evidence-management-openapi.json, signicat-digital-evidence-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/dem
+  description: Generated server url
+tags:
+- name: Reports
+paths:
+  /reports/{id}:
+    get:
+      tags:
+      - Reports
+      summary: Retrieves a generated PDF report for a record
+      description: Takes a Record ID as a parameter. It retrieves the record and generates a PDF report for the record.
+      operationId: generateReport
+      parameters:
+      - name: id
+        in: path
+        description: Unique identifier for a record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+        example: 123e4567-e89b-12d3-a456-556642440000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/pdf:
+              schema:
+                type: string
+                additionalProperties:
+                  default: '##default'
+                default: '##default'
+              examples:
+                Example PDF:
+                  summary: Example PDF
+                  description: 'Example output of report endpoint. Long string of text representing the base64 encoded pdf document. '
+                  value: JVBERi0xLjMKJ...
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+    servers:
+    - url: https://api.signicat.com/dem
+      description: Generated server url
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      default: '##default'
+      description: Return object detailing an error that has occurred.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        code:
+          type: string
+        type:
+          type: string
+        detail:
+          type: string
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+    InvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+x-refined-from:
+- digital-evidence-management-openapi.json
+- signicat-digital-evidence-management-openapi.yml

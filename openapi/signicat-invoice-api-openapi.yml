@@ -1,0 +1,408 @@
+openapi: 3.2.0
+info:
+  title: Signicat Invoice API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Invoice across 2 of this provider''s published API definitions: account-management-openapi.json, signicat-account-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /account-management
+tags:
+- name: Invoice
+paths:
+  /invoices:
+    get:
+      tags:
+      - Invoice
+      summary: List invoices
+      description: The default value of `invoiceDateBefore` is the current time.
+      parameters:
+      - name: invoiceDateAfter
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: invoiceDateBefore
+        in: query
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceListItem'
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceListItem'
+      operationId: getInvoices
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /invoices/{invoiceNumber}:
+    get:
+      tags:
+      - Invoice
+      summary: Retrieve invoice
+      parameters:
+      - name: invoiceNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceItem'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvoiceItem'
+      operationId: getInvoicesByInvoiceNumber
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /invoices/{invoiceNumber}/pdf:
+    get:
+      tags:
+      - Invoice
+      summary: Download invoice
+      parameters:
+      - name: invoiceNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: byte
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      operationId: getInvoicesByInvoiceNumberPdf
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+components:
+  schemas:
+    InvoiceLineItem:
+      type: object
+      properties:
+        lineTotalDiscountAmount:
+          type: number
+          format: double
+        lineTotalTaxAmount:
+          type: number
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        salesPrice:
+          type: number
+          format: double
+        salesUnitSymbol:
+          type:
+          - string
+          - 'null'
+        lineTotalChargeAmount:
+          type: number
+          format: double
+        invoicedQuantity:
+          type: number
+          format: double
+        lineAmount:
+          type: number
+          format: double
+        productName:
+          type:
+          - string
+          - 'null'
+        revRecContractStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revRecContractEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        sigContractStart:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        sigContractEnd:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        itemNumber:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    InvoiceItem:
+      required:
+      - invoiceDate
+      - invoiceNumber
+      - lines
+      type: object
+      properties:
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: ID of the Organization who was invoiced
+        organizationName:
+          type:
+          - string
+          - 'null'
+        usageOrganizationId:
+          type:
+          - string
+          - 'null'
+          description: ID of the Organization who the usage was registered at
+        usageOrganizationName:
+          type:
+          - string
+          - 'null'
+        invoiceNumber:
+          type: string
+        invoiceDate:
+          type: string
+          format: date-time
+        invoiceAddressCountryRegionISOCode:
+          type:
+          - string
+          - 'null'
+        invoiceAddressZipCode:
+          type:
+          - string
+          - 'null'
+        totalTaxAmount:
+          type: number
+          format: double
+        invoiceAddressStreetNumber:
+          type:
+          - string
+          - 'null'
+        invoiceAddressStreet:
+          type:
+          - string
+          - 'null'
+        totalChargeAmount:
+          type: number
+          format: double
+        totalDiscountAmount:
+          type: number
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        salesOrderNumber:
+          type:
+          - string
+          - 'null'
+        invoiceAddressCity:
+          type:
+          - string
+          - 'null'
+        invoiceHeaderTaxAmount:
+          type: number
+          format: double
+        invoiceAddressState:
+          type:
+          - string
+          - 'null'
+        invoiceAddressCountryRegionId:
+          type:
+          - string
+          - 'null'
+        customersOrderReference:
+          type:
+          - string
+          - 'null'
+        totalInvoiceAmount:
+          type: number
+          format: double
+        paymentId:
+          type:
+          - string
+          - 'null'
+        invoiceCustomerAccountNumber:
+          type:
+          - string
+          - 'null'
+        sigContractRef:
+          type:
+          - string
+          - 'null'
+        sigDocumentRef:
+          type:
+          - string
+          - 'null'
+        settled:
+          type:
+          - boolean
+          - 'null'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceLineItem'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    InvoiceListItem:
+      required:
+      - invoiceDate
+      - invoiceNumber
+      type: object
+      properties:
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: ID of the Organization who was invoiced
+        organizationName:
+          type:
+          - string
+          - 'null'
+        usageOrganizationId:
+          type:
+          - string
+          - 'null'
+          description: ID of the Organization who the usage was registered at
+        usageOrganizationName:
+          type:
+          - string
+          - 'null'
+        invoiceNumber:
+          type: string
+        invoiceDate:
+          type: string
+          format: date-time
+        invoiceAddressCountryRegionISOCode:
+          type:
+          - string
+          - 'null'
+        invoiceAddressZipCode:
+          type:
+          - string
+          - 'null'
+        totalTaxAmount:
+          type: number
+          format: double
+        invoiceAddressStreetNumber:
+          type:
+          - string
+          - 'null'
+        invoiceAddressStreet:
+          type:
+          - string
+          - 'null'
+        totalChargeAmount:
+          type: number
+          format: double
+        totalDiscountAmount:
+          type: number
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        salesOrderNumber:
+          type:
+          - string
+          - 'null'
+        invoiceAddressCity:
+          type:
+          - string
+          - 'null'
+        invoiceHeaderTaxAmount:
+          type: number
+          format: double
+        invoiceAddressState:
+          type:
+          - string
+          - 'null'
+        invoiceAddressCountryRegionId:
+          type:
+          - string
+          - 'null'
+        customersOrderReference:
+          type:
+          - string
+          - 'null'
+        totalInvoiceAmount:
+          type: number
+          format: double
+        paymentId:
+          type:
+          - string
+          - 'null'
+        invoiceCustomerAccountNumber:
+          type:
+          - string
+          - 'null'
+        sigContractRef:
+          type:
+          - string
+          - 'null'
+        sigDocumentRef:
+          type:
+          - string
+          - 'null'
+        settled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+x-refined-from:
+- account-management-openapi.json
+- signicat-account-management-openapi.yml

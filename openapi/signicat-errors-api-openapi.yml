@@ -1,0 +1,129 @@
+openapi: 3.2.0
+info:
+  title: Signicat Errors API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Errors across 2 of this provider''s published API definitions: oidc-config-openapi.json, signicat-oidc-config-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /auth/open/config
+security:
+- Signicat-OIDC: []
+tags:
+- name: Errors
+paths:
+  /errors:
+    get:
+      tags:
+      - Errors
+      summary: List error codes
+      description: Use this endpoints to view a list of all the error codes available
+      responses:
+        '200':
+          description: OK
+          content:
+            text/x-confluence-markup:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignicatErrorTemplateDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignicatErrorTemplateDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignicatErrorTemplateDto'
+      operationId: getErrors
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /errors/{errorCode}:
+    get:
+      tags:
+      - Errors
+      summary: Retrieve error configuration
+      description: Use this endpoint to retrieve a specific error configuration
+      parameters:
+      - name: errorCode
+        in: path
+        description: The error code
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: '#/components/schemas/SignicatErrorTemplateDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignicatErrorTemplateDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SignicatErrorTemplateDto'
+        '404':
+          description: Not Found
+      operationId: getErrorsByErrorCode
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+components:
+  schemas:
+    SignicatErrorTemplateDto:
+      type: object
+      properties:
+        errorCode:
+          type:
+          - string
+          - 'null'
+          description: The Signicat Error Code of the error type
+          example: AUS-1100
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short summary of the error type
+          example: Client not found.
+        httpStatus:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code associated with the error type
+          format: int32
+          example: 404
+        detailsTemplate:
+          type:
+          - string
+          - 'null'
+          description: Template of the details provided in the error message
+          example: Client with ID {clientId} does not exist.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Extensive markdown description of the error
+          example: Ensure your ID is correct. The client may have been deleted
+      additionalProperties: false
+  securitySchemes:
+    Signicat-OIDC:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes:
+            openid: OpenID User id
+            signicat-api: Signicat API
+x-refined-from:
+- oidc-config-openapi.json
+- signicat-oidc-config-openapi.yml

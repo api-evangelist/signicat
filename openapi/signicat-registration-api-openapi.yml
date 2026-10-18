@@ -1,0 +1,918 @@
+openapi: 3.2.0
+info:
+  title: Signicat Registration API
+  version: '1.0'
+  description: 'Operations tagged Registration across 2 of this provider''s published API definitions: mobileid-openapi.json, signicat-mobileid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/core
+tags:
+- name: Registration
+  description: 'The MobileID registration API provides you with operations related to registering devices for MobileID.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----
+
+
+    ## Useful information
+
+    All registration operations return a registration response containing an operation state.
+
+
+    #### Registration modes
+
+    There are two registration modes (registrationMode) for creating and updating a registration:
+
+
+    Registration mode Description
+
+
+    REGISTRATION Registration (REGISTRATION) is the default registration mode, and will be set automatically if no registration mode is specified in the request for the Start registration operation.
+
+
+    You can also set this manually by specifying REGISTRATION as the registration mode.
+
+
+    RE_REGISTRATION In re-registration (RE_REGISTRATION) mode, users can be re-registered and create new login credentials on the same device ID (deviceId), given that they are using the same device that they were originally enrolled on. This allows you to reuse the same device ID, instead of creating a new one.
+
+
+    To trigger a re-registration, you must set RE_REGISTRATION as the registration mode in the Start registration operation.
+
+
+    #### Operation context
+
+    When you perform a registration, you can use our post-operation context (postOperationContext).
+
+
+    To learn more, see our operation context feature documentation.'
+paths:
+  /registrations:
+    post:
+      tags:
+      - Registration
+      summary: Start registration
+      description: 'The Start registration operation initiates a registration for the end-user''s device.
+
+
+        The operation response is returned with an operation state (state) set to PENDING, as the end-user now has to complete the operation on their device.
+
+
+        The operation response contains:
+
+
+        A transaction ID (transactionId) that will be used for subsequent operations, such as checking the status of the operation.
+
+
+        An activation code (activationCode) which is to be used for registration of the device in the app.'
+      operationId: addRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+              additionalProperties: false
+            example:
+              userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+              device:
+                name: My iPhone
+              operationProperties:
+                registrationMode: REGISTRATION
+                authLevel: TWO_FACTOR
+                sessionTimeout: '90000'
+        required: true
+      responses:
+        '201':
+          description: The request to start registration was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+                additionalProperties: false
+              example:
+                transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                accountId: a-sdge-Abcdefghijk123456789
+                state: PENDING
+                operationProperties:
+                  activationCode: '928401'
+                  authLevel: TWO_FACTOR
+                  sessionTimeout: '90000'
+                  sessionExpiryTime: '2021-01-21T24:17:57.123Z'
+                  registrationMode: REGISTRATION
+                created: '2021-01-21T22:47:27.123Z'
+                device:
+                  name: My iPhone
+                user:
+                  externalRef: Empl10300469
+                  id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                  created: '2021-01-21T22:47:27.100Z'
+                  state: ACTIVE
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: userId
+                      reason: userId cannot be null or empty
+                Multiple request parameters are invalid.:
+                  description: Multiple request parameters are invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: userId
+                      reason: 'Invalid UUID string: f4efbade-d474-4697-b910'
+                    - name: registrationMode
+                      reason: Registration mode must be one of REGISTRATION|RE_REGISTRATION
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /registrations/{transactionId}:
+    get:
+      tags:
+      - Registration
+      summary: Get state of ongoing registration
+      description: The Get state of ongoing registration operation returns the registration response with an operation state for a specified transaction ID (transactionId).
+      operationId: getRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '200':
+          description: Successfully fetched the state of the registration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+                additionalProperties: false
+              examples:
+                Registration PENDING.:
+                  description: Response sample of when a registration is in progress.
+                  value:
+                    transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                    accountId: a-sdge-Abcdefghijk123456789
+                    state: PENDING
+                    operationProperties:
+                      activationCode: '928401'
+                      authLevel: TWO_FACTOR
+                      sessionTimeout: '90000'
+                      sessionExpiryTime: '2021-01-21T24:17:57.123Z'
+                      registrationMode: REGISTRATION
+                    created: '2021-01-21T22:47:27.123Z'
+                    device:
+                      name: My iPhone
+                    user:
+                      externalRef: Empl10300469
+                      id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                      created: '2021-01-21T22:47:27.100Z'
+                      state: ACTIVE
+                Registration COMPLETED.:
+                  description: Response sample of when a registration has been completed successfully.
+                  value:
+                    transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                    accountId: a-sdge-Abcdefghijk123456789
+                    state: COMPLETED
+                    operationProperties:
+                      activationCode: '928401'
+                      authLevel: TWO_FACTOR
+                      sessionExpiryTime: '2021-01-21T22:48:57.123Z'
+                      registrationMode: REGISTRATION
+                      geoFencing:
+                        countryCode: 'NO'
+                        clientStatus: OK
+                        serverBoundaryValidation: SUCCESS
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                    riskAttributes:
+                      hwKeyClientStatus: OK_SIGNED_SUCCESS
+                      deviceHash: DCkhP7PqJPtCWlhdIo8EIiioJXadZtTb5E1V8GMmKOc=
+                      signerHashes: MWFgoYYrQg07r3I1NIX7J8GZUQIn6YclVVzUZ3arxrk=
+                    created: '2021-01-21T22:47:27.123Z'
+                    completed: '2021-01-21T22:52:27.654Z'
+                    device:
+                      id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                      name: My iPhone
+                      state: ACTIVE
+                      lastOperationType: REGISTRATION
+                      lastUsed: '2022-08-19T06:03:33.123Z'
+                      created: '2022-08-19T05:59:26.123Z'
+                    user:
+                      externalRef: Empl10300469
+                      id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                      created: '2021-01-21T22:47:27.888Z'
+                      state: ACTIVE
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    delete:
+      tags:
+      - Registration
+      summary: Cancel ongoing registration
+      description: The Cancel ongoing registration operation allows you to cancel the ongoing registration for a specified transaction ID (transactionId).
+      operationId: cancelRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '204':
+          description: Successfully cancelled the registration request.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+components:
+  schemas:
+    AppAttestation:
+      type: object
+      additionalProperties: false
+      description: "An object that describes the properties of the attestation. \n\n In order for this object to be returned in response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation\" target=\"_blank\">application configuration</a>."
+      properties:
+        playIntegrityStatus:
+          type: string
+          additionalProperties: false
+          description: "The Play Integrity attestation status for the user's device. \n\n See [Play Integrity statuses](/apis/mobileid/#section/Common-concepts/Play-Integrity-statuses) for possible values."
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          additionalProperties: false
+          description: The date when the Play Integrity attestation was performed on the user's device.
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          additionalProperties: false
+          description: "The App Attest attestation status for the user's device. \n\n See [App Attest statuses](/apis/mobileid/#section/Common-concepts/App-Attest-statuses) for possible values."
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          additionalProperties: false
+          description: The date when the App Attest attestation was performed on the user's device.
+          example: '2022-06-24T20:55:03.025Z'
+    postOperationContext:
+      additionalProperties: false
+      description: The post-operation context.<br /><br /> The context sent to the app, through a secure end-to-end encrypted channel, **only after** the operation is successfully completed.<br /><br /> For the maximum character length of the operation context content (`content`), see [Operation context maximum character length](#section/Common-concepts/Operation-context-maximum-character-length).<br /><br /> For more information, see our [Operation context](https://developer.signicat.com/docs/mobile-identity/mobileid/features/operation-context) feature documentation.
+      properties:
+        title:
+          type: string
+          additionalProperties: false
+          description: The title of the context
+          example: Consent Sign
+        content:
+          type: string
+          additionalProperties: false
+          description: The content of the context
+        mimeType:
+          type: string
+          additionalProperties: false
+          description: The mime type of the content
+          example: text/plain
+      required:
+      - content
+      - mimeType
+    Location:
+      type: object
+      additionalProperties: false
+      properties:
+        accuracy:
+          type: string
+          additionalProperties: false
+          description: The location accuracy of the device used for the operation.
+          example: '0.564'
+        altitude:
+          type: string
+          additionalProperties: false
+          description: The location altitude of the device used for the operation.
+          example: 76.2352.3563
+        latitude:
+          type: string
+          additionalProperties: false
+          description: The location latitude of the device used for the operation.
+          example: 12.34234.143
+        longitude:
+          type: string
+          additionalProperties: false
+          description: The location longitude of the device used for the operation.
+          example: 32.24314.1431
+    DeviceRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          additionalProperties: false
+          description: "The name of the user's device.\n\nThis is <b>only</b> relevant for <code>REGISTRATION</code> operations.\n\nIf a device <code>name</code> is specified, then it becomes the name of user's device being registered.\n\n\nThe name must have a max length of 128 characters.</li>\n </ul>\n"
+          example: My iPhone
+        id:
+          type: string
+          additionalProperties: false
+          description: 'The ID of the user''s device to be used for the operation.
+
+
+            <ul><li>This field is mandatory for <code>RE_REGISTRATION</code> operations.</li>
+
+            <li>This field should not be supplied for <code>REGISTRATION</code> operations, as the <code>id</code> will be generated by this operation.</li>
+
+            <li>This field is mandatory for <code>AUTHENTICATION</code> and <code>SIGNATURE</code> operations, unless broadcast (<code>broadcast</code>) is set to <code>true</code>.</li></ul>
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+    User:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: 'An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'A parameter used for segmentation of end-users and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user last executed any <code>REGISTRATION</code>, <code>AUTHENTICATION</code> or <code>SIGNATURE</code> operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties: false
+          description: 'The user attributes, given as key-value pairs.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    DeviceDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        lock:
+          $ref: '#/components/schemas/DeviceLock'
+          additionalProperties: false
+          description: "An object that contains details about the device lock. \n\n This object is only supplied when the user's device is locked."
+        activationTime:
+          type: string
+          additionalProperties: false
+          description: The timestamp when the user's device was originally activated.
+          example: '2017-04-05T12:23:00.000Z'
+          readOnly: true
+        deviceHash:
+          type: string
+          additionalProperties: false
+          description: A SHA256 hash of the unique hardware device ID of the user's device.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+          readOnly: true
+        applicationId:
+          type: string
+          additionalProperties: false
+          description: The application ID being used for the device.
+          example: encap
+          readOnly: true
+        currentClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device used for its last operation.
+          example: 3.15.0
+        activatedClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device was originally activated on.
+          example: 3.15.0
+        activatedEncapRelease:
+          type: string
+          additionalProperties: false
+          description: The Encap server release version that the user's device was originally activated on.
+          example: R_3_3
+          readOnly: true
+        pushAddress:
+          type: string
+          additionalProperties: false
+          description: "The push address for the user's device. \n\n This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS)."
+          example: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+          readOnly: true
+        operatingSystemType:
+          type: string
+          additionalProperties: false
+          description: The operating system type of the user's device.
+          example: iOS
+          readOnly: true
+        activatedAuthenticationMethods:
+          type: array
+          additionalProperties: false
+          description: "A list of the activated authentication methods for the user's device. \n\n See [authentication methods](/apis/mobileid/#section/Common-concepts/Authentication-methods) for possible values."
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          additionalProperties: false
+        recoveries:
+          type: array
+          additionalProperties: false
+          description: A list that contains all of the recoveries for a user's device.
+          items:
+            $ref: '#/components/schemas/AccountRecovery'
+            additionalProperties: false
+        recoveryLock:
+          type: boolean
+          additionalProperties: false
+          description: A setting for a user's device which indicates whether the account recovery feature is enabled or not.<ul><li>When <code>false</code>, the account recovery feature is enabled and recovery operations can be performed.</li><li>When <code>true</code>, the account recovery feature is disabled and recovery operations cannot be performed.</li></ul>
+    AccountRecovery:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryId:
+          type: string
+          additionalProperties: false
+          description: The ID of the recovery.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        recoveryMethod:
+          type: string
+          additionalProperties: false
+          description: "The recovery method used for the recovery. \n\n See [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values."
+          example: CLOUD_BACKUP_RECOVERY_CODE
+        recoveryStatus:
+          type: string
+          additionalProperties: false
+          description: "The status of the recovery. \n\n See [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values."
+          example: ACTIVATED
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        modified:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was updated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        recovered:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was used. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.373Z'
+    Device:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          additionalProperties: false
+          description: The name of the user's device.
+          example: my iPhone
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code>, <code>LOCKED</code> or <code>DELETED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lastOperationType:
+          type: string
+          additionalProperties: false
+          description: "The last operation type that the user's device executed. \n\n See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values."
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device last executed an operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device was originally activated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        deviceDetails:
+          $ref: '#/components/schemas/DeviceDetails'
+          additionalProperties: false
+          description: The device details object.
+    DeviceLock:
+      type: object
+      additionalProperties: false
+      properties:
+        lockReason:
+          type: array
+          additionalProperties: false
+          description: "A list that contains all reasons why the user's device has been locked. \n\n See [Lock reason](/apis/mobileid/#section/Common-concepts/Lock-reason) for possible values."
+          example:
+          - LOCKED_BY_ADMIN
+          - DEVICE_VERIFICATION_FAILED
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+    RegistrationOperationProperties:
+      type: object
+      additionalProperties: false
+      properties:
+        postOperationContext:
+          $ref: '#/components/schemas/postOperationContext'
+          additionalProperties: false
+        registrationMode:
+          type: string
+          additionalProperties: false
+          description: "The registration mode to use for the operation. \n\n The possible values are <code>REGISTRATION</code> or <code>RE_REGISTRATION</code>. \n\n If not provided, the default registration mode <code>REGISTRATION</code> will be used."
+          example: RE_REGISTRATION
+        authLevel:
+          type: string
+          additionalProperties: false
+          description: "The authentication level to use for the operation. \n\n If not provided, the default authentication level <code>TWO_FACTOR</code> will be used. \n\n See [authentication levels](/apis/mobileid/#section/Common-concepts/Authentication-levels) for possible values."
+          example: TWO_FACTOR
+        sessionTimeout:
+          type: string
+          additionalProperties: false
+          description: "The duration after which the operation will timeout, given in milliseconds. \n\n This value cannot exceed the maximum configured value of <code>18720000</code>."
+          example: '240000'
+        metadata:
+          type: string
+          additionalProperties: false
+          description: "The metadata for the operation. \n\n This is an optional parameter, used for sending metadata. \n\n The value is never changed, and is returned in the operation response. \n\n This value cannot exceed the maximum possible length of 1024 characters."
+        requestedUserAttributes:
+          type: array
+          additionalProperties: false
+          contains:
+            additionalProperties: false
+          description: 'User attributes to be returned.
+
+
+            If empty, the user object returned after a successful operation will not include any attributes.
+
+            Non-existent user attributes will be silently ignored.'
+          items:
+            type: string
+            additionalProperties: false
+          unevaluatedItems:
+            additionalProperties: false
+        activationCode:
+          type: string
+          additionalProperties: false
+          description: The activation code, which is to be used for registration of the device in the app.
+          example: '928401'
+        location:
+          $ref: '#/components/schemas/Location'
+          additionalProperties: false
+          writeOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          additionalProperties: false
+          writeOnly: true
+        geofencing:
+          $ref: '#/components/schemas/Geofencing'
+          additionalProperties: false
+        sessionExpiryTime:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the operation expires. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27.123Z'
+        activatedAuthenticationMethods:
+          type: array
+          additionalProperties: false
+          description: A list of the activated authentication methods.
+          example: '[DEVICE, DEVICE:PIN]'
+          items:
+            type: string
+            additionalProperties: false
+    RegistrationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        userId:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+          minLength: 1
+        device:
+          $ref: '#/components/schemas/DeviceRequest'
+          additionalProperties: false
+          description: 'An object that contains the properties of the device to be used for this operation.
+
+
+            For registration:
+
+            <ul><li>When a <code>REGISTRATION</code> is executed, this object is optional.
+
+            If specified, you can <b>only</b> supply the device <code>name</code>, since the device <code>id</code> is generated by this operation.</li>
+
+            <li>When a <code>RE_REGISTRATION</code> of the existing device is executed, then this object is mandatory and the <code>id</code> field must be specified.</li></ul>
+
+
+            For authentication or signing
+
+            <ul><li>The device object is mandatory <b>except</b> if broadcast is enabled.</li>
+
+            <li>If broadcast is enabled, then then the device object does not need to be supplied.</li>
+
+            <li>See the broadcast (<code>broadcast</code>) operation property for details.</li></ul>
+
+            '
+        tags:
+          type: array
+          additionalProperties: false
+          description: Used to tag callback event to enable filtering.
+          items:
+            type: string
+            additionalProperties: false
+        operationProperties:
+          $ref: '#/components/schemas/RegistrationOperationPropertiesRequest'
+          additionalProperties: false
+          description: An object that describes the properties used to carry out the operation.
+      required:
+      - userId
+    Registration:
+      type: object
+      additionalProperties: false
+      properties:
+        errorCode:
+          type: string
+          additionalProperties: false
+          description: "The error code given if the operation fails. \n\n See [operation error codes](/apis/mobileid/#section/Common-concepts/Operation-error-codes) for possible values."
+          example: LOCKED_PIN_VERIFICATION_FAILED
+        errorDescription:
+          type: string
+          additionalProperties: false
+          description: The descriptive error message given if the operation fails.
+          example: Operation failed because the device is locked by pin verification
+        riskAttributes:
+          type: object
+          additionalProperties: false
+          description: 'The risk attributes collected for the device.
+
+
+            See [risk attributes](/apis/mobileid/#section/Common-concepts/Risk-attributes) for possible values.
+
+
+            You can find out how to configure which attributes are collected in the <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#risk-data" target="_blank">application configuration</a> feature documentation.
+
+            '
+          example:
+            hwKeyClientStatus: OK_SIGNED_SUCCESS
+            deviceHash: DCkhP7PqJPtCWlhdIo8EIiioJXadZtTb5E1V8GMmKOc=
+            signerHashes: MWFgoYYrQg07r3I1NIX7J8GZUQIn6YclVVzUZ3arxrk=
+        accountId:
+          type: string
+          additionalProperties: false
+          description: The ID of the account for which the operation is executed.
+          example: a-sdge-Abcdefghijk123456789
+        transactionId:
+          type: string
+          additionalProperties: false
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        state:
+          type: string
+          additionalProperties: false
+          description: "The operation state. \n\n See [operation state](/apis/mobileid/#section/Common-concepts/Operation-states) for possible values."
+          example: PENDING
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when initial response was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27.123Z'
+        completed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the operation was completed. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:33.456Z'
+        device:
+          $ref: '#/components/schemas/Device'
+          additionalProperties: false
+          description: The device object.
+        user:
+          $ref: '#/components/schemas/User'
+          additionalProperties: false
+          description: The user object.
+        tags:
+          type: array
+          additionalProperties: false
+          description: Used to tag callback event to enable filtering.
+          items:
+            type: string
+            additionalProperties: false
+        operationProperties:
+          $ref: '#/components/schemas/RegistrationOperationProperties'
+          additionalProperties: false
+          description: An object that describes the properties used to carry out the operation.
+    Geofencing:
+      type: object
+      additionalProperties: false
+      description: 'An object that contains details of the geofencing validation.
+
+
+        In order for this object to be returned in the response, it has to be enabled in the <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#geofencing" target="_blank">application configuration</a>.
+
+        '
+      properties:
+        countryCode:
+          type: string
+          additionalProperties: false
+          description: 'The country code in an ISO 3166-1 Alpha-2 format, as reported by the SDK.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: 'NO'
+        clientStatus:
+          type: string
+          additionalProperties: false
+          description: 'The status of the geofencing operation, as reported by the SDK.
+
+
+            See [Geofencing client statuses](/apis/mobileid/#section/Common-concepts/Geofencing-client-statuses) for possible values.
+
+            '
+          example: GEOCODER_NOT_SUPPORTED
+        serverBoundaryValidation:
+          type: string
+          additionalProperties: false
+          description: 'The status of the geofencing server validation, after evaluating the country against the allowed region.
+
+
+            See [Geofencing server boundary validation statuses](/apis/mobileid/#section/Common-concepts/Geofencing-server-boundary-validation-statuses) for possible values.
+
+            '
+          example: VERIFIED
+    RegistrationOperationPropertiesRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        postOperationContext:
+          $ref: '#/components/schemas/postOperationContext'
+          additionalProperties: false
+        registrationMode:
+          type: string
+          additionalProperties: false
+          description: "The registration mode to use for the operation. \n\n The possible values are <code>REGISTRATION</code> or <code>RE_REGISTRATION</code>. \n\n If not provided, the default registration mode <code>REGISTRATION</code> will be used."
+          example: RE_REGISTRATION
+        authLevel:
+          type: string
+          additionalProperties: false
+          description: "The authentication level to use for the operation. \n\n If not provided, the default authentication level <code>TWO_FACTOR</code> will be used. \n\n See [authentication levels](/apis/mobileid/#section/Common-concepts/Authentication-levels) for possible values."
+          example: TWO_FACTOR
+        sessionTimeout:
+          type: string
+          additionalProperties: false
+          description: "The duration after which the operation will timeout, given in milliseconds. \n\n This value cannot exceed the maximum configured value of <code>18720000</code>."
+          example: '240000'
+        metadata:
+          type: string
+          additionalProperties: false
+          description: "The metadata for the operation. \n\n This is an optional parameter, used for sending metadata. \n\n The value is never changed, and is returned in the operation response. \n\n This value cannot exceed the maximum possible length of 1024 characters."
+        requestedUserAttributes:
+          type: array
+          additionalProperties: false
+          contains:
+            additionalProperties: false
+          description: 'User attributes to be returned.
+
+
+            If empty, the user object returned after a successful operation will not include any attributes.
+
+            Non-existent user attributes will be silently ignored.'
+          items:
+            type: string
+            additionalProperties: false
+          unevaluatedItems:
+            additionalProperties: false
+x-refined-from:
+- mobileid-openapi.json
+- signicat-mobileid-openapi.yml

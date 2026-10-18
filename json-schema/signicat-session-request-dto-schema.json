@@ -1,0 +1,458 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-session-request-dto-schema.json",
+  "title": "SessionRequestDto",
+  "description": "The Session to be created.",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-eid-hub-openapi.yml#/components/schemas/SessionRequestDto",
+  "required": [
+    "flow",
+    "requestedAttributes"
+  ],
+  "type": "object",
+  "properties": {
+    "prefilledInput": {
+      "$ref": "#/$defs/PrefilledInput"
+    },
+    "additionalParameters": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional parameters that modify the authentication flow. Depends on selected IdP.\nSee <a href=\"https://developer.signicat.com/identity-methods/\">developer documentation</a> for details."
+    },
+    "callbackUrls": {
+      "$ref": "#/$defs/CallbackUrls"
+    },
+    "encryptionPublicKey": {
+      "$ref": "#/$defs/EncryptionKey"
+    },
+    "requestedLoa": {
+      "enum": [
+        "low",
+        "substantial",
+        "high"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Specifies the LoA (Level of Assurance)."
+    },
+    "tags": {
+      "maxItems": 100,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "A set of support optional tags to group and filter webhooks.\nThe maximum length for each tag is 100."
+    },
+    "returnUrl": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "If specified the embedded view will return to this URL after authentication is completed (successfully or not). If not specified, a success or error screen will be shown inside the embedded view.",
+      "format": "uri"
+    },
+    "embeddedParentDomains": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking."
+    },
+    "paymentPrefillData": {
+      "$ref": "#/$defs/PaymentPrefillData"
+    },
+    "devicePrefillData": {
+      "$ref": "#/$defs/DevicePrefillData"
+    },
+    "allowedProviders": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "A list of Identity Providers (IdPs) that can be used for authentication.\nIf not specified, the end-user will be able to choose from all IdPs associated with your Signicat account.\nThe maximum length for each Provider is 30."
+    },
+    "language": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The desired language for the UI. Expected format ISO 639-1.\nIf the requested language is not available, it will automatically default to English (en).\nSome IdPs may have a different fallback language due to regional considerations."
+    },
+    "flow": {
+      "enum": [
+        "headless",
+        "redirect",
+        "embedded"
+      ],
+      "type": "string",
+      "description": "The selected flow used for this specific authentication session.\nTo learn more about using the ```headless``` flow with Swedish BankID, please refer to <a href=\"/identity-methods/sbid/integration-guide/auth-rest-api/headless/\">this example</a>.\r\nIf flow is set to Redirect the field CallbackUrls is required."
+    },
+    "themeId": {
+      "maxLength": 10,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The themeId you want to use for this specific authentication session.\nIf not specified, the default theme for your account will be used."
+    },
+    "requestedAttributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The attributes you wish to get back from the authentication of the end-user.\nTo find a list of which attributes can be requested, please see documentation for that specific ID method which\ncan be found on <a href=\"https://developer.signicat.com/identity-methods/\">https://developer.signicat.com/identity-methods/</a>.\n\nDefaults to empty."
+    },
+    "externalReference": {
+      "maxLength": 100,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "An external reference for you, will be returned as a URL parameter on callbackUrls."
+    },
+    "usageReference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "An usage external reference for you to group your billing."
+    },
+    "sessionLifetime": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Lifetime of session in seconds (Default is 1200 seconds). It has a soft-minimum value of 300 seconds, which means if the value set is\nless then 300, it will be automatically set to 300 seconds.",
+      "format": "int32"
+    },
+    "requestDomain": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "This specifies the domain you want to use for this specific session.\nThe domain will be visible in the end-user's browser.\nThis domain needs to be correctly configured on your account!"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CallbackUrls": {
+      "required": [
+        "abort",
+        "error",
+        "success"
+      ],
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "string",
+          "description": "Specifies the URL to redirect in case of success.\nIf it is not a sandbox request needs to be https.",
+          "format": "uri"
+        },
+        "abort": {
+          "type": "string",
+          "description": "Specifies the URL to redirect in case of abortion.\nIf it is not a sandbox request needs to be https.",
+          "format": "uri"
+        },
+        "error": {
+          "type": "string",
+          "description": "Specifies the URL to redirect in case of error.\nIf it is not a sandbox request needs to be https.",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Specifies the different urls to callback to."
+    },
+    "DevicePrefillData": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "platform": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manufacturer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "EncryptionKey": {
+      "required": [
+        "alg",
+        "kty",
+        "use"
+      ],
+      "type": "object",
+      "properties": {
+        "kty": {
+          "enum": [
+            "rsa",
+            "ec"
+          ],
+          "type": "string",
+          "description": "Key type of the JWK, specifying the cryptographic algorithm family used with the key."
+        },
+        "use": {
+          "enum": [
+            "enc"
+          ],
+          "type": "string",
+          "description": "Identifies the intended use of the key. Values defined by this specification are sig (signature) and enc (encryption)."
+        },
+        "kid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Identifier of the key, serves as a unique identifier for the key."
+        },
+        "alg": {
+          "enum": [
+            "RSA-OAEP",
+            "ECDH-ES"
+          ],
+          "type": "string",
+          "description": "Identifies the cryptographic algorithm family used with the key.\nIf kty is set to RSA needs to be RSA-OAEP.\nIf kty is set to EC needs to be ECDH-ES."
+        },
+        "e": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The public exponent.\nRequired if the Kty is RSA."
+        },
+        "n": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The modulus, a component that is used in both the encryption and decryption process.\nRequired if the Kty is RSA."
+        },
+        "crv": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Identifies the cryptographic curve used with the key.\nRequired if the Kty is EC."
+        },
+        "x": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Contains the x coordinate for the elliptic curve point.\nRequired if the Kty is EC."
+        },
+        "y": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Contains the Y coordinate for the elliptic curve point.\nRequired if the Kty is EC."
+        },
+        "d": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Contains the private exponent parameter.\nThis needs to be null."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Encryption key information."
+    },
+    "PaymentAttribute": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "PaymentItem": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "amount": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "receiver": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attributes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/PaymentAttribute"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "PaymentPrefillData": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payments": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/PaymentItem"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "PrefilledInput": {
+      "type": "object",
+      "properties": {
+        "nin": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The National Identity Number of the prefilled input."
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The mobile number of the prefilled input.",
+          "format": "tel"
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The email of the prefilled input.",
+          "format": "email"
+        },
+        "userName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The user name of the prefilled input."
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date of birth of the prefilled input.",
+          "format": "date-time"
+        },
+        "deviceId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The device ID."
+        },
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The first name of the prefilled input."
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The last name of the prefilled input."
+        },
+        "bankAccountNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The bank account number of the prefilled input."
+        },
+        "organisation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The organisation of the prefilled input."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The session's prefilled input information (it is required at least one value)."
+    }
+  }
+}

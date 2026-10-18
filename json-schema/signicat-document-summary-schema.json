@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-document-summary-schema.json",
+  "title": "DocumentSummary",
+  "description": "A summary containing core information about a document",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-express-openapi.yml#/components/schemas/DocumentSummary",
+  "type": "object",
+  "properties": {
+    "documentId": {
+      "type": "string",
+      "description": "Document id",
+      "format": "uuid"
+    },
+    "accountId": {
+      "type": "string",
+      "description": "Account id",
+      "format": "uuid"
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Document title"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Document description"
+    },
+    "lastUpdated": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When was the document last updated (ISO8601)",
+      "format": "date-time"
+    },
+    "deadline": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The sign deadline for the document (ISO8601)",
+      "format": "date-time"
+    },
+    "signedDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When was all the signatures processed (ISO8601)",
+      "format": "date-time"
+    },
+    "status": {
+      "$ref": "#/$defs/Status"
+    },
+    "externalId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "External document Id (your Id)"
+    },
+    "documentSignatures": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/ExtendedDocumentSignature"
+      },
+      "description": "All the signatures received on this document"
+    },
+    "requiredSignatures": {
+      "type": "integer",
+      "description": "The number of required signatures on the document",
+      "format": "int32"
+    },
+    "currentSignatures": {
+      "type": "integer",
+      "description": "How many signatures is completed right now",
+      "format": "int32"
+    },
+    "tags": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Document tags"
+    },
+    "attachments": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "description": "A list of attachment Id's"
+    },
+    "signers": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "description": "A list of all the signers on the document"
+    },
+    "created": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the document was created (ISO 8601)",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "DocumentStatus": {
+      "enum": [
+        "unsigned",
+        "waiting_for_attachments",
+        "partialsigned",
+        "signed",
+        "canceled",
+        "expired"
+      ],
+      "type": "string"
+    },
+    "ExtendedDocumentSignature": {
+      "type": "object",
+      "properties": {
+        "signerId": {
+          "type": "string",
+          "description": "The signer's unique identifier.",
+          "format": "uuid"
+        },
+        "externalSignerId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Your reference for the signer."
+        },
+        "signatureMethod": {
+          "$ref": "#/$defs/SignatureMethod"
+        },
+        "fullName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's full name, retrieved from the signature-method provider."
+        },
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's first name."
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's last name."
+        },
+        "middleName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's middle name."
+        },
+        "signedTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Time at which the signature was registered (ISO 8601).",
+          "format": "date-time"
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's date of birth (yyyy-MM-dd)."
+        },
+        "signatureMethodUniqueId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signature method unique ID."
+        },
+        "socialSecurityNumber": {
+          "$ref": "#/$defs/SocialSecurityNumber"
+        },
+        "clientIp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The IP address of the signer."
+        },
+        "mechanism": {
+          "$ref": "#/$defs/Mechanisms"
+        },
+        "personalInfoOrigin": {
+          "$ref": "#/$defs/PersonalInfoOrigin"
+        },
+        "organization": {
+          "$ref": "#/$defs/Organization"
+        },
+        "attributes": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Additional signature attributes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FileFormat": {
+      "enum": [
+        "unsigned",
+        "native",
+        "standard_packaging",
+        "pades",
+        "xades"
+      ],
+      "type": "string"
+    },
+    "Mechanisms": {
+      "enum": [
+        "pkisignature",
+        "identification",
+        "handwritten",
+        "handwritten_with_identification"
+      ],
+      "type": "string"
+    },
+    "Organization": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "organizationNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-1 country code."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PersonalInfoOrigin": {
+      "enum": [
+        "unknown",
+        "eid",
+        "userFormInput"
+      ],
+      "type": "string"
+    },
+    "SignatureMethod": {
+      "enum": [
+        "no_buypass",
+        "se_bankid",
+        "dk_nemid",
+        "fi_eid",
+        "sms_otp",
+        "unknown",
+        "no_bankid_mobile",
+        "no_bankid_netcentric",
+        "itsme",
+        "idin",
+        "digid",
+        "eherkenning",
+        "mitid",
+        "no_bankid_oidc",
+        "sk_mobileid",
+        "sk_smartid",
+        "et_smartcard",
+        "no_bankid_csc"
+      ],
+      "type": "string"
+    },
+    "SocialSecurityNumber": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The social security number."
+        },
+        "countryCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-1 Alfa-2 (2 letters) country code."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The signer's social security number. Will be retrieved only when `getSocialSecurityNumber` is specified when creating the document."
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "documentStatus": {
+          "$ref": "#/$defs/DocumentStatus"
+        },
+        "completedPackages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/FileFormat"
+          },
+          "description": "A list of all the completed files/packages for the main document."
+        },
+        "attachmentPackages": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/$defs/FileFormat"
+            }
+          },
+          "description": "A set of key-value pairs with all the completed packages for the signable attachments, where the key is equal to the attachment's ID."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The status of the document."
+    }
+  }
+}

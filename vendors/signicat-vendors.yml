@@ -1,0 +1,68 @@
+generated: '2026-10-18'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: cloudflare
+  name: Cloudflare
+  area: cdn
+  host: signicat.com
+  evidence: header:cf-ray
+  signal: header
+  confidence: high
+  kin_score:
+  - https_enforced
+  - hsts
+- vendor: vercel
+  name: Vercel
+  area: hosting
+  host: status.signicat.com
+  evidence: cname:vercel-dns.com
+  signal: cname
+  confidence: high
+  kin_score: []
+- vendor: incident-io
+  name: incident.io
+  area: status-page
+  host: status.signicat.com
+  evidence: cname:incident.io
+  signal: cname
+  confidence: high
+  kin_score:
+  - status_page
+reliance:
+  areas_vendor_served:
+  - cdn
+  - hosting
+  - status-page
+  vendor_count: 3
+  areas_observed: 12
+  share_of_observable_areas: 0.25
+  note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
+    cannot tell those apart
+checked:
+- 'docs-platform: no-docs-host'
+- signicat.com (Website)
+- developer.signicat.com (DeveloperPortal)
+- developer.signicat.com (Documentation)
+- developer.signicat.com (APIReference)
+- developer.signicat.com (GettingStarted)
+- www.signicat.com (Support)
+- login.signicat.com (SignUp)
+- dashboard.signicat.com (Login)
+- status.signicat.com (StatusPage)
+- api.signicat.com (baseURL)
+- signicat-documentation.mcp.kapa.ai (mcp)

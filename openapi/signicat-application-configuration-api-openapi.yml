@@ -1,0 +1,2107 @@
+openapi: 3.2.0
+info:
+  title: Signicat Application configuration API
+  version: '1.0'
+  description: 'Operations tagged Application configuration across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: Application configuration
+  description: 'The MobileID Admin **Application configuration** API provides you with operations related to administering your application configuration.
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    ## Useful information
+
+
+    An application configuration is a specific set of application attributes for a mobile application.
+
+    These attributes determine how the application should work.
+
+
+    #### What does it look like?
+
+
+    An application configuration consists of the following:
+
+
+    - The UUID of the application configuration.
+
+    - The ID of the application configuration.
+
+    - The name of the application configuration.
+
+    - The APNs UUID of the application configuration.
+
+    - The state of the application configuration.
+
+    - An object containing the properties of the application configuration.
+
+
+    You can also use this API to configure MobileID features, by making changes to the default values in the application configuration properties.
+
+    For further information, see our MobileID feature guides.
+
+
+    #### Always collected risk data
+
+
+    Some risk data is always collected, for debugging purposes. This means that for enabledRiskData:
+
+
+    - If you pass null, the always collected risk data will still be returned.
+
+    - If you specify risk attributes, the always collected risk data will be returned in addition to those you have specified.
+
+
+    You can find a list of what risk data is always enabled in the MobileID API reference documentation. See risk attributes in the **Common concepts** section.'
+paths:
+  /application-configuration/state:
+    get:
+      tags:
+      - Application configuration
+      summary: Get state of application configuration
+      description: The **Get state of application configuration** operation returns the state of a specified application configuration.
+      operationId: getAppConfigurationState
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the state of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigState'
+              example:
+                state: ENABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    put:
+      tags:
+      - Application configuration
+      summary: Update state of application configuration
+      description: The **Update state of application configuration** operation enables you to update the state of a specified application configuration.
+      operationId: updateAppConfigurationState
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationConfigState'
+            example:
+              state: ENABLED
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the state of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigState'
+              example:
+                state: ENABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: state
+                      reason: 'State must be one of: [ENABLED, DISABLED]'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /application-configuration/apnsuuid:
+    get:
+      tags:
+      - Application configuration
+      summary: Get APNs UUID of application configuration
+      description: The **Get APNs UUID of application configuration** operation returns the APNs UUID of a specified application configuration.
+      operationId: getAppConfigurationApnsUuid
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the APNs UUID of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigApnsUuid'
+              example:
+                apnsUuid: 12ef6f3a-a12a-4c5e-bb1b-1d75a9f37d59
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    put:
+      tags:
+      - Application configuration
+      summary: Update APNs UUID of application configuration
+      description: The **Update APNs UUID of application configuration** operation enables you to update a specified APNs UUID of an application configuration.
+      operationId: updateAppConfigurationApnsUuid
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationConfigApnsUuid'
+            example:
+              apnsUuid: 12ef6f3a-a12a-4c5e-bb1b-1d75a9f37d59
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the APNs UUID of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigApnsUuid'
+              example:
+                apnsUuid: 12ef6f3a-a12a-4c5e-bb1b-1d75a9f37d59
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: apnsUuid
+                      reason: apnsUuid must be valid GUID
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /application-configuration/properties:
+    get:
+      tags:
+      - Application configuration
+      summary: Get properties of application configuration
+      description: The **Get properties of application configuration** operation returns the properties of a specified application configuration.
+      operationId: getAppConfigurationProperties
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the properties of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigProperties'
+              example:
+                amountFailuresAllowed: '3'
+                activationCodeType: NUMERIC
+                activationCodeLength: '6'
+                allowedAuthMethods:
+                - DEVICE
+                - DEVICE:PIN
+                - DEVICE:STRONG_TOUCH_ID
+                - DEVICE:IOS_FACE_ID
+                - DEVICE:ANDROID_BIOMETRIC_PROMPT
+                - DEVICE:SERVER_SIDE_FACE
+                maxPinCodeLength: '6'
+                pinCodeLength: '6'
+                pinCodeType: NUMERIC
+                maximumSessionExpiry: '187200000'
+                sessionExpiry: '300000'
+                apnExpiry: '1'
+                enabledRiskData:
+                - deviceHash
+                - deviceModel
+                - deviceManufacturer
+                - operatingSystemFingerprint
+                - operatingSystemVersion
+                - operatingSystemType
+                hwKeyValidationStrategy: REQUIRED
+                nativePushEnabled: 'false'
+                firebaseTimeToLive: '0'
+                firebaseServiceAccount: SHA256Hash 59:56:d5:8e:dc:65:fc:fc:19:14:8a:9b:ea:ee:b5:7f:30:6b:d1:f6:fd:33:b9:ab:e9:13:63:87:05:18:c2:64
+                allowedAuthMethodsForAuthAndActivate:
+                - DEVICE:PIN
+                recoveryEnabled: 'false'
+                recoveryCodeMinLength: '6'
+                recoveryCodeMaxLength: '50'
+                recoveryCodeFormat: NUMERIC
+                recoveryCodeAmountFailuresAllowed: '3'
+                apnsNotificationSoundEnabled: 'true'
+                geofencingActivationMode: 'OFF'
+                geofencingAuthenticationMode: 'OFF'
+                geofencingTimeout: '10000'
+                attestationIosAppAttestMode: 'OFF'
+                attestationIosAppAttestEnvironment: PRODUCTION
+                attestationIosAppAttestTimeout: '20000'
+                attestationAndroidPlayIntegrityMode: 'OFF'
+                attestationAndroidPlayIntegrityTimeout: '200000'
+                apnsTimeSensitiveInterruptionLevelEnabled: 'true'
+                clientDebugDataEnabledOsTypes: IOS,ANDROID
+                lockScope: DEVICE
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    patch:
+      tags:
+      - Application configuration
+      summary: Update properties of application configuration
+      description: 'The **Update properties of application configuration** operation enables you to update the properties of a specified application configuration.
+
+
+        It is not currently possible to update the following properties with this endpoint:
+
+
+        - maximumSessionExpiry
+
+        - clientDebugDataEnabledOsTypes
+
+
+        If you would like to update them, please contact us at support@signicat.com.
+
+
+        **Note**: You will still see these properties returned in the operation response.'
+      operationId: updateAppConfigurationProperties
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationConfigUpdateRequest'
+            example:
+              amountFailuresAllowed: '3'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the properties of the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigProperties'
+              example:
+                amountFailuresAllowed: '3'
+                activationCodeType: NUMERIC
+                activationCodeLength: '6'
+                allowedAuthMethods:
+                - DEVICE
+                - DEVICE:PIN
+                - DEVICE:STRONG_TOUCH_ID
+                - DEVICE:IOS_FACE_ID
+                - DEVICE:ANDROID_BIOMETRIC_PROMPT
+                - DEVICE:SERVER_SIDE_FACE
+                maxPinCodeLength: '6'
+                pinCodeLength: '6'
+                pinCodeType: NUMERIC
+                maximumSessionExpiry: '187200000'
+                sessionExpiry: '300000'
+                apnExpiry: '1'
+                enabledRiskData:
+                - deviceHash
+                - deviceModel
+                - deviceManufacturer
+                - operatingSystemFingerprint
+                - operatingSystemVersion
+                - operatingSystemType
+                hwKeyValidationStrategy: REQUIRED
+                nativePushEnabled: 'false'
+                firebaseTimeToLive: '0'
+                firebaseServiceAccount: SHA256Hash 59:56:d5:8e:dc:65:fc:fc:19:14:8a:9b:ea:ee:b5:7f:30:6b:d1:f6:fd:33:b9:ab:e9:13:63:87:05:18:c2:64
+                allowedAuthMethodsForAuthAndActivate:
+                - DEVICE:PIN
+                recoveryEnabled: 'false'
+                recoveryCodeMinLength: '6'
+                recoveryCodeMaxLength: '50'
+                recoveryCodeFormat: NUMERIC
+                recoveryCodeAmountFailuresAllowed: '3'
+                apnsNotificationSoundEnabled: 'true'
+                geofencingActivationMode: 'OFF'
+                geofencingAuthenticationMode: 'OFF'
+                geofencingTimeout: '10000'
+                attestationIosAppAttestMode: 'OFF'
+                attestationIosAppAttestEnvironment: PRODUCTION
+                attestationIosAppAttestTimeout: '20000'
+                attestationAndroidPlayIntegrityMode: 'OFF'
+                attestationAndroidPlayIntegrityTimeout: '200000'
+                apnsTimeSensitiveInterruptionLevelEnabled: 'true'
+                clientDebugDataEnabledOsTypes: IOS,ANDROID
+                lockScope: DEVICE
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: activationCodeType
+                      reason: 'activationCodeType must be one of: [ALPHA|ALPHANUMERIC|ANY|NUMERIC]'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /application-configuration:
+    get:
+      tags:
+      - Application configuration
+      summary: Get application configuration
+      description: The **Get application configuration** operation returns a specified application configuration.
+      operationId: getAppConfiguration
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the application configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfig'
+              example:
+                uuid: 762e9a1a-01f4-4731-a540-4f75dbeae43c
+                appId: a-sdge-abcdefghijk123456789
+                state: ENABLED
+                properties:
+                  amountFailuresAllowed: '3'
+                  activationCodeType: NUMERIC
+                  activationCodeLength: '6'
+                  allowedAuthMethods:
+                  - DEVICE
+                  - DEVICE:PIN
+                  - DEVICE:STRONG_TOUCH_ID
+                  - DEVICE:IOS_FACE_ID
+                  - DEVICE:ANDROID_BIOMETRIC_PROMPT
+                  - DEVICE:SERVER_SIDE_FACE
+                  maxPinCodeLength: '6'
+                  pinCodeLength: '6'
+                  pinCodeType: NUMERIC
+                  maximumSessionExpiry: '187200000'
+                  sessionExpiry: '300000'
+                  apnExpiry: '1'
+                  enabledRiskData:
+                  - deviceHash
+                  - deviceModel
+                  - deviceManufacturer
+                  - operatingSystemFingerprint
+                  - operatingSystemVersion
+                  - operatingSystemType
+                  hwKeyValidationStrategy: REQUIRED
+                  nativePushEnabled: 'false'
+                  firebaseTimeToLive: '0'
+                  firebaseServiceAccount: SHA256Hash 59:56:d5:8e:dc:65:fc:fc:19:14:8a:9b:ea:ee:b5:7f:30:6b:d1:f6:fd:33:b9:ab:e9:13:63:87:05:18:c2:64
+                  allowedAuthMethodsForAuthAndActivate:
+                  - DEVICE:PIN
+                  recoveryEnabled: 'false'
+                  recoveryCodeMinLength: '6'
+                  recoveryCodeMaxLength: '50'
+                  recoveryCodeFormat: NUMERIC
+                  recoveryCodeAmountFailuresAllowed: '3'
+                  apnsNotificationSoundEnabled: 'true'
+                  geofencingActivationMode: 'OFF'
+                  geofencingAuthenticationMode: 'OFF'
+                  geofencingTimeout: '10000'
+                  attestationIosAppAttestMode: 'OFF'
+                  attestationIosAppAttestEnvironment: PRODUCTION
+                  attestationIosAppAttestTimeout: '20000'
+                  attestationAndroidPlayIntegrityMode: 'OFF'
+                  attestationAndroidPlayIntegrityTimeout: '200000'
+                  clientDebugDataEnabledOsTypes: IOS, ANDROID
+                  apnsTimeSensitiveInterruptionLevelEnabled: 'true'
+                  lockScope: DEVICE
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing application configuration with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    ApplicationConfigApnsUuid:
+      type: object
+      properties:
+        apnsUuid:
+          type: string
+          description: The application config's apns UUID
+          example: ENABLED
+      required:
+      - apnsUuid
+    ApplicationConfigUpdateRequest:
+      type: object
+      properties:
+        amountFailuresAllowed:
+          type: string
+          description: 'The grace amount of failed authentications for any client before they are locked out.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`
+
+            '
+          example: '3'
+        activationCodeType:
+          type: string
+          description: 'The type of characters that can be used during the generation of the activation code.
+
+
+            **Allowed values**:
+
+            `ALPHA`, `ALPHANUMERIC`, `ANY` or `numeric`
+
+            '
+          example: NUMERIC
+        activationCodeLength:
+          type: string
+          description: 'The length in characters of the activation code that should be
+
+
+            **Allowed values**:
+
+            From `4` to `MAXINT`.
+
+            '
+          example: '10'
+        allowedAuthMethods:
+          type: array
+          description: 'Comma-separated list of allowed authentication methods.
+
+
+            Determines which authentication methods can be activated and used for authentication.
+
+            '
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+        apnConfig:
+          type: string
+          description: 'The APN server configuration that defines where to reach the APNs.
+
+
+            **Allowed values**:
+
+            `PRODUCTION` or `SANDBOX`
+
+            '
+          example: PRODUCTION
+        enabledRiskData:
+          type: array
+          description: 'The risk attributes to collect for the device.
+
+
+            **Note**: To learn how to configure which risk attributes are collected, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#risk-data" target="_blank">Risk data</a> in our **Application configuration** feature documentation.
+
+            '
+          example: ALL
+          items:
+            type: string
+        maxPinCodeLength:
+          type: string
+          description: 'The maximum length in characters of the PIN.
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '6'
+        pinCodeLength:
+          type: string
+          description: 'The length in characters of the PIN. Set `0` to disable PIN code.
+
+
+            **Note**: This is a hint to the client and not enforced by the server (but enforced in the client SDK).
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '6'
+        pinCodeType:
+          type: string
+          description: 'The type of characters that can be used in the PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            `ANY`, `NUMERIC`, `ALPHA`, `ALPHANUMERIC`
+
+            '
+          example: NUMERIC
+        sessionExpiry:
+          type: string
+          description: 'The amount of time (in milliseconds) that a new client session remains valid for. After this time has elapsed, the session can no longer be used for any operations.
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '300000'
+        minimumRequiredEncapApiVersionAndroid:
+          type: string
+          description: 'What Android client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.
+
+
+            **Allowed values**:
+
+            Semantic version, such as `3.7.0`.
+
+
+            **Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.
+
+            '
+          example: 3.7.0
+        minimumRequiredEncapApiVersionIos:
+          type: string
+          description: 'What iOS client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.
+
+
+            **Allowed values**:
+
+            Semantic version, such as `3.7.0`.
+
+
+            **Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.
+
+            '
+          example: 3.7.0
+        hwKeyValidationStrategy:
+          type: string
+          description: " Defines the enforcement policy for hardware supported key validation\n\n - `REQUIRED_IF_SUPPORTED` Enforces hardware key validation if the device supports hardware keys. If a hardware key is registered, this strategy rejects Activations and Authentications if the provided signature is invalid. Devices lacking hardware support are permitted to proceed with the operation.\n - `REQUIRED` Hardware key validation is mandatory for all devices. Activation will fail if the client reports it cannot generate a hardware-supported key or any technical failure occurred during key generation. Authentication will fail if the client does not provide a valid signature from its hardware-supported key.\n\n **Allowed values**:\n `REQUIRED` or `REQUIRED_IF_SUPPORTED`\n"
+          example: REQUIRED
+        apnExpiry:
+          type: string
+          description: 'The amount of time (in milliseconds) that APNs will try to deliver the message for.
+
+            If not delivered within this time, then the message is discarded.
+
+
+            **Allowed values**:
+
+            From `1`to `MAXINT`.
+
+
+            **Note**: APNS will attempt to deliver the message at least once, regardless of the set expiration time.
+
+            '
+          example: '86400000'
+        encapApiBlacklistAndroid:
+          type: string
+          description: 'Android SDK API versions to blacklist (and reject). See the android configuration chapter in the server manual for smart device for details.
+
+
+            **Allowed values**:
+
+            Comma-separated semantic version such as: `3.5.3, 3.6.8`.
+
+            '
+          example: 3.5.3, 3.6.8
+        encapApiBlacklistIos:
+          type: string
+          description: 'IOS SDK API versions to blacklist (and reject). See the ios configuration chapter in the server manual for smart device for details.
+
+
+            **Allowed values**:
+
+            Comma-separated semantic version such as: `3.5.3, 3.6.8`.
+
+            '
+          example: 3.5.3, 3.6.8
+        nativePushEnabled:
+          type: string
+          description: 'Enable the server to send push messages with Fire Cloud Messaging or Apple APNs.
+
+
+            **Allowed values**:
+
+            `true` or `false`
+
+            '
+          example: 'false'
+        firebaseTimeToLive:
+          type: string
+          description: 'Firebase Cloud Messaging. Maximum lifespan of the message in milliseconds. This means deliver _now or never_.
+
+
+            FCM guarantees best effort for messages with this lifespan.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+
+            **Default value**: `0`
+
+            '
+          example: '0'
+        firebaseServiceAccount:
+          type: string
+          description: 'Firebase Cloud Messaging. The contents of the serviceAccount.json (credentials file) for your Firebase Cloud Messaging project.";
+
+            **Note**: The field has to be Base64 encoded.
+
+            '
+          example: <Base64 encoded string>
+        attestationAndroidPackageName:
+          type: string
+          description: 'Play Integrity Attestation, the APK package name.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: the package name
+        apnsBundleId:
+          type: string
+          description: 'Apples bundle ID for the application. Used as topic on the push message sent to APNs, required when using `APNS_TOKEN`.
+
+            '
+          example: the bundle id
+        allowedAuthMethodsForAuthAndActivate:
+          type: array
+          description: 'Comma-separated list of allowed authentication methods for activation of a new authentication method.
+
+
+            Determines which authentication methods can be used to authenticate during activation of a new authentication method.
+
+
+            **Note**:
+
+            The value(s) here must be present in the `ALLOWED_AUTH_METHODS` parameter. Offline authentication methods cannot be used here.
+
+            '
+          example:
+          - DEVICE:PIN
+          items:
+            type: string
+        recoveryEnabled:
+          type: string
+          description: 'Enable users to set up recovery with an alternative set of user credentials.
+
+
+            **Allowed values**:
+
+            `true` or `false`
+
+            '
+          example: 'true'
+        recoveryCodeMinLength:
+          type: string
+          description: 'The minimum number of characters for the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '6'
+        recoveryCodeMaxLength:
+          type: string
+          description: 'The maximum number of characters for the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '50'
+        recoveryCodeFormat:
+          type: string
+          description: 'The type of characters that can be used in the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**: `ALPHA`, `ALPHANUMERIC`, `ANY`, `NUMERIC`
+
+            '
+          example: ALPHA
+        recoveryCodeAmountFailuresAllowed:
+          type: string
+          description: 'The grace amount of failed recovery code attempts for any client before the recovery for the client is locked.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '3'
+        apnsNotificationSoundEnabled:
+          type: string
+          description: 'Enable notification sound for push messages to iOS devices.
+
+
+            **Allowed values**: `true`, `false`
+
+            '
+          example: 'false'
+        geofencingActivationMode:
+          type: string
+          description: 'The geofencing mode to use for the registration.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL`, or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing" target="_blank">Geofencing</a> in our **Application configuration** feature documentation.
+
+            '
+          example: OPTIONAL
+        geofencingActivationAllowedContinents:
+          type: string
+          description: 'Comma-separated list of continents where registration **is allowed**, in a  two-letter continent code format.
+
+
+            **Allowed values**:
+
+            `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.
+
+            '
+          example: EU
+        geofencingActivationAllowedCountries:
+          type: string
+          description: 'Comma-separated list of countries where registration **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries are in addition to those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: US
+        geofencingActivationDeniedCountries:
+          type: string
+          description: 'Comma-separated list of countries where registration **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: RU
+        geofencingAuthenticationMode:
+          type: string
+          description: 'The geofencing mode to use for the authentication.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL`, or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing" target="_blank">Geofencing</a> in our **Application configuration** feature documentation.
+
+            '
+          example: 'OFF'
+        geofencingAuthenticationAllowedContinents:
+          type: string
+          description: 'Comma-separated list of continents where authentication **is allowed**, in a  two-letter continent code format.
+
+
+            **Allowed values**:
+
+            `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.
+
+            '
+          example: EU
+        geofencingAuthenticationAllowedCountries:
+          type: string
+          description: 'Comma-separated list of countries where authentication **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries are in addition to those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: US
+        geofencingAuthenticationDeniedCountries:
+          type: string
+          description: 'Comma-separated list of countries where authentication **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: RU
+        geofencingTimeout:
+          type: string
+          description: 'The maximum time (given in milliseconds) to wait for the location lookup and reverse geocoding to complete on the SDK.
+
+
+            The timing starts when the SDK calls the finish operation.
+
+
+            If the timeout is exceeded, then the SDK will continue without a country.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '10000'
+        attestationIosAppAttestMode:
+          type: string
+          description: 'The iOS App Attest attestation mode to use for the operation.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL` or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation" target="_blank">App attestation</a> in our **Application configuration** feature documentation.
+
+            '
+          example: 'OFF'
+        attestationIosAppAttestEnvironment:
+          type: string
+          description: 'The environment for an app that uses the App Attest service to validate itself.
+
+
+            **Allowed values**:
+
+            `DEVELOPMENT`, `PRODUCTION`
+
+            '
+          example: PRODUCTION
+        attestationIosAppAttestTimeout:
+          type: string
+          description: 'iOS app attestation timeout, after this time, in milliseconds, the attestation request will time out.
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`
+
+            '
+          example: '20000'
+        attestationIosAppAttestAppId:
+          type: string
+          description: 'Application ID which is a concatenation of a 10-digit team identifier, a period, and the app''s `CFBundleIdentifier` value.
+
+
+            **Note**: This is required when using Apple App Attest service.
+
+            '
+          example: some app id
+        apnsTimeSensitiveInterruptionLevelEnabled:
+          type: string
+          description: 'Sets the interruption level for push messages to iOS devices to **time-sensitive**.
+
+
+            When enabled, push notifications can notify the end-users, even when the device is in **Focus** mode.
+
+            '
+          example: 'false'
+        attestationAndroidPlayIntegrityMode:
+          type: string
+          description: 'The Android Play Integrity attestation mode to use for the operation.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL` or `OFF`.
+
+
+            **Important**: Play Integrity attestation was introduced in version 3.17 and is only applicable for clients 3.17 or newer.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation" target="_blank">App attestation</a> in our **Application configuration** feature documentation.
+
+            '
+          example: REQUIRED
+        attestationAndroidPlayIntegrityTimeout:
+          type: string
+          description: 'Play Integrity attestation timeout, in milliseconds, the timeout for a request made to Play Integrity.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: '30000'
+        attestationAndroidPlayIntegrityDecryptionKey:
+          type: string
+          description: 'Play Integrity attestation decryption key, used to decrypt the integrity token.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: <key>
+        attestationAndroidPlayIntegrityVerificationKey:
+          type: string
+          description: 'Play Integrity attestation verification key, used to validate the integrity token.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: <key>
+        lockScope:
+          type: string
+          description: 'This setting determines the lock behavior following failed authentication attempts.
+
+
+            **Allowed values**:
+
+            `AUTH_METHOD` or `DEVICE`
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#application-behaviour" target="_blank">Application behaviour</a> in our **Application configuration** feature documentation.
+
+            '
+          example: DEVICE
+    ApplicationConfigState:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the application configuration. This can be either `ENABLED` or `DISABLED`
+          example: ENABLED
+      required:
+      - state
+    ApplicationConfigProperties:
+      type: object
+      properties:
+        amountFailuresAllowed:
+          type: string
+          description: 'The grace amount of failed authentications for any client before they are locked out.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`
+
+            '
+          example: '3'
+        activationCodeType:
+          type: string
+          description: 'The type of characters that can be used during the generation of the activation code.
+
+
+            **Allowed values**:
+
+            `ALPHA`, `ALPHANUMERIC`, `ANY` or `numeric`
+
+            '
+          example: NUMERIC
+        activationCodeLength:
+          type: string
+          description: 'The length in characters of the activation code that should be
+
+
+            **Allowed values**:
+
+            From `4` to `MAXINT`.
+
+            '
+          example: '10'
+        allowedAuthMethods:
+          type: array
+          description: 'Comma-separated list of allowed authentication methods.
+
+
+            Determines which authentication methods can be activated and used for authentication.
+
+            '
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+        apnConfig:
+          type: string
+          description: 'The APN server configuration that defines where to reach the APNs.
+
+
+            **Allowed values**:
+
+            `PRODUCTION` or `SANDBOX`
+
+            '
+          example: PRODUCTION
+        enabledRiskData:
+          type: array
+          description: 'The risk attributes to collect for the device.
+
+
+            **Note**: To learn how to configure which risk attributes are collected, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#risk-data" target="_blank">Risk data</a> in our **Application configuration** feature documentation.
+
+            '
+          example: ALL
+          items:
+            type: string
+        maxPinCodeLength:
+          type: string
+          description: 'The maximum length in characters of the PIN.
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '6'
+        pinCodeLength:
+          type: string
+          description: 'The length in characters of the PIN. Set `0` to disable PIN code.
+
+
+            **Note**: This is a hint to the client and not enforced by the server (but enforced in the client SDK).
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '6'
+        pinCodeType:
+          type: string
+          description: 'The type of characters that can be used in the PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            `ANY`, `NUMERIC`, `ALPHA`, `ALPHANUMERIC`
+
+            '
+          example: NUMERIC
+        maximumSessionExpiry:
+          type: string
+          description: 'The maximum amount of time (in milliseconds) that the `sessionExpiry` can be set to.
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+
+            **Default value**: `187200000` (52 hours).
+
+
+            **Note**: This value cannot be configured.
+
+            '
+          example: '1000000'
+        sessionExpiry:
+          type: string
+          description: 'The amount of time (in milliseconds) that a new client session remains valid for. After this time has elapsed, the session can no longer be used for any operations.
+
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`.
+
+            '
+          example: '300000'
+        minimumRequiredEncapApiVersionAndroid:
+          type: string
+          description: 'What Android client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.
+
+
+            **Allowed values**:
+
+            Semantic version, such as `3.7.0`.
+
+
+            **Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.
+
+            '
+          example: 3.7.0
+        minimumRequiredEncapApiVersionIos:
+          type: string
+          description: 'What iOS client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.
+
+
+            **Allowed values**:
+
+            Semantic version, such as `3.7.0`.
+
+
+            **Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.
+
+            '
+          example: 3.7.0
+        apnExpiry:
+          type: string
+          description: 'The amount of time (in milliseconds) that APNs will try to deliver the message for.
+
+            If not delivered within this time, then the message is discarded.
+
+
+            **Allowed values**:
+
+            From `1`to `MAXINT`.
+
+
+            **Note**: APNS will attempt to deliver the message at least once, regardless of the set expiration time.
+
+            '
+          example: '86400000'
+        hwKeyValidationStrategy:
+          type: string
+          description: " Defines the enforcement policy for hardware supported key validation\n\n - `REQUIRED_IF_SUPPORTED` Enforces hardware key validation if the device supports hardware keys. If a hardware key is registered, this strategy rejects Activations and Authentications if the provided signature is invalid. Devices lacking hardware support are permitted to proceed with the operation.\n - `REQUIRED` Hardware key validation is mandatory for all devices. Activation will fail if the client reports it cannot generate a hardware-supported key or any technical failure occurred during key generation. Authentication will fail if the client does not provide a valid signature from its hardware-supported key.\n - `OPTIONAL` Performs hardware key validation without enforcement. Validation failures generate risk data but, unlike other strategies, do not cause Activation or Authentication operations to fail.\n\n **Allowed values**:\n `REQUIRED`, `REQUIRED_IF_SUPPORTED` or `OPTIONAL`\n"
+          example: REQUIRED
+        encapApiBlacklistAndroid:
+          type: string
+          description: 'Android SDK API versions to blacklist (and reject). See the android configuration chapter in the server manual for smart device for details.
+
+
+            **Allowed values**:
+
+            Comma-separated semantic version such as: `3.5.3, 3.6.8`.
+
+            '
+          example: 3.5.3, 3.6.8
+        encapApiBlacklistIos:
+          type: string
+          description: 'IOS SDK API versions to blacklist (and reject). See the ios configuration chapter in the server manual for smart device for details.
+
+
+            **Allowed values**:
+
+            Comma-separated semantic version such as: `3.5.3, 3.6.8`.
+
+            '
+          example: 3.5.3, 3.6.8
+        nativePushEnabled:
+          type: string
+          description: 'Enable the server to send push messages with Fire Cloud Messaging or Apple APNs.
+
+
+            **Allowed values**:
+
+            `true` or `false`
+
+            '
+          example: 'false'
+        firebaseTimeToLive:
+          type: string
+          description: 'Firebase Cloud Messaging. Maximum lifespan of the message in milliseconds. This means deliver _now or never_.
+
+
+            FCM guarantees best effort for messages with this lifespan.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+
+            **Default value**: `0`
+
+            '
+          example: '0'
+        firebaseServiceAccount:
+          type: string
+          description: 'The SHA-256 hash of the decoded `serviceAccount.json` (credentials file) for your Firebase Cloud Messaging project, rendered as lowercase, colon-separated hexadecimal bytes. The private key itself is never returned.
+
+
+            **Note**: The value is prefixed with `SHA256Hash `. To update the service account, send the original Base64-encoded JSON; the hash is rejected as input.
+
+            '
+          example: SHA256Hash 59:56:d5:8e:dc:65:fc:fc:19:14:8a:9b:ea:ee:b5:7f:30:6b:d1:f6:fd:33:b9:ab:e9:13:63:87:05:18:c2:64
+        apnsBundleId:
+          type: string
+          description: 'Apples bundle ID for the application. Used as topic on the push message sent to APNs, required when using `APNS_TOKEN`.
+
+            '
+          example: the bundle id
+        allowedAuthMethodsForAuthAndActivate:
+          type: array
+          description: 'Comma-separated list of allowed authentication methods for activation of a new authentication method.
+
+
+            Determines which authentication methods can be used to authenticate during activation of a new authentication method.
+
+
+            **Note**:
+
+            The value(s) here must be present in the `ALLOWED_AUTH_METHODS` parameter. Offline authentication methods cannot be used here.
+
+            '
+          example:
+          - DEVICE:PIN
+          items:
+            type: string
+        recoveryEnabled:
+          type: string
+          description: 'Enable users to set up recovery with an alternative set of user credentials.
+
+
+            **Allowed values**:
+
+            `true` or `false`
+
+            '
+          example: 'true'
+        recoveryCodeMinLength:
+          type: string
+          description: 'The minimum number of characters for the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '6'
+        recoveryCodeMaxLength:
+          type: string
+          description: 'The maximum number of characters for the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '50'
+        recoveryCodeFormat:
+          type: string
+          description: 'The type of characters that can be used in the recovery PIN.
+
+
+            **Note**: This is a hint to the client and not enforced by the server.
+
+
+            **Allowed values**: `ALPHA`, `ALPHANUMERIC`, `ANY`, `NUMERIC`
+
+            '
+          example: ALPHA
+        recoveryCodeAmountFailuresAllowed:
+          type: string
+          description: 'The grace amount of failed recovery code attempts for any client before the recovery for the client is locked.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '3'
+        apnsNotificationSoundEnabled:
+          type: string
+          description: 'Enable notification sound for push messages to iOS devices.
+
+
+            **Allowed values**: `true`, `false`
+
+            '
+          example: 'false'
+        geofencingActivationMode:
+          type: string
+          description: 'The geofencing mode to use for the registration.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL`, or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing" target="_blank">Geofencing</a> in our **Application configuration** feature documentation.
+
+            '
+          example: OPTIONAL
+        geofencingActivationAllowedContinents:
+          type: string
+          description: 'Comma-separated list of continents where registration **is allowed**, in a  two-letter continent code format.
+
+
+            **Allowed values**:
+
+            `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.
+
+            '
+          example: EU
+        geofencingActivationAllowedCountries:
+          type: string
+          description: 'Comma-separated list of countries where registration **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries are in addition to those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: US
+        geofencingActivationDeniedCountries:
+          type: string
+          description: 'Comma-separated list of countries where registration **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: RU
+        geofencingAuthenticationMode:
+          type: string
+          description: 'The geofencing mode to use for the authentication.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL`, or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing" target="_blank">Geofencing</a> in our **Application configuration** feature documentation.
+
+            '
+          example: 'OFF'
+        geofencingAuthenticationAllowedContinents:
+          type: string
+          description: 'Comma-separated list of continents where authentication **is allowed**, in a  two-letter continent code format.
+
+
+            **Allowed values**:
+
+            `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.
+
+            '
+          example: EU
+        geofencingAuthenticationAllowedCountries:
+          type: string
+          description: 'Comma-separated list of countries where authentication **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries are in addition to those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: US
+        geofencingAuthenticationDeniedCountries:
+          type: string
+          description: 'Comma-separated list of countries where authentication **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+          example: RU
+        geofencingTimeout:
+          type: string
+          description: 'The maximum time (given in milliseconds) to wait for the location lookup and reverse geocoding to complete on the SDK.
+
+
+            The timing starts when the SDK calls the finish operation.
+
+
+            If the timeout is exceeded, then the SDK will continue without a country.
+
+
+            **Allowed values**:
+
+            From `0` to `MAXINT`.
+
+            '
+          example: '10000'
+        attestationIosAppAttestMode:
+          type: string
+          description: 'The iOS App Attest attestation mode to use for the operation.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL` or `OFF`.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation" target="_blank">App attestation</a> in our **Application configuration** feature documentation.
+
+            '
+          example: 'OFF'
+        attestationIosAppAttestEnvironment:
+          type: string
+          description: 'The environment for an app that uses the App Attest service to validate itself.
+
+
+            **Allowed values**:
+
+            `DEVELOPMENT`, `PRODUCTION`
+
+            '
+          example: PRODUCTION
+        attestationIosAppAttestTimeout:
+          type: string
+          description: 'iOS app attestation timeout, after this time, in milliseconds, the attestation request will time out.
+
+            **Allowed values**:
+
+            From `1` to `MAXINT`
+
+            '
+          example: '20000'
+        attestationIosAppAttestAppId:
+          type: string
+          description: 'Application ID which is a concatenation of a 10-digit team identifier, a period, and the app''s `CFBundleIdentifier` value.
+
+
+            **Note**: This is required when using Apple App Attest service.
+
+            '
+          example: some app id
+        clientDebugDataEnabledOsTypes:
+          type: string
+          description: 'A comma-separated list of operating system types to enable client debug data for.
+
+
+            It can be set for neither, one, or both platforms.
+
+
+            **Allowed values**:
+
+            `null` (empty field), `IOS`, `ANDROID`.
+
+
+            **Note**: This value cannot be configured.
+
+            '
+          example: IOS, ANDROID
+        apnsTimeSensitiveInterruptionLevelEnabled:
+          type: string
+          description: 'Sets the interruption level for push messages to iOS devices to **time-sensitive**.
+
+
+            When enabled, push notifications can notify the end-users, even when the device is in **Focus** mode.
+
+            '
+          example: 'false'
+        attestationAndroidPlayIntegrityMode:
+          type: string
+          description: 'The Android Play Integrity attestation mode to use for the operation.
+
+
+            **Allowed values**:
+
+            `REQUIRED`, `OPTIONAL` or `OFF`.
+
+
+            **Important**: Play Integrity attestation was introduced in version 3.17 and is only applicable for clients 3.17 or newer.
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation" target="_blank">App attestation</a> in our **Application configuration** feature documentation.
+
+            '
+          example: REQUIRED
+        attestationAndroidPlayIntegrityTimeout:
+          type: string
+          description: 'Play Integrity attestation timeout, in milliseconds, the timeout for a request made to Play Integrity.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: '30000'
+        attestationAndroidPlayIntegrityDecryptionKey:
+          type: string
+          description: 'Play Integrity attestation decryption key, used to decrypt the integrity token.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: <key>
+        attestationAndroidPlayIntegrityVerificationKey:
+          type: string
+          description: 'Play Integrity attestation verification key, used to validate the integrity token.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: <key>
+        attestationAndroidPackageName:
+          type: string
+          description: 'Play Integrity Attestation, the APK package name.
+
+
+            **Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.
+
+            '
+          example: Package
+        lockScope:
+          type: string
+          description: 'Configured value that determines the lock behavior following failed authentication attempts.
+
+
+            **Possible values**:
+
+            `AUTH_METHOD` or `DEVICE`
+
+
+            **Note**: To learn more, see <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#application-behaviour" target="_blank">Application behaviour</a> in our **Application configuration** feature documentation.
+
+            '
+          example: DEVICE
+    ApplicationConfig:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID for the application configuration
+          example: 762e9a1a-01f4-4731-a540-4f75dbeae43c
+        appId:
+          type: string
+          description: App ID of the application configuration
+          example: 05d9b1cb-5b8d-4d3d-b7c8-6709850b7486
+        appName:
+          type: string
+          description: The App name of the application configuration
+          example: app name
+        apnsUuid:
+          type: string
+          description: The APNs UUID of the application configuration
+          example: 6dbb0262-eecc-4dd0-928d-f20a72ad751f
+        state:
+          type: string
+          description: The state of the application configuration, This can be either `ENABLED` or `DISABLED`
+          example: ENABLED
+        properties:
+          $ref: '#/components/schemas/ApplicationConfigProperties'
+      required:
+      - appId
+      - state
+      - uuid
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

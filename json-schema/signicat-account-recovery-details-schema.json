@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-account-recovery-details-schema.json",
+  "title": "AccountRecoveryDetails",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-openapi.yml#/components/schemas/AccountRecoveryDetails",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "transactionId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The transaction ID of the recovery session."
+    },
+    "accountId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The ID of the account that the device belongs to."
+    },
+    "state": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The state of the recovery operation."
+    },
+    "device": {
+      "$ref": "#/$defs/Device",
+      "additionalProperties": false,
+      "description": "The device performing the recovery."
+    },
+    "user": {
+      "$ref": "#/$defs/BaseUser",
+      "additionalProperties": false,
+      "description": "The user performing the recovery."
+    },
+    "created": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The timestamp when the recovery session was created.\n\nReturned in pattern `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "operationProperties": {
+      "$ref": "#/$defs/OperationProperties",
+      "additionalProperties": false,
+      "description": "An object that describes the properties used to carry out the operation."
+    },
+    "riskAttributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The risk attributes collected for the device.\n\nSee [risk attributes](/apis/mobileid/#section/Common-concepts/Risk-attributes) for possible values.\n\nYou can find out how to configure which attributes are collected in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#risk-data\" target=\"_blank\">application configuration</a> feature documentation.\n"
+    },
+    "location": {
+      "$ref": "#/$defs/Location",
+      "additionalProperties": false,
+      "description": "An object that describes the location of the device used for the operation.\n\nIn order to be returned in the response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#location-risk-data\" target=\"_blank\">application configuration</a>.\n"
+    },
+    "attestation": {
+      "$ref": "#/$defs/AppAttestation",
+      "additionalProperties": false,
+      "description": "An object that describes the properties of the attestation.\n\nIn order for this object to be returned in response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation\" target=\"_blank\">application configuration</a>.\n"
+    },
+    "recoveryMethod": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The recovery method used for the recovery.\n\nSee [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values.\n\n"
+    },
+    "recoveryStatus": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The status of the recovery.\n\nSee [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values.\n\n"
+    }
+  },
+  "$defs": {
+    "AccountRecovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "recoveryId": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The ID of the recovery."
+        },
+        "recoveryMethod": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The recovery method used for the recovery. \n\n See [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values."
+        },
+        "recoveryStatus": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The status of the recovery. \n\n See [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values."
+        },
+        "created": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the recovery was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+        },
+        "modified": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the recovery was updated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+        },
+        "recovered": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the recovery was used. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+        }
+      }
+    },
+    "AppAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "An object that describes the properties of the attestation. \n\n In order for this object to be returned in response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation\" target=\"_blank\">application configuration</a>.",
+      "properties": {
+        "playIntegrityStatus": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The Play Integrity attestation status for the user's device. \n\n See [Play Integrity statuses](/apis/mobileid/#section/Common-concepts/Play-Integrity-statuses) for possible values."
+        },
+        "playIntegrityDate": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The date when the Play Integrity attestation was performed on the user's device."
+        },
+        "appAttestStatus": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The App Attest attestation status for the user's device. \n\n See [App Attest statuses](/apis/mobileid/#section/Common-concepts/App-Attest-statuses) for possible values."
+        },
+        "appAttestDate": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The date when the App Attest attestation was performed on the user's device."
+        }
+      }
+    },
+    "BaseUser": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "externalRef": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.\n"
+        },
+        "segment": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "A parameter used for segmentation of end-users and their corresponding transactions.\n"
+        },
+        "id": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The ID of the user (<code>userId</code>), in a valid UUID format."
+        },
+        "created": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the user was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+        },
+        "lastUsed": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the user last executed any <code>REGISTRATION</code>, <code>AUTHENTICATION</code> or <code>SIGNATURE</code> operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+        },
+        "state": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The state of the user. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>.",
+          "enum": [
+            "ACTIVE",
+            "LOCKED"
+          ]
+        }
+      }
+    },
+    "Device": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The ID of the user's device (<code>deviceId</code>)."
+        },
+        "name": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The name of the user's device."
+        },
+        "state": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The state of the user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code>, <code>LOCKED</code> or <code>DELETED</code>.",
+          "enum": [
+            "ACTIVE",
+            "LOCKED",
+            "DELETED"
+          ]
+        },
+        "lastOperationType": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The last operation type that the user's device executed. \n\n See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values."
+        },
+        "lastUsed": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the user's device last executed an operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+        },
+        "created": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the user's device was originally activated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+        },
+        "deviceDetails": {
+          "$ref": "#/$defs/DeviceDetails",
+          "additionalProperties": false,
+          "description": "The device details object."
+        }
+      }
+    },
+    "DeviceDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lock": {
+          "$ref": "#/$defs/DeviceLock",
+          "additionalProperties": false,
+          "description": "An object that contains details about the device lock. \n\n This object is only supplied when the user's device is locked."
+        },
+        "activationTime": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the user's device was originally activated.",
+          "readOnly": true
+        },
+        "deviceHash": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "A SHA256 hash of the unique hardware device ID of the user's device.",
+          "readOnly": true
+        },
+        "applicationId": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The application ID being used for the device.",
+          "readOnly": true
+        },
+        "currentClientApiVersion": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The Encap client API version that the user's device used for its last operation."
+        },
+        "activatedClientApiVersion": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The Encap client API version that the user's device was originally activated on."
+        },
+        "activatedEncapRelease": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The Encap server release version that the user's device was originally activated on.",
+          "readOnly": true
+        },
+        "pushAddress": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The push address for the user's device. \n\n This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS).",
+          "readOnly": true
+        },
+        "operatingSystemType": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The operating system type of the user's device.",
+          "readOnly": true
+        },
+        "activatedAuthenticationMethods": {
+          "type": "array",
+          "additionalProperties": false,
+          "description": "A list of the activated authentication methods for the user's device. \n\n See [authentication methods](/apis/mobileid/#section/Common-concepts/Authentication-methods) for possible values.",
+          "items": {
+            "type": "string",
+            "additionalProperties": false
+          },
+          "readOnly": true
+        },
+        "attestation": {
+          "$ref": "#/$defs/AppAttestation",
+          "additionalProperties": false
+        },
+        "recoveries": {
+          "type": "array",
+          "additionalProperties": false,
+          "description": "A list that contains all of the recoveries for a user's device.",
+          "items": {
+            "$ref": "#/$defs/AccountRecovery",
+            "additionalProperties": false
+          }
+        },
+        "recoveryLock": {
+          "type": "boolean",
+          "additionalProperties": false,
+          "description": "A setting for a user's device which indicates whether the account recovery feature is enabled or not.<ul><li>When <code>false</code>, the account recovery feature is enabled and recovery operations can be performed.</li><li>When <code>true</code>, the account recovery feature is disabled and recovery operations cannot be performed.</li></ul>"
+        }
+      }
+    },
+    "DeviceLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lockReason": {
+          "type": "array",
+          "additionalProperties": false,
+          "description": "A list that contains all reasons why the user's device has been locked. \n\n See [Lock reason](/apis/mobileid/#section/Common-concepts/Lock-reason) for possible values.",
+          "items": {
+            "type": "string",
+            "additionalProperties": false
+          },
+          "readOnly": true
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "accuracy": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The location accuracy of the device used for the operation."
+        },
+        "altitude": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The location altitude of the device used for the operation."
+        },
+        "latitude": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The location latitude of the device used for the operation."
+        },
+        "longitude": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The location longitude of the device used for the operation."
+        }
+      }
+    },
+    "OperationProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sessionExpiryTime": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "The timestamp when the recovery session expires.\n\nReturned in pattern `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+        },
+        "activatedAuthenticationMethods": {
+          "type": "array",
+          "additionalProperties": false,
+          "description": "A list of the activated authentication methods.",
+          "items": {
+            "type": "string",
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

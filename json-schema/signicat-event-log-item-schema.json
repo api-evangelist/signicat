@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-event-log-item-schema.json",
+  "title": "EventLogItem",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-events-openapi.yml#/components/schemas/EventLogItem",
+  "required": [
+    "event",
+    "id",
+    "replayUrl",
+    "url"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique ID for this event log item"
+    },
+    "event": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Event"
+        }
+      ],
+      "description": "The raw event data"
+    },
+    "url": {
+      "type": "string",
+      "description": "API Url to retrieve Event object."
+    },
+    "replayUrl": {
+      "type": "string",
+      "description": "API Url to replay Event object."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Event": {
+      "required": [
+        "accountId",
+        "eventData",
+        "eventName",
+        "expiresAt",
+        "id",
+        "organizationId",
+        "sender",
+        "tags",
+        "timestamp"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of the event"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the event was generated",
+          "format": "date-time"
+        },
+        "sender": {
+          "type": "string",
+          "description": "ID of the sending service"
+        },
+        "eventName": {
+          "type": "string",
+          "description": "Name of the event, unique per sender"
+        },
+        "eventData": {
+          "description": "Arbitrary event data"
+        },
+        "accountId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The target Account ID"
+        },
+        "organizationId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The target Organization ID"
+        },
+        "expiresAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The event's expiration tim",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "The event's tags"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The event data"
+    }
+  }
+}

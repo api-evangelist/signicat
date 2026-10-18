@@ -1,0 +1,672 @@
+openapi: 3.2.0
+info:
+  title: Signicat Account API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Account across 2 of this provider''s published API definitions: account-management-openapi.json, signicat-account-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /account-management
+tags:
+- name: Account
+  description: Provides management endpoints for Accounts.
+paths:
+  /accounts:
+    get:
+      tags:
+      - Account
+      summary: List accounts
+      operationId: list_accounts
+      parameters:
+      - name: limit
+        in: query
+        description: Max results to return.
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      - name: page
+        in: query
+        description: Opaque pagination token.
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: If true, will only retrieve soft deleted accounts.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_AccountListItem'
+              example:
+                data:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  createdDate: ''
+                  lastModifiedDate: '2022-05-11T11:28:59Z'
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  region: EU
+                  cloud: GCP
+                  enabled: true
+                  isDeleteProtected: false
+                  organization:
+                    id: o-p-0TgcUq7CylltM7OkwB4t
+                    name: My Organization
+                    url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  createdDate: ''
+                  lastModifiedDate: ''
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  region: EU
+                  cloud: GCP
+                  enabled: false
+                  isDeleteProtected: false
+                  organization: null
+                next: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Page_AccountListItem'
+              example:
+                data:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  createdDate: ''
+                  lastModifiedDate: '2022-05-11T11:28:59Z'
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  region: EU
+                  cloud: GCP
+                  enabled: true
+                  isDeleteProtected: false
+                  organization:
+                    id: o-p-0TgcUq7CylltM7OkwB4t
+                    name: My Organization
+                    url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  createdDate: ''
+                  lastModifiedDate: ''
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  region: EU
+                  cloud: GCP
+                  enabled: false
+                  isDeleteProtected: false
+                  organization: null
+                next: null
+    post:
+      tags:
+      - Account
+      summary: Create account
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AccountCreate'
+            example:
+              name: My Account
+              organizationId: o-p-0TgcUq7CylltM7OkwB4t
+              isSandbox: false
+              region: EU
+              cloud: GCP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+      operationId: postAccounts
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /accounts/{accountId}:
+    get:
+      tags:
+      - Account
+      summary: Retrieve account
+      operationId: retrieve_account
+      parameters:
+      - name: accountId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: If true, will allow retrieving an account even if it has been soft deleted.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+    put:
+      tags:
+      - Account
+      summary: Update account
+      parameters:
+      - name: accountId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AccountWrite'
+            example:
+              name: My Account
+              enabled: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+      operationId: putAccountsByAccountId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Account
+      summary: Delete account
+      parameters:
+      - name: accountId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: permanent
+        in: query
+        description: If true, will delete the account permanently.
+        schema:
+          type: boolean
+      responses:
+        '204':
+          description: No Content
+      operationId: deleteAccountsByAccountId
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /accounts/{accountId}/delete-protection:
+    put:
+      tags:
+      - Account
+      summary: Set delete protection
+      parameters:
+      - name: accountId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AccountSetDeleteProtection'
+      responses:
+        '204':
+          description: No Content
+      operationId: putAccountsByAccountIdDeleteProtection
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /accounts/{accountId}/undelete:
+    post:
+      tags:
+      - Account
+      summary: Undelete account
+      parameters:
+      - name: accountId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AccountRead'
+              example:
+                id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                name: My Account
+                createdDate: ''
+                lastModifiedDate: '2022-05-11T11:28:59Z'
+                isSoftDeleted: null
+                softDeletedAt: null
+                organization:
+                  id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  url: https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t
+                isSandbox: false
+                region: EU
+                cloud: GCP
+                enabled: true
+                isDeleteProtected: false
+                products:
+                - auth
+                - auth-nbid
+                - auth-sbid
+                - sign
+                - sign-nbid
+      operationId: postAccountsByAccountIdUndelete
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+components:
+  schemas:
+    OrganizationChildListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of organization
+        name:
+          type: string
+          description: Name
+        url:
+          type: string
+          description: API URL to retrieve Organization object
+      additionalProperties: false
+      description: Suborganization of an organization.
+    AccountRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of account
+          example: a-ppge-ovC1eMDgt0hkgqZUSaPh
+        name:
+          type: string
+          description: Display name
+          example: My Account
+        createdDate:
+          type: string
+          description: Timestamp of when account was created.
+          example: '2021-04-01T09:14:22Z'
+        lastModifiedDate:
+          type: string
+          description: Timestamp of last account modification.
+          example: '2022-05-11T11:28:59Z'
+        isSoftDeleted:
+          type:
+          - boolean
+          - 'null'
+          description: If true, the account has been soft deleted and will soon be permanently deleted.
+          example: '`null`'
+        softDeletedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of when account was soft deleted.
+          example: 'null'
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The Organization the account is linked to
+        isSandbox:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the account is a sandbox account
+          example: 'false'
+        region:
+          type: string
+          description: Which region the account belongs to
+          example: EU
+        cloud:
+          type: string
+          description: Which cloud the account belongs to
+          example: GCP
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+          example: 'true'
+        isDeleteProtected:
+          type: boolean
+          description: Whether the account is delete-protected
+          example: 'true'
+        products:
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+    AccountListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of account
+          example: a-ppge-ovC1eMDgt0hkgqZUSaPh
+        name:
+          type: string
+          description: Display name
+          example: My Account
+        createdDate:
+          type: string
+          description: Timestamp of when account was created.
+          example: '2021-04-01T09:14:22Z'
+        lastModifiedDate:
+          type: string
+          description: Timestamp of last account modification.
+          example: '2022-05-11T11:28:59Z'
+        isSoftDeleted:
+          type:
+          - boolean
+          - 'null'
+          description: If true, the account has been soft deleted and will soon be permanently deleted.
+          example: '`null`'
+        softDeletedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of when account was soft deleted.
+          example: 'null'
+        url:
+          type: string
+          description: API URL to retrieve Account object
+          example: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+        isSandbox:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the account is a sandbox account
+          example: 'false'
+        region:
+          type: string
+          description: Which region the account belongs to
+          example: EU
+        cloud:
+          type: string
+          description: Which cloud the account belongs to
+          example: GCP
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+          example: 'true'
+        isDeleteProtected:
+          type: boolean
+          description: Whether the account is delete-protected
+          example: 'true'
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The Organization the account is linked to
+      additionalProperties: false
+    AccountWrite:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 80
+          minLength: 1
+          type: string
+          description: Display name
+          example: My Account
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+          example: 'true'
+      additionalProperties: false
+    Page_AccountListItem:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountListItem'
+          description: The contents of the current page.
+        next:
+          type:
+          - string
+          - 'null'
+          description: URL to the next page, if more data may be available.
+      additionalProperties: false
+    AccountCreate:
+      required:
+      - cloud
+      - isSandbox
+      - name
+      - organizationId
+      - region
+      type: object
+      properties:
+        name:
+          maxLength: 80
+          minLength: 1
+          type: string
+          description: Display name
+          example: My Account
+        organizationId:
+          minLength: 1
+          type: string
+          description: Organization ID to place the account under
+          example: o-p-0TgcUq7CylltM7OkwB4t
+        isSandbox:
+          type: boolean
+          description: Whether the account is a sandbox account
+          example: 'false'
+        region:
+          minLength: 1
+          pattern: ^EU$
+          type: string
+          description: Which region the account belongs to
+          example: EU
+        cloud:
+          minLength: 1
+          type: string
+          description: Which cloud the account belongs to
+          example: GCP
+      additionalProperties: false
+    AccountSetDeleteProtection:
+      type: object
+      properties:
+        isDeleteProtected:
+          type: boolean
+          description: Whether the account is delete-protected
+          example: true
+      additionalProperties: false
+x-refined-from:
+- account-management-openapi.json
+- signicat-account-management-openapi.yml

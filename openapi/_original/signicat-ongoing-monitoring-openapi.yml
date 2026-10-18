@@ -1,0 +1,1976 @@
+# x-archived-from: signicat-ongoing-monitoring-openapi.yml
+# x-archived-on: 2026-10-18
+openapi: 3.0.4
+info:
+  title: Signicat Ongoing Monitoring API
+  description: '
+
+    - **Base URL**: `https://api.signicat.com/info/monitor/`
+
+    - **Documentation**: See the [Ongoing Monitoring](/docs/ongoing-monitoring/) developer documentation.
+
+    - **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.
+
+
+    # Introduction
+
+
+    The Signicat Ongoing Monitoring API enables monitoring of person and organisation data changes through multiple national person and organisation registries.
+
+
+    This API is part of the Signicat Ongoing Monitoring service that enables continuous tracking of entities (persons or organisations) for any changes in their demographic, financial or screening profiles.
+
+
+    This REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.
+
+
+    # Get started
+
+
+    Before you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).
+
+
+    Required API client permissions:
+
+
+    - **Info Monitor Admin**
+
+    - **Info Monitor Editor**
+
+    - **Info Monitor Viewer**
+
+
+    ## Audit logs
+
+
+    Use the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.
+
+
+    - Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)
+
+    - For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.
+
+
+    ## Errors
+
+
+    When you make an API call to Signicat and an error occurs, you will receive a response message with an error code.
+
+
+    - For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.
+
+    - For errors specific to this service, see the Ongoing Monitoring [Error codes](/docs/ongoing-monitoring/error-codes/) documentation.
+
+
+    ## Events (callback)
+
+
+    Use the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.
+
+
+    - Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)
+
+    - For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.
+
+
+    > **Note**: This is often referred to as callback.
+
+    '
+  contact: ''
+  version: ''
+  x-meta: Custom metadata
+  license: ''
+  termsOfService: ''
+servers:
+- url: https://api.signicat.com/
+tags:
+- name: Changes Endpoints
+- name: Monitor Endpoints
+- name: Organisation Endpoints
+- name: Person Endpoints
+paths:
+  /info/monitor/{monitorId}/changes:
+    get:
+      tags:
+      - Changes Endpoints
+      summary: Get changes by monitor
+      description: This endpoint allows to get the all changes by monitor id from the system.
+      operationId: GetChangesByMonitorId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      - name: referenceKey
+        in: query
+        description: Unique reference key of the entity.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: ae3be338-4b92-46d3-b46f-1ade3db7070f
+                  detected: '2026-10-16T14:12:59.0658247Z'
+                  created: '2026-10-15T20:12:59.0658249Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}/changes/{changeId}:
+    get:
+      tags:
+      - Changes Endpoints
+      summary: Get changes by monitor and change id
+      description: This endpoint allows to get the all changes by monitor id and change id from the system.
+      operationId: GetChangesByMonitorIdAndChangeId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: changeId
+        in: path
+        description: Id of the change.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDto'
+              example:
+                id: 1
+                referenceKey: referenceKey
+                monitorId: 05bee571-37ed-4af0-8d64-b91a0a86aa51
+                detected: '2026-10-16T14:12:59.0671202Z'
+                created: '2026-10-16T14:12:59.0671203Z'
+                changes:
+                - profile: profile
+                  attribute: attribute
+                  action: action
+                  new: new value
+                  old: old value
+                source: source
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}:
+    get:
+      tags:
+      - Monitor Endpoints
+      summary: Get monitor
+      description: This endpoint allows to get monitor by Id from the system.
+      operationId: GetMonitor
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorDto'
+              example:
+                id: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                accountId: a-ppge-c5jsmhR5fLM3jxBY8H1v
+                name: Monitor Name
+                sources:
+                - name: trapets
+                profiles:
+                - screening
+                description: Monitor that reach source
+                size: 10
+                entityType: Organisation
+                createdAt: '2026-10-16T14:12:59.0694094Z'
+                isActive: true
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /info/monitor:
+    post:
+      tags:
+      - Monitor Endpoints
+      summary: Create monitor
+      description: This endpoint allows the creation of a new monitor resource in the system.
+      operationId: CreateMonitor
+      requestBody:
+        description: Request object to create a monitor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMonitorRequestDto'
+            example:
+              name: Monitor Name
+              description: Monitor that reach source
+              entityType: Organisation
+              sources:
+              - name: trapets
+              profiles:
+              - screening
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOperationResponse'
+              example:
+                status: 200
+                message: Entity with reference key spar01 is in the process of being delete
+                monitorId: 019e8cc8-bb2c-7f4d-fae0-1eaf7aaa0cc9
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+  /info/monitor/update/{monitorId}:
+    patch:
+      tags:
+      - Monitor Endpoints
+      summary: Update monitor
+      description: This endpoint allows the update of a existing monitor resource in the system.
+      operationId: UpdateMonitor
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Request object to update a monitor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMonitorRequestDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorDto'
+              example:
+                id: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                accountId: a-ppge-c5jsmhR5fLM3jxBY8H1v
+                name: Monitor Name
+                sources:
+                - name: trapets
+                profiles:
+                - screening
+                description: Monitor that reach source
+                size: 10
+                entityType: Organisation
+                createdAt: '2026-10-16T14:12:59.0724777Z'
+                isActive: true
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}/organisations/{referenceKey}:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Retrieves the most recent state of an organisation.
+      description: This endpoint allows to get the organisation last snapshot by monitor id and reference key from the system.
+      operationId: GetLatestOrganizationSnapshot
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganisationDataDto'
+              example:
+                country: NOR
+                name: Organisation Name
+                added: '2026-10-15T14:12:59.0778992Z'
+                lastUpdate: '2026-10-16T14:12:59.0778999Z'
+                organisationNumber: '12345678'
+                operationalStatus: Active
+                externalId: 1454-15
+                alias: Organisation Alias
+                legalForm: Other
+                vatNumber: '12345678'
+                email: example@example.pt
+                registrationDate: '2026-10-15T14:12:59.0778999Z'
+                phone:
+                  number: '12345678'
+                  region: NOR
+                addresses:
+                - type: Registered
+                  country: NOR
+                  postCode: postcode
+                  postPlace: postplace
+                  street: Street
+                  addressLine: null
+                  startDate: '2026-10-15T14:12:59.0779021Z'
+                  endDate: '2026-10-17T14:12:59.077902Z'
+                industries:
+                - naceCode: '64.19'
+                  description: Other monetary intermediation
+                  section: L
+                  level: 4
+                names:
+                - name: Organisation Name
+                  type: Business
+                  startDate: '2026-10-15T14:12:59.0779033Z'
+                  endDate: '2026-10-17T14:12:59.0779033Z'
+                - name: Organisation Name
+                  type: Registered
+                  startDate: '2026-10-15T14:12:59.0779035Z'
+                  endDate: '2026-10-17T14:12:59.0779034Z'
+                countryAffiliationsList:
+                - countryCode: SWE
+                  affiliation: Jurisdiction
+                screening:
+                  matchStrength: 100
+                  listType: SANCTION
+                  source: EU_GLOBAL
+                  externalUrls: []
+                finance:
+                  creditRating:
+                    description: description
+                    score: '10'
+                    scoringSystem: System
+                    url: example.com
+                    year: 2025
+                  financials:
+                  - currency: EUR
+                    grossProfit: 12
+                    netProfit: 13
+                    netProfitAfterTax: 18
+                    turnover: 1
+                    year: 2024
+                  - currency: EUR
+                    grossProfit: 30.02
+                    netProfit: 31.902
+                    netProfitAfterTax: 32.98
+                    turnover: 2
+                    year: 2023
+                  paymentRemarkInfo:
+                    numberOfRemarks: 1
+                roles:
+                  companies:
+                  - name: Company
+                    roles:
+                    - roleCategory: Auditor
+                      description: description
+                      startDate: '2026-10-15T14:12:59.077909Z'
+                      endDate: '2026-10-17T14:12:59.0779089Z'
+                    organisationNumber: '12345678'
+                  persons:
+                  - address:
+                      type: Unknown
+                      country: NOR
+                      postCode: postcode
+                      postPlace: postplace
+                      street: Street
+                      addressLine: null
+                      startDate: null
+                      endDate: null
+                    dateOfBirth: '1986-10-16'
+                    identityNumber:
+                      country: NOR
+                      number: '12345'
+                      type: National
+                    name:
+                      first: first
+                      middle: middle
+                      last: last
+                      full: first middle last
+                    nationality: NOR
+                    roles:
+                    - roleCategory: Ceo
+                      description: description
+                      startDate: '2026-10-15T14:12:59.0779107Z'
+                      endDate: '2026-10-17T14:12:59.0779107Z'
+                  others:
+                  - id: '123'
+                    name: other
+                    roles:
+                    - roleCategory: Auditor
+                      description: description
+                      startDate: '2026-10-15T14:12:59.0779097Z'
+                      endDate: '2026-10-17T14:12:59.0779097Z'
+                sourceSpecific: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - Organisation Endpoints
+      summary: Delete organisation associated to a monitor
+      description: This endpoint allows to delete the organisation from the system in one specific monitor.
+      operationId: DeleteOrganization
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOperationResponse'
+              example:
+                status: 200
+                message: Entity with reference key spar01 is in the process of being delete
+                monitorId: 019e8cc8-bb2c-7f4d-fae0-1eaf7aaa0cc9
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}/organisations/{referenceKey}/changes:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Get organisation changes by monitor and reference key
+      description: "\n                This endpoint is deprecated and will be removed in a future version.\n                Use 'info/monitor/<monitor id>/changes?referenceKey=<reference key>' instead."
+      operationId: GetOrganizationChanges
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: c2649887-b4ab-4952-a6b7-ddd29cf278a8
+                  detected: '2026-10-16T14:12:59.0804944Z'
+                  created: '2026-10-15T20:12:59.0804945Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      deprecated: true
+  /info/monitor/{monitorId}/organisations/changes:
+    get:
+      tags:
+      - Organisation Endpoints
+      summary: Get organisation changes from monitor
+      description: "\n                This endpoint is deprecated and will be removed in a future version.\n                Use 'info/monitor/<monitor id>/changes' instead."
+      operationId: GetOrganizationChangesByMonitorId
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        description: Cursor used for pagination. Represents the starting point for the next set of results.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items returned per request.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorChangesDtoPagedCollection'
+              example:
+                size: 2
+                nextCursor: 3
+                limit: 1000
+                items:
+                - id: 1
+                  referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+                  monitorId: 59957855-2df6-4389-ac3a-a9a24ed56590
+                  detected: '2026-10-16T14:12:59.0817132Z'
+                  created: '2026-10-15T20:12:59.0817134Z'
+                  changes:
+                  - profile: screening
+                    attribute: CompanyName
+                    action: Update
+                    new: New Name
+                    old: Previous Name
+                  - profile: screening
+                    attribute: MatchStrength
+                    action: Update
+                    new: '100'
+                    old: '60'
+                  - profile: sourceSpecific
+                    attribute: creditScoreRiskCategory
+                    action: Update
+                    new: CS-HIGH-5
+                    old: CS-MED-1
+                  source: Creditsafe
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      deprecated: true
+  /info/monitor/{monitorId}/organisations:
+    post:
+      tags:
+      - Organisation Endpoints
+      summary: Add organisation
+      description: This endpoint allows the creation of a new organisation to monitor in the system.
+      operationId: AddOrganization
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: List of organisations to be added to monitor.
+        content:
+          application/json:
+            schema:
+              maxItems: 10000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/OrganisationRequestDto'
+            example:
+            - organisationNumber: '23432342'
+              source: Trapets
+              country: NOR
+              companyName: Signicat
+              referenceKey: 402d1ce2-ce71-4f9b-b252-3fa90fef0de4
+              externalId: NOR-23432342
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}/person/{referenceKey}:
+    get:
+      tags:
+      - Person Endpoints
+      summary: Retrieves the most recent state of a person.
+      description: This endpoint allows to get the person last snapshot by monitor id and reference key from the system.
+      operationId: GetLatestPersonSnapshot
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponseDto'
+              example:
+                dateOfBirth: '2000-12-04'
+                dateOfDeath: '2026-12-04'
+                firstName: John
+                preferredName: null
+                middleName: Doe
+                lastName: Smith
+                alias: null
+                nationalIdentityNumber: '12345678901'
+                nationality: NOR
+                taxCountryCode: NOR
+                registrationIdCountryCode: NOR
+                gender: Male
+                citizenCountryCode: NOR
+                addresses:
+                - type: Registered
+                  country: NOR
+                  postCode: '0101'
+                  postPlace: Oslo
+                  street: Main Street
+                  addressLine: Main Street 1
+                  startDate: '1990-01-01T00:00:00'
+                  endDate: '2027-10-16T14:12:59.0852592Z'
+                countryAffiliationsList:
+                - countryCode: NOR
+                  affiliation: Citizen
+                screenings:
+                - matchStrength: 100
+                  listType: SANCTION
+                  source: EU_GLOBAL
+                  externalUrls: []
+                deregistrationData:
+                  deregistrationCode: Emigrated
+                  deregistrationDate:
+                    year: 2026
+                    month: 1
+                    exactDate: '2026-01-14'
+                protection: null
+                sourceSpecific: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - Person Endpoints
+      summary: Delete person associated to a monitor
+      description: This endpoint allows to delete the person from the system in one specific monitor.
+      operationId: DeletePerson
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOperationResponse'
+              example:
+                status: 200
+                message: Entity with reference key spar01 is in the process of being delete
+                monitorId: 019e8cc8-bb2c-7f4d-fae0-1eaf7aaa0cc9
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+  /info/monitor/{monitorId}/persons:
+    post:
+      tags:
+      - Person Endpoints
+      summary: Add person to monitor
+      description: This endpoint allows the creation of a new person to monitor in the system.
+      operationId: AddPerson
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Request object to add persons to the monitor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonsRequestDto'
+            example:
+              persons:
+              - source: trapets
+                referenceKey: referenceKey1
+                nationalIdentityNumber: '12345678901'
+                name:
+                  firstName: John
+                  lastName: Smith
+                  middleName: Doe
+                nationality: NOR
+                dateOfBirth: '1990-01-01'
+                address:
+                  country: NOR
+                  postCode: '0101'
+                  postPlace: Oslo
+                  street: Main Street 1
+                registrationIdCountryCode: NOR
+                taxCountryCode: NOR
+                citizenCountryCode: NOR
+              - source: se-spar
+                referenceKey: referenceKey2
+                nationalIdentityNumber: '12345678902'
+                name:
+                  firstName: Jane
+                  lastName: Smith
+                  middleName: Doe
+                nationality: SWE
+                dateOfBirth: '1992-02-02'
+                address:
+                  country: SWE
+                  postCode: '12345'
+                  postPlace: Stockholm
+                  street: Main Street 2
+                registrationIdCountryCode: SWE
+                taxCountryCode: SWE
+                citizenCountryCode: SWE
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'Represents the type of the address. The type is used to specify the categorization
+
+            or purpose of the address, such as registered, residential, business, or other.
+
+            The default value is `Unknown`.'
+          nullable: true
+        country:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type: string
+          description: 'Represents the country associated with the address. The value must be a valid
+
+            ISO 3166 alpha-2 or alpha-3 country code if provided. This property is used
+
+            to specify the country where the address is located.'
+          nullable: true
+        postCode:
+          type: string
+          description: 'Represents the postal code of the address. The postal code is used to identify
+
+            specific geographic areas within a country or region and is commonly part of
+
+            the addressing system for mail delivery.'
+          nullable: true
+        postPlace:
+          type: string
+          description: 'Represents the postal location or city corresponding to the address.
+
+            Typically used in combination with the postal code to identify the area
+
+            of the address. This property may be null if the information is unavailable.'
+          nullable: true
+        street:
+          type: string
+          description: 'Represents the street name of an address. This property holds the specific street
+
+            information associated with the address, such as the road name. It is a part
+
+            of the standard formatting for identifying a location.'
+          nullable: true
+        addressLine:
+          type: string
+          description: 'Represents a specific part or line of the address, often used to provide
+
+            additional details about the address location. This property may include
+
+            information such as building names, apartment numbers, or other
+
+            descriptive elements that complement the main street or post details.'
+          nullable: true
+        startDate:
+          type: string
+          description: 'Represents the start date associated with the address. This property is
+
+            used to indicate the date from which the address becomes valid or applicable.
+
+            The value can be `null`, indicating that no specific start date is set.'
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          description: 'Represents the last date associated with the validity or applicability
+
+            of the address. This property indicates when the address is no longer
+
+            in use or relevant. If not set, the end date is considered undefined.'
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    ApiOperationResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Represents the status of the operation, typically corresponding to an HTTP status code.
+          format: int32
+        message:
+          type: string
+          description: Provides a descriptive message related to the outcome of the API operation.
+          nullable: true
+        monitorId:
+          type: string
+          description: Represents the unique identifier of a monitor resource.
+          format: uuid
+          nullable: true
+      additionalProperties: false
+    ApproximateDateDto:
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int32
+          nullable: true
+        month:
+          type: integer
+          format: int32
+          nullable: true
+        exactDate:
+          type: string
+          format: date
+          nullable: true
+      additionalProperties: false
+    ChangesDto:
+      required:
+      - action
+      - attribute
+      - profile
+      type: object
+      properties:
+        profile:
+          minLength: 1
+          type: string
+          description: Represents the profile associated with a specific change entry.
+        attribute:
+          minLength: 1
+          type: string
+          description: Represents the specific attribute of a change entry.
+        action:
+          minLength: 1
+          type: string
+          description: 'This property is used to describe the operation associated with the change, such as addition,
+
+            update, or deletion of specific data.'
+        new:
+          enum:
+          - null
+          description: This property provides information about the updated or newly assigned value after a change has occurred.
+          nullable: true
+        old:
+          enum:
+          - null
+          description: 'This property captures the information prior to the modification, providing
+
+            a means to track and compare historical data.'
+          nullable: true
+      additionalProperties: false
+    CompanyRole:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name associated with the company role.
+          nullable: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Collection of roles associated with the company.
+          nullable: true
+        organisationNumber:
+          type: string
+          description: Organisation number associated with the company role.
+          nullable: true
+      additionalProperties: false
+    CountryAffiliations:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          description: Represents the code of a country using its standardized abbreviation.
+          nullable: true
+        affiliation:
+          type: string
+          description: Represents the type or description of a connection or association to a specific country.
+          nullable: true
+      additionalProperties: false
+    CreateMonitorRequestDto:
+      required:
+      - entityType
+      - name
+      - profiles
+      - sources
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the monitor.
+        description:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Description of the monitor.
+          nullable: true
+        entityType:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The type of monitored entities (e.g., 'Person', 'Organisation').
+        sources:
+          maxItems: 50
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/SourcesDto'
+          description: A collection of sources associated with the monitor.
+        profiles:
+          maxItems: 50
+          minItems: 1
+          type: array
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          description: A list of profiles associated with the monitor request. Each profile must be a non-empty string.
+      additionalProperties: false
+    CreditRating:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the credit rating.
+          nullable: true
+        score:
+          type: string
+          description: Score of the credit rating.
+          nullable: true
+        scoringSystem:
+          type: string
+          description: Scoring system used for determining credit ratings.
+          nullable: true
+        url:
+          type: string
+          description: URL associated with the credit rating.
+          nullable: true
+        year:
+          type: integer
+          description: Year associated with the credit rating.
+          format: int32
+          nullable: true
+      additionalProperties: false
+    Financial:
+      type: object
+      properties:
+        currency:
+          type: string
+          description: Currency representation associated with financial data.
+          nullable: true
+        grossProfit:
+          type: number
+          description: Gross profit value, representing the total revenue minus the cost of goods sold (COGS).
+          format: double
+          nullable: true
+        netProfit:
+          type: number
+          description: Net-profit value derived from financial calculations.
+          format: double
+          nullable: true
+        netProfitAfterTax:
+          type: number
+          description: Net profit of a financial entity after accounting for taxes.
+          format: double
+          nullable: true
+        turnover:
+          type: number
+          description: Turnover value associated with financial performance.
+          format: double
+          nullable: true
+        year:
+          type: integer
+          description: Year associated with financial data.
+          format: int32
+          nullable: true
+      additionalProperties: false
+    FinancialInfo:
+      type: object
+      properties:
+        creditRating:
+          $ref: '#/components/schemas/CreditRating'
+        financials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Financial'
+          description: 'Represents a collection of financial records.
+
+            Provides detailed financial information associated with an entity or organization.'
+          nullable: true
+        paymentRemarkInfo:
+          $ref: '#/components/schemas/PaymentRemarkInfo'
+      additionalProperties: false
+    IdNumber:
+      type: object
+      properties:
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code associated with the ID number.
+          nullable: true
+        number:
+          type: string
+          description: Numerical identifier associated with the ID number.
+          nullable: true
+        type:
+          type: string
+          description: Category or classification associated with the ID number.
+          nullable: true
+      additionalProperties: false
+    Industry:
+      type: object
+      properties:
+        naceCode:
+          type: string
+          description: NACE code associated with the industry.
+          nullable: true
+        description:
+          type: string
+          description: 'Description of the industry.
+
+            The description provides a textual representation or details about the specific industry.'
+          nullable: true
+        section:
+          type: string
+          description: 'Section of the industry classification.
+
+            The section represents a higher-level categorization of economic activities,
+
+            typically grouping industries into broader segments or divisions.'
+          nullable: true
+        level:
+          type: integer
+          description: 'Hierarchical level of the industry.
+
+            This value indicates the depth or position of the industry
+
+            within a structured classification framework.'
+          format: int32
+          nullable: true
+      additionalProperties: false
+    MonitorChangesDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the monitor changes.
+          format: int32
+        referenceKey:
+          type: string
+          description: Reference key associated with the entity.
+          nullable: true
+        monitorId:
+          type: string
+          description: Unique identifier associated with a monitor.
+          format: uuid
+        detected:
+          type: string
+          description: Date and time when the changes were detected at the source.
+          format: date-time
+        created:
+          type: string
+          description: Timestamp indicating when the monitor changes were created in our system.
+          format: date-time
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangesDto'
+          description: List of changes associated with the monitor.
+          nullable: true
+        source:
+          type: string
+          description: Name of the source that produced this batch of changes.
+          nullable: true
+      additionalProperties: false
+    MonitorChangesDtoPagedCollection:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: Total number of items in the collection.
+          format: int32
+        nextCursor:
+          type: integer
+          description: Cursor that points to the start of the next page in a paginated collection.
+          format: int32
+          nullable: true
+        limit:
+          type: integer
+          description: Maximum number of items that can be returned in the collection.
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitorChangesDto'
+          description: Collection of items.
+          nullable: true
+      additionalProperties: false
+    MonitorDto:
+      required:
+      - accountId
+      - entityType
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The ID of the monitor
+        accountId:
+          type: string
+          description: The ID of the account that the monitor belongs to
+        name:
+          type: string
+          description: The name of the monitor
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourcesDto'
+          description: The sources that monitor the entities
+          nullable: true
+        profiles:
+          type: array
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          description: A list of profiles associated with the monitor.
+          nullable: true
+        description:
+          type: string
+          description: Description of the monitor
+          nullable: true
+        size:
+          type: integer
+          description: The count of monitored entities
+          format: int32
+        entityType:
+          minLength: 1
+          type: string
+          description: The type of monitored entities (e.g., 'Person', 'Organisation')
+        createdAt:
+          type: string
+          description: Monitor creation date and time
+          format: date-time
+        isActive:
+          type: boolean
+          description: Indicates whether the monitor is currently active.
+      additionalProperties: false
+    OrganisationDataDto:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Country associated with the organisation.
+          nullable: true
+        name:
+          type: string
+          description: Name of the organisation.
+          nullable: true
+        added:
+          type: string
+          description: Date and time when the organisation data was added.
+          format: date-time
+          nullable: true
+        lastUpdate:
+          type: string
+          description: Date and time of the last update for the organisation data.
+          format: date-time
+          nullable: true
+        organisationNumber:
+          type: string
+          description: Unique identification number associated with the organisation.
+          nullable: true
+        operationalStatus:
+          type: string
+          description: Operational status of the organisation.
+          nullable: true
+        externalId:
+          type: string
+          description: External identifier associated with the organisation.
+          nullable: true
+        alias:
+          type: string
+          description: Alias associated with the organisation.
+          nullable: true
+        legalForm:
+          type: string
+          description: Legal form of the organisation, representing its structure or type.
+          nullable: true
+        vatNumber:
+          type: string
+          description: VAT number of the organisation.
+          nullable: true
+        email:
+          type: string
+          description: Email address associated with the organisation.
+          nullable: true
+        registrationDate:
+          type: string
+          description: Date when the organisation was registered.
+          format: date-time
+          nullable: true
+        phone:
+          $ref: '#/components/schemas/Phone'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+          description: Collection of addresses associated with the organisation.
+          nullable: true
+        industries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Industry'
+          description: List of industries associated with the organisation.
+          nullable: true
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganisationName'
+          description: Collection of names associated with the organisation.
+          nullable: true
+        countryAffiliationsList:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryAffiliations'
+          description: List of country affiliations associated with the organisation.
+          nullable: true
+        screening:
+          $ref: '#/components/schemas/RiskScreening'
+        finance:
+          $ref: '#/components/schemas/FinancialInfo'
+        roles:
+          $ref: '#/components/schemas/RolesInfo'
+        sourceSpecific:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: 'Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.
+
+            A source is omitted entirely when it has no source-specific data.'
+          nullable: true
+      additionalProperties: false
+    OrganisationName:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the organisation.
+          nullable: true
+        type:
+          type: string
+          description: Type or category of the organisation.
+          nullable: true
+        startDate:
+          type: string
+          description: Start date associated with the organisation.
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          description: End date associated with the organisation.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    OrganisationRequestDto:
+      required:
+      - organisationNumber
+      - referenceKey
+      - source
+      type: object
+      properties:
+        organisationNumber:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the unique identification number of an organisation.
+        source:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the source of the organisation information.
+        country:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the country associated with the organisation.
+          nullable: true
+        companyName:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Represents the name of the company associated with the organisation.
+          nullable: true
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the unique key that identifies a specific reference for an organisation.
+        externalId:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Represents an optional external identifier for an organisation.
+          nullable: true
+      additionalProperties: false
+    OtherRole:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier for the role.
+          nullable: true
+        name:
+          type: string
+          description: Name associated with the role.
+          nullable: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Collection of roles associated with the object.
+          nullable: true
+      additionalProperties: false
+    PaymentRemarkInfo:
+      type: object
+      properties:
+        numberOfRemarks:
+          type: integer
+          description: Total number of remarks associated with a payment.
+          format: int32
+          nullable: true
+      additionalProperties: false
+    PersonAddressRequest:
+      type: object
+      properties:
+        country:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type: string
+          description: Represents the country associated with an address.
+          nullable: true
+        postCode:
+          type: string
+          description: Represents the postal code associated with an address.
+          nullable: true
+        postPlace:
+          type: string
+          description: Represents the city or locality associated with an address.
+          nullable: true
+        street:
+          type: string
+          description: Represents the street name of an address.
+          nullable: true
+      additionalProperties: false
+    PersonDeregistrationDto:
+      type: object
+      properties:
+        deregistrationCode:
+          $ref: '#/components/schemas/PersonDeregistrationTypeDto'
+        deregistrationDate:
+          $ref: '#/components/schemas/ApproximateDateDto'
+      additionalProperties: false
+    PersonDeregistrationTypeDto:
+      enum:
+      - Unknown
+      - Deceased
+      - Invalidated
+      - Emigrated
+      - Other
+      type: string
+      description: The type of deregistration reported for the person.
+    PersonName:
+      type: object
+      properties:
+        first:
+          type: string
+          description: First name of a person.
+          nullable: true
+        middle:
+          type: string
+          description: Middle name of a person.
+          nullable: true
+        last:
+          type: string
+          description: Last name of a person.
+          nullable: true
+        full:
+          type: string
+          description: Full name of a person.
+          nullable: true
+      additionalProperties: false
+    PersonNameDto:
+      required:
+      - firstName
+      - lastName
+      type: object
+      properties:
+        firstName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: First name of the person.
+        lastName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Last name of the person.
+        middleName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Middle name of the person.
+          nullable: true
+      additionalProperties: false
+    PersonProtectionDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProtectionStatus'
+        protectedAttributes:
+          type: array
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          nullable: true
+        protectedNotificationReceived:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PersonRequestDto:
+      required:
+      - referenceKey
+      - source
+      type: object
+      properties:
+        source:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: 'Represents the origin or source of the request. This value is required
+
+            and must adhere to the specified length constraints.'
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: 'Represents a unique reference key associated with a person request.
+
+            This property is mandatory and must comply with specified length constraints.'
+        nationalIdentityNumber:
+          type: string
+          description: 'Represents the national identity number of a person. This value is optional
+
+            but may be required for certain validations or operations. It should comply
+
+            with applicable format and validity rules for national identity numbers.'
+          nullable: true
+        name:
+          $ref: '#/components/schemas/PersonNameDto'
+        nationality:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type: string
+          description: 'Specifies the nationality of a person using an optional ISO code format. This is required for certain sources.
+
+            The value must match a two- or three-letter ISO code or remain empty.'
+          nullable: true
+        dateOfBirth:
+          type: string
+          description: The date of birth is optional. The correct format is YYYY-MM-DD
+          nullable: true
+        address:
+          $ref: '#/components/schemas/PersonAddressRequest'
+        registrationIdCountryCode:
+          type: string
+          description: 'Represents the country code associated with the registration ID of a person. This is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+          nullable: true
+        taxCountryCode:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type: string
+          description: 'The tax country code is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+          nullable: true
+        citizenCountryCode:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type: string
+          description: 'The citizen country code is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+          nullable: true
+      additionalProperties: false
+    PersonResponseDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the person.
+          nullable: true
+        preferredName:
+          type: string
+          description: Preferred name of the person.
+          nullable: true
+        middleName:
+          type: string
+          description: Middle name of the person.
+          nullable: true
+        lastName:
+          type: string
+          description: Last name of the person.
+          nullable: true
+        alias:
+          type: string
+          description: Alternative name or nickname associated with the person.
+          nullable: true
+        nationalIdentityNumber:
+          type: string
+          description: National identity number of the person.
+          nullable: true
+        nationality:
+          type: string
+          description: Nationality of the person.
+          nullable: true
+        taxCountryCode:
+          type: string
+          description: Tax country code associated with the individual.
+          nullable: true
+        registrationIdCountryCode:
+          type: string
+          description: Country code associated with the registration ID.
+          nullable: true
+        gender:
+          type: string
+          description: Gender of the person. (e.g., `Male`, `Female`, `Other` or `Unknown`)
+          nullable: true
+        citizenCountryCode:
+          type: string
+          description: Country code representing the citizenship of the person.
+          nullable: true
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+          description: Collection of addresses associated with a person.
+          nullable: true
+        countryAffiliationsList:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryAffiliations'
+          description: List of country affiliations associated with the person.
+          nullable: true
+        screenings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskScreening'
+          description: List of screenings associated with the person.
+          nullable: true
+        deregistrationData:
+          $ref: '#/components/schemas/PersonDeregistrationDto'
+        protection:
+          $ref: '#/components/schemas/PersonProtectionDto'
+        sourceSpecific:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: 'Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.
+
+            A source is omitted entirely when it has no source-specific data.'
+          nullable: true
+        dateOfBirth:
+          type: string
+          description: 'Date of birth of the person.
+
+            The value is expected to be in a string format and represents only the date portion
+
+            (excluding any time-related information).'
+          nullable: true
+        dateOfDeath:
+          type: string
+          description: 'Date of death of the person.
+
+            The value is expected to be in a string format and represents only the date portion
+
+            (excluding any time-related information).'
+          nullable: true
+      additionalProperties: false
+    PersonRole:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type: string
+          description: Represents the date of birth of the person associated with the role.
+          nullable: true
+        identityNumber:
+          $ref: '#/components/schemas/IdNumber'
+        name:
+          $ref: '#/components/schemas/PersonName'
+        nationality:
+          type: string
+          description: Represents the nationality of the person associated with the role.
+          nullable: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleInfo'
+          description: Represents the collection of roles associated with the person.
+          nullable: true
+      additionalProperties: false
+    PersonsRequestDto:
+      required:
+      - persons
+      type: object
+      properties:
+        persons:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonRequestDto'
+          description: Collection of person records to be processed.
+      additionalProperties: false
+    Phone:
+      type: object
+      properties:
+        number:
+          type: string
+          description: Represents the phone number associated with a phone object.
+          nullable: true
+        region:
+          type: string
+          description: Represents the geographical region associated with a phone object.
+          nullable: true
+      additionalProperties: false
+    ProtectionStatus:
+      enum:
+      - Partial
+      - Full
+      type: string
+    RiskScreening:
+      type: object
+      properties:
+        matchStrength:
+          type: integer
+          description: Represents the strength of a match in risk screening results.
+          format: int32
+          nullable: true
+        listType:
+          type: string
+          description: Specifies the type of list associated with a risk screening process. (e.g., `PEP`, `SANCTION`)
+          nullable: true
+        source:
+          type: string
+          description: Represents the source of information used in risk screenings or monitoring processes.
+          nullable: true
+        externalUrls:
+          type: array
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          description: Represents a collection of external URLs associated with the screening entity.
+          nullable: true
+      additionalProperties: false
+    RoleInfo:
+      type: object
+      properties:
+        roleCategory:
+          type: string
+          description: Represents the category or classification associated with a role.
+          nullable: true
+        description:
+          type: string
+          description: Provides additional information or details about a specific role.
+          nullable: true
+        startDate:
+          type: string
+          description: Represents the date on which a specific role becomes effective or begins.
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          description: Specifies the date and time when the role is expected to end or expire.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    RolesInfo:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyRole'
+          description: Company roles associated with the entity.
+          nullable: true
+        persons:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonRole'
+          description: Collection of person roles associated with the entity.
+          nullable: true
+        others:
+          type: array
+          items:
+            $ref: '#/components/schemas/OtherRole'
+          description: 'Collection of additional roles associated with the entity.
+
+            These roles provide supplementary or specialized functionalities
+
+            not covered by primary role definitions.'
+          nullable: true
+      additionalProperties: false
+    SourcesDto:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Represents the name of a source.
+      additionalProperties: false
+    UpdateMonitorRequestDto:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          nullable: true
+      additionalProperties: false

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-monitor-dto-schema.json",
+  "title": "MonitorDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-openapi.yml#/components/schemas/MonitorDto",
+  "required": [
+    "accountId",
+    "entityType",
+    "id",
+    "name"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "type": "string",
+      "description": "The ID of the monitor"
+    },
+    "accountId": {
+      "type": "string",
+      "description": "The ID of the account that the monitor belongs to"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the monitor"
+    },
+    "sources": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/SourcesDto"
+      },
+      "description": "The sources that monitor the entities"
+    },
+    "profiles": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "description": "A list of profiles associated with the monitor."
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Description of the monitor"
+    },
+    "size": {
+      "type": "integer",
+      "description": "The count of monitored entities",
+      "format": "int32"
+    },
+    "entityType": {
+      "minLength": 1,
+      "type": "string",
+      "description": "The type of monitored entities (e.g., 'Person', 'Organisation')"
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "Monitor creation date and time",
+      "format": "date-time"
+    },
+    "isActive": {
+      "type": "boolean",
+      "description": "Indicates whether the monitor is currently active."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "SourcesDto": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string",
+          "description": "Represents the name of a source."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

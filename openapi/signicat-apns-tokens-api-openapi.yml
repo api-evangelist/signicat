@@ -1,0 +1,503 @@
+openapi: 3.2.0
+info:
+  title: Signicat APNs tokens API
+  version: '1.0'
+  description: 'Operations tagged APNs tokens across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: APNs tokens
+  description: 'The MobileID Admin **APNs tokens** API provides you with operations related to creating and managing Apple Push Notifications service (APNs) tokens.
+
+
+    APNs tokens can be used so that your end-users can receive push notifications in your mobile app.
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    ## Useful information
+
+
+    An APNs token can be used by all accounts in the same organisation.'
+paths:
+  /apns-tokens:
+    get:
+      tags:
+      - APNs tokens
+      summary: Get APNS tokens
+      description: 'The **Get APNs tokens** operation returns a list of the APNs tokens for the organisation that the account belongs to.
+
+        This includes both production and sandbox APNs tokens.
+
+
+        The maximum number of APNs token objects per list is 100.'
+      operationId: getAPNSTokens
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the list of APNs tokens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APNSTokenList'
+              example:
+                apnsTokens:
+                - id: 82a634bf-a485-457c-90c4-88ddd5631922
+                  description: test-token-description
+                  name: Test app APNs token
+                  created: '2022-12-11T12:35:52.000Z'
+                  sha1Fingerprint: ab:6b:bb:f3:e3:5e:6f:11
+                  sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                  keyId: ABCD1234
+                  teamId: EDFG5678
+                - id: c21d007a-d8ad-4856-a9ab-cee11a65de31
+                  description: test-token-description
+                  name: Test app APNs token
+                  created: '2022-12-11T12:35:53.000Z'
+                  sha1Fingerprint: ab:6b:bb:f3:e3:5e:6f:11
+                  sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                  keyId: ABCD1234
+                  teamId: EDFG5678
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/errors?code=account_does_not_exist
+                title: No account exists with the specified Account ID
+                code: account_does_not_exist
+                status: 400
+                detail: An account with ID 'a-sdge-abcdefghijk123456789' does not exist.
+                traceId: fc0fb42a9c1821b7d9fe2f62dd45cf7b
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    post:
+      tags:
+      - APNs tokens
+      summary: Add APNS token
+      description: 'The **Add APNs token** operation enables you to add a new APNs token to your MobileID account.
+
+
+        An APNs token can be used by all accounts in the same organisation.'
+      operationId: addAPNSToken
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncapAPNSTokenAddRequest'
+            example:
+              name: Test app APNs token
+              description: test-token-description
+              privateKey: replace with base64 encoded private key
+              keyId: ABCD1234
+              teamId: EDFG5678
+        required: true
+      responses:
+        '201':
+          description: Successfully added an APNs token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APNSToken'
+              example:
+                id: 82a634bf-a485-457c-90c4-88ddd56319c1
+                description: test-token-description
+                name: Test app APNs token
+                created: '2022-12-11T12:35:52.000Z'
+                sha1Fingerprint: ab:6b:bb:f3:e3:5e:6f:11
+                sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                keyId: ABCD1234
+                teamId: EDFG5678
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: name
+                      reason: name cannot be null or empty
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /apns-tokens/{apnsTokenId}:
+    get:
+      tags:
+      - APNs tokens
+      summary: Get APNS token
+      description: 'The **Get APNs token** operation returns a specified APNs token for your MobileID account.
+
+
+        An APNs token can be used by all accounts in the same organisation.'
+      operationId: getAPNSToken
+      parameters:
+      - name: apnsTokenId
+        in: path
+        description: The ID of the APNs token.
+        required: true
+        schema:
+          type: string
+        example: 82a634bf-a485-457c-90c4-88ddd56319ac
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the list of APNs token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APNSToken'
+              example:
+                id: 82a634bf-a485-457c-90c4-88ddd56319c1
+                description: test-token-description
+                name: Test app APNs token
+                created: '2022-12-11T12:35:52.000Z'
+                sha1Fingerprint: ab:6b:bb:f3:e3:5e:6f:11
+                sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                keyId: ABCD1234
+                teamId: EDFG5678
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing APNS Token with ID : 9672e0c7-8850-43df-a715-e9a388530383 for account ID : a-sdge-N27GjPSzXO8JLcf8G1AN.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    delete:
+      tags:
+      - APNs tokens
+      summary: Delete APNS token
+      description: 'The **Delete APNs token** operation deletes a specified APNs token from your MobileID account.
+
+
+        An APNs token can be used by all accounts in the same organisation.'
+      operationId: deleteAPNSToken
+      parameters:
+      - name: apnsTokenId
+        in: path
+        description: The ID of the APNs token.
+        required: true
+        schema:
+          type: string
+        example: 82a634bf-a485-457c-90c4-88ddd56319ac
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '204':
+          description: Successfully deleted the APNs token.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing APNS Token with ID : 9672e0c7-8850-43df-a715-e9a388530383 for account ID : a-sdge-N27GjPSzXO8JLcf8G1AN.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    APNSTokenList:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of APNs Tokens
+          items:
+            $ref: '#/components/schemas/APNSToken'
+          writeOnly: true
+        apnsTokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/APNSToken'
+    APNSToken:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The UUID for the APNs token
+          example: 6dbb0262-eecc-4dd0-928d-f20a72ad751f
+        description:
+          type: string
+          description: The description of the APNs token
+          example: This is the APNs token ...
+        name:
+          type: string
+          description: The name of the APNs token
+          example: APNs token name
+        created:
+          type: string
+          description: The date on which the APNs token was created
+          example: '2021-01-22T21:47:27.123Z'
+        sha1Fingerprint:
+          type: string
+          description: The SHA1 hash of the APNs token
+          example: sha1Fingerprint
+        sha256Fingerprint:
+          type: string
+          description: The SHA256 hash of the APNs token
+          example: sha256Fingerprint
+        keyId:
+          type: string
+          description: Key ID of the APNs token
+          example: test-key-id
+        teamId:
+          type: string
+          description: Team ID of Apple Developer Account
+          example: test-team-id
+    EncapAPNSTokenAddRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the APNs token
+          example: APNs token name
+          minLength: 1
+        description:
+          type: string
+          description: The description of the APNs token
+          example: This is the APNs token ...
+        privateKey:
+          type: string
+          description: The Base64 encoded string of APNs token private key
+          example: replace with base64 encoded private key
+          minLength: 1
+          writeOnly: true
+        keyId:
+          type: string
+          description: Key ID of the APNs token
+          example: key-id
+          minLength: 1
+          writeOnly: true
+        teamId:
+          type: string
+          description: Team ID of Apple Developer Account
+          example: team-id
+          minLength: 1
+          writeOnly: true
+      required:
+      - keyId
+      - name
+      - privateKey
+      - teamId
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

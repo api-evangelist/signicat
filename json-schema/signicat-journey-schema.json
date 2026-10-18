@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-journey-schema.json",
+  "title": "Journey",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mint-openapi.yml#/components/schemas/Journey",
+  "required": [
+    "id",
+    "workflowId",
+    "version",
+    "stepData"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the journey."
+    },
+    "workflowId": {
+      "type": "string",
+      "description": "ID of the workflow this journey belongs to."
+    },
+    "parentJourneyId": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "ID of the parent journey that started this journey."
+    },
+    "version": {
+      "pattern": "^-?(?:0|[1-9]\\d*)$",
+      "type": [
+        "integer",
+        "string"
+      ],
+      "description": "The version number of the workflow.",
+      "format": "int32"
+    },
+    "status": {
+      "description": "The current status of the journey.",
+      "$ref": "#/$defs/JourneyStatus"
+    },
+    "name": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "The name of the journey."
+    },
+    "createdAt": {
+      "description": "Time at which the journey was created.",
+      "format": "date-time"
+    },
+    "lastExecutedAt": {
+      "description": "Time at which the journey was last executed.",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "description": "Time at which the journey finished.",
+      "format": "date-time"
+    },
+    "faultedAt": {
+      "description": "Time at which the journey faulted.",
+      "format": "date-time"
+    },
+    "cancelledAt": {
+      "description": "Time at which the journey was cancelled.",
+      "format": "date-time"
+    },
+    "stepData": {
+      "type": "object",
+      "description": "Data for all steps in the journey."
+    },
+    "loops": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/IterationStepData"
+        }
+      },
+      "description": "Step data for any loops in the journey."
+    },
+    "activeSteps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ActiveStep"
+      },
+      "description": "List of steps that are currently active."
+    },
+    "pendingSteps": {
+      "type": "boolean",
+      "description": "Whether the journey has pending steps requiring manual continuation."
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/StepAlert"
+      },
+      "description": "List of alerts triggered during the journey."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/JourneyFileDetails"
+      },
+      "description": "List of files associated with the journey."
+    },
+    "faults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/JourneyFault"
+      },
+      "description": "List of faults that occurred during the journey."
+    }
+  },
+  "$defs": {
+    "ActiveStep": {
+      "required": [
+        "stepId",
+        "stepType"
+      ],
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": "string",
+          "description": "ID of the active step."
+        },
+        "stepType": {
+          "type": "string",
+          "description": "The step type."
+        }
+      }
+    },
+    "IterationStepData": {
+      "required": [
+        "index",
+        "stepData"
+      ],
+      "type": "object",
+      "properties": {
+        "index": {
+          "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "type": [
+            "integer",
+            "string"
+          ],
+          "description": "The index of the loop iteration.",
+          "format": "int32"
+        },
+        "stepData": {
+          "type": "object",
+          "description": "Data for all steps in the loop iteration."
+        }
+      }
+    },
+    "JourneyFault": {
+      "required": [
+        "errorCode",
+        "message"
+      ],
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "errorCode": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": [
+            "null",
+            "object"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "JourneyFileDetails": {
+      "required": [
+        "id",
+        "filename",
+        "contentType",
+        "size"
+      ],
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "ID of the step that created this file."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the file."
+        },
+        "filename": {
+          "type": "string",
+          "description": "The filename."
+        },
+        "contentType": {
+          "type": "string",
+          "description": "Content type of the file."
+        },
+        "size": {
+          "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "type": [
+            "null",
+            "integer",
+            "string"
+          ],
+          "description": "The size of the file in bytes.",
+          "format": "int64"
+        }
+      }
+    },
+    "JourneyStatus": {
+      "enum": [
+        "idle",
+        "running",
+        "finished",
+        "active",
+        "faulted",
+        "cancelled"
+      ]
+    },
+    "StepAlert": {
+      "required": [
+        "stepId",
+        "severity",
+        "message",
+        "timestamp"
+      ],
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": "string",
+          "description": "ID of the step this alert belongs to."
+        },
+        "severity": {
+          "description": "The alert severity.",
+          "$ref": "#/$defs/StepAlertSeverity"
+        },
+        "message": {
+          "type": "string",
+          "description": "The alert message."
+        },
+        "timestamp": {
+          "description": "Time at which the alert was triggered.",
+          "format": "date-time"
+        }
+      }
+    },
+    "StepAlertSeverity": {
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ]
+    }
+  }
+}

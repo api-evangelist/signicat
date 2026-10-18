@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-account-platform-all-details-statistic-schema.json",
+  "title": "AccountPlatformAllDetailsStatistic",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-admin-openapi.yml#/components/schemas/AccountPlatformAllDetailsStatistic",
+  "type": "object",
+  "properties": {
+    "accountId": {
+      "type": "string",
+      "description": "The ID of the Signicat account, in a valid UUID format."
+    },
+    "aggregatedAt": {
+      "type": "string",
+      "description": "The timestamp when the statistics were aggregated.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int64",
+      "description": "The total number of devices."
+    },
+    "platform": {
+      "type": "string",
+      "description": "The platform for which the detailed device statistics were obtained.\n\n**Possible values**: It can be either `ANDROID` or `IOS`.\n"
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NamedStatistic"
+      }
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NamedStatistic"
+      }
+    },
+    "manufacturers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NamedStatistic"
+      }
+    }
+  },
+  "$defs": {
+    "NamedStatistic": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the property.\n\n**Note**: The name depends on what is passed for the `type` and `platform` query parameters in the operation request.\n"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of devices with this property."
+        },
+        "percentage": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The percentage of devices with this property."
+        }
+      }
+    }
+  }
+}

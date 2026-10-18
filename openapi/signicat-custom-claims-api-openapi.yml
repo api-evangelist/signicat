@@ -1,0 +1,272 @@
+openapi: 3.2.0
+info:
+  title: Signicat Custom claims API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Custom claims across 2 of this provider''s published API definitions: oidc-config-openapi.json, signicat-oidc-config-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /auth/open/config
+security:
+- Signicat-OIDC: []
+tags:
+- name: Custom claims
+paths:
+  /clients/{clientId}/custom-claims:
+    get:
+      tags:
+      - Custom claims
+      summary: List client custom claims
+      description: Use this endpoints to view a list of all the custom claims you have configured on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomClaimDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomClaimDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdCustomClaims
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Custom claims
+      summary: Create custom claim configuration
+      description: Create a new custom claim for a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The custom claim specification
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: postClientsByClientIdCustomClaims
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/custom-claims/{customClaimId}:
+    get:
+      tags:
+      - Custom claims
+      summary: Retrieve client custom claim configuration
+      description: Use this endpoint to retrieve a specific custom claim configuration on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: customClaimId
+        in: path
+        description: The ID of the client custom claim
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdCustomClaimsByCustomClaimId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Custom claims
+      summary: Update custom claim
+      description: Update a custom claim on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: customClaimId
+        in: path
+        description: The ID of the custom claim to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The updated custom claim specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CustomClaimDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomClaimDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: putClientsByClientIdCustomClaimsByCustomClaimId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Custom claims
+      summary: Remove custom claim
+      description: Remove a custom claim from a client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: customClaimId
+        in: path
+        description: The ID of the custom claim to remove.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: deleteClientsByClientIdCustomClaimsByCustomClaimId
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+components:
+  schemas:
+    CustomClaimDto:
+      required:
+      - alias
+      - claim
+      type: object
+      properties:
+        id:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The custom claim identifier
+          example: 7a482587238ec54198c34e8a0fbdbfbf
+        claim:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The claim to set an alias to
+          example: personal.name
+        alias:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The alias to the claim
+          example: name
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Internal version of the custom claim (Read only).
+          example: 00000000_34f4634dd4a3680002a345ef4d89b33
+      additionalProperties: false
+      description: Represents a custom claim.
+  securitySchemes:
+    Signicat-OIDC:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes:
+            openid: OpenID User id
+            signicat-api: Signicat API
+x-refined-from:
+- oidc-config-openapi.json
+- signicat-oidc-config-openapi.yml

@@ -1,0 +1,210 @@
+openapi: 3.2.0
+info:
+  title: Signicat Merchant signing API
+  version: 1.5.2
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Merchant signing across 2 of this provider''s published API definitions: sign-openapi.json, signicat-sign-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/sign
+  description: Sign API
+security:
+- bearerAuth: []
+tags:
+- name: Merchant signing
+paths:
+  /merchant-signing:
+    post:
+      summary: Sign document(s) with merchant certificate
+      description: Enables business to business (B2B) signing with a merchant certificate from a specified vendor.
+      tags:
+      - Merchant signing
+      operationId: merchantSign
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantSignRequest'
+      responses:
+        '200':
+          description: Successful signing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantSignResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+components:
+  schemas:
+    ToBeSignedDocument:
+      type: object
+      required:
+      - documentId
+      - mimetype
+      - format
+      - description
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          example: d1234567-89ab-cdef-0123-456789abcdef
+        mimetype:
+          type: string
+          maxLength: 50
+          example: application/pdf
+        format:
+          type: string
+          enum:
+          - PADES
+          - SDO
+          example: PADES
+        description:
+          type: string
+          maxLength: 255
+          example: Merchant description
+    MerchantSignResult:
+      type: object
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        documentResultId:
+          type: string
+          format: uuid
+    VendorEnum:
+      type: string
+      enum:
+      - NBID
+    InvalidParamDetail:
+      type: object
+      description: Contains information about how validation failed for a parameter
+      readOnly: true
+      required:
+      - name
+      - reason
+      properties:
+        name:
+          type: string
+          description: The name of the parameter that failed validation
+          example: SigningSession.title
+        reason:
+          type: string
+          description: The reason why the validation failed
+          example: title cannot exceed 255 characters
+    MerchantSignResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/MerchantSignResult'
+    ProblemDetail:
+      title: ProblemDetail
+      description: The common error object. Adheres to RFC7807
+      type: object
+      additionalProperties: true
+      readOnly: true
+      required:
+      - type
+      - title
+      - code
+      - detail
+      properties:
+        status:
+          type: integer
+          description: HTTP Status
+          example: 500
+        type:
+          type: string
+          description: An RFC3986 URI reference to the documentation that identifies the problem
+          example: https://developer.signicat.com/errors?code=internal_server_error
+        title:
+          type: string
+          description: A short, human-readable summary of the problem
+          example: Internal server error
+        code:
+          type: string
+          description: A short machine-readable string indicating the error code
+          example: internal_server_error
+        traceId:
+          type: string
+          description: The request identifier
+          example: ffb75ca1385ecb0a362ff9cd029d23de
+        invalidParams:
+          type: array
+          description: Used when handling validation errors. Can report multiple errors in the same call
+          items:
+            $ref: '#/components/schemas/InvalidParamDetail'
+          example:
+          - name: version
+            reason: must be greater than 0
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: An internal server error happened.
+    MerchantSignRequest:
+      type: object
+      required:
+      - vendor
+      - toBeSignedDocuments
+      properties:
+        vendor:
+          $ref: '#/components/schemas/VendorEnum'
+        toBeSignedDocuments:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/ToBeSignedDocument'
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Bad request
+            status: 400
+            code: bad_request
+            detail: The request was malformed.
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Not Found
+            status: 404
+            code: not_found
+            detail: Not found
+    InternalServerError:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Unexpected error
+            status: 500
+            code: unexpected_error
+            detail: An unexpected error occurred.
+  securitySchemes:
+    bearerAuth:
+      description: Access token for protecting the API.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- sign-openapi.json
+- signicat-sign-openapi.yml

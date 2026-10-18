@@ -1,0 +1,1657 @@
+openapi: 3.2.0
+info:
+  title: Signicat Device management API
+  version: '1.0'
+  description: 'Operations tagged Device management across 2 of this provider''s published API definitions: mobileid-openapi.json, signicat-mobileid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/core
+tags:
+- name: Device management
+  description: 'The MobileID device management API provides you with operations related to device management for MobileID.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----
+
+
+    ## Useful information
+
+    All device management operations require:
+
+
+    A MobileID user, identified by a user ID (userID).
+
+
+    A registered device, identified by a device ID (deviceID).'
+paths:
+  /devices/{deviceId}/recovery-lock:
+    get:
+      tags:
+      - Device management
+      summary: Get recovery lock
+      description: 'You can use the Get recovery lock operation to check whether the MobileID account recovery feature is locked or not for a given end-user''s device, specified by the device ID (deviceID).
+
+
+        If the account recovery feature is enabled in the application configuration, then all devices can use account recovery by default, and the recovery lock (recoveryLock) parameter will have value false.'
+      operationId: getRecoveryLockStatus
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the recovery lock status for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryLock'
+                additionalProperties: false
+              example:
+                recoveryLock: false
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    put:
+      tags:
+      - Device management
+      summary: Update recovery lock
+      description: 'You can use the Update recovery lock operation to disable the MobileID account recovery feature for a given end-user''s device, specified by the device ID (deviceID).
+
+
+        This is done by updating the recovery lock (recoveryLock) parameter to true. This means that recovery operations cannot be performed.'
+      operationId: putRecoveryLockStatus
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryLockRequest'
+              additionalProperties: false
+            example:
+              recoveryLock: true
+        required: true
+      responses:
+        '202':
+          description: Successfully updated the recovery lock status for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryLock'
+                additionalProperties: false
+              example:
+                recoveryLock: true
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: You must provide recoveryLock and it must be true|false
+                    traceId: fb619e0f789111d96bea22dacae2cddd
+                The request identifier is invalid.:
+                  description: The request identifier is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    detail: deviceId must start with a letter or digit and contain only digits, lowercase letters (a-f), and the character -
+                    traceId: 05af98dcbe861fee1c0e156fdd5c21e5
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /devices/{deviceId}/geofencing:
+    get:
+      tags:
+      - Device management
+      summary: Get geofencing settings
+      description: Retrieve geofencing configuration for the given device.
+      operationId: getGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the geofencing settings for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeofenceSettings'
+                additionalProperties: false
+              example:
+                mode: OPTIONAL
+                allowedContinents: EU
+                allowedCountries: CT
+                deniedCountries: RU
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    put:
+      tags:
+      - Device management
+      summary: Update geofencing settings
+      description: Update geofencing configuration for the given device
+      operationId: putGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeofenceSettings'
+              additionalProperties: false
+            example:
+              mode: OPTIONAL
+              allowedContinents: EU
+              allowedCountries: CT
+              deniedCountries: RU
+        required: true
+      responses:
+        '202':
+          description: Successfully updated the geofencing settings for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeofenceSettings'
+                additionalProperties: false
+              example:
+                mode: OPTIONAL
+                allowedContinents: EU
+                allowedCountries: CT
+                deniedCountries: RU
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: You must provide recoveryLock and it must be true|false
+                    traceId: fb619e0f789111d96bea22dacae2cddd
+                The request identifier is invalid.:
+                  description: The request identifier is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    detail: deviceId must start with a letter or digit and contain only digits, lowercase letters (a-f), and the character -
+                    traceId: 05af98dcbe861fee1c0e156fdd5c21e5
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    delete:
+      tags:
+      - Device management
+      summary: Delete geofencing settings
+      description: Delete geofencing configuration for the given device
+      operationId: deleteGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '204':
+          description: Successfully deleted the geofencing settings for the device.
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /devices/{deviceId}:
+    get:
+      tags:
+      - Device management
+      summary: Get device
+      description: 'The Get device operation retrieves detailed information for an end-user''s device, specified by the device ID (deviceId).
+
+
+        You can use the detailed (detailed) query parameter to return a more extensive set of device information in the operation response.'
+      operationId: getDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: detailed
+        in: query
+        description: "Control whether the device details object (<code>deviceDetails</code>) is returned in the response. \n\n To return this object, you must set this parameter to <code>true</code>. \n\n"
+        required: false
+        schema:
+          type: boolean
+          additionalProperties: false
+          description: "Control whether the device details object (<code>deviceDetails</code>) is returned in the response. \n\n To return this object, you must set this parameter to <code>true</code>. \n\n"
+          example: true
+        example: true
+      responses:
+        '200':
+          description: Successfully fetched the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+                additionalProperties: false
+              examples:
+                The default response.:
+                  description: The default response, when detailed is not set to 'true'.
+                  value:
+                    id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                    name: sampleDevice
+                    state: ACTIVE
+                    lastOperationType: AUTHENTICATION
+                    lastUsed: '2021-01-21T22:47:27.123Z'
+                    created: '2021-01-21T22:47:27.123Z'
+                The detailed response.:
+                  description: The detailed response, when detailed is set to 'true'.
+                  value:
+                    id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                    name: sampleDevice
+                    state: ACTIVE
+                    lastOperationType: AUTHENTICATION
+                    lastUsed: '2021-01-21T22:47:27.123Z'
+                    created: '2021-01-21T22:47:27.123Z'
+                    deviceDetails:
+                      applicationId: encap
+                      currentClientApiVersion: 3.15.0
+                      activatedClientApiVersion: 3.15.0
+                      activatedEncapRelease: R_3_3
+                      deviceHash: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+                      pushAddress: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+                      operatingSystemType: iOS
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                      activationTime: '2017-04-05T12:23:00.000Z'
+                      lock:
+                        lockReason:
+                        - LOCKED_BY_ADMIN
+                        - DEVICE_VERIFICATION_FAILED
+                      attestation:
+                        appAttestStatus: VERIFIED
+                        appAttestDate: '2022-06-24T20:56:01.366Z'
+                      recoveries:
+                      - recoveryId: f87ab8a1-6321-4af4-8b9c-f16d8b31b055
+                        recoveryMethod: CLOUD_BACKUP_RECOVERY_CODE
+                        recoveryStatus: RECOVERED
+                        createdDate: '2023-02-28T11:52:17.437Z'
+                        updatedDate: '2023-02-28T11:57:16.372Z'
+                        recoveredDate: '2023-02-28T11:57:16.310Z'
+                      recoveryLock: false
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+    delete:
+      tags:
+      - Device management
+      summary: Delete device
+      description: The Delete device operation deletes an end-user's device, specified by the device ID (deviceId).
+      operationId: deleteDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: generateEvent
+        in: query
+        description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+          Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+            Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+            '
+          example: false
+        example: false
+      responses:
+        '202':
+          description: Successfully deleted the device.
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    patch:
+      tags:
+      - Device management
+      summary: Update device
+      description: 'The Update device operation updates the properties of an end-user''s device, specified by the device ID (deviceId).
+
+
+        Update properties such as:
+
+
+        The device name.
+
+
+        The device state (whether the device is locked or not).'
+      operationId: updateDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: generateEvent
+        in: query
+        description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+          Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+            Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+            '
+          example: false
+        example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdateRequest'
+              additionalProperties: false
+            example:
+              name: My New iPhone
+              state: LOCKED
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+                additionalProperties: false
+              example:
+                id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                name: My New iPhone
+                state: LOCKED
+                lastOperationType: AUTHENTICATION
+                lastUsed: '2021-01-21T22:47:27.123Z'
+                created: '2021-01-21T22:47:27.123Z'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: Cannot carry out operation on device with state DELETED
+                detail: userId parameter is missing
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /devices:
+    get:
+      tags:
+      - Device management
+      summary: Get devices
+      description: The Get devices operation retrieves the list of devices for a MobileID user, specified by the user ID (userId).
+      operationId: getDevices
+      parameters:
+      - name: states
+        in: query
+        description: 'A comma-separated list of the device states to fetch.
+
+
+          If not provided, then devices in <code>ACTIVE</code>, <code>LOCKED</code> and <code>DELETED</code> states are listed.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'A comma-separated list of the device states to fetch.
+
+
+            If not provided, then devices in <code>ACTIVE</code>, <code>LOCKED</code> and <code>DELETED</code> states are listed.
+
+            '
+          example: ACTIVE,LOCKED
+        example: ACTIVE,LOCKED
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched devices.
+          content:
+            application/json:
+              schema:
+                type: array
+                additionalProperties: false
+                contains:
+                  additionalProperties: false
+                items:
+                  $ref: '#/components/schemas/BaseDevice'
+                  additionalProperties: false
+                unevaluatedItems:
+                  additionalProperties: false
+              example:
+              - id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                name: sampleDevice
+                state: ACTIVE
+                lastOperationType: AUTHENTICATION
+                lastUsed: '2021-01-21T22:47:27.123Z'
+                created: '2021-01-21T22:47:27.123Z'
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Internal error
+                code: internal_error
+                status: 500
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: error occurred
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /devices/{deviceId}/transactions:
+    get:
+      tags:
+      - Device management
+      summary: Get device transactions
+      description: The Get device transactions operation returns a list of device transactions for an end-user's device, specified by the device ID (deviceId).
+      operationId: getDeviceTransactions
+      parameters:
+      - name: deviceId
+        in: path
+        description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>), as returned upon registration.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: limit
+        in: query
+        description: 'An optional parameter that determines the number of objects (device transactions) that are shown on each page.
+
+
+          It must be a whole number ranging from <code>1</code> to <code>100</code>.
+
+
+          If not provided, the the default value of <code>100</code> will be used.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter that determines the number of objects (device transactions) that are shown on each page.
+
+
+            It must be a whole number ranging from <code>1</code> to <code>100</code>.
+
+
+            If not provided, the the default value of <code>100</code> will be used.
+
+            '
+          example: 10
+        example: 10
+      - name: offset
+        in: query
+        description: 'An optional parameter that determines the ID of the first transaction to include in the operation response,
+
+          specified by the transaction ID (<code>transactionId</code>).
+
+
+          If not provided, then the result will start with the first transaction in the device history.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter that determines the ID of the first transaction to include in the operation response,
+
+            specified by the transaction ID (<code>transactionId</code>).
+
+
+            If not provided, then the result will start with the first transaction in the device history.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the transactions for the end-user’s device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileIDTransaction'
+                additionalProperties: false
+              example:
+                previous: /devices/d910994d-80b2-4125-a6b1-062b5b2f43ba/transactions?limit=1&offset=39277b72-53c2-4780-ad56-a8c8d8a33542&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+                next: /devices/d910994d-80b2-4125-a6b1-062b5b2f43ba/transactions?limit=1&offset=a1c66944-e5e3-46e3-ba36-750622205ef3&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+                limit: 1
+                transactions:
+                - transactionId: c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  ref: /authentications/mapped-from-c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  operationType: AUTHENTICATION
+                  state: SUCCESS
+                  created: '2023-08-11T11:30:05.000Z'
+                  expires: '2023-08-11T11:31:05.000Z'
+                  deviceId: db441aa4-dd01-4bf7-8795-f75a94ec8d61
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                offset does not exist:
+                  description: offset does not exist
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: Offset 58ccbe4f-5c81-4425-bb7d-f6378f35d402 does not exist
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Internal error
+                code: internal_error
+                status: 500
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: error occurred
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+components:
+  schemas:
+    GeofenceSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        mode:
+          type: string
+          additionalProperties: false
+          description: 'The geofencing mode.
+
+
+            This can be either `OFF`, `OPTIONAL`, or `REQUIRED`.
+
+            '
+        allowedContinents:
+          type: string
+          additionalProperties: false
+          description: 'Comma-separated list of continents where authentication <b>is allowed</b> for a specific device, in a  two-letter continent code format.
+
+
+            This can be either `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.
+
+            '
+        allowedCountries:
+          type: string
+          additionalProperties: false
+          description: 'Comma-separated list of countries where authentication <b>is allowed</b> for a specific device, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries are in addition to those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+        deniedCountries:
+          type: string
+          additionalProperties: false
+          description: 'Comma-separated list of countries where authentication <b>is not allowed</b> for a specific device, in an ISO 3166-1 alpha-2 two-letter country code format.
+
+
+            These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            You can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).
+
+            '
+    AppAttestation:
+      type: object
+      additionalProperties: false
+      description: "An object that describes the properties of the attestation. \n\n In order for this object to be returned in response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation\" target=\"_blank\">application configuration</a>."
+      properties:
+        playIntegrityStatus:
+          type: string
+          additionalProperties: false
+          description: "The Play Integrity attestation status for the user's device. \n\n See [Play Integrity statuses](/apis/mobileid/#section/Common-concepts/Play-Integrity-statuses) for possible values."
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          additionalProperties: false
+          description: The date when the Play Integrity attestation was performed on the user's device.
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          additionalProperties: false
+          description: "The App Attest attestation status for the user's device. \n\n See [App Attest statuses](/apis/mobileid/#section/Common-concepts/App-Attest-statuses) for possible values."
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          additionalProperties: false
+          description: The date when the App Attest attestation was performed on the user's device.
+          example: '2022-06-24T20:55:03.025Z'
+    BaseDevice:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          additionalProperties: false
+          description: The name of the user's device.
+          example: my iPhone
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code>, <code>LOCKED</code> or <code>DELETED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lockReason:
+          type: string
+          additionalProperties: false
+          description: The reason why the user's device is locked.
+          example: LOCKED BY ADMIN
+        lastOperationType:
+          type: string
+          additionalProperties: false
+          description: "The last operation type that the user's device executed. \n\n See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values."
+          example: AUTHENTICATION
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device was originally activated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device last executed an operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+    RecoveryLockRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryLock:
+          type: boolean
+          additionalProperties: false
+          description: 'A setting for a user''s device which indicates whether the account recovery feature is enabled or not.
+
+
+            <ul><li>When <code>false</code>, the account recovery feature is enabled and recovery operations can be performed.</li>
+
+            <li>When <code>true</code>, the account recovery feature is disabled and recovery operations can not be performed.</li></ul>
+
+
+            '
+          example: true
+          writeOnly: true
+    MobileIDTransaction:
+      type: object
+      additionalProperties: false
+      properties:
+        previous:
+          type: string
+          additionalProperties: false
+          description: A URI that can be used to get the previous set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=4e5ea8f1-9ee1-409e-8fc0-2dbc5b9b315a&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          additionalProperties: false
+          description: A URI that can be used to get the next set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          additionalProperties: false
+          description: 'The number of objects (device transactions) that are shown on each page.
+
+
+            This is a whole number ranging from <code>1</code> to <code>100</code>.
+
+            '
+          example: 10
+        transactions:
+          type: array
+          additionalProperties: false
+          description: A list of device transactions.
+          items:
+            $ref: '#/components/schemas/Transaction'
+            additionalProperties: false
+    AccountRecovery:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryId:
+          type: string
+          additionalProperties: false
+          description: The ID of the recovery.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        recoveryMethod:
+          type: string
+          additionalProperties: false
+          description: "The recovery method used for the recovery. \n\n See [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values."
+          example: CLOUD_BACKUP_RECOVERY_CODE
+        recoveryStatus:
+          type: string
+          additionalProperties: false
+          description: "The status of the recovery. \n\n See [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values."
+          example: ACTIVATED
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        modified:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was updated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        recovered:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was used. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.373Z'
+    DeviceUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          additionalProperties: false
+          description: "The new name for the end-user's device.\n\n\nThe name must have a max length of 128 characters.</li>\n </ul>\n"
+          example: My New iPhone
+        state:
+          type: string
+          additionalProperties: false
+          description: "The new state of the end-user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>."
+          example: LOCKED
+    Device:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          additionalProperties: false
+          description: The name of the user's device.
+          example: my iPhone
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code>, <code>LOCKED</code> or <code>DELETED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lastOperationType:
+          type: string
+          additionalProperties: false
+          description: "The last operation type that the user's device executed. \n\n See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values."
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device last executed an operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device was originally activated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        deviceDetails:
+          $ref: '#/components/schemas/DeviceDetails'
+          additionalProperties: false
+          description: The device details object.
+    DeviceLock:
+      type: object
+      additionalProperties: false
+      properties:
+        lockReason:
+          type: array
+          additionalProperties: false
+          description: "A list that contains all reasons why the user's device has been locked. \n\n See [Lock reason](/apis/mobileid/#section/Common-concepts/Lock-reason) for possible values."
+          example:
+          - LOCKED_BY_ADMIN
+          - DEVICE_VERIFICATION_FAILED
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+    RecoveryLock:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryLock:
+          type: boolean
+          additionalProperties: false
+    DeviceDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        lock:
+          $ref: '#/components/schemas/DeviceLock'
+          additionalProperties: false
+          description: "An object that contains details about the device lock. \n\n This object is only supplied when the user's device is locked."
+        activationTime:
+          type: string
+          additionalProperties: false
+          description: The timestamp when the user's device was originally activated.
+          example: '2017-04-05T12:23:00.000Z'
+          readOnly: true
+        deviceHash:
+          type: string
+          additionalProperties: false
+          description: A SHA256 hash of the unique hardware device ID of the user's device.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+          readOnly: true
+        applicationId:
+          type: string
+          additionalProperties: false
+          description: The application ID being used for the device.
+          example: encap
+          readOnly: true
+        currentClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device used for its last operation.
+          example: 3.15.0
+        activatedClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device was originally activated on.
+          example: 3.15.0
+        activatedEncapRelease:
+          type: string
+          additionalProperties: false
+          description: The Encap server release version that the user's device was originally activated on.
+          example: R_3_3
+          readOnly: true
+        pushAddress:
+          type: string
+          additionalProperties: false
+          description: "The push address for the user's device. \n\n This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS)."
+          example: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+          readOnly: true
+        operatingSystemType:
+          type: string
+          additionalProperties: false
+          description: The operating system type of the user's device.
+          example: iOS
+          readOnly: true
+        activatedAuthenticationMethods:
+          type: array
+          additionalProperties: false
+          description: "A list of the activated authentication methods for the user's device. \n\n See [authentication methods](/apis/mobileid/#section/Common-concepts/Authentication-methods) for possible values."
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          additionalProperties: false
+        recoveries:
+          type: array
+          additionalProperties: false
+          description: A list that contains all of the recoveries for a user's device.
+          items:
+            $ref: '#/components/schemas/AccountRecovery'
+            additionalProperties: false
+        recoveryLock:
+          type: boolean
+          additionalProperties: false
+          description: A setting for a user's device which indicates whether the account recovery feature is enabled or not.<ul><li>When <code>false</code>, the account recovery feature is enabled and recovery operations can be performed.</li><li>When <code>true</code>, the account recovery feature is disabled and recovery operations cannot be performed.</li></ul>
+    Transaction:
+      type: object
+      additionalProperties: false
+      properties:
+        transactionId:
+          type: string
+          additionalProperties: false
+          description: The ID of the device transaction.
+          example: 3c68023d-c524-401c-b632-e495c498e2d0
+        ref:
+          type: string
+          additionalProperties: false
+          description: A link to the operation object for the device transaction.
+          example: /registrations/3c68023d-c524-401c-b632-e495c498e2d0
+        operationType:
+          type: string
+          additionalProperties: false
+          description: 'The operation type used for the transaction.
+
+
+            See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values.
+
+            '
+          example: ACTIVATION
+        state:
+          type: string
+          additionalProperties: false
+          description: The state of the device transaction.
+          example: SUCCESS
+        created:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the device transaction was created.
+
+
+            Returned in pattern <code>yyyy-MM-dd''T''HH:mm:ss.SSSZ</code>.
+
+            '
+        expires:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the device transaction expires.
+
+
+            Returned in pattern <code>yyyy-MM-dd''T''HH:mm:ss.SSSZ</code>.
+
+            '
+        deviceId:
+          type: string
+          additionalProperties: false
+          description: ' The ID of the user''s device used for the operation.
+
+            '
+x-refined-from:
+- mobileid-openapi.json
+- signicat-mobileid-openapi.yml

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-idverification-add-request-schema.json",
+  "title": "IDVerificationAddRequest",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-openapi.yml#/components/schemas/IDVerificationAddRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "userId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The ID of the user (<code>userId</code>), in a valid UUID format.",
+      "minLength": 1
+    },
+    "provider": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The name of the provider that performs the identity verification.\n\nThis should be the same as the provider used in the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) request.\n",
+      "minLength": 1
+    },
+    "dossierId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The ID of the identity verification dossier, in a valid UUID format.\n\nYou can obtain this from the [Create dossier](/apis/id-document-and-biometric-verification/#tag/Dossiers/operation/createDossier) response body.\n",
+      "minLength": 1
+    },
+    "processId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The ID of the identity verification process, in a valid UUID format.\n\nYou can obtain this from the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) response body.\n",
+      "minLength": 1
+    },
+    "orchestrationId": {
+      "type": "string",
+      "additionalProperties": false,
+      "description": "The ID, in a valid UUID format, used for workflow synchronization.\n",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "dossierId",
+    "orchestrationId",
+    "processId",
+    "provider",
+    "userId"
+  ]
+}

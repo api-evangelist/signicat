@@ -1,0 +1,685 @@
+openapi: 3.2.0
+info:
+  title: Signicat End-to-end (E2E) keys API
+  version: '1.0'
+  description: 'Operations tagged End-to-end (E2E) keys across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: End-to-end (E2E) keys
+  description: 'The MobileID Admin end-to-end (E2E) keys API provides you with operations related to creating and managing your E2E keys.
+
+
+    We use E2E keys to create an extra encryption layer in addition to the TLS between the MobileID server and the SDK. They are required for configuring the Authenticator App and the mobile SDK.
+
+
+    ## Useful information
+
+    For each MobileID account, we create a new E2E key during the onboarding process.
+
+    We strongly recommend that you use this specific key for the corresponding MobileID account and application configuration.
+
+
+    Ensure that you do not share E2E keys between sandbox and production accounts.
+
+
+    -----
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----'
+paths:
+  /e2e-keys/{e2eKeyId}/state:
+    put:
+      tags:
+      - End-to-end (E2E) keys
+      summary: Update E2E key
+      description: Changing the state of the key. Changing state to DISABLED means that it will no longer be usable for client requests.
+      operationId: updateE2EKeyStatus
+      parameters:
+      - name: e2eKeyId
+        in: path
+        description: The ID of the end-to-end key.
+        required: true
+        schema:
+          type: string
+        example: 82a634bf-a485-457c-90c4-88ddd56319ac
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncapE2EKeyUpdateRequest'
+            example:
+              state: DISABLED
+        required: true
+      responses:
+        '200':
+          description: The request to update the E2E key was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EncapUpdateE2EKeyResponse'
+              example:
+                state: DISABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: state
+                      reason: state cannot be null or empty
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /e2e-keys:
+    get:
+      tags:
+      - End-to-end (E2E) keys
+      summary: Get E2E keys
+      description: 'The **Get E2E keys** operation returns a list of the E2E key objects for the organisation that the account belongs to. This includes both production and sandbox E2E keys.
+
+
+        The maximum number of E2E key objects per list is 100.
+
+
+        You can specify the state of the E2E keys that you would like to list.
+
+
+        If a state (`state`) is not specified in the query parameters, then the operation will return a list containing E2E keys of **all** states.
+
+
+        -----
+
+
+        **Note**: E2E keys have the account name in the E2E key name (`name`).
+
+
+        -----'
+      operationId: getE2EKeys
+      parameters:
+      - name: state
+        in: query
+        description: 'The state of the E2E keys that you want to list.
+
+
+          This is an an enum, and can be either `ENABLED` or `DISABLED`.
+
+
+          If not provided, then **all** E2E key types are listed.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The state of the E2E keys that you want to list.
+
+
+            This is an an enum, and can be either `ENABLED` or `DISABLED`.
+
+
+            If not provided, then **all** E2E key types are listed.
+
+            '
+          example: ENABLED
+        example: ENABLED
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: Successfully fetched the list of E2E keys.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/E2EKeyList'
+              example:
+                e2eKeys:
+                - id: op36b8k9-xr2f-996f-9039-a1baba22bc1b
+                  name: E2E key - migrated
+                  algorithm: X25519
+                  description: E2E key for QA testing
+                  createdBy: 52e107e6-1ce9-4a4b-a051-612ad888de11
+                  created: '2023-01-05T12:04:24.812Z'
+                  sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                  publicKey: cHVibGljS2V5VmFsdWU=
+                  state: ENABLED
+                - id: aaa124e1-fs4d-2rg4-8a3h-aa123a2c7x33
+                  name: Default E2E key - migrated
+                  algorithm: SECT233K1
+                  description: Default key/cert generated at first db init
+                  createdBy: 52e107e6-1ce9-4a4b-a051-612ad888de11
+                  created: '2023-01-05T12:04:24.815Z'
+                  sha256Fingerprint: 98:23:57:55:25:ec:23:84:hw:22:69:2c:s2:ba
+                  publicKey: cHVibGljS2V5VmFsdWU=
+                  state: ENABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/errors?code=account_id_missing
+                title: An Account ID must be specified for this request
+                code: account_id_missing
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    post:
+      tags:
+      - End-to-end (E2E) keys
+      summary: Add E2E key
+      description: Create a new end-to-end key. A new end-to-end key pair is generated by the server and the public key is sent back in the response.
+      operationId: addE2EKey
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncapE2EKeyAddRequest'
+            example:
+              name: Default E2E key - migrated
+              description: Default key/cert generated at first db init
+              algorithm: X25519
+        required: true
+      responses:
+        '201':
+          description: The request to add the E2E key was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/E2EKey'
+              example:
+                id: op36b8k9-xr2f-996f-9039-a1baba22bc1b
+                name: Default E2E key - migrated
+                algorithm: X25519
+                description: Default key/cert generated at first db init
+                createdBy: 52e107e6-1ce9-4a4b-a051-612ad888de11
+                created: '2023-01-05T12:04:24.812Z'
+                sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                publicKey: cHVibGljS2V5VmFsdWU=
+                state: ENABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: name
+                      reason: name cannot be null or empty
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+  /e2e-keys/{e2eKeyId}:
+    get:
+      tags:
+      - End-to-end (E2E) keys
+      summary: Get E2E key
+      description: Get details for an end-to-end Key.
+      operationId: getE2EKey
+      parameters:
+      - name: e2eKeyId
+        in: path
+        description: The ID of the end-to-end key.
+        required: true
+        schema:
+          type: string
+        example: 82a634bf-a485-457c-90c4-88ddd56319ac
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: The request to fetch the E2E key was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/E2EKey'
+              example:
+                id: op36b8k9-xr2f-996f-9039-a1baba22bc1b
+                name: Default E2E key - migrated
+                algorithm: X25519
+                description: Default key/cert generated at first db init
+                createdBy: 52e107e6-1ce9-4a4b-a051-612ad888de11
+                created: '2023-01-05T12:04:24.812Z'
+                sha256Fingerprint: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+                publicKey: cHVibGljS2V5VmFsdWU=
+                state: ENABLED
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing E2E key with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    delete:
+      tags:
+      - End-to-end (E2E) keys
+      summary: Delete E2E key
+      description: Delete a specific end-to-end key.
+      operationId: deleteE2EKey
+      parameters:
+      - name: e2eKeyId
+        in: path
+        description: The ID of the end-to-end key.
+        required: true
+        schema:
+          type: string
+        example: 82a634bf-a485-457c-90c4-88ddd56319ac
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '204':
+          description: The request to delete the E2E key was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+                Invalid identifier:
+                  description: Invalid identifier
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Invalid UUID string: 5505649b6c0b4ff0aedd53935ec'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Resource not found
+                code: resource_not_found
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Missing E2E key with ID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: E2E key in use
+                code: e2e_key_in_use
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed deleting E2E key with ID : 04fc7346-1998-411b-8b93-a4fe1b6e4682 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    EncapE2EKeyUpdateRequest:
+      type: object
+      properties:
+        state:
+          type: string
+          writeOnly: true
+    EncapE2EKeyAddRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name for the end-to-end key
+          example: Default E2E key
+          minLength: 1
+        description:
+          type: string
+          description: Description for the end-to-end key
+          example: This is the E2E key ...
+        algorithm:
+          type: string
+          description: Protocol between mobile SDK and the Server. If not supplied, the default value `X25519` is used
+          enum:
+          - X25519
+          - SECT233K1
+          example: X25519
+          minLength: 1
+      required:
+      - algorithm
+      - name
+    E2EKeyList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/E2EKey'
+          writeOnly: true
+        e2eKeys:
+          type: array
+          description: A list of E2E key objects for the organisation that the account belongs to.
+          items:
+            $ref: '#/components/schemas/E2EKey'
+    EncapUpdateE2EKeyResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          description: 'The state of the E2E key.
+
+
+            This is an an enum, and can be either `ENABLED` or `DISABLED`.
+
+            '
+          enum:
+          - ENABLED
+          - DISABLED
+    E2EKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the E2E key.
+          example: 52e107e6-1ce9-4a4b-a051-612ad888de11
+        name:
+          type: string
+          description: The name of the E2E key.
+          example: Default E2E key
+        algorithm:
+          type: string
+          description: Protocol between mobile SDK and the Server. Possible values `X25519`|`SECT233K1`
+          example: X25519
+        description:
+          type: string
+          description: The description of the E2E key.
+          example: This is the E2E key ...
+        createdBy:
+          type: string
+          description: The user ID (`userId`) of the creator of the E2E key.
+          example: 52e107e6-1ce9-4a4b-a051-612ad888de11
+        created:
+          type: string
+          description: 'The timestamp when the E2E key was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-22T21:47:27.123Z'
+        sha256Fingerprint:
+          type: string
+          description: The SHA256 hash of the E2E key certificate.
+          example: 21:31:57:72:33:ec:23:84:ad:30:68:1c:e3:ab
+        publicKey:
+          type: string
+          description: The E2E key certificate, which has been Base64 encoded.
+          example: cHVibGljS2V5VmFsdWU=
+        state:
+          type: string
+          description: The E2E key state, can be either `ENABLED` or `DISABLED`
+          example: ENABLED
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

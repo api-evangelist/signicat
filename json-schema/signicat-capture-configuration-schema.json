@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-capture-configuration-schema.json",
+  "title": "CaptureConfiguration",
+  "description": "Capture Configuration payload",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-id-document-and-biometric-verification-openapi.yml#/components/schemas/CaptureConfiguration",
+  "type": "object",
+  "properties": {
+    "pageTitle": {
+      "type": "string",
+      "default": "Signicat Capture",
+      "description": "The title to be displayed in the browser tab. <br>Maximum length: 60 characters. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "favicon": {
+      "type": "string",
+      "default": "(signicat icon)",
+      "description": " A custom favicon to be displayed in the browser tab. This must be a valid data-uri or link. <br>Allowed data formats: [ \"jpeg\", \"png\", \"ico\"] <br>In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "fontName": {
+      "type": "string",
+      "description": "The name of the font to be used in the Capture SDK user interface. <br>In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "fontUrl": {
+      "type": "string",
+      "description": "The URL to the CSS file with the font-face.<br> Limitations: This field only accepts Google Font urls; Custom fonts require prior submission of the domain to be whitelisted.In addition to Capture, this field also affects the VideoID SDK. "
+    },
+    "primaryColor": {
+      "type": "string",
+      "description": "The HEX or RGB code for the primary color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK. "
+    },
+    "fontColor": {
+      "type": "string",
+      "default": "black",
+      "description": "The HEX or RGB code for the general font color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "buttonsColor": {
+      "type": "string",
+      "description": "The HEX or RGB code for the background color of the buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "buttonsHoverColor": {
+      "type": "string",
+      "description": "The HEX or RGB code for the background color of the hover buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "buttonsTextColor": {
+      "type": "string",
+      "default": "white",
+      "description": "The HEX or RGB code for the text color on the buttons. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "spinnerColor": {
+      "type": "string",
+      "description": "The HEX or RGB code for the color of the loading spinner. If not set, it will default to primaryColor. <br> In addition to Capture, this field also affects the Onfido and VideoID SDK."
+    },
+    "documentTypes": {
+      "type": "array",
+      "description": "Filters the list of document types that the end-user can choose from. If the field is empty or not defined, all the document types supported by the provider will be displayed.<br>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "driversLicense",
+          "passport",
+          "identityCard",
+          "residencePermit",
+          "workPermit",
+          "voterId",
+          "postalIdCard",
+          "professionalQualificationCard",
+          "professionalPermit",
+          "socialSecurity",
+          "panCard",
+          "passportCard",
+          "stateId",
+          "visa",
+          "asylumRegistrationCard",
+          "nationalHealthInsuranceCard",
+          "aadharCard",
+          "immigrationStatusDocument",
+          "indigenousCard",
+          "municipalityIdentityCard",
+          "privateOperatorsCard",
+          "certificateOfSponsorship",
+          "serviceIdCard",
+          "taxId"
+        ]
+      }
+    },
+    "documentCountries": {
+      "type": "object",
+      "additionalProperties": {},
+      "description": "Filters the list of countries that the end-user can choose from. The value will always be an object with the keys corresponding to `documentTypes`. The value of the keys can be:<ul><li> Empty: If the field is empty or not defined, all the countries supported by the provider will be displayed. </li><li> `univ` (string): The `univ` value (in lower case) is only available for passports. It displays a list of all the countries in the world. Code example: <pre>\"documentCountries\": {\n    \"passport\": \"univ\"\n} </pre></li><li> Array of country codes (ISO 3166 Alpha 3): This displays only the defined countries. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\" ]\n} </pre>In this case, the end-user will only see the Portuguese and Norwegian document options. <li> `UNIV` in an array with country codes: The `UNIV` value (upper case) is only available for the ‘signicatpaper’ provider with passport as document type. It will display an additional option for \"Other countries\", so the end-user can choose other countries than the ones that are supported in Signicat Paper's template. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\", \"UNIV\" ]\n} </pre>In this example, the list of passports will show \"Portuguese\", \"Norwegian\" and \"Other countries\" (3 options). You should be aware of the following when using `UNIV`:<br>- Only data from the MRZ area is extracted.<br>- Redaction will not be performed.<br>- It only works for ICAO compliant passports (that comply with the <a href=\"https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf\">ICAO9303 rule)</a>.</li></ul>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent."
+    },
+    "twoSidedPassports": {
+      "description": "List of countries where also the backside of the passport should be captured.The value can be either an array of country codes (ISO 3166 Alpha 3), or a string `all` (to ask for the backside  of all passports) or `null` (to not ask for the backside of any passports)."
+    },
+    "languages": {
+      "type": "array",
+      "default": "en",
+      "description": "List of languages the end-user can choose from (ISO 639-1,  two-letter codes). In addition to the standard two-letter country codes, we support the following old country codes for backwards compatibility: [ \"cz\", \"gb\", \"gr\", \"uk\" ]. <br>For supported languages, see the  <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk\">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the  VideoID SDK.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "translations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "description": "Custom translations for the Capture SDK. For more details about supported languages and how to create your own translations, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk\">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "defaultCountry": {
+      "type": "string",
+      "default": "NOR",
+      "description": "Helps the UI decide which country to select by default when multiple options are available. For example: To pre-select the phone country code in the mobile handover screen or to set the default country (ISO 3166 Alpha 3) in the list of countries of the document selection screen. <br/>In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "allowFileUpload": {
+      "type": "array",
+      "default": "[mobile, desktop]",
+      "description": "Enables/disables the file upload option for mobile and desktop.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowTakePhoto": {
+      "type": "array",
+      "default": "[mobile, desktop]",
+      "description": "Enables/disables the \"take photo\" option for mobile and desktop.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowZoomOnPreview": {
+      "type": "array",
+      "description": "Enables/disables the option to zoom the uploaded image when previewing it for both the \"take photo\" and \"upload photo\" flows.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "useSignicatTheming": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables/disables the use of Signicat Theming."
+    },
+    "enableMobileHandover": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enables/disables the mobile handover feature. <br>In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "enableOrientationConfirmation": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables/disables the orientation confirmation step at the end of the file upload flow."
+    },
+    "autoCapture": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables/disables the auto-capture feature on the camera flow. Available for passports only."
+    },
+    "detectGlare": {
+      "description": "Enables/disables glare detection for both the \"take photo\" and \"upload photo\" flows.It can be a boolean or array."
+    },
+    "customRedactionError": {
+      "type": "boolean",
+      "default": false,
+      "description": "If the redaction failed, it enables/disables a specific error page in the mobile flow. If set to true, it will redirect to the red error page. If there was an error but the redaction went well, it will redirect to the yellow error page."
+    },
+    "takeSelfie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables/disables the selfie step at the end of the Capture flow (both camera and file upload). This is required if you want to use both the Onfido documentSelfie and the Capture SDK."
+    },
+    "smsDefaultCountry": {
+      "type": "string",
+      "default": "NOR",
+      "description": "Country prefix (ISO 3166 Alpha 3) to be pre-selected on the mobile handover popup screen for phone number input. <br> In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "maxRetries": {
+      "type": "integer",
+      "format": "int32",
+      "default": 0,
+      "description": "The maximum number of retries after the verification fails (e.g. if the document is not valid or possible to read etc.). <br> In addition to Capture, this field also affects the VideoID SDK. *Default value is 0 for 'capture' SDK and 4 for 'native' SDK with provider 'signicatvideoid'"
+    },
+    "showModalBeforeRedirect": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, the app shows the success/error modal before redirecting to the redirectUrl. If false, it redirects immediately."
+    },
+    "mobileHandoverTimeout": {
+      "type": "integer",
+      "format": "int32",
+      "default": 0,
+      "description": "Number of minutes before the mobile handover loading page times out and cancels the process. <br> In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "mobileHandoverModes": {
+      "type": "array",
+      "default": "[ sms, qrCode ]",
+      "description": "A list of mobile handover modes the user can choose from. Supported modes are \"sms\" and \"qrCode\". The first in the list is used as default.<br/>In addition to Capture, this field also affects the VideoID SDK.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forceMobileHandover": {
+      "type": "boolean",
+      "default": false,
+      "description": "Forces the end-user to take photos with their mobile device."
+    },
+    "useNativeCamera": {
+      "type": "boolean",
+      "default": false,
+      "description": "Forces the end-user to take photos with the native camera app instead of the browser camera on the mobile."
+    },
+    "customCss": {
+      "type": "string",
+      "description": "Optional.<br> The custom CSS to be loaded in the app. The string should contain the CSS code. <br>In addition to Capture, this field also affects the VideoID SDK."
+    },
+    "onfidoConfig": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "Custom configurations for the native Onfido Web SDK. This configuration applies when provider is set to onfido and sdk is set to native in Start capture flow. This object is in JSON format. Accepted elements are the ones listed below plus any field included in the Onfido initialisation object: <a href=\"https://documentation.onfido.com/sdk/web/\">Onfido Web SDK Reference</a><ul><li><code>customHtml</code> Optional.<br> Custom HTML code (in the form of a string) to replace the HTML of the app. This should always include an element with the ID \"onfido-mount\" where the Onfido SDK will be mounted.</li><li><code>customHeaderLogo</code> Optional.<br> An image, provided in a Data URI or link format, indicating the logo image that will be displayed in the top left corner of the page.</li><li><code>customBackgroundImage</code> Optional.<br> An image provided in a  Data URI or link format, indicating the image to be displayed as background under the Onfido SDK.</li><li><code>language</code> Optional.<br> You can customise the SDK language by passing a string. Available languages are: [en, nb, sv, nl]</li><li><code>translations</code> Optional.<br> An object where the keys are the language code and have the phrases and mobilePhrases Onfido translations. Refer to the <a href=\"https://documentation.onfido.com/sdk/web/#identifying-text-keys-in-the-onfido-screens\">Onfido documentation</a> for instructions on how to find the right keys. <br/>Code example: <pre>\"en\": {\n    \"phrases\": { 'capture.driving_licence.instructions': 'This custom string will appear by default' }\n    \"mobilePhrases\": { 'capture.driving_licence.instructions': 'This custom string will only appear on mobile' }\n} </pre></li><li><code>useOnfidoTranslations</code> Optional.<br>This field only applies to the Onfido provider when `sdk` is set to `native`. It enables Capture to use <a href=\"https://github.com/onfido/onfido-sdk-ui/tree/master/locales\">Onfido's own translations</a> instead of Signicat's translations. For information about the languages Onfido supports, see <a href=\"https://developers.onfido.com/guide/sdk-customization#supported-languages\">Supported Languages</a>.</li></ul>"
+    },
+    "signicatvideoidConfig": {
+      "$ref": "#/$defs/SignicatVideoIdConfig"
+    },
+    "signicatpictureidConfig": {
+      "$ref": "#/$defs/SignicatPictureIdConfig"
+    },
+    "showConsentPage": {
+      "type": "boolean",
+      "description": "If true, the app shows the consent page before starting the flow"
+    },
+    "showAccessibilityLink": {
+      "type": "boolean",
+      "description": "If true, the app shows the accessibility statement link at the bottom of the screen."
+    },
+    "showDocumentInstructionsScreen": {
+      "type": "boolean",
+      "description": "Enables/disables a screen between the document country picker screen and the take photo or upload photo screen. This screen shows the end-user instructions on how to take or upload a valid photo of an identity document."
+    },
+    "documentInstructionsScreenItems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DocumentInstructionScreenItem"
+      }
+    },
+    "showPrerequisitesScreen": {
+      "type": "boolean",
+      "description": "If enabled, this is the first screen the end-user sees when the capture UI is loaded. It presents tips about what they should have ready before they continue the identification. You can see an example of how this screen looks like in the integration documentation under <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk\">Translations > Prerequisites screen</a>."
+    },
+    "prerequisitesScreenItems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PrerequisiteScreenItem"
+      }
+    },
+    "showCountryBeforeDocumentType": {
+      "type": "boolean",
+      "description": "If true, the app will show the document country picker before the document type picker."
+    }
+  },
+  "$defs": {
+    "DocumentInstructionScreenItem": {
+      "type": "object",
+      "description": "Allows customisation of the instruction elements (images, icons, titles, and descriptions) on the document instructions screen.",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "Hyperlink of the image that you want to present in the instruction guide."
+        },
+        "icon": {
+          "type": "string",
+          "description": "Instruction icon. Available options can be found in the following link: https://fonts.google.com/icons"
+        },
+        "title": {
+          "type": "string",
+          "description": "Instruction title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Instruction description."
+        }
+      }
+    },
+    "JsonNode": {},
+    "PrerequisiteScreenItem": {
+      "type": "object",
+      "description": "Allows you to override the default prerequisites items (“Identity document”, “Lightning”, “Internet“, “Camera and microphone“) with your own items. Do not set this field if you want to use the default ones. You can see how the default items look like in the integration documentation under <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk\">Translations > Prerequisites screen</a>.",
+      "properties": {
+        "icon": {
+          "type": "string",
+          "description": "Instruction icon. Available options can be found in the following link: https://fonts.google.com/icons"
+        },
+        "title": {
+          "type": "string",
+          "description": "Instruction title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Instruction description."
+        }
+      }
+    },
+    "SignicatPictureIdConfig": {
+      "type": "object",
+      "description": "Custom configurations for the Signicat PictureID processes. This configuration applies when <code>provider</code> is set to <code>signicatpictureid</code> in Start capture flow.This object is in JSON format",
+      "properties": {
+        "defaultCountry": {
+          "type": "string",
+          "default": "null",
+          "description": "Country to be pre-selected on the country selection list. String in ISO 3166 Alpha 3 format (ex: “GBR”, “PRT”)"
+        },
+        "allowFileUpload": {
+          "type": "array",
+          "default": [],
+          "description": "Allows to upload the image of the ID document from the desktop and/or mobile.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowTakePhoto": {
+          "type": "array",
+          "default": [
+            "mobile",
+            "desktop"
+          ],
+          "description": "Allows to capture the image of the ID document from the desktop and/or mobile, using the device camera.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "translations": {
+          "$ref": "#/$defs/SignicatPictureIdTranslations",
+          "description": "Allows to override the UI strings with new values."
+        },
+        "allowedIdTypes": {
+          "type": "array",
+          "default": [],
+          "description": "Allow to filter the list of documents displayed on the document picker list",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "SignicatPictureIdTranslations": {
+      "type": "object",
+      "description": "Translations strings, where the key is the language code (e.g., 'en', 'es') and the value is a map of translation keys to strings.",
+      "properties": {
+        "translations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "SignicatVideoIdConfig": {
+      "type": "object",
+      "description": "Custom configurations for the native Signicat VideoID Web SDK. This configuration applies when <code>provider</code> is set to <code>signicatvideoid</code> and <code>sdk</code> is set to <code>native</code> in Start capture flow. This object is in JSON format",
+      "properties": {
+        "checkRequirements": {
+          "type": "boolean",
+          "description": "Default value is <b>false</b>. Enable this setting to run a network connectivity check before the VideoID starts. This will allow to confirm if the current network speed is high enough to allow for video streaming and will only allow the end-user to continue if minimum requirements are met. Note that other checks, such as browser, camera and microphone, are always done and are not controlled by this setting. Also note that checking the network requirements will take some seconds (depending on the network)."
+        },
+        "useModal": {
+          "type": "boolean",
+          "description": "Default value is <b>false</b>. Launches the Signicat VideoID SDK inside a modal / popup instead of full-screen."
+        },
+        "minRequirementsMandatory": {
+          "type": "boolean",
+          "description": "If enabled, the end-user will only be allowed to continue with the VideoID if the minimum requirements are met (camera, microphone, OS, browser and also network if <code>checkRequirements</code> is enabled)"
+        },
+        "allowedIdTypes": {
+          "type": "array",
+          "description": "This setting only affects <b>signicatvideoid</b> processes.It will overrule any values that are sent in <b>documentTypes</b> or <b>documentCountries</b> in this configurations.",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "sdkLoadTimeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of seconds to wait for the VideoID SDK to load. After this time, the process status will be set to `failed`. This is a UX measure to avoid end-users getting stuck waiting (and the process stuck at `pending`) if there are problems with VideoID services."
+        }
+      }
+    }
+  }
+}

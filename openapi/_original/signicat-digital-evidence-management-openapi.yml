@@ -1,0 +1,1091 @@
+# x-archived-from: signicat-digital-evidence-management-openapi.yml
+# x-archived-on: 2026-10-18
+openapi: 3.1.0
+info:
+  title: Digital Evidence Management API
+  description: '- **Base URL**: `https://api.signicat.com/dem/`
+
+    - **Documentation**: See the [Digital Evidence Management](/docs/digital-evidence-management/) developer documentation.
+
+    - **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.
+
+
+    # Introduction
+
+
+    Signicat''s Digital Evidence Management API offers a simple way to capture audit trail data. This can include information on authentications, payment transactions or acceptance of GDPR consent messages.
+
+
+    This REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.
+
+
+    # Get started
+
+
+    Before you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).
+
+
+    # Using this API
+
+
+    ## Audit logs
+
+
+    Use the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.
+
+
+    - Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)
+
+    - For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.
+
+
+    ## Errors
+
+
+    When you make an API call to Signicat and an error occurs, you will receive a response message with an error code.
+
+
+    - For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.
+
+
+    ## Events (callback)
+
+
+    Use the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.
+
+
+    - Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)
+
+    - For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.
+
+
+    > **Note**: This is often referred to as callback.
+
+    '
+  version: 1.0.0-SNAPSHOT
+  contact: ''
+  license: ''
+  termsOfService: ''
+servers:
+- url: https://api.signicat.com/dem
+  description: Generated server url
+paths:
+  /records:
+    post:
+      tags:
+      - records
+      summary: Create a new record
+      description: 'Creates a new record. There are four required fields: "type", "metadata", "coreData", "TTL" and two optional fields: "relations" and "auditLevel".<h2>Record Type</h2>You are required to supply a record type in the ''type'' parameter when posting a new record.These are the available types: <table>   <tr>       <th>Type name</th>       <th>Description (suggested use)</th>   </tr>   <tr>       <td style=''text-align:center;''>GDPR</td>       <td style=''text-align:center;''>Can be used for documentation of GDPR compliance.</td>   </tr>   <tr>       <td style=''text-align:center;''>TRANSACTION</td>       <td style=''text-align:center;''>Can be used for documenting financial transactions.</td>   </tr>   <tr>       <td style=''text-align:center;''>LOG_IN</td>       <td style=''text-align:center;''>Can be used for documenting users logging in to a system.</td>   </tr>   <tr>       <td style=''text-align:center;''>SIGNATURE</td>       <td style=''text-align:center;''>Can be used
+        for documenting digital signatures.</td>   </tr>   <tr>       <td style=''text-align:center;''>SENSITIVE</td>       <td style=''text-align:center;''>Can be used for documenting sensitive information.</td>   </tr>   <tr>       <td style=''text-align:center;''>OTHER</td>       <td style=''text-align:center;''>Can be used for everything else.</td>   </tr></table><h2>Metadata</h2> Can contain any amount of data which will then be searchable in future queries.<h2>Core Data</h2> Can contain any amount of data which will then be timestamped.<h2>TTL</h2> Time to Live as denoted in amount of days (Int).<h2>Relations</h2> Optional field. List of the IDs (String) of the related records. Default: Empty list<h2>Audit Level</h2> Optional field. Decides which level of timestamping and verification will be applied to the record.<table>   <tr>       <td style=''text-align:center;''>SIMPLE</td>       <td style=''text-align:center;''>Uses hashing to verify data. This audit level is deprecated and is
+        only supported for existing integrations.</td>   </tr>   <tr>       <td style=''text-align:center;''>ADVANCED</td>       <td style=''text-align:center;''>Uses TSA to timestamp and verify. This audit level is deprecated and is only supported for existing integrations.</td>   </tr>   <tr>       <td style=''text-align:center;''>QUALIFIED</td>       <td style=''text-align:center;''>Uses QTSA to timestamp and verify. Default if value is not set explicitly.</td>   </tr></table>'
+      operationId: postNewRecord
+      parameters:
+      - name: Signicat-Usage-Context
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              default: '##default'
+              description: Object containing the user-defined datums that are stored in a record. This plus the system-defined data forms a record.
+        required: true
+      responses:
+        '201':
+          description: Record has been created and posted to the database.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+    patch:
+      tags:
+      - records
+      summary: Update multiple selected records
+      description: Updates the Time to Live (TTL) of selected records by a defined query.<br>The query is built on the MongoDB Query Language (MQL), but it is database-agnostic.<br>
+      operationId: setExpiryDates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              default: '##default'
+              description: 'Object containing the user-defined query and new TTL value. '
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties:
+                  default: '##default'
+                default: '##default'
+                example: '5'
+              example: 5
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+      x-codeSamples:
+      - lang: Java
+        source: "// ...\n// Variables, acquired beforehand\nString bearerToken = \"Bearer <your-bearer-token>\";\n\n// Set-up connection\nURL url = new URL(\"https://api.signicat.com/dem/records/query\");\nHttpURLConnection connection = (HttpURLConnection) url.openConnection();\nconnection.setRequestMethod(\"POST\");\nconnection.setRequestProperty(\"Authorization\", bearerToken);\nconnection.setRequestProperty(\"Content-Type\", \"application/json; utf-8\");\nconnection.setDoOutput(true);\n\n// Request body\nString jsonBody = \"{\\\"and\\\": [{\\\"field\\\": \\\"custom.fieldName\\\", \\\"operator\\\": \\\"eq\\\", \\\"value\\\": \\\"greatValue\\\"}]}\"\n\n// Attach body to request\nOutputStream os = connection.getOutputStream();\nbyte[] jsonBodyBytes = jsonBody.getBytes(StandardCharsets.UTF_8);\nos.write(jsonBodyBytes, 0, jsonBodyBytes.length);\nos.close();\n\nconnection.connect();\n\nBufferedReader responseBufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));\n\
+          \n// Iterate through and print out response (not required)\nString line = responseBufferedReader.readLine();\nwhile (line != null) {\n   System.out.println(line);\n   line = responseBufferedReader.readLine();\n}\n// ..."
+      - lang: curl
+        source: "curl --location --request POST 'https://api.signicat.com/dem/records/query' \n--header 'Authorization: Bearer <your-bearer-token>' \n--header 'Content-Type: application/json' \n--data-raw '{\n    \"and\": [\n        {\n            \"field\": \"custom.fieldName\",\n            \"operator\": \"eq\",\n            \"value\": \"greatValue\"\n        },\n        {\n            \"field\": \"custom.numberField\",\n            \"operator\": \"lt\",\n            \"value\": 42\n        }\n    ]\n}'"
+  /records/query:
+    post:
+      tags:
+      - records
+      summary: Query a collection for records matching specified parameters
+      description: 'Queries the database to return a pageable list of records without coreData.<br>If no body is included, the endpoint will return pages of all records.<br>The size and page number as well as sorting and ordering of the returned page is decided by the parameters <code>page</code>, <code>size</code> and <code>sort</code>.<br><br><h2>Request Body</h2><br>The query is built from the request body. The request body is an object containing up to two lists of QueryCondition objects.<br><b>If no lists are provided, the query will return every record in the collection.</b><br><br><table style=''width:100%''>   <tr>       <th>List name</th>       <th>Description</th>   </tr>   <tr>       <td>and</td>       <td>Combines the QueryConditions with the logical AND operator. All of the QueryConditions need to return true.</td>   </tr>   <tr>       <td>or</td>       <td>Combines the QueryConditions with the logical OR operator. Only one of the QueryConditions needs to return true.</td>   </tr></table><h2>Query
+        Condition</h2><br>A query condition consists of three parts: <b>field</b>, <b>operator</b> and <b>value</b>.<br><h3>Field</h3><br>The field parameter denotes which field in the database to apply the query condition to.<br><i>Replace ''*'' with the sub-field you wish to query. For example "metadata.firstName" or "systemMetadata.createdDateTime"</i><br><b>These are the allowed fields:</b><br><table style=''width:100%''>   <tr>       <th>Field</th>       <th>Description</th>   </tr>   <tr>       <td>metadata</td>       <td>Metadata added by the user.</td>   </tr>   <tr>       <td>systemMetadata</td>       <td>Metadata added by DEM.</td>   </tr>   <tr>       <td>relations</td>       <td>Any other record relations added by the user.</td>   </tr></table><br><h3>Operator</h3><br>The operator specifies how the condition uses the value to search for records.<br><b>These are the available query operators:</b><br><br><table style=''width:100%''>   <tr>       <th>Query Operation</th>       <th>Description</th>   </tr>   <tr>       <td>eq</td>       <td>Checks
+        if the field''s value matches the input value exactly.</td>   </tr>   <tr>       <td>ne</td>       <td>Checks if the field''s value does not match the input value.</td>   </tr>   <tr>       <td>gt</td>       <td>Checks if the field''s value is greater than the input value. Works best with numeric values.</td>   </tr>   <tr>       <td>gte</td>       <td>Checks if the field''s value is greater than or equal to the input value. Works best with numeric values.</td>   </tr>   <tr>       <td>lt</td>       <td>Checks if the field''s value is less than the input value. Works best with numeric values.</td>   </tr>   <tr>       <td>lte</td>       <td>Checks if the field''s value is less than or equal to the input value. Works best with numeric values.</td>   </tr>   <tr>       <td>regex</td>       <td>Checks if the field''s value contains the input value using regex. Works best with String values.</td>   </tr>   <tr>       <td>in</td>       <td>Checks if the field''s value matches any of the
+        values in the inputted array.</td>   </tr>   <tr>       <td>nin</td>       <td>Checks if the field''s value does not match any of the values in the inputted array.</td>   </tr></table><br><h3>Value</h3><br>The value parameter denotes what value the query condition should use. For example: with the EQUAL operator, the value is what the field should be equal to.'
+      operationId: query
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequestBody'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties:
+                  default: '##default'
+                default: '##default'
+                example:
+                  _embedded:
+                    records:
+                    - id: a1f786ad-a6ba-41b6-8902-e3baee511077
+                      metadata:
+                        system:
+                          expiryDate: '2021-08-13T00:00:00.000+00:00'
+                          createdDate: '2021-08-12T00:00:00.000+00:00'
+                          createdBy: dev-convincing-seed-432
+                          createdDateTime: '2021-08-12T09:55:48.000+00:00'
+                          type: SIGNATURE
+                          timestamp: MoI...
+                        custom:
+                          customField1: abc
+                          customField2: abc
+                          customField3: abc
+                      relations: []
+                      _links:
+                        self:
+                          href: http://localhost:9002/dem-backend/records/a1f786ad-a6ba-41b6-8902-e3baee511077
+                    - id: faf43e96-b4ac-4a52-be5b-8bfd8fb7cbd3
+                      metadata:
+                        system:
+                          expiryDate: '2021-08-13T00:00:00.000+00:00'
+                          createdDate: '2021-08-12T00:00:00.000+00:00'
+                          createdBy: dev-convincing-seed-432
+                          createdDateTime: '2021-08-12T09:55:50.000+00:00'
+                          type: SIGNATURE
+                          timestamp: MoI...
+                        custom:
+                          customField1: abc
+                          customField2: abc
+                          customField3: abc
+                      relations: []
+                      _links:
+                        self:
+                          href: http://localhost:9002/dem-backend/records/faf43e96-b4ac-4a52-be5b-8bfd8fb7cbd3
+                    - id: 82400e44-6db1-479d-8a9c-f62b97917f59
+                      metadata:
+                        system:
+                          expiryDate: '2021-08-13T00:00:00.000+00:00'
+                          createdDate: '2021-08-12T00:00:00.000+00:00'
+                          createdBy: dev-convincing-seed-432
+                          createdDateTime: '2021-08-12T09:55:51.000+00:00'
+                          type: SIGNATURE
+                          timestamp: MoI...
+                        custom:
+                          customField1: abc
+                          customField2: abc
+                          customField3: abc
+                      relations: []
+                      _links:
+                        self:
+                          href: http://localhost:9002/dem-backend/records/82400e44-6db1-479d-8a9c-f62b97917f59
+                  _links:
+                    self:
+                      href: http://localhost:9002/dem-backend/records/query?page=0&size=10&sort=metadata.system.createdDate,desc
+                  page:
+                    size: 10
+                    totalElements: 3
+                    totalPages: 1
+                    number: 0
+              examples:
+                Page<CorelessRecordResponse> with HATEOAS links:
+                  summary: Page with HATEOAS links containing the results from the query.
+                  description: The response will contain a list of matching records under the "_embedded" field, with page information under the "page" field and page links under the "_links" field.
+                  value:
+                    _embedded:
+                      records:
+                      - id: a1f786ad-a6ba-41b6-8902-e3baee511077
+                        metadata:
+                          system:
+                            expiryDate: '2021-08-13T00:00:00.000+00:00'
+                            createdDate: '2021-08-12T00:00:00.000+00:00'
+                            createdBy: dev-convincing-seed-432
+                            createdDateTime: '2021-08-12T09:55:48.000+00:00'
+                            type: SIGNATURE
+                            timestamp: MoI...
+                          custom:
+                            customField1: abc
+                            customField2: abc
+                            customField3: abc
+                        relations: []
+                        _links:
+                          self:
+                            href: http://localhost:9002/dem-backend/records/a1f786ad-a6ba-41b6-8902-e3baee511077
+                      - id: faf43e96-b4ac-4a52-be5b-8bfd8fb7cbd3
+                        metadata:
+                          system:
+                            expiryDate: '2021-08-13T00:00:00.000+00:00'
+                            createdDate: '2021-08-12T00:00:00.000+00:00'
+                            createdBy: dev-convincing-seed-432
+                            createdDateTime: '2021-08-12T09:55:50.000+00:00'
+                            type: SIGNATURE
+                            timestamp: MoI...
+                          custom:
+                            customField1: abc
+                            customField2: abc
+                            customField3: abc
+                        relations: []
+                        _links:
+                          self:
+                            href: http://localhost:9002/dem-backend/records/faf43e96-b4ac-4a52-be5b-8bfd8fb7cbd3
+                      - id: 82400e44-6db1-479d-8a9c-f62b97917f59
+                        metadata:
+                          system:
+                            expiryDate: '2021-08-13T00:00:00.000+00:00'
+                            createdDate: '2021-08-12T00:00:00.000+00:00'
+                            createdBy: dev-convincing-seed-432
+                            createdDateTime: '2021-08-12T09:55:51.000+00:00'
+                            type: SIGNATURE
+                            timestamp: MoI...
+                          custom:
+                            customField1: abc
+                            customField2: abc
+                            customField3: abc
+                        relations: []
+                        _links:
+                          self:
+                            href: http://localhost:9002/dem-backend/records/82400e44-6db1-479d-8a9c-f62b97917f59
+                    _links:
+                      self:
+                        href: http://localhost:9002/dem-backend/records/query?page=0&size=10&sort=metadata.system.createdDate,desc
+                    page:
+                      size: 10
+                      totalElements: 3
+                      totalPages: 1
+                      number: 0
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /records/{id}:
+    get:
+      tags:
+      - records
+      summary: Get record by ID
+      description: 'Retrieves a specific record by its ID. The given ID must conform to the UUID/GUID standard. <br><em>For example</em>: <code>123e4567-e89b-12d3-a456-556642440000</code><br> Returns everything included in the record entity.'
+      operationId: getRecordById
+      parameters:
+      - name: id
+        in: path
+        description: Unique identifier for a record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+        example: 123e4567-e89b-12d3-a456-556642440000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '404':
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+      x-codeSamples:
+      - lang: Java
+        source: "// ...\n// Variables, acquired beforehand\nString id = \"<your-recordId>\";\nString bearerToken = \"Bearer <your-bearer-token>\";\n\n// Set-up connection\nURL url = new URL(\"https://api.signicat.com/dem/records/\" + id);\nHttpURLConnection connection = (HttpURLConnection) url.openConnection();\nconnection.setRequestMethod(\"GET\");\nconnection.setRequestProperty(\"Authorization\", bearerToken);\n\nBufferedReader responseBufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));\n\n// Iterate through and print out response (not required)\nString line = responseBufferedReader.readLine();\nwhile (line != null) {\n   System.out.println(line);\n   line = responseBufferedReader.readLine();\n}\n// ..."
+      - lang: curl
+        source: "curl --location --request GET 'https://api.signicat.com/dem/records/<record-id>' \n--header 'Authorization: Bearer <your-bearer-token>'"
+    patch:
+      tags:
+      - records
+      summary: Update the expiry of a given record
+      description: Specifies when the record will automatically be deleted from the database. Takes an amount of days as a positive integer of 2 or higher and updates the expiry date with the new value.
+      operationId: setExpiryDate
+      parameters:
+      - name: id
+        in: path
+        description: Unique identifier for a record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+        example: 123e4567-e89b-12d3-a456-556642440000
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              default: '##default'
+              description: Object that controls which fields are allowed in a patch request to change the Time to Live (TTL) of a record.
+        required: true
+      responses:
+        '204':
+          description: Successful, no content returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRecordResponse'
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '404':
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /reports/{id}:
+    get:
+      tags:
+      - reports
+      summary: Retrieves a generated PDF report for a record
+      description: Takes a Record ID as a parameter. It retrieves the record and generates a PDF report for the record.
+      operationId: generateReport
+      parameters:
+      - name: id
+        in: path
+        description: Unique identifier for a record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+        example: 123e4567-e89b-12d3-a456-556642440000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/pdf:
+              schema:
+                type: string
+                additionalProperties:
+                  default: '##default'
+                default: '##default'
+              examples:
+                Example PDF:
+                  summary: Example PDF
+                  description: 'Example output of report endpoint. Long string of text representing the base64 encoded pdf document. '
+                  value: JVBERi0xLjMKJ...
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /info:
+    get:
+      tags:
+      - info
+      summary: Get statistics for records
+      description: Retrieves statistics on records stored in DEM.
+      operationId: getCollectionStats
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /info/custom-fields/{type}:
+    get:
+      tags:
+      - info
+      summary: Get all fields from customerMeta from all records
+      description: Aggregates all of the customer's records to return a list of all unique keys from the customerMeta field.
+      operationId: getCustomMetaFields
+      parameters:
+      - name: type
+        in: path
+        description: Optional parameter that narrows the result down based on the type of record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /info/custom-fields:
+    get:
+      tags:
+      - info
+      summary: Get all fields from customerMeta from all records
+      description: Aggregates all of the customer's records to return a list of all unique keys from the customerMeta field.
+      operationId: getCustomMetaFields_1
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+  /.ping:
+    get:
+      tags:
+      - ping-rest-controller
+      operationId: signicat
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    RecordRelationResponse:
+      type: object
+      properties:
+        relationID:
+          type: string
+        type:
+          type: string
+          enum:
+          - GDPR
+          - TRANSACTION
+          - LOG_IN
+          - SIGNATURE
+          - INTERNAL_AUDIT
+          - OTHER
+          - KYC
+          - SENSITIVE
+          - CONSENT
+        _links:
+          $ref: '#/components/schemas/Links'
+    RecordResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        metadata:
+          type: object
+          additionalProperties: {}
+        systemMetadata:
+          $ref: '#/components/schemas/SystemMetadata'
+        coreData:
+          type: object
+          additionalProperties: {}
+        timestampData:
+          type: object
+          additionalProperties: {}
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordRelationResponse'
+        _links:
+          $ref: '#/components/schemas/Links'
+    SystemMetadata:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - GDPR
+          - TRANSACTION
+          - LOG_IN
+          - SIGNATURE
+          - INTERNAL_AUDIT
+          - OTHER
+          - KYC
+          - SENSITIVE
+          - CONSENT
+        expiryDate:
+          type: string
+          format: date-time
+        createdDate:
+          type: string
+          format: date-time
+        createdDateTime:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        auditLevel:
+          type: string
+          enum:
+          - QUALIFIED
+          - ADVANCED
+          - SIMPLE
+    ErrorResponse:
+      type: object
+      default: '##default'
+      description: Return object detailing an error that has occurred.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        code:
+          type: string
+        type:
+          type: string
+        detail:
+          type: string
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+    InvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+    QueryCondition:
+      type: object
+      default: '##default'
+      description: 'Object describing a condition for a search. <br> It consists of three fields: '
+      properties:
+        field:
+          type: string
+          minLength: 1
+        operator:
+          type: string
+          minLength: 1
+        value: {}
+      required:
+      - field
+      - operator
+      - value
+    QueryRequestBody:
+      type: object
+      description: An object containing up to three lists of <code>QueryCondition</code> objects. Each list represents a logic operator used to bind the <code>QueryCondition</code> objects into a statement. <br>The <code>'and'</code> list executes the QueryCondition objects with a logical AND operator, all conditions must be met. <br> The <code>'or'</code> list executes the QueryCondition objects with a logical OR operator, at least one of the conditions must be met. <br> The <code>'not'</code> list is currently not in use, but it will in the future execute the QueryCondition objects with a logical NOR operator.
+      properties:
+        and:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryCondition'
+        or:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryCondition'
+        not:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryCondition'
+    QueryRecordResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        metadata:
+          type: object
+          additionalProperties: {}
+        systemMetadata:
+          $ref: '#/components/schemas/SystemMetadata'
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordRelationResponse'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Stats:
+      type: object
+      properties:
+        collectionSize:
+          type: string
+        avgRecordSize:
+          type: string
+        totalRecords:
+          type: integer
+          format: int32
+        totalRecordsByType:
+          type: object
+          additionalProperties: {}
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'

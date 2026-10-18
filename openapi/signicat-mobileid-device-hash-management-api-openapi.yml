@@ -1,0 +1,751 @@
+openapi: 3.2.0
+info:
+  title: Signicat MobileID device hash management API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged MobileID device hash management across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: MobileID device hash management
+  description: 'You can use the device hashes resource for operations related to:
+
+
+    - Reviewing or locking flagged device hashes.
+
+    - Blocking and unblocking device hashes.
+
+
+    ---
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    ---'
+paths:
+  /credentials/devices/device-hashes/{deviceHashBase64UrlEncoded}/lock:
+    put:
+      tags:
+      - MobileID device hash management
+      summary: Lock devices with device hash
+      description: This operation locks all devices associated with a given device hash.
+      operationId: lockDevicesWithDeviceHash
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-Abcdefghijk123456789
+        example: a-sdge-Abcdefghijk123456789
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '200':
+          description: The request to lock devices by device hash was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DHLockDevicesResponse'
+              example:
+                lockedDevices:
+                - 294ffdd7-4306-49dc-aa5e-72c4bed89d18
+                - 46af605e-a4c0-47da-9554-b6c0dc3fcd3a
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed locking device hash: xVJ9HYE-WJL40_K04CIDZzuD9jD5I9sLVZ3d47o08U0=. Reason : The given device hash is not found'
+                traceId: a44b9b927bbfee096396c5a910a87342
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/device-hashes/{deviceHashBase64UrlEncoded}/block:
+    get:
+      tags:
+      - MobileID device hash management
+      summary: Blocklist - Get device hash
+      description: This operation effectively checks if given device hash is in list of blocked device hashes.
+      operationId: getDeviceHashFromBlockList
+      parameters:
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '200':
+          description: The request to get device hash from blocklist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed fetching blocked device hash: xBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=. Reason : The given device hash is not found'
+                traceId: a803b2cb9a4769f99817aa1a066ed7bb
+    put:
+      tags:
+      - MobileID device hash management
+      summary: Blocklist - Add device hash
+      description: This operation adds given device hash to list of blocked device hashes.
+      operationId: addDeviceHashToBlockList
+      parameters:
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '204':
+          description: The request to add device hash to blocklist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed blocking device hash: xBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=. Reason : The given device hash is not found'
+                traceId: a803b2cb9a4769f99817aa1a066ed7bb
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash is allowlisted
+                code: device_hash_is_allowlisted
+                status: 409
+                detail: Device hash A_JX6Xcwf9M-PG00SOC83sPwVubyY3qenCbHQtpwLSk= cannot be added to blocklist. First, remove it from the allowlist.
+                traceId: '00000000000000000000000000000000'
+    delete:
+      tags:
+      - MobileID device hash management
+      summary: Blocklist - Remove device hash
+      description: This operation removes given device hash from list of blocked device hashes.
+      operationId: deleteDeviceHashFromBlockList
+      parameters:
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '204':
+          description: The request to remove device hash from blocklist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed unblocking device hash: xBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo=. Reason : The given device hash is not found'
+                traceId: a803b2cb9a4769f99817aa1a066ed7bb
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/device-hashes/{deviceHashBase64UrlEncoded}/allow:
+    get:
+      tags:
+      - MobileID device hash management
+      summary: Allowlist - Get device hash
+      description: This operation effectively checks if given device hash is in list of allowed device hashes.
+      operationId: getDeviceHashFromAllowlist
+      parameters:
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '200':
+          description: The request to get device hash from allowlist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Cannot fetch device hash from allowlist for the given accountId: a-sdge-c2z0wgHkZjpBnS7uB621 and deviceHash: xBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo='
+                traceId: a803b2cb9a4769f99817aa1a066ed7bb
+    put:
+      tags:
+      - MobileID device hash management
+      summary: Allowlist - Add device hash
+      description: This operation adds given device hash to list of allowed device hashes.
+      operationId: addDeviceHashToAllowlist
+      parameters:
+      - name: comment
+        in: query
+        description: 'The comment to be stored when adding device hash to the allowlist.
+
+
+          **Note**: This is an optional parameter, and it cannot be larger than 1024 characters!
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The comment to be stored when adding device hash to the allowlist.
+
+
+            **Note**: This is an optional parameter, and it cannot be larger than 1024 characters!
+
+            '
+          example: Some text, cannot be larger than 1024 characters!
+        example: Some text, cannot be larger than 1024 characters!
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '204':
+          description: The request to add device hash to allowlist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash is blocklisted
+                code: device_hash_is_blocklisted
+                status: 409
+                detail: Device hash A_JX6Xcwf9M-PG00SOC83sPwVubyY3qenCbHQtpwLSk= cannot be added to allowlist. First, remove it from the blocklist.
+                traceId: '00000000000000000000000000000000'
+    delete:
+      tags:
+      - MobileID device hash management
+      summary: Allowlist - Remove device hash
+      description: This operation removes given device hash from list of allowed device hashes.
+      operationId: deleteDeviceHashFromAllowlist
+      parameters:
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '204':
+          description: The request to remove device hash from allowlist was successful.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed removing device hash: xBHQ4HC3yLEUvEwnX5EBTBAbKkCia35WwO1dxqiFvYo= from allowlist. Reason : The given device hash is not found'
+                traceId: a803b2cb9a4769f99817aa1a066ed7bb
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/device-hashes/{deviceHashBase64UrlEncoded}:
+    get:
+      tags:
+      - MobileID device hash management
+      summary: Get devices with device hash
+      description: This operation returns a list of devices associated with a given device hash, grouped by the user that registered them.
+      operationId: getDevicesWithDeviceHash
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-Abcdefghijk123456789
+        example: a-sdge-Abcdefghijk123456789
+      - name: deviceHashBase64UrlEncoded
+        in: path
+        description: 'The device hash that the operation will be carried out for.
+
+
+          **Note**: This must be URL-safe Base64 encoded.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The device hash that the operation will be carried out for.
+
+
+            **Note**: This must be URL-safe Base64 encoded.
+
+            '
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+      responses:
+        '200':
+          description: The request to fetch devices by device hash was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DHLiveDetailsForUser'
+              example:
+              - userId: b13069a0-408f-4981-bcdb-a42a8d1060ee
+                devices:
+                - deviceId: 294ffdd7-4306-49dc-aa5e-72c4bed89d18
+                  lastUsed: '2026-03-31T08:21:40.584'
+                  state: ACTIVE
+                  accountId: a-sdge-UWPzmkeEVjkxJPkQtm0b
+              - userId: 8ebc86af-c341-404b-8cf0-7077449d6cf4
+                devices:
+                - deviceId: 46af605e-a4c0-47da-9554-b6c0dc3fcd3a
+                  lastUsed: '2026-03-20T10:13:47.107'
+                  state: DELETED
+                  accountId: a-sdge-UWPzmkeEVjkxJPkQtm0b
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid device hash
+                code: invalid_device_hash
+                status: 400
+                detail: 'Reason: Device hash must decode to 32 bytes'
+                traceId: '00000000000000000000000000000000'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device hash does not exist
+                code: device_hash_does_not_exist
+                status: 404
+                detail: 'Failed fetching devices for device hash: xVJ9HYE-WJL40_K04CIDZzuD9jD5I9sLVZ3d47o08U0=. Reason : The given device hash is not found'
+                traceId: a44b9b927bbfee096396c5a910a87342
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/device-hashes/allowlist:
+    get:
+      tags:
+      - MobileID device hash management
+      summary: Allowlist - Get all device hashes
+      description: This operation lists all device hashes from the allowlist.
+      operationId: getDeviceHashesFromAllowlist
+      responses:
+        '200':
+          description: The request to get all account device hashes from allowlist was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountDeviceHash'
+              example:
+              - deviceHash: A_JX6Xcwf9M-PG00SOC83sPwVubyY3qenCbHQtpwLSk=
+                created: '2026-08-17T10:56:18.814Z'
+                comment: Not a suspicious device hash
+              - deviceHash: yVJ9HYE-WJL40_K04CIDZzuD9jD5I9sLVZ3d47o08U0=
+                created: '2026-08-17T10:55:54.584Z'
+                comment: Not a suspicious device hash
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Account does not exist
+                code: account_does_not_exist
+                status: 404
+                detail: 'Failed fetching account with ID : a-sdge-N27GjPSzXO8JLcf8G1AB. Account does not exist.'
+                traceId: '00000000000000000000000000000000'
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    AccountDeviceHash:
+      type: object
+      properties:
+        deviceHash:
+          type: string
+          description: URL-safe Base64 encoded device hash.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480_WCq3bq9_C0apC4TU=
+        created:
+          type: string
+          description: 'The timestamp when the device hash was added to the allowlist.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        comment:
+          type: string
+          description: 'An optional comment detailing why this device hash was added to the allowlist.
+
+
+            **Note**: This filed has a maximum length of 1024 characters!
+
+            '
+          maxLength: 1024
+    DHLiveDetailsForUser:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DHLiveDetails'
+    DHLiveDetails:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        lastUsed:
+          type: string
+          description: 'The timestamp when the user''s device last carried out an operation.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.281Z'
+        state:
+          type: string
+          description: The state of the device.
+          example: ACTIVE
+        accountId:
+          type: string
+          description: The ID of the account that carried out the operation.
+          example: a-sdge-Abcdefghijk123456789
+    DHLockDevicesResponse:
+      type: object
+      properties:
+        lockedDevices:
+          type: array
+          items:
+            type: string
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

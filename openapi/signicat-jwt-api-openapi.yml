@@ -1,0 +1,117 @@
+openapi: 3.2.0
+info:
+  title: Signicat JWT API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Jwt across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: JWT
+paths:
+  /jwt/validate:
+    post:
+      tags:
+      - JWT
+      summary: Validate redirect JWT
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ValidateJwtRequestDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateJwtRequestDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ValidateJwtRequestDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ValidateJwtRequestDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateJwtResultDto'
+              example:
+                valid: true
+                expires: '2026-10-22T14:13:00Z'
+                payload:
+                  accountId: 84f4c8b6-e316-407a-881c-1cb0963233f1
+                  documentId: bb997a83-7369-4437-ac26-213737b8d626
+                  externalId: soidjnmg984wmnf3osfasdcw
+                  signerId: df7bc78e-07ce-44ac-87e7-9b3b17cf8d63
+                  externalSignerId: ws97uh7uh7uh7uh7uh7uh7uhjm4fc4
+                  signSuccess:
+                    signatureMethodUniqueId: '8412125434'
+                    firstName: Evil
+                    lastName: Villain
+                    fullName: Evil Villain
+                    dateOfBirth: '121284'
+                    signatureMethod: se_bankid
+                    signedTime: '2026-10-16T14:13:00Z'
+                    mechanism: pkisignature
+                  expires: '2026-10-16T14:23:00Z'
+                  aborted: false
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ValidateJwtResultDto'
+              example:
+                valid: true
+                expires: '2026-10-22T14:13:00Z'
+                payload:
+                  accountId: 84f4c8b6-e316-407a-881c-1cb0963233f1
+                  documentId: bb997a83-7369-4437-ac26-213737b8d626
+                  externalId: soidjnmg984wmnf3osfasdcw
+                  signerId: df7bc78e-07ce-44ac-87e7-9b3b17cf8d63
+                  externalSignerId: ws97uh7uh7uh7uh7uh7uh7uhjm4fc4
+                  signSuccess:
+                    signatureMethodUniqueId: '8412125434'
+                    firstName: Evil
+                    lastName: Villain
+                    fullName: Evil Villain
+                    dateOfBirth: '121284'
+                    signatureMethod: se_bankid
+                    signedTime: '2026-10-16T14:13:00Z'
+                    mechanism: pkisignature
+                  expires: '2026-10-16T14:23:00Z'
+                  aborted: false
+      operationId: postJwtValidate
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    ValidateJwtResultDto:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        payload: {}
+        error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidateJwtRequestDto:
+      required:
+      - jwt
+      type: object
+      properties:
+        jwt:
+          minLength: 1
+          type: string
+      additionalProperties: false
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

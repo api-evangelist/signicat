@@ -1,0 +1,828 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-signer-response-schema.json",
+  "title": "SignerResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-express-openapi.yml#/components/schemas/SignerResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The signer's unique identifier.",
+      "format": "uuid"
+    },
+    "url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The URL that the signer must use to sign the document."
+    },
+    "documentSignature": {
+      "$ref": "#/$defs/DocumentSignature"
+    },
+    "links": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Link"
+      },
+      "description": "HATEOAS extrainfo links retrieved for signer."
+    },
+    "ui": {
+      "$ref": "#/$defs/UIResponse"
+    },
+    "externalSignerId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Your reference for the signer."
+    },
+    "redirectSettings": {
+      "$ref": "#/$defs/RedirectSettings"
+    },
+    "signatureType": {
+      "$ref": "#/$defs/SignatureType"
+    },
+    "signerInfo": {
+      "$ref": "#/$defs/SignerInfo"
+    },
+    "authentication": {
+      "$ref": "#/$defs/Authentication"
+    },
+    "extraInfo": {
+      "$ref": "#/$defs/ExtraInfoSignerRequest"
+    },
+    "addons": {
+      "$ref": "#/$defs/AddonSignerRequest"
+    },
+    "notifications": {
+      "$ref": "#/$defs/Notifications"
+    },
+    "tags": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Coming soon."
+    },
+    "order": {
+      "type": "integer",
+      "description": "Optional order of signing for the signer.",
+      "format": "int32"
+    },
+    "required": {
+      "type": "boolean",
+      "description": "Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document."
+    },
+    "signUrlExpires": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.",
+      "format": "date-time"
+    },
+    "getSocialSecurityNumber": {
+      "type": "boolean",
+      "description": "Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).\r\nRequires eid with permission to retrieve social security number"
+    },
+    "verifySocialSecurityNumber": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Get and verify social security number for this signer, if there is a mismatch the signature will fail.\r\nRequirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.\r\nIf the eID does not return a social security number this property will be ignored."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AddonSignerRequest": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/SignerAddon"
+          },
+          "description": "A list of the addons you want to order, see documentation for more information. Additional cost will incur"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AuthMechanism": {
+      "enum": [
+        "off",
+        "eid",
+        "smsOtp",
+        "eidAndSmsOtp"
+      ],
+      "type": "string"
+    },
+    "Authentication": {
+      "type": "object",
+      "properties": {
+        "mechanism": {
+          "$ref": "#/$defs/AuthMechanism"
+        },
+        "socialSecurityNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's social security number."
+        },
+        "signatureMethodUniqueId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's unique ID for a signature method (for example the Norwegian BankID PID)."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Authentication settings for the signer."
+    },
+    "DialogAfter": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "maxLength": 100,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The title of the dialog."
+        },
+        "message": {
+          "maxLength": 2000,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The message body of the dialog."
+        }
+      },
+      "additionalProperties": false,
+      "description": "A dialog that will be presented after the document is signed."
+    },
+    "DialogBeforeResponse": {
+      "type": "object",
+      "properties": {
+        "useCheckBox": {
+          "type": "boolean",
+          "description": "Determines if a the user must confirm that the dialog message has been read before they can continue."
+        },
+        "title": {
+          "maxLength": 100,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The title of the dialog."
+        },
+        "message": {
+          "maxLength": 2000,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The message body of the dialog."
+        }
+      },
+      "additionalProperties": false
+    },
+    "DialogsResponse": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "$ref": "#/$defs/DialogBeforeResponse"
+        },
+        "after": {
+          "$ref": "#/$defs/DialogAfter"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DocumentSignature": {
+      "type": "object",
+      "properties": {
+        "signatureMethod": {
+          "$ref": "#/$defs/SignatureMethod"
+        },
+        "fullName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's full name, retrieved from the signature-method provider."
+        },
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's first name."
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's last name."
+        },
+        "middleName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's middle name."
+        },
+        "signedTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Time at which the signature was registered (ISO 8601).",
+          "format": "date-time"
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's date of birth (yyyy-MM-dd)."
+        },
+        "signatureMethodUniqueId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signature method unique ID."
+        },
+        "socialSecurityNumber": {
+          "$ref": "#/$defs/SocialSecurityNumber"
+        },
+        "clientIp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The IP address of the signer."
+        },
+        "mechanism": {
+          "$ref": "#/$defs/Mechanisms"
+        },
+        "personalInfoOrigin": {
+          "$ref": "#/$defs/PersonalInfoOrigin"
+        },
+        "organization": {
+          "$ref": "#/$defs/Organization"
+        },
+        "attributes": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Additional signature attributes"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The document signature."
+    },
+    "ExtraInfoSignerRequest": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/SignerExtraInfo"
+          },
+          "description": "A list of the extra information you want to order, in production this has to be configured on your account by Signicat. Additional cost may incur."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Settings for extra information to collect about the signer."
+    },
+    "Language": {
+      "enum": [
+        "EN",
+        "NO",
+        "DA",
+        "SV",
+        "FI",
+        "NL",
+        "DE"
+      ],
+      "type": "string"
+    },
+    "Link": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contentType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resourceStatus": {
+          "$ref": "#/$defs/ResourceStatus"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Mechanisms": {
+      "enum": [
+        "pkisignature",
+        "identification",
+        "handwritten",
+        "handwritten_with_identification"
+      ],
+      "type": "string"
+    },
+    "Mobile": {
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The country calling code, e.g. `+47` for a norwegian number. <a href=\"https://en.wikipedia.org/wiki/List_of_country_calling_codes\" target=\"_blank\">Country calling codes on Wikipedia</a>"
+        },
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The mobile number."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The signer's mobile number. Define this if you are using notifications."
+    },
+    "NotificationSetting": {
+      "enum": [
+        "off",
+        "sendSms",
+        "sendEmail",
+        "sendBoth"
+      ],
+      "type": "string"
+    },
+    "Notifications": {
+      "type": "object",
+      "properties": {
+        "setup": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "request": {
+              "$ref": "#/$defs/NotificationSetting"
+            },
+            "reminder": {
+              "$ref": "#/$defs/NotificationSetting"
+            },
+            "signatureReceipt": {
+              "$ref": "#/$defs/NotificationSetting"
+            },
+            "finalReceipt": {
+              "$ref": "#/$defs/NotificationSetting"
+            },
+            "canceled": {
+              "$ref": "#/$defs/NotificationSetting"
+            },
+            "expired": {
+              "$ref": "#/$defs/NotificationSetting"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Notification setup for the signer. All notifications defaults to `\"off\"`."
+        },
+        "mergeFields": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "If you create your own notifications texts (See the root object -> Notification), you can create your own merge fields with your own keys. \r\nYou can then specify the text you want to insert in these fields per signer in this dictionary. Set the dictionary key to the same value as the merge field value in your notification text, and the value to the text you want us to merge in."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Email/SMS notification settings for the signer."
+    },
+    "Organization": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "organizationNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-1 country code."
+        }
+      },
+      "additionalProperties": false
+    },
+    "OrganizationInfo": {
+      "type": "object",
+      "properties": {
+        "orgNo": {
+          "maxLength": 200,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "companyName": {
+          "maxLength": 200,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Which company does the signer represent? Can merged into the PadES-frontpage (in PadES setting set)"
+        },
+        "countryCode": {
+          "maxLength": 10,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "The signer's organization info."
+    },
+    "PersonalInfoOrigin": {
+      "enum": [
+        "unknown",
+        "eid",
+        "userFormInput"
+      ],
+      "type": "string"
+    },
+    "RedirectMode": {
+      "enum": [
+        "donot_redirect",
+        "redirect",
+        "iframe_with_webmessaging",
+        "iframe_with_redirect",
+        "iframe_with_redirect_and_webmessaging"
+      ],
+      "type": "string"
+    },
+    "RedirectSettings": {
+      "required": [
+        "redirectMode"
+      ],
+      "type": "object",
+      "properties": {
+        "redirectMode": {
+          "$ref": "#/$defs/RedirectMode"
+        },
+        "domain": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The domain your website is hosted on.  <span style=\"color: red;\">Required if you specify one of the iframe redirect modes for the signer.</span>"
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The URL that the signer is redirected to if something goes wrong. <span style=\"color: red;\">Required if you use redirect for the signer.</span>"
+        },
+        "cancel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The URL that the signer is redirected to if the signing is cancelled. <span style=\"color: red;\">Required if you use redirect for the signer.</span>"
+        },
+        "success": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The URL that the signer is redirected to after a successful signing. <span style=\"color: red;\">Required if you use redirect for the signer.</span>"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Settings for redirect."
+    },
+    "ResourceStatus": {
+      "enum": [
+        "Unknown",
+        "NotReady",
+        "Success",
+        "Error",
+        "NotFound",
+        "BadInput",
+        "ServiceUnavailable",
+        "Unauthorized",
+        "TimeOut"
+      ],
+      "type": "string"
+    },
+    "SignatureMethod": {
+      "enum": [
+        "no_buypass",
+        "se_bankid",
+        "dk_nemid",
+        "fi_eid",
+        "sms_otp",
+        "unknown",
+        "no_bankid_mobile",
+        "no_bankid_netcentric",
+        "itsme",
+        "idin",
+        "digid",
+        "eherkenning",
+        "mitid",
+        "no_bankid_oidc",
+        "sk_mobileid",
+        "sk_smartid",
+        "et_smartcard",
+        "no_bankid_csc"
+      ],
+      "type": "string"
+    },
+    "SignatureType": {
+      "required": [
+        "mechanism"
+      ],
+      "type": "object",
+      "properties": {
+        "signatureMethods": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/SignatureMethod"
+          },
+          "description": "A list of signature methods that the signer is allowed to use when signing the document.\r\nIf not specified, all available signature methods for your Idfy account will be displayed to the signer."
+        },
+        "mechanism": {
+          "$ref": "#/$defs/Mechanisms"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Settings for the allowed signature methods."
+    },
+    "SignerAddon": {
+      "enum": [
+        "secureShare"
+      ],
+      "type": "string"
+    },
+    "SignerExtraInfo": {
+      "enum": [
+        "personLookup"
+      ],
+      "type": "string"
+    },
+    "SignerInfo": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "maxLength": 300,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's first name."
+        },
+        "lastName": {
+          "maxLength": 300,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's last name."
+        },
+        "email": {
+          "maxLength": 300,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The signer's email adress. Define this if you are using notifications.",
+          "format": "email"
+        },
+        "socialSecurityNumber": {
+          "maxLength": 30,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Can be used to verify signer's identity by also setting the signer.VerifySocialSecurityNumber, or to prefill ssn/national Id in some of the eId's."
+        },
+        "dateOfBirth": {
+          "maxLength": 10,
+          "pattern": "^((?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])",
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Can be used to prefill/autostart some of the eids, must follow this pattern: YYYY-MM-DD"
+        },
+        "title": {
+          "maxLength": 200,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Give the signer a title (i.e CTO, Buyer, Customer, Lord..), this title may be merged into the PAdES-frontpage (in PAdES setting set)"
+        },
+        "mobile": {
+          "$ref": "#/$defs/Mobile"
+        },
+        "organizationInfo": {
+          "$ref": "#/$defs/OrganizationInfo"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Information about the signer."
+    },
+    "SocialSecurityNumber": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The social security number."
+        },
+        "countryCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-1 Alfa-2 (2 letters) country code."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The signer's social security number. Will be retrieved only when `getSocialSecurityNumber` is specified when creating the document."
+    },
+    "Spinner": {
+      "enum": [
+        "Document",
+        "Classic",
+        "Cubes",
+        "Bounce"
+      ],
+      "type": "string"
+    },
+    "Styling": {
+      "type": "object",
+      "properties": {
+        "colorTheme": {
+          "$ref": "#/$defs/Theme"
+        },
+        "themeMode": {
+          "$ref": "#/$defs/ThemeMode"
+        },
+        "spinner": {
+          "$ref": "#/$defs/Spinner"
+        },
+        "topBar": {
+          "$ref": "#/$defs/TopBarMode"
+        },
+        "backgroundColor": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Override the application background color (use hexadecimal value)"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Customize styling to make the the signature application look perfect in combination with your own application."
+    },
+    "Theme": {
+      "enum": [
+        "Default",
+        "Black",
+        "Blue",
+        "Cyan",
+        "Dark",
+        "Lime",
+        "Neutral",
+        "Pink",
+        "Purple",
+        "Red",
+        "Teal",
+        "Indigo",
+        "LightBlue",
+        "DeepPurple",
+        "Green",
+        "LightGreen",
+        "Yellow",
+        "Amber",
+        "Orange",
+        "DeepOrange",
+        "Brown",
+        "Gray",
+        "BlueGray",
+        "OceanGreen",
+        "GreenOcean",
+        "Idfy",
+        "Signicat"
+      ],
+      "type": "string"
+    },
+    "ThemeMode": {
+      "enum": [
+        "Default",
+        "Light",
+        "Dark"
+      ],
+      "type": "string"
+    },
+    "TopBarMode": {
+      "enum": [
+        "Default",
+        "Visible",
+        "OnlyMenu",
+        "Hidden"
+      ],
+      "type": "string"
+    },
+    "UIResponse": {
+      "type": "object",
+      "properties": {
+        "dialogs": {
+          "$ref": "#/$defs/DialogsResponse"
+        },
+        "language": {
+          "$ref": "#/$defs/Language"
+        },
+        "styling": {
+          "$ref": "#/$defs/Styling"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

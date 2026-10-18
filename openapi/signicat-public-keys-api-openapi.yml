@@ -1,0 +1,311 @@
+openapi: 3.2.0
+info:
+  title: Signicat Public keys API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Public keys across 2 of this provider''s published API definitions: oidc-config-openapi.json, signicat-oidc-config-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /auth/open/config
+security:
+- Signicat-OIDC: []
+tags:
+- name: Public keys
+paths:
+  /clients/{clientId}/public-keys:
+    get:
+      tags:
+      - Public keys
+      summary: List client public keys
+      description: Use this endpoints to view a list of all the public keys you have configured on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicKeyDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicKeyDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdPublicKeys
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Public keys
+      summary: Upload new public key
+      description: Upload a new public key for a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The key specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+      operationId: postClientsByClientIdPublicKeys
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/public-keys/{keyId}:
+    put:
+      tags:
+      - Public keys
+      summary: Update public key
+      description: Use this endpoint to update an existing public key
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID whose key you want to update.
+        required: true
+        schema:
+          type: string
+      - name: keyId
+        in: path
+        description: The ID of the key you want to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The updated key specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: putClientsByClientIdPublicKeysByKeyId
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Public keys
+      summary: Retrieve client public key configuration
+      description: Use this endpoint to retrieve a specific client public key configuration on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: keyId
+        in: path
+        description: The ID of the client public key
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdPublicKeysByKeyId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Public keys
+      summary: Revoke public key
+      description: Use this endpoint to revoke a specific client public key configuration on a specific client
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: keyId
+        in: path
+        description: The ID of the client public key
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: deleteClientsByClientIdPublicKeysByKeyId
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+components:
+  schemas:
+    PublicKeyDto:
+      type: object
+      properties:
+        id:
+          maxLength: 100
+          minLength: 8
+          type:
+          - string
+          - 'null'
+          description: Public key identifier
+          example: smart-lemon-tree
+        type:
+          enum:
+          - X509Certificate
+          - JWK
+          type:
+          - string
+          - 'null'
+          description: Public key type
+          example: X509Certificate
+        usage:
+          enum:
+          - Signing
+          - Encryption
+          type:
+          - string
+          - 'null'
+          description: The valid cryptographic uses of the certificate's public key
+          example: Signing
+        data:
+          maxLength: 2048
+          type:
+          - string
+          - 'null'
+          description: Public key data
+          example: T29vb3BwcHNzcyAuLi4geW91IGZvdW5kIG15IGxlbW9ucyEhIEknbSB0aGUgc21hcnRlc3QgdHJlZSBpbiB0aGUgd29ybGQhISEgQUhBSEEgOi0p
+        name:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Public key name
+          example: The Smart Lemon Tree
+        notBefore:
+          type:
+          - string
+          - 'null'
+          description: The earliest time and date on which the certificate is valid
+          format: date-time
+          example: '"2026-05-17T16:13:47.3524211+00:00'
+        notAfter:
+          type:
+          - string
+          - 'null'
+          description: The time and date past which the certificate is no longer valid
+          format: date-time
+          example: '"2022-05-17T16:13:47.3524211+00:00'
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Version of Public key
+          example: 00000005_1de79344221ef5014703401fe2526aa1
+      additionalProperties: false
+  securitySchemes:
+    Signicat-OIDC:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes:
+            openid: OpenID User id
+            signicat-api: Signicat API
+x-refined-from:
+- oidc-config-openapi.json
+- signicat-oidc-config-openapi.yml

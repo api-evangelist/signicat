@@ -1,0 +1,93 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Person Monitoring (Deprecated)
+  version: 1.0.0
+extends: ../openapi/_original/signicat-ongoing-monitoring-person-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-ongoing-monitoring-person-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/person-monitoring/
+- target: $.components
+  description: Add the OAuth 2.0 client-credentials scheme Signicat documents for all its APIs (token URL https://api.signicat.com/auth/open/connect/token,
+    scope signicat-api; source https://developer.signicat.com/llms-full.txt "Connecting to Signicat APIs").
+  update:
+    securitySchemes:
+      signicatOAuth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            tokenUrl: https://api.signicat.com/auth/open/connect/token
+            scopes:
+              signicat-api: Access Signicat APIs
+- target: $
+  description: Root security requirement for the added scheme.
+  update:
+    security:
+    - signicatOAuth2:
+      - signicat-api
+- target: $.paths['/monitors/{monitorId}/changes'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMonitorsMonitorIdChanges
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/changes/mark'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitorsMonitorIdChangesMark
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/changes/mock'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitorsMonitorIdChangesMock
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/changes/persons/{referenceKey}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMonitorsMonitorIdChangesPersonsReferenceKey
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitors
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteMonitorsMonitorId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/summary'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMonitorsSummary
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/persons/{referenceKey}'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitorsMonitorIdPersonsReferenceKey
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/persons/{referenceKey}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMonitorsMonitorIdPersonsReferenceKey
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/persons/{referenceKey}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteMonitorsMonitorIdPersonsReferenceKey
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/persons/add'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitorsMonitorIdPersonsAdd
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/monitors/{monitorId}/persons/remove'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMonitorsMonitorIdPersonsRemove
+    x-apievangelist-derived-operationId: true

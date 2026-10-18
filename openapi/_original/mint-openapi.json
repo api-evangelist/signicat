@@ -1,0 +1,3514 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Signicat Mint API",
+    "description": "<!-- 🔗 Base URL Links -->\n\n<!--\n<div style=\"background-color: #F7F9FC; padding: 1em; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5em; font-family: sans-serif; position: relative;\">\n  <div>\n    <strong>Base URL:</strong> \n    <code id=\"base-url\" style=\"font-size: 1em; color: #5F36BC\">https://api.signicat.com/reuseid/</code>\n  </div>\n  <button \n    style=\"background-color: #5F36BC; color: white; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer;\"\n    onclick=\"navigator.clipboard.writeText(document.getElementById('base-url').innerText).then(() => {\n      const msg = document.getElementById('copied-msg');\n      msg.style.opacity = '1';\n      setTimeout(() => msg.style.opacity = '0', 1500);\n    })\">\n    Copy\n  </button>\n  <span id=\"copied-msg\" style=\"\n    position: absolute;\n    right: 80px;\n    background-color: #2B253A;\n    color: white;\n    padding: 4px 8px;\n    border-radius: 4px;\n    font-size: 0.85em;\n    opacity: 0;\n    transition: opacity 0.3s ease-in-out;\n  \">\n    Copied!\n  </span>\n</div>\n-->\n\n<!-- 📘 Docs & Support Links -->\n\n<!--\n<div style=\"background-color: #F7F9FC; padding: 1em; border-radius: 6px; font-family: sans-serif; margin-bottom: 2em;\">\n  <ul style=\"margin: 0; padding-left: 1.2em; list-style-type: disc;\">\n    <li><strong>Documentation:</strong> See the <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"/docs/reuseid/\">ReuseID</a> developer documentation.</li>\n    <li><strong>Support:</strong> Create a support ticket in the <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://dashboard.signicat.com/contact-us/tickets/new\">Signicat Dashboard</a>.</li>\n  </ul>\n</div>\n-->\n\n- **Base URL**: `https://api.signicat.com/mint/`\n- **Documentation**: See the [Mint](/docs/mint/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nSignicat's Mint API allows you to manage and edit your Mint workflows programmatically, facilitating automation and integration with other systems.\n\nThis API reference lists all available endpoints and provides information to interact with them. If you wish to learn more about the no-code platform Mint, visit the [Signicat Mint documentation](/docs/mint/).\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n\n# Get started\n\n## 1. Connect to this API\n\nBefore you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/). To connect to the Mint API you need to configure the correct permissions for you API client. This is an advanced operation and is described in detail below.\n\n## 2. Grant permissions\n\nTo give the right permissions and grant access to your API client in the Signicat Dashboard, do this:\n\n1. Go to **Access Management** > [**Permissions**](https://dashboard.signicat.com/ownidp-management/permissions).\n2. Search for the name of the API client you created above. On the same row, click **Edit** to edit its access rights.\n3. Click **Add** next to 'Roles', in the Principal settings menu on the right.\n4. In the empty Role field at the bottom, click **Select** to add a new permission.\n5. Search and select **Flow Editor** and **Flow Viewer** from the 'All available' roles tab.\n\nYou are now ready to start sending requests to the Mint API.\n\n# Using this API\n\n## Audit logs\n\nUse the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.\n\n- Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)\n- For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.\n\n## Errors\n\nWhen you make an API call to Signicat and an error occurs, you will receive a response message with an error code.\n\n- For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.\n\n## Events (callback)\n\nUse the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.\n\n**Note**: This is often referred to as callback.\n\n- Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)\n- For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.\n",
+    "version": "v2",
+    "x-meta": "Custom metadata"
+  },
+  "servers": [
+    {
+      "url": "https://api.signicat.com/mint"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Workflows"
+    },
+    {
+      "name": "Journeys"
+    },
+    {
+      "name": "Journey notes"
+    },
+    {
+      "name": "Step definitions"
+    },
+    {
+      "name": "Workflow secrets"
+    },
+    {
+      "name": "Workflow templates"
+    },
+    {
+      "name": "Liquid"
+    }
+  ],
+  "paths": {
+    "/workflows": {
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "List workflows",
+        "description": "Returns a list of your workflows.",
+        "operationId": "ListWorkflows",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Supported fields: `name`, `createdAt`, `description`",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search term that filters workflows by matching against `name`, `description` and `tags`.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Filter workflows by version type. Defaults to `latest`.",
+            "schema": {
+              "enum": [
+                "latest",
+                "published"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Filter workflows by a list of IDs.",
+            "schema": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the first item to return.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return per page. Defaults to 10.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfWorkflowSummary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Create workflow",
+        "description": "Creates a new workflow.",
+        "operationId": "CreateWorkflow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkflowRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}": {
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Retrieve workflow",
+        "description": "Retrieves a workflow.",
+        "operationId": "GetWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "The version number of the workflow. If not specified, the latest version is returned.",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Update workflow",
+        "description": "Updates a workflow.",
+        "operationId": "UpdateWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkflowRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Delete workflow",
+        "description": "Deletes a workflow and all associated journeys.",
+        "operationId": "DeleteWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/start": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Start journey",
+        "description": "Starts a new journey from the specified workflow.",
+        "operationId": "StartJourney",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartJourneyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartJourneyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/publish": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Publish workflow",
+        "description": "Publishes a workflow.",
+        "operationId": "PublishWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/unpublish": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Unpublish workflow",
+        "description": "Unpublishes a workflow.",
+        "operationId": "UnpublishWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/lock": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Lock workflow",
+        "description": "Locks a workflow, preventing it from being published, unpublished or deleted until it is unlocked.",
+        "operationId": "LockWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/unlock": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Unlock workflow",
+        "description": "Unlocks a workflow, allowing it to be published, unpublished or deleted again.",
+        "operationId": "UnlockWorkflow",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/versions": {
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "List workflow versions",
+        "description": "Returns a list of versions for a workflow.",
+        "operationId": "ListWorkflowVersions",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the first item to return.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return per page. Defaults to 10.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfWorkflowVersion"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/files/{fileId}": {
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Download workflow file",
+        "description": "Downloads a workflow file.",
+        "operationId": "DownloadWorkflowFile",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "The file ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Delete workflow file",
+        "description": "Deletes a workflow file.",
+        "operationId": "DeleteWorkflowFile",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "The file ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflows/{workflowId}/files": {
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Upload workflow file",
+        "description": "Uploads a file to a workflow using multipart/form-data.",
+        "operationId": "UploadWorkflowFile",
+        "parameters": [
+          {
+            "name": "workflowId",
+            "in": "path",
+            "description": "The workflow ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "List journeys",
+        "description": "Returns a list of your journeys.",
+        "operationId": "ListJourneys",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Supported fields: `createdAt`, `lastExecutedAt`, `finishedAt`",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter journeys by status.",
+            "schema": {
+              "enum": [
+                "idle",
+                "running",
+                "finished",
+                "active",
+                "faulted",
+                "cancelled"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "workflowId",
+            "in": "query",
+            "description": "Filter journeys by workflow ID.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "parentJourneyId",
+            "in": "query",
+            "description": "Filter journeys by parent journey ID.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastExecutedAfter",
+            "in": "query",
+            "description": "Filter journeys that were last executed after this date.",
+            "schema": {
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastExecutedBefore",
+            "in": "query",
+            "description": "Filter journeys that were last executed before this date.",
+            "schema": {
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search term that filters journeys by matching against `name` and `id`.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the first item to return.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return per page. Defaults to 10.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfJourneySummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Retrieve journey",
+        "description": "Retrieves a journey.",
+        "operationId": "GetJourney",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Journey"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Delete journey",
+        "description": "Deletes a journey.",
+        "operationId": "DeleteJourney",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/cancel": {
+      "post": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Cancel journey",
+        "description": "Cancels a journey.",
+        "operationId": "CancelJourney",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/resume": {
+      "post": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Resume journey",
+        "description": "Resumes an active journey from a step requiring manual continuation.",
+        "operationId": "ResumeJourney",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumeJourneyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/approve": {
+      "post": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Approve or reject journey",
+        "description": "Approves or rejects a journey pending approval.",
+        "operationId": "ApproveJourney",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveJourneyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/url": {
+      "post": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Create journey URL",
+        "description": "Creates a time-limited URL that provides access to a journey.",
+        "operationId": "CreateJourneyUrl",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJourneyUrlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateJourneyUrlResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/execution-log": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Retrieve journey execution log",
+        "description": "Retrieves the execution log for a journey.",
+        "operationId": "GetJourneyExecutionLog",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyExecutionLog"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/files/{fileId}": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Download journey file",
+        "description": "Downloads a journey file.",
+        "operationId": "DownloadJourneyFile",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "The file ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/files": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Download all journey files",
+        "description": "Downloads all journey files as a zip file.",
+        "operationId": "DownloadJourneyFiles",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Upload journey file",
+        "description": "Uploads a file to a journey using multipart/form-data.",
+        "operationId": "UploadJourneyFile",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/steps/{stepId}": {
+      "get": {
+        "tags": [
+          "Journeys"
+        ],
+        "summary": "Retrieve journey step data",
+        "description": "Retrieves the data for a single step in a journey.",
+        "operationId": "GetJourneyStep",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "The step ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/notes": {
+      "post": {
+        "tags": [
+          "Journey notes"
+        ],
+        "summary": "Create journey note",
+        "description": "Create journey note.",
+        "operationId": "CreateJourneyNote",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJourneyNoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyNote"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Journey notes"
+        ],
+        "summary": "List journey notes",
+        "description": "Returns a list of your journey notes.",
+        "operationId": "ListJourneyNotes",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Supported fields: `createdAt`, `updatedAt`",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Filter journey notes that were created after this date.",
+            "schema": {
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Filter journey notes that were created before this date.",
+            "schema": {
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search term that filters journeys by matching against `content` and `createdBy`.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the first item to return.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return per page. Defaults to 10.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfJourneyNote"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journeyId}/notes/{noteId}": {
+      "patch": {
+        "tags": [
+          "Journey notes"
+        ],
+        "summary": "Update journey note",
+        "description": "Update journey note content.",
+        "operationId": "UpdateJourneyNote",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "The note ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJourneyNoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyNote"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Journey notes"
+        ],
+        "summary": "Delete journey note",
+        "description": "Deletes a journey note.",
+        "operationId": "DeleteJourneyNote",
+        "parameters": [
+          {
+            "name": "journeyId",
+            "in": "path",
+            "description": "The journey ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "noteId",
+            "in": "path",
+            "description": "The note ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/step-definitions": {
+      "get": {
+        "tags": [
+          "Step definitions"
+        ],
+        "summary": "List step definitions",
+        "description": "Returns a list of all step definitions.",
+        "operationId": "ListStepDefinitions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StepDefinition"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/step-definitions/{stepType}/schemas": {
+      "get": {
+        "tags": [
+          "Step definitions"
+        ],
+        "summary": "Retrieve step definition schemas",
+        "description": "Retrieves the JSON schemas for a step definition.",
+        "operationId": "GetStepDefinitionSchemas",
+        "parameters": [
+          {
+            "name": "stepType",
+            "in": "path",
+            "description": "The step type.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StepDefinitionSchemasResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/workflow-secrets": {
+      "get": {
+        "tags": [
+          "Workflow secrets"
+        ],
+        "summary": "List workflow secrets",
+        "description": "Returns a list of your workflow secrets.",
+        "operationId": "ListWorkflowSecrets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowSecret"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Workflow secrets"
+        ],
+        "summary": "Create workflow secret",
+        "description": "Creates a new workflow secret.",
+        "operationId": "CreateWorkflowSecret",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkflowSecretRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowSecret"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow-secrets/{secretId}": {
+      "get": {
+        "tags": [
+          "Workflow secrets"
+        ],
+        "summary": "Retrieve workflow secret",
+        "description": "Retrieves a workflow secret.",
+        "operationId": "GetWorkflowSecret",
+        "parameters": [
+          {
+            "name": "secretId",
+            "in": "path",
+            "description": "The workflow secret ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowSecret"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Workflow secrets"
+        ],
+        "summary": "Update workflow secret",
+        "description": "Updates the workflow secret.",
+        "operationId": "UpdateWorkflowSecret",
+        "parameters": [
+          {
+            "name": "secretId",
+            "in": "path",
+            "description": "The workflow secret ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkflowSecretRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowSecret"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workflow secrets"
+        ],
+        "summary": "Delete workflow secret",
+        "description": "Deletes a workflow secret.",
+        "operationId": "DeleteWorkflowSecret",
+        "parameters": [
+          {
+            "name": "secretId",
+            "in": "path",
+            "description": "The workflow secret ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/workflow-templates": {
+      "get": {
+        "tags": [
+          "Workflow templates"
+        ],
+        "summary": "List workflow templates",
+        "description": "Returns a list of workflow templates.",
+        "operationId": "ListWorkflowTemplates",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Supported fields: `name`, `createdAt`",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search term that filters workflow templates by matching against `name`, `description` and `tags`.",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the first item to return.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return per page. Defaults to 10.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfWorkflowTemplateSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow-templates/{templateId}": {
+      "get": {
+        "tags": [
+          "Workflow templates"
+        ],
+        "summary": "Retrieve workflow template",
+        "description": "Retrieves a workflow template.",
+        "operationId": "GetWorkflowTemplate",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "description": "The workflow template ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowTemplate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow-templates/{templateId}/files/{fileId}": {
+      "get": {
+        "tags": [
+          "Workflow templates"
+        ],
+        "summary": "Download workflow template file",
+        "description": "Downloads a file from a workflow template.",
+        "operationId": "DownloadWorkflowTemplateFile",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "description": "The workflow template ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "The file ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/workflow-templates/{templateId}/import": {
+      "post": {
+        "tags": [
+          "Workflow templates"
+        ],
+        "summary": "Import workflow template",
+        "description": "Creates a new workflow from a workflow template.",
+        "operationId": "ImportWorkflowTemplate",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportWorkflowTemplateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/liquid/validate": {
+      "post": {
+        "tags": [
+          "Liquid"
+        ],
+        "summary": "Validate Liquid template",
+        "description": "Validates a Liquid template.",
+        "operationId": "ValidateLiquid",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateLiquidRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateLiquidResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActiveStep": {
+        "required": [
+          "stepId",
+          "stepType"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "description": "ID of the active step."
+          },
+          "stepType": {
+            "type": "string",
+            "description": "The step type."
+          }
+        }
+      },
+      "ApproveJourneyRequest": {
+        "required": [
+          "input",
+          "stepId"
+        ],
+        "type": "object",
+        "properties": {
+          "input": {
+            "description": "The journey input.",
+            "$ref": "#/components/schemas/ApproveJourneyRequestInput"
+          },
+          "stepId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "The target step ID."
+          }
+        }
+      },
+      "ApproveJourneyRequestInput": {
+        "required": [
+          "approved"
+        ],
+        "type": "object",
+        "properties": {
+          "approved": {
+            "type": "boolean",
+            "description": "Whether the journey should be approved."
+          },
+          "message": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Optional message to include with the approval or rejection of the journey."
+          }
+        }
+      },
+      "CreateJourneyNoteRequest": {
+        "required": [
+          "content"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the step this note belongs to."
+          },
+          "content": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string",
+            "description": "Text content of the note."
+          }
+        }
+      },
+      "CreateJourneyUrlRequest": {
+        "type": "object",
+        "properties": {
+          "timeToLive": {
+            "maximum": 2592000,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "description": "Number of seconds until the journey URL expires. Defaults to 60 seconds.",
+            "format": "int32",
+            "default": 60
+          }
+        }
+      },
+      "CreateJourneyUrlResponse": {
+        "required": [
+          "journeyUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "journeyUrl": {
+            "type": "string",
+            "description": "The URL to the journey."
+          }
+        }
+      },
+      "CreateWorkflowRequest": {
+        "required": [
+          "name",
+          "steps"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string",
+            "description": "The workflow name."
+          },
+          "description": {
+            "maxLength": 5000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The workflow description."
+          },
+          "steps": {
+            "maxItems": 250,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStep"
+            },
+            "description": "List of steps that define the workflow."
+          },
+          "connections": {
+            "maxItems": 500,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStepConnection"
+            },
+            "description": "List of connections between workflow steps."
+          },
+          "variables": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Custom variables that can be used within a workflow."
+          },
+          "tags": {
+            "maxItems": 20,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of workflow tags."
+          },
+          "inputParameters": {
+            "maxItems": 50,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WorkflowInputParameter"
+            },
+            "description": "List of allowed input parameters for the workflow."
+          },
+          "domain": {
+            "maxLength": 253,
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The domain the workflow runs under. Must be a domain configured on your account."
+          }
+        }
+      },
+      "CreateWorkflowSecretRequest": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the secret"
+          },
+          "description": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the secret."
+          },
+          "value": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": "string",
+            "description": "The secret value."
+          }
+        }
+      },
+      "FileDetails": {
+        "required": [
+          "id",
+          "filename",
+          "contentType",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the file."
+          },
+          "filename": {
+            "type": "string",
+            "description": "The filename."
+          },
+          "contentType": {
+            "type": "string",
+            "description": "Content type of the file."
+          },
+          "size": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "description": "The size of the file in bytes.",
+            "format": "int64"
+          }
+        }
+      },
+      "ImportWorkflowTemplateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Optional name for the new workflow. Defaults to the template's name when omitted."
+          },
+          "description": {
+            "maxLength": 5000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Optional description for the new workflow."
+          }
+        }
+      },
+      "IterationStepData": {
+        "required": [
+          "index",
+          "stepData"
+        ],
+        "type": "object",
+        "properties": {
+          "index": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The index of the loop iteration.",
+            "format": "int32"
+          },
+          "stepData": {
+            "type": "object",
+            "description": "Data for all steps in the loop iteration."
+          }
+        }
+      },
+      "Journey": {
+        "required": [
+          "id",
+          "workflowId",
+          "version",
+          "stepData"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the journey."
+          },
+          "workflowId": {
+            "type": "string",
+            "description": "ID of the workflow this journey belongs to."
+          },
+          "parentJourneyId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the parent journey that started this journey."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the workflow.",
+            "format": "int32"
+          },
+          "status": {
+            "description": "The current status of the journey.",
+            "$ref": "#/components/schemas/JourneyStatus"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the journey."
+          },
+          "createdAt": {
+            "description": "Time at which the journey was created.",
+            "format": "date-time"
+          },
+          "lastExecutedAt": {
+            "description": "Time at which the journey was last executed.",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "description": "Time at which the journey finished.",
+            "format": "date-time"
+          },
+          "faultedAt": {
+            "description": "Time at which the journey faulted.",
+            "format": "date-time"
+          },
+          "cancelledAt": {
+            "description": "Time at which the journey was cancelled.",
+            "format": "date-time"
+          },
+          "stepData": {
+            "type": "object",
+            "description": "Data for all steps in the journey."
+          },
+          "loops": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/IterationStepData"
+              }
+            },
+            "description": "Step data for any loops in the journey."
+          },
+          "activeSteps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActiveStep"
+            },
+            "description": "List of steps that are currently active."
+          },
+          "pendingSteps": {
+            "type": "boolean",
+            "description": "Whether the journey has pending steps requiring manual continuation."
+          },
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepAlert"
+            },
+            "description": "List of alerts triggered during the journey."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyFileDetails"
+            },
+            "description": "List of files associated with the journey."
+          },
+          "faults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyFault"
+            },
+            "description": "List of faults that occurred during the journey."
+          }
+        }
+      },
+      "JourneyExecutionLog": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyStepExecutionLog"
+            },
+            "description": "List of steps executed during the journey."
+          },
+          "stepsFinished": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The number of finished steps.",
+            "format": "int32"
+          },
+          "stepsFaulted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The number of faulted steps.",
+            "format": "int32"
+          }
+        }
+      },
+      "JourneyExecutionLogEvent": {
+        "required": [
+          "id",
+          "timestamp"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the execution event."
+          },
+          "timestamp": {
+            "description": "Time at which the event occurred.",
+            "format": "date-time"
+          },
+          "eventName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the event."
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The event message."
+          },
+          "outcomes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of outcomes of the event."
+          }
+        }
+      },
+      "JourneyFault": {
+        "required": [
+          "errorCode",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "JourneyFileDetails": {
+        "required": [
+          "id",
+          "filename",
+          "contentType",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the step that created this file."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the file."
+          },
+          "filename": {
+            "type": "string",
+            "description": "The filename."
+          },
+          "contentType": {
+            "type": "string",
+            "description": "Content type of the file."
+          },
+          "size": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "description": "The size of the file in bytes.",
+            "format": "int64"
+          }
+        }
+      },
+      "JourneyNote": {
+        "required": [
+          "id",
+          "content",
+          "createdAt",
+          "createdBy"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the note."
+          },
+          "stepId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the step this note belongs to."
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the note."
+          },
+          "createdAt": {
+            "description": "Time at which the note was created.",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the subject that created the note."
+          },
+          "updatedAt": {
+            "description": "Time at which the note was last updated.",
+            "format": "date-time"
+          }
+        }
+      },
+      "JourneyStatus": {
+        "enum": [
+          "idle",
+          "running",
+          "finished",
+          "active",
+          "faulted",
+          "cancelled"
+        ]
+      },
+      "JourneyStepExecutionLog": {
+        "required": [
+          "stepId",
+          "stepType",
+          "startedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "description": "ID of the executed step."
+          },
+          "stepType": {
+            "type": "string",
+            "description": "The step type."
+          },
+          "startedAt": {
+            "description": "Time at which the step execution started.",
+            "format": "date-time"
+          },
+          "endedAt": {
+            "description": "Time at which the step execution ended.",
+            "format": "date-time"
+          },
+          "status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "The status of the executed step.",
+                "$ref": "#/components/schemas/JourneyStepStatus"
+              }
+            ]
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyExecutionLogEvent"
+            },
+            "description": "List of execution events."
+          }
+        }
+      },
+      "JourneyStepStatus": {
+        "enum": [
+          "active",
+          "faulted",
+          "finished",
+          null
+        ]
+      },
+      "JourneySummary": {
+        "required": [
+          "id",
+          "workflowId",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the journey."
+          },
+          "workflowId": {
+            "type": "string",
+            "description": "ID of the workflow this journey belongs to."
+          },
+          "parentJourneyId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the parent journey that started this journey."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the workflow.",
+            "format": "int32"
+          },
+          "status": {
+            "description": "The current status of the journey.",
+            "$ref": "#/components/schemas/JourneyStatus"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the journey."
+          },
+          "workflowName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the workflow."
+          },
+          "createdAt": {
+            "description": "Time at which the journey was created.",
+            "format": "date-time"
+          },
+          "lastExecutedAt": {
+            "description": "Time at which the journey was last executed.",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "description": "Time at which the journey finished.",
+            "format": "date-time"
+          },
+          "faultedAt": {
+            "description": "Time at which the journey faulted.",
+            "format": "date-time"
+          },
+          "cancelledAt": {
+            "description": "Time at which the journey was cancelled.",
+            "format": "date-time"
+          },
+          "pendingSteps": {
+            "type": "boolean",
+            "description": "Whether the journey has pending steps requiring manual continuation."
+          },
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepAlert"
+            },
+            "description": "List of alerts triggered during the journey."
+          }
+        }
+      },
+      "PaginatedResponseOfJourneyNote": {
+        "required": [
+          "data",
+          "offset",
+          "limit",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyNote"
+            },
+            "description": "List of items returned for the current page."
+          },
+          "offset": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The offset of the first item returned.",
+            "format": "int32"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The maximum number of items requested per page.",
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The total number of items available across all pages.",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseOfJourneySummary": {
+        "required": [
+          "data",
+          "offset",
+          "limit",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneySummary"
+            },
+            "description": "List of items returned for the current page."
+          },
+          "offset": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The offset of the first item returned.",
+            "format": "int32"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The maximum number of items requested per page.",
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The total number of items available across all pages.",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseOfWorkflowSummary": {
+        "required": [
+          "data",
+          "offset",
+          "limit",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowSummary"
+            },
+            "description": "List of items returned for the current page."
+          },
+          "offset": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The offset of the first item returned.",
+            "format": "int32"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The maximum number of items requested per page.",
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The total number of items available across all pages.",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseOfWorkflowTemplateSummary": {
+        "required": [
+          "data",
+          "offset",
+          "limit",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowTemplateSummary"
+            },
+            "description": "List of items returned for the current page."
+          },
+          "offset": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The offset of the first item returned.",
+            "format": "int32"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The maximum number of items requested per page.",
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The total number of items available across all pages.",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseOfWorkflowVersion": {
+        "required": [
+          "data",
+          "offset",
+          "limit",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowVersion"
+            },
+            "description": "List of items returned for the current page."
+          },
+          "offset": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The offset of the first item returned.",
+            "format": "int32"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The maximum number of items requested per page.",
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The total number of items available across all pages.",
+            "format": "int32"
+          }
+        }
+      },
+      "ResumeJourneyRequest": {
+        "required": [
+          "stepId"
+        ],
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "The journey input."
+          },
+          "stepId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "The target step ID."
+          }
+        }
+      },
+      "StartJourneyRequest": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "The journey input."
+          },
+          "journeyUrlTtl": {
+            "maximum": 2592000,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "description": "The time-to-live for the workflow URL in seconds. Defaults to 60 seconds.",
+            "format": "int32"
+          }
+        }
+      },
+      "StartJourneyResponse": {
+        "required": [
+          "journeyId",
+          "journeyUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "journeyId": {
+            "type": "string",
+            "description": "The journey ID."
+          },
+          "stepId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "ID of the starting step."
+          },
+          "journeyUrl": {
+            "type": "string",
+            "description": "The URL to the journey."
+          }
+        }
+      },
+      "StepAlert": {
+        "required": [
+          "stepId",
+          "severity",
+          "message",
+          "timestamp"
+        ],
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "description": "ID of the step this alert belongs to."
+          },
+          "severity": {
+            "description": "The alert severity.",
+            "$ref": "#/components/schemas/StepAlertSeverity"
+          },
+          "message": {
+            "type": "string",
+            "description": "The alert message."
+          },
+          "timestamp": {
+            "description": "Time at which the alert was triggered.",
+            "format": "date-time"
+          }
+        }
+      },
+      "StepAlertSeverity": {
+        "enum": [
+          "info",
+          "warning",
+          "critical"
+        ]
+      },
+      "StepDefinition": {
+        "required": [
+          "type",
+          "displayName",
+          "category"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The step type."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the step."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the step."
+          },
+          "category": {
+            "type": "string",
+            "description": "The step category."
+          },
+          "documentationUrl": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "URL to the documentation page for the step."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of keywords associated with the step."
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of possible step outcomes."
+          },
+          "requiredPermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of required permissions to use the step."
+          },
+          "deprecated": {
+            "type": "boolean",
+            "description": "Whether the step is deprecated."
+          },
+          "interactive": {
+            "type": "boolean",
+            "description": "Whether the step requires end user interaction."
+          }
+        }
+      },
+      "StepDefinitionSchemasResponse": {
+        "type": "object",
+        "properties": {
+          "inputJsonSchema": {
+            "description": "The JSON schema for the step input."
+          },
+          "outputJsonSchema": {
+            "description": "The JSON schema for the step output."
+          }
+        }
+      },
+      "UpdateJourneyNoteRequest": {
+        "required": [
+          "content"
+        ],
+        "type": "object",
+        "properties": {
+          "content": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string",
+            "description": "Text content of the note."
+          }
+        }
+      },
+      "UpdateWorkflowRequest": {
+        "required": [
+          "name",
+          "steps"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string",
+            "description": "The workflow name."
+          },
+          "description": {
+            "maxLength": 5000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The workflow description."
+          },
+          "steps": {
+            "maxItems": 250,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStep"
+            },
+            "description": "List of steps that define the workflow."
+          },
+          "connections": {
+            "maxItems": 500,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStepConnection"
+            },
+            "description": "List of connections between workflow steps."
+          },
+          "variables": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Custom variables that can be used within a workflow."
+          },
+          "tags": {
+            "maxItems": 20,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of workflow tags."
+          },
+          "inputParameters": {
+            "maxItems": 50,
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WorkflowInputParameter"
+            },
+            "description": "List of allowed input parameters for the workflow."
+          },
+          "domain": {
+            "maxLength": 253,
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The domain the workflow runs under. Must be a domain configured on your account."
+          }
+        }
+      },
+      "UpdateWorkflowSecretRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the secret"
+          },
+          "description": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the secret."
+          },
+          "value": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The secret value."
+          }
+        }
+      },
+      "ValidateLiquidRequest": {
+        "required": [
+          "template"
+        ],
+        "type": "object",
+        "properties": {
+          "template": {
+            "maxLength": 25000,
+            "minLength": 0,
+            "type": "string",
+            "description": "The Liquid template to validate."
+          }
+        }
+      },
+      "ValidateLiquidResponse": {
+        "type": "object",
+        "properties": {
+          "isValid": {
+            "type": "boolean",
+            "description": "Indicates whether the Liquid template is valid."
+          },
+          "error": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Error message if the Liquid template is invalid."
+          }
+        }
+      },
+      "Workflow": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the workflow."
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the workflow."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the workflow."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the workflow.",
+            "format": "int32"
+          },
+          "isLatest": {
+            "type": "boolean",
+            "description": "Whether this is the latest version of the workflow."
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether this version is the published version of the workflow."
+          },
+          "isLocked": {
+            "type": "boolean",
+            "description": "Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted."
+          },
+          "createdAt": {
+            "description": "Time at which the workflow was created.",
+            "format": "date-time"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStep"
+            },
+            "description": "List of steps that define the workflow."
+          },
+          "connections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStepConnection"
+            },
+            "description": "List of connections between workflow steps."
+          },
+          "variables": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Workflow variables."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of workflow tags."
+          },
+          "domain": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The workflow domain."
+          },
+          "workflowUrl": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The workflow URL."
+          },
+          "inputParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowInputParameter"
+            },
+            "description": "List of allowed input parameters for the workflow."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileDetails"
+            },
+            "description": "List of files associated with the workflow."
+          }
+        }
+      },
+      "WorkflowInputParameter": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the input parameter."
+          }
+        }
+      },
+      "WorkflowSecret": {
+        "required": [
+          "id",
+          "name",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The workflow secret's unique identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the secret."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the secret."
+          },
+          "createdAt": {
+            "description": "Time at which the secret was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "description": "Time at which the secret was last updated.",
+            "format": "date-time"
+          }
+        }
+      },
+      "WorkflowStep": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "maxLength": 50,
+            "minLength": 0,
+            "pattern": "^[0-9a-zA-Z-_]+$",
+            "type": "string",
+            "description": "Unique identifier for the step."
+          },
+          "type": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The step type."
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The step name."
+          },
+          "displayName": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The display name of the step."
+          },
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the step."
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Input properties of the step."
+          }
+        }
+      },
+      "WorkflowStepConnection": {
+        "required": [
+          "sourceStepId",
+          "targetStepId",
+          "outcome"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceStepId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The source step ID."
+          },
+          "targetStepId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The target step ID."
+          },
+          "outcome": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The step outcome."
+          }
+        }
+      },
+      "WorkflowSummary": {
+        "required": [
+          "id",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The workflow's unique identifier."
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The name of the workflow."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The description of the workflow."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the workflow.",
+            "format": "int32"
+          },
+          "isLatest": {
+            "type": "boolean",
+            "description": "Whether this is the latest version of the workflow."
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether this version is the published version of the workflow."
+          },
+          "isLocked": {
+            "type": "boolean",
+            "description": "Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted."
+          },
+          "createdAt": {
+            "description": "Time at which the workflow was created.",
+            "format": "date-time"
+          }
+        }
+      },
+      "WorkflowTemplate": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the template."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the template."
+          },
+          "summary": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Short summary of the template."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Long-form description of the template."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the template.",
+            "format": "int32"
+          },
+          "createdAt": {
+            "description": "Time at which the template was created.",
+            "format": "date-time"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStep"
+            },
+            "description": "List of steps that define the workflow."
+          },
+          "connections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStepConnection"
+            },
+            "description": "List of connections between workflow steps."
+          },
+          "variables": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Workflow variables."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of template tags."
+          },
+          "inputParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowInputParameter"
+            },
+            "description": "List of allowed input parameters for the workflow."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileDetails"
+            },
+            "description": "List of files associated with the template."
+          }
+        }
+      },
+      "WorkflowTemplateSummary": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the template."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the template."
+          },
+          "summary": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Short summary of the template."
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Long-form description of the template."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number of the template.",
+            "format": "int32"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of template tags."
+          },
+          "createdAt": {
+            "description": "Time at which the template was created.",
+            "format": "date-time"
+          }
+        }
+      },
+      "WorkflowVersion": {
+        "required": [
+          "id",
+          "workflowId",
+          "version",
+          "isLatest",
+          "isPublished",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the workflow version."
+          },
+          "workflowId": {
+            "type": "string",
+            "description": "Unique identifier for the workflow."
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The version number.",
+            "format": "int32"
+          },
+          "isLatest": {
+            "type": "boolean",
+            "description": "Whether this is the latest version of the workflow."
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether this version is the published version of the workflow."
+          },
+          "createdAt": {
+            "description": "Time at which the version was created.",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+openapi: 3.2.0
+info:
+  title: Signicat Signature Methods API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged SignatureMethods across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: SignatureMethods
+paths:
+  /signature-methods:
+    get:
+      tags:
+      - SignatureMethods
+      summary: List signature-methods
+      description: Returns a list of all the supported signature-methods
+      parameters:
+      - name: mechanism
+        in: query
+        description: The result may vary with different signature mechanisms. Defaults to pkisignature
+        schema:
+          $ref: '#/components/schemas/Mechanisms'
+      - name: fileType
+        in: query
+        description: FileType that will be signed, some signature methods have different file support. Defaults to pdf
+        schema:
+          $ref: '#/components/schemas/ListSignMethodsFileType'
+      - name: language
+        in: query
+        description: The language to use for name and description. Defaults to EN (english)
+        schema:
+          $ref: '#/components/schemas/Language'
+      - name: signableAttachments
+        in: query
+        description: Signing multiple documents? Some signature-methods may lack this functionality
+        schema:
+          type: boolean
+          default: false
+      - name: redirectMode
+        in: query
+        description: Some signature methods do not allow iframing
+        schema:
+          $ref: '#/components/schemas/RedirectMode'
+      responses:
+        '200':
+          description: OK
+      operationId: getSignatureMethods
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /signature-methods/account:
+    get:
+      tags:
+      - SignatureMethods
+      summary: List signature-methods for account
+      description: Returns a list of all the signature-methods available for the requester's account.
+      parameters:
+      - name: mechanism
+        in: query
+        description: The result may vary with different signature mechanisms. Defaults to pkisignature
+        schema:
+          $ref: '#/components/schemas/Mechanisms'
+      - name: fileType
+        in: query
+        description: FileType that will be signed, some signature methods have different file support. Defaults to pdf
+        schema:
+          $ref: '#/components/schemas/ListSignMethodsFileType'
+      - name: language
+        in: query
+        description: The language to use for name and description. Defaults to EN (english)
+        schema:
+          $ref: '#/components/schemas/Language'
+      - name: signableAttachments
+        in: query
+        description: Signing multiple documents? Some signature-methods may lack this functionality
+        schema:
+          type: boolean
+          default: false
+      - name: redirectMode
+        in: query
+        description: Some signature methods do not allow iframing
+        schema:
+          $ref: '#/components/schemas/RedirectMode'
+      responses:
+        '200':
+          description: OK
+      operationId: getSignatureMethodsAccount
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    RedirectMode:
+      enum:
+      - donot_redirect
+      - redirect
+      - iframe_with_webmessaging
+      - iframe_with_redirect
+      - iframe_with_redirect_and_webmessaging
+      type: string
+    Mechanisms:
+      enum:
+      - pkisignature
+      - identification
+      - handwritten
+      - handwritten_with_identification
+      type: string
+    Language:
+      enum:
+      - EN
+      - 'NO'
+      - DA
+      - SV
+      - FI
+      - NL
+      - DE
+      type: string
+    ListSignMethodsFileType:
+      enum:
+      - pdf
+      - txt
+      - xml
+      type: string
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

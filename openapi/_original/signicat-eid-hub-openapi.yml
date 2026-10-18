@@ -1,0 +1,1209 @@
+# x-archived-from: signicat-eid-hub-openapi.yml
+# x-archived-on: 2026-10-18
+openapi: 3.0.4
+info:
+  title: Signicat Authentication REST API
+  description: '
+
+    - **Base URL**: `https://api.signicat.com/auth/rest/`
+
+    - **Documentation**: See the [Authentication REST API](/docs/eid-hub/authentication-api/) developer documentation.
+
+    - **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.
+
+
+    # Introduction
+
+
+    The Signicat Authentication REST API enables you to interact with the [Signicat eID and Wallet Hub](/docs/eid-hub/), our digital solution for identity verification and authentication. This API allows you to authenticate users and organisations securely through a wide selection of electronic ID methods (eIDs).
+
+
+    This REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.
+
+
+    # Get started
+
+
+    Before you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).
+
+
+    # Using this API
+
+
+    ## Audit logs
+
+
+    Use the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.
+
+
+    - Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)
+
+    - For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.
+
+
+    ## Errors
+
+
+    When you make an API call to Signicat and an error occurs, you will receive a response message with an error code.
+
+
+    - For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.
+
+
+    ## Events (callback)
+
+
+    Use the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.
+
+
+    - Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)
+
+    - For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.
+
+
+    > **Note**: This is often referred to as callback.
+
+    '
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+servers:
+- url: https://api.signicat.com/auth/rest
+tags:
+- name: Authentication Session
+paths:
+  /sessions:
+    post:
+      tags:
+      - Authentication Session
+      summary: Create a new session
+      description: Use this endpoint to create a session. This must contain a JSON object (as described) with all the info needed.
+      operationId: CreateSession
+      requestBody:
+        description: JSON object with data used necessary for creating the session.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequestDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+  /sessions/{id}:
+    get:
+      tags:
+      - Authentication Session
+      summary: Get session status
+      description: Use this endpoint to get information regarding a previously created session.
+      operationId: GetSession
+      parameters:
+      - name: id
+        in: path
+        description: The session identifier.
+        required: true
+        schema:
+          type: string
+      - name: sessionNonce
+        in: query
+        description: The sessionNonce used for the embedded flow
+        schema:
+          type: string
+      - name: userChallengeVerifier
+        in: query
+        description: The verifier used for the sk-smartid and audkenni-app IDPs
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/NotFoundProblem'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+  /sessions/{id}/cancel:
+    post:
+      tags:
+      - Authentication Session
+      summary: Cancel Authentication Session
+      operationId: CancelSession
+      parameters:
+      - name: id
+        in: path
+        description: The session identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/SessionDataDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ValidationProblem'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedProblem'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblem'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+            application/jose:
+              schema:
+                $ref: '#/components/schemas/UnexpectedProblem'
+components:
+  schemas:
+    BrokerResponseErrorDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The error type.
+          nullable: true
+          example: https://developer.signicat.com/docs/eid-hub/error-codes.html#broker-error-codes
+        title:
+          type: string
+          description: The error title.
+          nullable: true
+          example: Invalid Account ID Error
+        detail:
+          type: string
+          description: The error detail.
+          nullable: true
+          example: An accountId is sent as part of API calls. This error indicates that an unexpected accountId was sent in the request.
+        code:
+          type: string
+          description: The error code.
+          nullable: true
+          example: invalid_account_id
+      additionalProperties: false
+    CallbackUrls:
+      required:
+      - abort
+      - error
+      - success
+      type: object
+      properties:
+        success:
+          type: string
+          description: 'Specifies the URL to redirect in case of success.
+
+            If it is not a sandbox request needs to be https.'
+          format: uri
+          example: https://example.com/success
+        abort:
+          type: string
+          description: 'Specifies the URL to redirect in case of abortion.
+
+            If it is not a sandbox request needs to be https.'
+          format: uri
+          example: https://example.com/abort
+        error:
+          type: string
+          description: 'Specifies the URL to redirect in case of error.
+
+            If it is not a sandbox request needs to be https.'
+          format: uri
+          example: https://example.com/error
+      additionalProperties: false
+      description: Specifies the different urls to callback to.
+    DevicePrefillData:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          nullable: true
+        manufacturer:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+      additionalProperties: false
+    EncryptionKey:
+      required:
+      - alg
+      - kty
+      - use
+      type: object
+      properties:
+        kty:
+          enum:
+          - rsa
+          - ec
+          type: string
+          description: Key type of the JWK, specifying the cryptographic algorithm family used with the key.
+          example: RSA
+        use:
+          enum:
+          - enc
+          type: string
+          description: Identifies the intended use of the key. Values defined by this specification are sig (signature) and enc (encryption).
+          example: enc
+        kid:
+          type: string
+          description: Identifier of the key, serves as a unique identifier for the key.
+          nullable: true
+          example: encryption-key-04ceb013816d6244aca3310fa69b0bcf
+        alg:
+          enum:
+          - RSA-OAEP
+          - ECDH-ES
+          type: string
+          description: 'Identifies the cryptographic algorithm family used with the key.
+
+            If kty is set to RSA needs to be RSA-OAEP.
+
+            If kty is set to EC needs to be ECDH-ES.'
+          example: RSA-OAEP
+        e:
+          type: string
+          description: 'The public exponent.
+
+            Required if the Kty is RSA.'
+          nullable: true
+          example: AQAB
+        n:
+          type: string
+          description: 'The modulus, a component that is used in both the encryption and decryption process.
+
+            Required if the Kty is RSA.'
+          nullable: true
+          example: zN4Vqjwfs8uSqlOyjJLxw89BzkOW_blablabla-kv7wEllGQYysBSoj2ULs9qqQd
+        crv:
+          type: string
+          description: 'Identifies the cryptographic curve used with the key.
+
+            Required if the Kty is EC.'
+          nullable: true
+          example: P-256
+        x:
+          type: string
+          description: 'Contains the x coordinate for the elliptic curve point.
+
+            Required if the Kty is EC.'
+          nullable: true
+          example: O_rs_R-2hZmBYaUzMlvBCwRosV8mDGzKv-kVSG9PgVY
+        y:
+          type: string
+          description: 'Contains the Y coordinate for the elliptic curve point.
+
+            Required if the Kty is EC.'
+          nullable: true
+          example: 1Xw6_lF0VCHQjbIBtunedGA3UnldovAiCC97_9LkM0w
+        d:
+          type: string
+          description: 'Contains the private exponent parameter.
+
+            This needs to be null.'
+          nullable: true
+          example: null
+      additionalProperties: false
+      description: Encryption key information.
+    ForbiddenProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Gets or sets the error status.
+          format: int32
+          example: '403'
+        code:
+          type: string
+          description: Gets or sets the error code.
+          nullable: true
+          example: missing_permission
+        title:
+          type: string
+          description: Gets or sets the error title.
+          nullable: true
+          example: You do not have the required permission to perform this operation on the target resource
+        detail:
+          type: string
+          description: Gets or sets the error detail.
+          nullable: true
+          example: The subject with ID 'prod-fake-client-007' does not have the required permission 'auth:rest:create' on the target resource 'a-fake-account'
+        type:
+          type: string
+          description: Gets or sets the error type.
+          nullable: true
+          example: https://developer.signicat.com/errors?code=missing_permission
+        traceId:
+          type: string
+          description: Gets the Trace ID for the error.
+          nullable: true
+          example: e9eb42a91fcae4b963db74d50b959108
+      additionalProperties: false
+      description: Forbidden Problem description and properties
+    Frequency:
+      type: object
+      properties:
+        observed:
+          type: integer
+          format: int32
+          nullable: true
+        total:
+          type: integer
+          format: int32
+          nullable: true
+      additionalProperties: false
+    InvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Gets and sets the name for the invalid parameter.
+          nullable: true
+          example: invalid_nin
+        reason:
+          type: string
+          description: Gets and sets the reason for the invalid parameter.
+          nullable: true
+          example: invalid nin
+      additionalProperties: false
+      description: Invalid parameters properties.
+    MessageTransportProperties:
+      type: object
+      properties:
+        messageLevelEncryption:
+          type: string
+          nullable: true
+        requireHsmSigning:
+          type: boolean
+      additionalProperties: false
+    Nin:
+      type: object
+      properties:
+        value:
+          type: string
+          nullable: true
+        issuingCountry:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+      additionalProperties: false
+    NotFoundProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Gets or sets the error status.
+          format: int32
+          example: '404'
+        code:
+          type: string
+          description: Gets or sets the error code.
+          nullable: true
+          example: not_found
+        title:
+          type: string
+          description: Gets or sets the error title.
+          nullable: true
+          example: Not Found
+        detail:
+          type: string
+          description: Gets or sets the error detail.
+          nullable: true
+          example: ''
+        type:
+          type: string
+          description: Gets or sets the error type.
+          nullable: true
+          example: https://developer.signicat.com/docs/dashboard/error-codes/
+        traceId:
+          type: string
+          description: Gets the Trace ID for the error.
+          nullable: true
+          example: e9eb42a91fcae4b963db74d50b959108
+      additionalProperties: false
+      description: Not Found Problem description and properties.
+    PaymentAttribute:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PaymentItem:
+      type: object
+      properties:
+        reference:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        receiver:
+          type: string
+          nullable: true
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentAttribute'
+          nullable: true
+      additionalProperties: false
+    PaymentPrefillData:
+      type: object
+      properties:
+        reference:
+          type: string
+          nullable: true
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentItem'
+          nullable: true
+      additionalProperties: false
+    PrefilledInput:
+      type: object
+      properties:
+        nin:
+          type: string
+          description: The National Identity Number of the prefilled input.
+          nullable: true
+          example: 07128312345
+        mobile:
+          type: string
+          description: The mobile number of the prefilled input.
+          format: tel
+          nullable: true
+          example: '+4799716935'
+        email:
+          type: string
+          description: The email of the prefilled input.
+          format: email
+          nullable: true
+          example: bruce@wayneenterprice.com
+        userName:
+          type: string
+          description: The user name of the prefilled input.
+          nullable: true
+          example: brucewayne
+        dateOfBirth:
+          type: string
+          description: The date of birth of the prefilled input.
+          format: date-time
+          nullable: true
+          example: '1973-12-07'
+        deviceId:
+          type: string
+          description: The device ID.
+          nullable: true
+          example: 136OP-A1
+        firstName:
+          type: string
+          description: The first name of the prefilled input.
+          nullable: true
+          example: Bruce
+        lastName:
+          type: string
+          description: The last name of the prefilled input.
+          nullable: true
+          example: Wayne
+        bankAccountNumber:
+          type: string
+          description: The bank account number of the prefilled input.
+          nullable: true
+          example: '0071234567'
+        organisation:
+          type: string
+          description: The organisation of the prefilled input.
+          nullable: true
+          example: Signicat
+      additionalProperties: false
+      description: The session's prefilled input information (it is required at least one value).
+    RiskData:
+      type: object
+      properties:
+        facts:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskFacts'
+          nullable: true
+        thirdPartyEvaluation:
+          $ref: '#/components/schemas/RiskEvaluation'
+        selfEvaluation:
+          $ref: '#/components/schemas/RiskEvaluation'
+      additionalProperties: false
+    RiskEvaluation:
+      type: object
+      properties:
+        riskValue:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RiskFacts:
+      type: object
+      properties:
+        factType:
+          type: string
+          nullable: true
+        observedValue:
+          nullable: true
+        valueFrequency:
+          $ref: '#/components/schemas/Frequency'
+        source:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SessionDataDto:
+      required:
+      - accountId
+      - flow
+      - requestedAttributes
+      type: object
+      properties:
+        id:
+          type: string
+          description: Session identifier (Globally unique).
+          nullable: true
+          example: 3d07c219-0a88-45be-9cfc-91e9d095a1e9
+        accountId:
+          minLength: 1
+          type: string
+          description: The specified account ID used for the session.
+          example: a-rand-cnnJOtEwafuhom0nv
+        authenticationUrl:
+          type: string
+          description: The URL which you should direct your end-user to for performing the authentication.
+          format: uri
+          nullable: true
+          example: https://demo.app.signicat.com/broker/sp/external-service/login?messageId=123abc&transactionId=abc123
+        statusUrl:
+          type: string
+          description: The URL that allows to check the authentication status.
+          format: uri
+          nullable: true
+          example: https://demo.app.signicat.com/broker/sp/external-service/login?messageId=123abc&transactionId=abc123
+        status:
+          enum:
+          - CREATED
+          - SUCCESS
+          - ERROR
+          - ABORT
+          - CANCELLED
+          - WAITING_FOR_USER
+          - EXPIRED
+          - INVALID
+          type: string
+          description: The current status of the session.
+          nullable: true
+          example: SUCCESS
+        statusDetail:
+          type: string
+          description: The status detail if the response is an error.
+          nullable: true
+          example: Error because reasons.
+        provider:
+          type: string
+          description: The IdP which was used by the end-user to authenticate.
+          nullable: true
+          example: nbid
+        subject:
+          $ref: '#/components/schemas/Subject'
+        callbackUrls:
+          $ref: '#/components/schemas/CallbackUrls'
+        idpData:
+          type: object
+          additionalProperties:
+            type: string
+          description: The idp data.
+          nullable: true
+          example:
+            autoStartToken: f0c9d6db-c586-4acb-b2ba-323b54e42504
+        environment:
+          $ref: '#/components/schemas/SessionEnvironment'
+        error:
+          $ref: '#/components/schemas/BrokerResponseErrorDetails'
+        messageTransportProperties:
+          $ref: '#/components/schemas/MessageTransportProperties'
+        tags:
+          type: array
+          items:
+            type: string
+          description: A set of support optional tags to group and filter webhooks.
+          nullable: true
+          example:
+          - tag1
+          - tag2
+        paymentPrefillData:
+          $ref: '#/components/schemas/PaymentPrefillData'
+        loa:
+          type: string
+          description: The Level of Assurance used in the authentication.
+          nullable: true
+          example: substancial
+        risk:
+          $ref: '#/components/schemas/RiskData'
+        allowedProviders:
+          type: array
+          items:
+            type: string
+          description: 'A list of Identity Providers (IdPs) that can be used for authentication.
+
+            If not specified, the end-user will be able to choose from all IdPs associated with your Signicat account.
+
+            The maximum length for each Provider is 30.'
+          nullable: true
+          example:
+          - nbid
+          - sbid
+          - idin
+          - digid
+          - eherkenning
+          - spid
+        language:
+          type: string
+          description: 'The desired language for the UI. Expected format ISO 639-1.
+
+            If the requested language is not available, it will automatically default to English (en).
+
+            Some IdPs may have a different fallback language due to regional considerations.'
+          nullable: true
+          example: en
+        flow:
+          enum:
+          - headless
+          - redirect
+          - embedded
+          type: string
+          description: 'The selected flow used for this specific authentication session.
+
+            To learn more about using the ```headless``` flow with Swedish BankID, please refer to <a href="/identity-methods/sbid/integration-guide/auth-rest-api/headless/">this example</a>.'
+          example: redirect
+        themeId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: 'The themeId you want to use for this specific authentication session.
+
+            If not specified, the default theme for your account will be used.'
+          nullable: true
+          example: agkaa12
+        requestedAttributes:
+          type: array
+          items:
+            type: string
+          description: 'The attributes you wish to get back from the authentication of the end-user.
+
+            To find a list of which attributes can be requested, please see documentation for that specific ID method which
+
+            can be found on <a href="https://developer.signicat.com/identity-methods/">https://developer.signicat.com/identity-methods/</a>.
+
+
+            Defaults to empty.'
+          example:
+          - firstName
+          - lastName
+          - email
+          - dateOfBirth
+          - phoneNumber
+          - address
+          - gender
+        externalReference:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: An external reference for you, will be returned as a URL parameter on callbackUrls.
+          nullable: true
+          example: my-reference-12345
+        usageReference:
+          type: string
+          description: An usage external reference for you to group your billing.
+          nullable: true
+          example: my-usage-reference-12345
+        sessionLifetime:
+          type: integer
+          description: 'Lifetime of session in seconds (Default is 1200 seconds). It has a soft-minimum value of 300 seconds, which means if the value set is
+
+            less then 300, it will be automatically set to 300 seconds.'
+          format: int32
+          nullable: true
+          example: 600
+        requestDomain:
+          type: string
+          description: 'This specifies the domain you want to use for this specific session.
+
+            The domain will be visible in the end-user''s browser.
+
+            This domain needs to be correctly configured on your account!'
+          nullable: true
+          example: myapp.app.signicat.com
+        expiresAt:
+          type: string
+          description: DateTime calculated field expiry of session.
+          format: date-time
+          nullable: true
+          example: '2024-06-01T13:45:30'
+      additionalProperties: false
+      description: Session information to be returned to user
+    SessionEnvironment:
+      type: object
+      properties:
+        ipAddress:
+          type: string
+          description: The IpAddress of the end user.
+          nullable: true
+          example: 127.0.0.1
+        userAgent:
+          type: string
+          description: The request user agent.
+          nullable: true
+          example: user_agent_test
+      additionalProperties: false
+    SessionRequestDto:
+      required:
+      - flow
+      - requestedAttributes
+      type: object
+      properties:
+        prefilledInput:
+          $ref: '#/components/schemas/PrefilledInput'
+        additionalParameters:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Additional parameters that modify the authentication flow. Depends on selected IdP.
+
+            See <a href="https://developer.signicat.com/identity-methods/">developer documentation</a> for details.'
+          nullable: true
+          example:
+            sbid_flow: QR
+            sbid_end_user_ip: 127.0.0.1
+        callbackUrls:
+          $ref: '#/components/schemas/CallbackUrls'
+        encryptionPublicKey:
+          $ref: '#/components/schemas/EncryptionKey'
+        requestedLoa:
+          enum:
+          - low
+          - substantial
+          - high
+          type: string
+          description: Specifies the LoA (Level of Assurance).
+          nullable: true
+          example: low
+        tags:
+          maxItems: 100
+          type: array
+          items:
+            type: string
+          description: 'A set of support optional tags to group and filter webhooks.
+
+            The maximum length for each tag is 100.'
+          nullable: true
+          example:
+          - tag1
+          - tag2
+        returnUrl:
+          type: string
+          description: If specified the embedded view will return to this URL after authentication is completed (successfully or not). If not specified, a success or error screen will be shown inside the embedded view.
+          format: uri
+          nullable: true
+          example: https://example.com/auth_callback
+        embeddedParentDomains:
+          type: array
+          items:
+            type: string
+          description: Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking.
+          nullable: true
+          example:
+          - signicat.com
+          - example.com
+        paymentPrefillData:
+          $ref: '#/components/schemas/PaymentPrefillData'
+        devicePrefillData:
+          $ref: '#/components/schemas/DevicePrefillData'
+        allowedProviders:
+          type: array
+          items:
+            type: string
+          description: 'A list of Identity Providers (IdPs) that can be used for authentication.
+
+            If not specified, the end-user will be able to choose from all IdPs associated with your Signicat account.
+
+            The maximum length for each Provider is 30.'
+          nullable: true
+          example:
+          - nbid
+          - sbid
+          - idin
+          - digid
+          - eherkenning
+          - spid
+        language:
+          type: string
+          description: 'The desired language for the UI. Expected format ISO 639-1.
+
+            If the requested language is not available, it will automatically default to English (en).
+
+            Some IdPs may have a different fallback language due to regional considerations.'
+          nullable: true
+          example: en
+        flow:
+          enum:
+          - headless
+          - redirect
+          - embedded
+          type: string
+          description: "The selected flow used for this specific authentication session.\nTo learn more about using the ```headless``` flow with Swedish BankID, please refer to <a href=\"/identity-methods/sbid/integration-guide/auth-rest-api/headless/\">this example</a>.\r\nIf flow is set to Redirect the field CallbackUrls is required."
+          example: redirect
+        themeId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: 'The themeId you want to use for this specific authentication session.
+
+            If not specified, the default theme for your account will be used.'
+          nullable: true
+          example: agkaa12
+        requestedAttributes:
+          type: array
+          items:
+            type: string
+          description: 'The attributes you wish to get back from the authentication of the end-user.
+
+            To find a list of which attributes can be requested, please see documentation for that specific ID method which
+
+            can be found on <a href="https://developer.signicat.com/identity-methods/">https://developer.signicat.com/identity-methods/</a>.
+
+
+            Defaults to empty.'
+          example:
+          - firstName
+          - lastName
+          - email
+          - dateOfBirth
+          - phoneNumber
+          - address
+          - gender
+        externalReference:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: An external reference for you, will be returned as a URL parameter on callbackUrls.
+          nullable: true
+          example: my-reference-12345
+        usageReference:
+          type: string
+          description: An usage external reference for you to group your billing.
+          nullable: true
+          example: my-usage-reference-12345
+        sessionLifetime:
+          type: integer
+          description: 'Lifetime of session in seconds (Default is 1200 seconds). It has a soft-minimum value of 300 seconds, which means if the value set is
+
+            less then 300, it will be automatically set to 300 seconds.'
+          format: int32
+          nullable: true
+          example: 600
+        requestDomain:
+          type: string
+          description: 'This specifies the domain you want to use for this specific session.
+
+            The domain will be visible in the end-user''s browser.
+
+            This domain needs to be correctly configured on your account!'
+          nullable: true
+          example: myapp.app.signicat.com
+      additionalProperties: false
+      description: The Session to be created.
+    Subject:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier of the subject.
+          nullable: true
+          example: 9578-6000-4-48855
+        idpId:
+          type: string
+          description: The idp identifier of the subject.
+          nullable: true
+          example: 9578-6000-4-48855
+        name:
+          type: string
+          description: The full name of the subject.
+          nullable: true
+          example: John Doe
+        firstName:
+          type: string
+          description: The first name of the subject.
+          nullable: true
+          example: John
+        middleName:
+          type: string
+          description: The middle name of the subject.
+          nullable: true
+          example: Louis
+        lastName:
+          type: string
+          description: The last name of the subject.
+          nullable: true
+          example: Doe
+        dateOfBirth:
+          type: string
+          description: The date of birth of the subject.
+          nullable: true
+          example: '2002-06-01'
+        nin:
+          $ref: '#/components/schemas/Nin'
+        email:
+          type: string
+          description: The Email of the subject.
+          nullable: true
+          example: john_doe@mail.com
+        attribute_1:
+          description: Example idp attribute
+          example: random_attr
+        attribute_2:
+          description: Example idp attribute
+          example: random_attr_4
+      additionalProperties: false
+      description: The session's subject.
+    UnauthorizedProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Gets or sets the error status.
+          format: int32
+          example: '401'
+        code:
+          type: string
+          description: Gets or sets the error code.
+          nullable: true
+          example: authorization_header_missing
+        title:
+          type: string
+          description: Gets or sets the error title.
+          nullable: true
+          example: An authorization header containing a bearer token must be provided
+        detail:
+          type: string
+          description: Gets or sets the error detail.
+          nullable: true
+          example: ''
+        type:
+          type: string
+          description: Gets or sets the error type.
+          nullable: true
+          example: https://developer.signicat.com/errors?code=authorization_header_missing
+        traceId:
+          type: string
+          description: Gets the Trace ID for the error.
+          nullable: true
+          example: e9eb42a91fcae4b963db74d50b959108
+      additionalProperties: false
+      description: Unauthorized Problem description and properties
+    UnexpectedProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Gets or sets the error status.
+          format: int32
+          example: '500'
+        code:
+          type: string
+          description: Gets or sets the error code.
+          nullable: true
+          example: unexpected_error
+        title:
+          type: string
+          description: Gets or sets the error title.
+          nullable: true
+          example: An unexpected error has occurred.
+        detail:
+          type: string
+          description: Gets or sets the error detail.
+          nullable: true
+          example: ''
+        type:
+          type: string
+          description: Gets or sets the error type.
+          nullable: true
+          example: https://developer.signicat.com/docs/dashboard/error-codes/
+        traceId:
+          type: string
+          description: Gets the Trace ID for the error.
+          nullable: true
+          example: e9eb42a91fcae4b963db74d50b959108
+      additionalProperties: false
+      description: Validation Problem description and properties.
+    ValidationProblem:
+      type: object
+      properties:
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+          description: Gets the invalid parameters.
+          nullable: true
+          readOnly: true
+        status:
+          type: integer
+          description: Gets or sets the error status.
+          format: int32
+          example: '400'
+        code:
+          type: string
+          description: Gets or sets the error code.
+          nullable: true
+          example: validation_error
+        title:
+          type: string
+          description: Gets or sets the error title.
+          nullable: true
+          example: Your request parameters didn't validate.
+        detail:
+          type: string
+          description: Gets or sets the error detail.
+          nullable: true
+          example: ''
+        type:
+          type: string
+          description: Gets or sets the error type.
+          nullable: true
+          example: https://developer.signicat.com/docs/dashboard/error-codes/
+        traceId:
+          type: string
+          description: Gets the Trace ID for the error.
+          nullable: true
+          example: e9eb42a91fcae4b963db74d50b959108
+      additionalProperties: false
+      description: Validation Problem description and properties.

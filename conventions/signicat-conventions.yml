@@ -1,0 +1,38 @@
+generated: '2026-10-18'
+method: searched
+source: OpenAPI specifications, https://developer.signicat.com/docs/dashboard/error-codes.md
+auth_style: Bearer token in Authorization header
+idempotency:
+  coverage: none
+  description: No idempotency key mechanism found in OpenAPI specifications
+pagination:
+  style: offset/limit and cursor-based
+  parameters:
+  - offset: Used for paging
+  - limit: Set how many results you want per page (max/default 100)
+  - cursor: Cursor returned for paginating multiple sources, cannot be used together with offset and limit
+  response_fields: null
+error_envelope:
+  format: application/problem+json
+  fields:
+    type: URI to documentation describing the error
+    title: Summary of error type
+    code: Machine-readable error code
+    status: HTTP status code
+    detail: Explanation of the error
+    invalidParams: List of failed validation parameters
+    traceId: Trace ID for request correlation
+tracing:
+  request_id: traceId field in error responses
+  header: null
+versioning:
+  scheme: product-specific
+  description: Different APIs have their own versioning schemes (e.g., Sign API v2)
+rate_limit_signaling:
+  status_code: 429
+  headers:
+  - Retry-After: Specifies how long (in seconds) to wait before retrying
+reversibility:
+  documented: false
+  description: No reversal operations or windows documented in public documentation
+dry_run_mode: null

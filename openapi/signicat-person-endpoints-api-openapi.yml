@@ -1,0 +1,661 @@
+openapi: 3.2.0
+info:
+  title: Signicat Person Endpoints API
+  version: ''
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged Person Endpoints across 2 of this provider''s published API definitions: ongoing-monitoring-openapi.json, signicat-ongoing-monitoring-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/
+tags:
+- name: Person Endpoints
+paths:
+  /info/monitor/{monitorId}/person/{referenceKey}:
+    get:
+      tags:
+      - Person Endpoints
+      summary: Retrieves the most recent state of a person
+      description: This endpoint allows to get the person last snapshot by monitor id and reference key from the system.
+      operationId: GetLatestPersonSnapshot
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponseDto'
+              example:
+                dateOfBirth: '2000-12-04'
+                dateOfDeath: '2026-12-04'
+                firstName: John
+                preferredName: null
+                middleName: Doe
+                lastName: Smith
+                alias: null
+                nationalIdentityNumber: '12345678901'
+                nationality: NOR
+                taxCountryCode: NOR
+                registrationIdCountryCode: NOR
+                gender: Male
+                citizenCountryCode: NOR
+                addresses:
+                - type: Registered
+                  country: NOR
+                  postCode: '0101'
+                  postPlace: Oslo
+                  street: Main Street
+                  addressLine: Main Street 1
+                  startDate: '1990-01-01T00:00:00'
+                  endDate: '2027-10-16T14:12:59.0852592Z'
+                countryAffiliationsList:
+                - countryCode: NOR
+                  affiliation: Citizen
+                screenings:
+                - matchStrength: 100
+                  listType: SANCTION
+                  source: EU_GLOBAL
+                  externalUrls: []
+                deregistrationData:
+                  deregistrationCode: Emigrated
+                  deregistrationDate:
+                    year: 2026
+                    month: 1
+                    exactDate: '2026-01-14'
+                protection: null
+                sourceSpecific: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - Person Endpoints
+      summary: Delete person associated to a monitor
+      description: This endpoint allows to delete the person from the system in one specific monitor.
+      operationId: DeletePerson
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: referenceKey
+        in: path
+        description: Unique reference key of the entity.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOperationResponse'
+              example:
+                status: 200
+                message: Entity with reference key spar01 is in the process of being delete
+                monitorId: 019e8cc8-bb2c-7f4d-fae0-1eaf7aaa0cc9
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+  /info/monitor/{monitorId}/persons:
+    post:
+      tags:
+      - Person Endpoints
+      summary: Add person to monitor
+      description: This endpoint allows the creation of a new person to monitor in the system.
+      operationId: AddPerson
+      parameters:
+      - name: monitorId
+        in: path
+        description: Unique GUID identifier of the monitor.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Request object to add persons to the monitor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonsRequestDto'
+            example:
+              persons:
+              - source: trapets
+                referenceKey: referenceKey1
+                nationalIdentityNumber: '12345678901'
+                name:
+                  firstName: John
+                  lastName: Smith
+                  middleName: Doe
+                nationality: NOR
+                dateOfBirth: '1990-01-01'
+                address:
+                  country: NOR
+                  postCode: '0101'
+                  postPlace: Oslo
+                  street: Main Street 1
+                registrationIdCountryCode: NOR
+                taxCountryCode: NOR
+                citizenCountryCode: NOR
+              - source: se-spar
+                referenceKey: referenceKey2
+                nationalIdentityNumber: '12345678902'
+                name:
+                  firstName: Jane
+                  lastName: Smith
+                  middleName: Doe
+                nationality: SWE
+                dateOfBirth: '1992-02-02'
+                address:
+                  country: SWE
+                  postCode: '12345'
+                  postPlace: Stockholm
+                  street: Main Street 2
+                registrationIdCountryCode: SWE
+                taxCountryCode: SWE
+                citizenCountryCode: SWE
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://api.signicat.com/
+components:
+  schemas:
+    PersonResponseDto:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: First name of the person.
+        preferredName:
+          type:
+          - string
+          - 'null'
+          description: Preferred name of the person.
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: Middle name of the person.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: Last name of the person.
+        alias:
+          type:
+          - string
+          - 'null'
+          description: Alternative name or nickname associated with the person.
+        nationalIdentityNumber:
+          type:
+          - string
+          - 'null'
+          description: National identity number of the person.
+        nationality:
+          type:
+          - string
+          - 'null'
+          description: Nationality of the person.
+        taxCountryCode:
+          type:
+          - string
+          - 'null'
+          description: Tax country code associated with the individual.
+        registrationIdCountryCode:
+          type:
+          - string
+          - 'null'
+          description: Country code associated with the registration ID.
+        gender:
+          type:
+          - string
+          - 'null'
+          description: Gender of the person. (e.g., `Male`, `Female`, `Other` or `Unknown`)
+        citizenCountryCode:
+          type:
+          - string
+          - 'null'
+          description: Country code representing the citizenship of the person.
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Address'
+          description: Collection of addresses associated with a person.
+        countryAffiliationsList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CountryAffiliations'
+          description: List of country affiliations associated with the person.
+        screenings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RiskScreening'
+          description: List of screenings associated with the person.
+        deregistrationData:
+          $ref: '#/components/schemas/PersonDeregistrationDto'
+        protection:
+          $ref: '#/components/schemas/PersonProtectionDto'
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: 'Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.
+
+            A source is omitted entirely when it has no source-specific data.'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: 'Date of birth of the person.
+
+            The value is expected to be in a string format and represents only the date portion
+
+            (excluding any time-related information).'
+        dateOfDeath:
+          type:
+          - string
+          - 'null'
+          description: 'Date of death of the person.
+
+            The value is expected to be in a string format and represents only the date portion
+
+            (excluding any time-related information).'
+      additionalProperties: false
+    ApiOperationResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Represents the status of the operation, typically corresponding to an HTTP status code.
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+          description: Provides a descriptive message related to the outcome of the API operation.
+        monitorId:
+          type:
+          - string
+          - 'null'
+          description: Represents the unique identifier of a monitor resource.
+          format: uuid
+      additionalProperties: false
+    PersonNameDto:
+      required:
+      - firstName
+      - lastName
+      type: object
+      properties:
+        firstName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: First name of the person.
+        lastName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Last name of the person.
+        middleName:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Middle name of the person.
+      additionalProperties: false
+    PersonProtectionDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProtectionStatus'
+        protectedAttributes:
+          type:
+          - array
+          - 'null'
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+        protectedNotificationReceived:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApproximateDateDto:
+      type: object
+      properties:
+        year:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        month:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        exactDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
+    CountryAffiliations:
+      type: object
+      properties:
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: Represents the code of a country using its standardized abbreviation.
+        affiliation:
+          type:
+          - string
+          - 'null'
+          description: Represents the type or description of a connection or association to a specific country.
+      additionalProperties: false
+    PersonAddressRequest:
+      type: object
+      properties:
+        country:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: Represents the country associated with an address.
+        postCode:
+          type:
+          - string
+          - 'null'
+          description: Represents the postal code associated with an address.
+        postPlace:
+          type:
+          - string
+          - 'null'
+          description: Represents the city or locality associated with an address.
+        street:
+          type:
+          - string
+          - 'null'
+          description: Represents the street name of an address.
+      additionalProperties: false
+    ProtectionStatus:
+      enum:
+      - Partial
+      - Full
+      type: string
+    PersonRequestDto:
+      required:
+      - referenceKey
+      - source
+      type: object
+      properties:
+        source:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: 'Represents the origin or source of the request. This value is required
+
+            and must adhere to the specified length constraints.'
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: 'Represents a unique reference key associated with a person request.
+
+            This property is mandatory and must comply with specified length constraints.'
+        nationalIdentityNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the national identity number of a person. This value is optional
+
+            but may be required for certain validations or operations. It should comply
+
+            with applicable format and validity rules for national identity numbers.'
+        name:
+          $ref: '#/components/schemas/PersonNameDto'
+        nationality:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the nationality of a person using an optional ISO code format. This is required for certain sources.
+
+            The value must match a two- or three-letter ISO code or remain empty.'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The date of birth is optional. The correct format is YYYY-MM-DD
+        address:
+          $ref: '#/components/schemas/PersonAddressRequest'
+        registrationIdCountryCode:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the country code associated with the registration ID of a person. This is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+        taxCountryCode:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: 'The tax country code is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+        citizenCountryCode:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: 'The citizen country code is required for certain sources.
+
+            The value is expected to be a valid ISO 3166-1 alpha-2 or alpha-3 country code.'
+      additionalProperties: false
+    PersonDeregistrationDto:
+      type: object
+      properties:
+        deregistrationCode:
+          $ref: '#/components/schemas/PersonDeregistrationTypeDto'
+        deregistrationDate:
+          $ref: '#/components/schemas/ApproximateDateDto'
+      additionalProperties: false
+    RiskScreening:
+      type: object
+      properties:
+        matchStrength:
+          type:
+          - integer
+          - 'null'
+          description: Represents the strength of a match in risk screening results.
+          format: int32
+        listType:
+          type:
+          - string
+          - 'null'
+          description: Specifies the type of list associated with a risk screening process. (e.g., `PEP`, `SANCTION`)
+        source:
+          type:
+          - string
+          - 'null'
+          description: Represents the source of information used in risk screenings or monitoring processes.
+        externalUrls:
+          type:
+          - array
+          - 'null'
+          items:
+            maxLength: 100
+            minLength: 1
+            type: string
+          description: Represents a collection of external URLs associated with the screening entity.
+      additionalProperties: false
+    PersonsRequestDto:
+      required:
+      - persons
+      type: object
+      properties:
+        persons:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonRequestDto'
+          description: Collection of person records to be processed.
+      additionalProperties: false
+    Address:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the type of the address. The type is used to specify the categorization
+
+            or purpose of the address, such as registered, residential, business, or other.
+
+            The default value is `Unknown`.'
+        country:
+          pattern: ^$|^[A-Za-z]{2,3}$
+          type:
+          - string
+          - 'null'
+          description: 'Represents the country associated with the address. The value must be a valid
+
+            ISO 3166 alpha-2 or alpha-3 country code if provided. This property is used
+
+            to specify the country where the address is located.'
+        postCode:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the postal code of the address. The postal code is used to identify
+
+            specific geographic areas within a country or region and is commonly part of
+
+            the addressing system for mail delivery.'
+        postPlace:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the postal location or city corresponding to the address.
+
+            Typically used in combination with the postal code to identify the area
+
+            of the address. This property may be null if the information is unavailable.'
+        street:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the street name of an address. This property holds the specific street
+
+            information associated with the address, such as the road name. It is a part
+
+            of the standard formatting for identifying a location.'
+        addressLine:
+          type:
+          - string
+          - 'null'
+          description: 'Represents a specific part or line of the address, often used to provide
+
+            additional details about the address location. This property may include
+
+            information such as building names, apartment numbers, or other
+
+            descriptive elements that complement the main street or post details.'
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the start date associated with the address. This property is
+
+            used to indicate the date from which the address becomes valid or applicable.
+
+            The value can be `null`, indicating that no specific start date is set.'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: 'Represents the last date associated with the validity or applicability
+
+            of the address. This property indicates when the address is no longer
+
+            in use or relevant. If not set, the end date is considered undefined.'
+          format: date-time
+      additionalProperties: false
+    PersonDeregistrationTypeDto:
+      enum:
+      - Unknown
+      - Deceased
+      - Invalidated
+      - Emigrated
+      - Other
+      type: string
+      description: The type of deregistration reported for the person.
+x-refined-from:
+- ongoing-monitoring-openapi.json
+- signicat-ongoing-monitoring-openapi.yml

@@ -1,0 +1,317 @@
+openapi: 3.2.0
+info:
+  title: Signicat Monitors API
+  version: ''
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged Monitors across 2 of this provider''s published API definitions: ongoing-monitoring-person-openapi.json, signicat-ongoing-monitoring-person-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/monitor/person
+tags:
+- name: Monitors
+  description: 'Endpoints for performing CRUD operations on a monitor.
+
+
+    A monitor is a collection of persons to monitor for changes.'
+paths:
+  /monitors:
+    post:
+      tags:
+      - Monitors
+      summary: Create a monitor
+      description: Creates a blank monitor. The monitor must be populated with person data before it can be used.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorCreate'
+            example:
+              name: Platinum Card Owners
+              description: Keeping our platinum card customer database updated
+              sources:
+              - nationalRegistry
+              allowMock: false
+              isMock: false
+              returnBlockDataOnChange: false
+      responses:
+        '201':
+          description: Monitor created
+      operationId: postMonitors
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}:
+    delete:
+      tags:
+      - Monitors
+      summary: Delete monitor
+      description: Deletes the monitor, removing all stored person data.
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Monitor deleted
+      operationId: deleteMonitorsByMonitorId
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Monitors
+      summary: Retrieve monitor information
+      description: Returns key information about the monitor.
+      operationId: GetPersonMonitor
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorGet'
+              example:
+                name: Platinum Card Owners
+                enabled: false
+                created: '2018-06-16T15:41:20.20Z'
+                details:
+                  personCount: 8803
+                  unknownCount: 0
+                  lastPersonChange: '2019-08-01T12:00:00.0Z'
+                  lastChangeRequest: '2019-07-29T15:41:20.20Z'
+                allowMock: false
+                isMock: false
+                returnBlockDataOnChange: false
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/summary:
+    get:
+      tags:
+      - Monitors
+      summary: Retrieve monitor summaries
+      description: Retrieves a summary of your person monitors.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorsGet'
+              example:
+                data:
+                - id: 3b78ad77b9a34689b52d30b5ca4d2068
+                  name: Platinum Card Owners
+                  description: Keeping our platinum card customer database updated
+                  enabled: true
+                  changeTypes:
+                  - address
+                  - name
+                  created: '2018-06-16T15:41:20.20Z'
+                  returnBlockDataOnChange: false
+                - id: 7ed4071f8df34726bcf686e295268ead
+                  name: Gold Card Owners
+                  description: Keeping our gold card customer database updated
+                  enabled: true
+                  changeTypes:
+                  - name
+                  created: '2018-05-14T12:35:20.20Z'
+                  returnBlockDataOnChange: false
+      operationId: getMonitorsSummary
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+components:
+  schemas:
+    MonitorDetails:
+      type: object
+      properties:
+        personCount:
+          type: integer
+          description: The number of persons currently being monitored.
+          format: int32
+        unknownCount:
+          type: integer
+          description: The number of persons whose status is `Unknown`.
+          format: int32
+        lastPersonChange:
+          type:
+          - string
+          - 'null'
+          description: When a person change was last detected.
+          format: date-time
+        lastChangeRequest:
+          type:
+          - string
+          - 'null'
+          description: When a change log was last requested.
+          format: date-time
+      additionalProperties: false
+      description: ''
+    ChangeType:
+      enum:
+      - name
+      - address
+      type: string
+      description: A type of change that occurred on a person
+    MonitorsSummary:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the monitor.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the monitor.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the monitor.
+        enabled:
+          type: boolean
+          description: Whether the register is enabled.
+        changeTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangeType'
+          description: Person properties to monitor for changes.
+          deprecated: true
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Source'
+          description: Sources monitored
+        created:
+          type: string
+          description: When the monitor was created.
+          format: date-time
+        returnBlockDataOnChange:
+          type: boolean
+      additionalProperties: false
+      description: ''
+    Source:
+      enum:
+      - nationalRegistry
+      - trapets
+      type: string
+      description: What kind of sources to use for monitoring
+    MonitorCreate:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Name of the monitor.
+        description:
+          maxLength: 2000
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Description of the monitor.
+        sources:
+          maxItems: 1
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Source'
+          description: Sources to use for monitoring, defaults to Idfy.Monitor.Person.ApiDtos.Monitor.SourceDto.NationalRegistry
+        allowMock:
+          type: boolean
+          deprecated: true
+        isMock:
+          type: boolean
+          description: 'Set the monitor in a mock state, where you generate your own changes.
+
+            This will allow you to add persons for monitoring without having credentials for the targeted population registry.
+
+            This parameter is only meant for testing. You must remove it before switching to production.'
+        returnBlockDataOnChange:
+          type: boolean
+          description: Person Monitor will send ALL the related data elements together, even if only one of them changes (e.g. first, middle and last names even when last name alone changes) and then send full address element (addressLine, city, zipCode and country, even if only addressLine changes)
+      additionalProperties: false
+      description: ''
+    MonitorGet:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the monitor.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the monitor.
+        enabled:
+          type: boolean
+          description: If the register is enabled.
+        changeTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangeType'
+          description: Person properties to monitor for changes.
+          deprecated: true
+        created:
+          type: string
+          description: When the monitor was created.
+          format: date-time
+        details:
+          $ref: '#/components/schemas/MonitorDetails'
+        allowMock:
+          type: boolean
+          readOnly: true
+          deprecated: true
+        isMock:
+          type: boolean
+          description: If the monitor is in a mock state.
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Source'
+        returnBlockDataOnChange:
+          type: boolean
+      additionalProperties: false
+      description: ''
+    MonitorsGet:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MonitorsSummary'
+          description: A list of monitors for the current account.
+      additionalProperties: false
+      description: ''
+x-refined-from:
+- ongoing-monitoring-person-openapi.json
+- signicat-ongoing-monitoring-person-openapi.yml

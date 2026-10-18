@@ -1,0 +1,801 @@
+openapi: 3.2.0
+info:
+  title: Signicat SCIM - External idp management API
+  version: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged SCIM - External idp management across 2 of this provider''s published API definitions: siam-openapi.json, signicat-siam-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/ownidp
+  description: Generated server url
+security:
+- bearerAuth: []
+tags:
+- name: SCIM - External idp management
+paths:
+  /api/scim/v2/ExternalIdps:
+    get:
+      tags:
+      - SCIM - External idp management
+      summary: Retrieve external idps
+      description: 'This request retrieves external idps paginated with optional filtering and pagination by providing:
+
+        - `filter`: provides a filter expression
+
+        - `searchQuery`: A string to filter results. The query is applied to fields: name, issuer and external identifier
+
+        - `startIndex`: The 1-based index of the first result to return (default value: 1)
+
+        - `count`: The maximum number of results to return (default value: 20)
+
+        - `sortDirection`: The direction to sort the results (`ASC` or `DESC`).
+
+
+        **Access requirements**
+
+        - Requires a valid token anf the global `signicat:ownidp:external-idp:read` permission.'
+      operationId: getExternalIdps
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: searchQuery
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ''
+      - name: startIndex
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: count
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: sortOrder
+        in: query
+        required: false
+        schema:
+          type: string
+          default: DESC
+          enum:
+          - ASC
+          - DESC
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: External idp retrieved
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdpListResponse'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - SCIM - External idp management
+      summary: Create External IDP
+      description: 'Create a new External IDP
+
+        For schema definition please check the ''/schemas/v2/Schemas'' endpoint, with the following resourceId: ''urn:ownidp:scim:schemas:core:1.0:ExternalIdp'''
+      operationId: createExternalIdp
+      parameters:
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalIdpDto'
+        required: true
+      responses:
+        '201':
+          description: External IDP created
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdpResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/ExternalIdps/{externalIdpId}:
+    get:
+      tags:
+      - SCIM - External idp management
+      summary: Retrieve external idp
+      description: 'This request retrieves a single external idp by id.
+
+
+        **Access requirements**
+
+        - Requires a valid token anf the global `signicat:ownidp:external-idp:read` permission.'
+      operationId: getExternalIdp
+      parameters:
+      - name: externalIdpId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: External idp retrieved
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/RoleResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Did not find the external idp based on the value provided
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - SCIM - External idp management
+      summary: Delete External IDP
+      description: 'Delete an External IDP
+
+        For schema definition please check the ''/schemas/v2/Schemas'' endpoint, with the following resourceId: ''urn:ownidp:scim:schemas:core:1.0:ExternalIdp'''
+      operationId: deleteExternalIdp
+      parameters:
+      - name: externalIdpId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: External IDP deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - SCIM - External idp management
+      summary: Update external idp
+      description: 'Update a single External IDP by id
+
+        For schema definition please check the ''/schemas/v2/Schemas'' endpoint, with the following resourceId: ''urn:ownidp:scim:schemas:core:1.0:ExternalIdp'''
+      operationId: patchExternalIdp
+      parameters:
+      - name: externalIdpId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRequest'
+        required: true
+      responses:
+        '200':
+          description: External idp updated
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdpResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Did not find the external idp based on the value provided
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+components:
+  schemas:
+    ExternalIdpResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        name:
+          type: string
+        issuer:
+          type:
+          - string
+          - 'null'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    ErrorResponse:
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        code:
+          type: string
+        timestamp:
+          type: string
+        traceId:
+          type: string
+        spanId:
+          type: string
+        detail:
+          type: string
+        type:
+          type: string
+        requestUri:
+          type: string
+    AddOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+    Meta:
+      type: 'null'
+      properties:
+        resourceType:
+          type:
+          - string
+          - 'null'
+        created:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          format: uri
+        version:
+          type:
+          - string
+          - 'null'
+        createdMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+        lastModifiedMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+    ExternalIdpDto:
+      type: object
+      properties:
+        name:
+          type: string
+        issuer:
+          type: string
+      required:
+      - issuer
+      - name
+    ExternalIdpListResponse:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        totalResults:
+          type: integer
+          format: int32
+        itemsPerPage:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        startIndex:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        previousCursor:
+          type:
+          - string
+          - 'null'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdpResource'
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - Resources
+    PatchOperation:
+      type: object
+      discriminator:
+        propertyName: op
+      properties:
+        path:
+          type:
+          - string
+          - 'null'
+        removeOpValue:
+          oneOf:
+          - $ref: '#/components/schemas/AddOperation'
+          - $ref: '#/components/schemas/RemoveOperation'
+          - $ref: '#/components/schemas/ReplaceOperation'
+          writeOnly: true
+        op:
+          type: string
+      required:
+      - op
+    PatchRequest:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        Operations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AddOperation'
+            - $ref: '#/components/schemas/RemoveOperation'
+            - $ref: '#/components/schemas/ReplaceOperation'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - Operations
+    ErrorResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        detail:
+          type:
+          - string
+          - 'null'
+        status:
+          type: integer
+          format: int32
+        traceId:
+          type: string
+        spanId:
+          type: string
+        requestUri:
+          type: string
+        title:
+          type: string
+        code:
+          type: string
+        timestamp:
+          type: string
+        type:
+          type: string
+    RemoveOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+          removeOpValue:
+            $ref: '#/components/schemas/PatchOperation'
+      required:
+      - path
+    ReplaceOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+          removeOpValue:
+            $ref: '#/components/schemas/PatchOperation'
+    JsonNode:
+      type: 'null'
+    ScimPermission:
+      type: object
+      properties:
+        value:
+          type: string
+    RoleResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        displayName:
+          type: string
+          minLength: 1
+        description:
+          type:
+          - string
+          - 'null'
+        isEditable:
+          type:
+          - boolean
+          - 'null'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScimPermission'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - displayName
+      - externalId
+      - permissions
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- siam-openapi.json
+- signicat-siam-openapi.yml

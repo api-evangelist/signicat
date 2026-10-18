@@ -1,0 +1,501 @@
+openapi: 3.2.0
+info:
+  title: Signicat Validate API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Validate across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Validate
+paths:
+  /validate/nbid/sdo:
+    post:
+      tags:
+      - Validate
+      summary: Validate nbid SDO
+      description: 'Validates the signatures in a SEID-SDO, to validate the SDO we use the validation component from BankID Norway.
+
+        In this endpoint you can also include the data from the original document to validate that they matches the SDO data, the same goes for the signatures
+
+        TO USE THIS IN PRODUCTION, PLEASE CONTACT SIGNICAT SUPPORT'
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ValidateSDORequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateSDORequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ValidateSDORequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ValidateSDORequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateSDOResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ValidateSDOResponse'
+      operationId: postValidateNbidSdo
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /validate/nbid/sdo/parse:
+    post:
+      tags:
+      - Validate
+      summary: Parse and validate nbid sdo
+      description: 'This endpoint validates and parses signature data from a SEID-SDO, to validate/parse the SDO we use the validation component from BankID Norway.
+
+        This endpoint parses the SDO to readable data and provides you with information about the signatures and document.
+
+        TO USE THIS IN PRODUCTION, PLEASE CONTACT SIGNICAT SUPPORT'
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ParseSDORequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParseSDORequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ParseSDORequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ParseSDORequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParseSDOResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ParseSDOResponse'
+      operationId: postValidateNbidSdoParse
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /validate/nbid/sdo/parse/xml:
+    post:
+      tags:
+      - Validate
+      summary: Parse SDO to XML
+      description: Parse Nbid SEID-SDO to xml validation format. Returns 400 if SDO is not valid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ParseSDOXMLRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParseSDOXMLRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ParseSDOXMLRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ParseSDOXMLRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParseSDOXMLResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ParseSDOXMLResponse'
+      operationId: postValidateNbidSdoParseXml
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    ValidateSDOResponse:
+      type: object
+      properties:
+        requestId:
+          type:
+          - string
+          - 'null'
+        valid:
+          type:
+          - boolean
+          - 'null'
+        seal:
+          $ref: '#/components/schemas/Seal'
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidatedSigner'
+        summary:
+          type:
+          - string
+          - 'null'
+        validationError:
+          $ref: '#/components/schemas/ValidationError'
+        auditId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      additionalProperties: false
+    ParseSDOXMLResponse:
+      type: object
+      properties:
+        responseType:
+          type:
+          - string
+          - 'null'
+        responseId:
+          type:
+          - string
+          - 'null'
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParseSDOXMLResponseItem'
+      additionalProperties: false
+    ParseSDORequest:
+      type: object
+      properties:
+        sdoData:
+          type:
+          - string
+          - 'null'
+        externalReference:
+          type:
+          - string
+          - 'null'
+        fetchSSN:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CertificateType:
+      enum:
+      - HSM_MERCHANT_CERTIFICATE
+      - MOBILE_PERSONAL_CERTIFICATE
+      - NETCENTRIC_EMPLOYEE_CERTIFICATE
+      - NETCENTRIC_PERSONAL_CERTIFICATE
+      - NETCENTRIC_QUALIFIED_EMPLOYEE_CERTIFICATE
+      - NETCENTRIC_QUALIFIED_PERSONAL_CERTIFICATE
+      - SOFT_MERCHANT_CERTIFICATE
+      - UNKNOWN
+      type: string
+    ValidationError:
+      type: object
+      properties:
+        errorCode:
+          type:
+          - string
+          - 'null'
+        errorMessage:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidateSDORequest:
+      type: object
+      properties:
+        sdoData:
+          type:
+          - string
+          - 'null'
+        externalReference:
+          type:
+          - string
+          - 'null'
+        dataToValidate:
+          type:
+          - string
+          - 'null'
+        signersToValidate:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Signer'
+      additionalProperties: false
+    Signer:
+      type: object
+      properties:
+        identificator:
+          type:
+          - string
+          - 'null'
+        identificatorType:
+          $ref: '#/components/schemas/IdentificatorType'
+      additionalProperties: false
+    ParseSDOXMLResponseItem:
+      type: object
+      properties:
+        objectId:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        contentType:
+          type:
+          - string
+          - 'null'
+        b64Data:
+          type:
+          - string
+          - 'null'
+        b64Rule:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ParseSDOResponse:
+      type: object
+      properties:
+        requestId:
+          type:
+          - string
+          - 'null'
+        auditId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        signersValid:
+          type:
+          - boolean
+          - 'null'
+        seal:
+          $ref: '#/components/schemas/Seal'
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SDOSigner'
+        summary:
+          type:
+          - string
+          - 'null'
+        validationError:
+          $ref: '#/components/schemas/ValidationError'
+        signedData:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Seal:
+      type: object
+      properties:
+        sealedBy:
+          type:
+          - string
+          - 'null'
+        sealedTimestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        certificate:
+          $ref: '#/components/schemas/Certificate'
+        sealValid:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    IdentificatorType:
+      enum:
+      - Unknown
+      - BankIDUniqueId
+      - SSN
+      - OrganizationNumber
+      type: string
+    ParseSDOXMLRequest:
+      type: object
+      properties:
+        sdoData:
+          type:
+          - string
+          - 'null'
+          description: Base 64 encoded SDO (Signed document)
+        externalReference:
+          type:
+          - string
+          - 'null'
+          description: Your reference to the parse session
+      additionalProperties: false
+    ValidatedSigner:
+      type: object
+      properties:
+        identificator:
+          type:
+          - string
+          - 'null'
+        identificatorType:
+          $ref: '#/components/schemas/IdentificatorType'
+        valid:
+          type:
+          - boolean
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    X509Certificate:
+      type: object
+      properties:
+        rawData:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Certificate:
+      type: object
+      properties:
+        issuerName:
+          type:
+          - string
+          - 'null'
+        subjectName:
+          type:
+          - string
+          - 'null'
+        validFromDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        validToDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        versionNumber:
+          type:
+          - string
+          - 'null'
+        serialNumber:
+          type:
+          - string
+          - 'null'
+        keyAlgorithm:
+          type:
+          - string
+          - 'null'
+        keySize:
+          type:
+          - string
+          - 'null'
+        uniqueId:
+          type:
+          - string
+          - 'null'
+        originator:
+          type:
+          - string
+          - 'null'
+        bankName:
+          type:
+          - string
+          - 'null'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        policyOid:
+          type:
+          - string
+          - 'null'
+        commonName:
+          type:
+          - string
+          - 'null'
+        signingCertficate:
+          type:
+          - string
+          - 'null'
+        x509Certificate:
+          $ref: '#/components/schemas/X509Certificate'
+        keyUsage:
+          type:
+          - string
+          - 'null'
+        emailAddress: {}
+        signingTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+        certificateType:
+          $ref: '#/components/schemas/CertificateType'
+      additionalProperties: false
+    SDOSigner:
+      type: object
+      properties:
+        certificate:
+          $ref: '#/components/schemas/Certificate'
+        name:
+          type:
+          - string
+          - 'null'
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        pid:
+          type:
+          - string
+          - 'null'
+        ssn:
+          type:
+          - string
+          - 'null'
+        signedTimestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        valid:
+          type:
+          - boolean
+          - 'null'
+        ocsp:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

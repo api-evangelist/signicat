@@ -1,0 +1,244 @@
+openapi: 3.2.0
+info:
+  title: Signicat Delivery Logs API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged DeliveryLogs across 2 of this provider''s published API definitions: events-openapi.json, signicat-events-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/events-management
+tags:
+- name: DeliveryLogs
+paths:
+  /delivery-logs:
+    get:
+      tags:
+      - DeliveryLogs
+      summary: Query delivery logs
+      operationId: query_delivery_logs
+      parameters:
+      - name: subscriptionId
+        in: query
+        description: If specified, will retrieve only log items for this subscription
+        schema:
+          type: string
+      - name: success
+        in: query
+        description: If specified, will retrieve only log items with this success property
+        schema:
+          type: boolean
+      - name: cursor
+        in: query
+        description: Cursor used for pagination
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Array_SubscriptionEventDeliveryAttempt'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Array_SubscriptionEventDeliveryAttempt'
+    servers:
+    - url: https://api.signicat.com/events-management
+  /subscriptions/{subscriptionId}/delivery-logs/{id}:
+    get:
+      tags:
+      - DeliveryLogs
+      summary: Retrieve delivery log item
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionEventDeliveryAttempt'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionEventDeliveryAttempt'
+      operationId: getSubscriptionsBySubscriptionIdDeliveryLogsById
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/events-management
+  /subscriptions/{subscriptionId}/delivery-logs/{id}/replay:
+    post:
+      tags:
+      - DeliveryLogs
+      summary: Replay event delivery
+      description: Attempts to deliver this event again
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReplayResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ReplayResponse'
+      operationId: postSubscriptionsBySubscriptionIdDeliveryLogsByIdReplay
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/events-management
+components:
+  schemas:
+    ReplayResponse:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    SubscriptionEventDeliveryAttempt:
+      required:
+      - subscriptionId
+      - subscriptionName
+      - subscriptionType
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique ID for this delivery attempt
+        timestamp:
+          type:
+          - string
+          - 'null'
+          description: When the delivery was attempted
+          format: date-time
+        success:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the delivery was successful
+        event:
+          allOf:
+          - $ref: '#/components/schemas/Event'
+          description: The raw event data being delivered
+        attempt:
+          type:
+          - integer
+          - 'null'
+          description: How many attempts to deliver the event prior to this attempt
+          format: int32
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: Additional properties depending upon the subscription type and error
+        errorMessage:
+          type:
+          - string
+          - 'null'
+          description: The error message for the delivery attempt, if any
+        subscriptionId:
+          type: string
+          description: ID of the subscription the event was delivered to
+        subscriptionType:
+          type: string
+          description: Type of the subscription the event was delivered to
+        subscriptionName:
+          type: string
+          description: Name of the subscription the event was delivered to
+      additionalProperties: false
+    Array_SubscriptionEventDeliveryAttempt:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionEventDeliveryAttempt'
+          description: The contents of the current page.
+      additionalProperties: false
+    Event:
+      required:
+      - accountId
+      - eventData
+      - eventName
+      - expiresAt
+      - id
+      - organizationId
+      - sender
+      - tags
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the event
+        timestamp:
+          type: string
+          description: Timestamp of when the event was generated
+          format: date-time
+        sender:
+          type: string
+          description: ID of the sending service
+        eventName:
+          type: string
+          description: Name of the event, unique per sender
+        eventData:
+          description: Arbitrary event data
+        accountId:
+          type:
+          - string
+          - 'null'
+          description: The target Account ID
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: The target Organization ID
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          description: The event's expiration tim
+          format: date-time
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The event's tags
+      additionalProperties: false
+      description: The event data
+x-refined-from:
+- events-openapi.json
+- signicat-events-openapi.yml

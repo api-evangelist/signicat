@@ -1,0 +1,722 @@
+openapi: 3.2.0
+info:
+  title: Signicat MobileID device registration API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged MobileID device registration across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: MobileID device registration
+  description: 'You can use the **MobileID device registration** resource for operations related to registering MobileID devices for your ReuseID users.
+
+
+    ## Useful information
+
+
+    - A MobileID device registration operation is identified by its `transactionId`.
+
+    - The `transactionId` can be used for subsequent operations such as to check the state of an ongoing registration or to cancel it.
+
+    - Once a device is registered, it can be identified by its universally unique identifier (UUID) called a `deviceId`.
+
+    - The `deviceId` is required for carrying out ReuseID operations such as authentication and signing on a specific device.'
+paths:
+  /credentials/devices/registrations:
+    post:
+      tags:
+      - MobileID device registration
+      summary: Start registration
+      description: This operation initiates a MobileID device registration or re-registration for a ReuseID user.
+      operationId: addRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+            example:
+              userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+              device:
+                name: My iPhone
+              operationProperties:
+                registrationMode: REGISTRATION
+                authLevel: TWO_FACTOR
+                sessionTimeout: '90000'
+        required: true
+      responses:
+        '201':
+          description: The request to start registration was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceRegistration'
+              example:
+                transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                accountId: a-sdge-Abcdefghijk123456789
+                state: PENDING
+                operationProperties:
+                  activationCode: '928401'
+                  authLevel: TWO_FACTOR
+                  sessionTimeout: '90000'
+                  sessionExpiryTime: '2021-01-21T24:17:57.123Z'
+                  registrationMode: REGISTRATION
+                created: '2021-01-21T22:47:27.123Z'
+                device:
+                  name: My iPhone
+                user:
+                  externalRef: Empl10300469
+                  id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: userId
+                      reason: userId cannot be null or empty
+                Multiple request parameters are invalid.:
+                  description: Multiple request parameters are invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: userId
+                      reason: 'Invalid UUID string: f4efbade-d474-4697-b910'
+                    - name: registrationMode
+                      reason: Registration mode must be one of REGISTRATION|RE_REGISTRATION
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/registrations/{transactionId}:
+    get:
+      tags:
+      - MobileID device registration
+      summary: Get state of ongoing registration
+      description: This operation returns the registration response for an ongoing MobileID device registration.
+      operationId: getRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '200':
+          description: Successfully fetched the state of the registration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceRegistration'
+              examples:
+                Registration PENDING.:
+                  description: Response sample of when a registration is in progress.
+                  value:
+                    transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                    accountId: a-sdge-Abcdefghijk123456789
+                    state: PENDING
+                    operationProperties:
+                      activationCode: '928401'
+                      authLevel: TWO_FACTOR
+                      sessionTimeout: '90000'
+                      sessionExpiryTime: '2021-01-21T24:17:57.123Z'
+                      registrationMode: REGISTRATION
+                    created: '2021-01-21T22:47:27.123Z'
+                    device:
+                      name: My iPhone
+                    user:
+                      externalRef: Empl10300469
+                      id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                Registration COMPLETED.:
+                  description: Response sample of when a registration has been completed successfully.
+                  value:
+                    transactionId: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+                    accountId: a-sdge-Abcdefghijk123456789
+                    state: COMPLETED
+                    operationProperties:
+                      activationCode: '928401'
+                      authLevel: TWO_FACTOR
+                      sessionExpiryTime: '2021-01-21T22:48:57.123Z'
+                      registrationMode: REGISTRATION
+                      geoFencing:
+                        countryCode: 'NO'
+                        clientStatus: OK
+                        serverBoundaryValidation: SUCCESS
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                    riskAttributes:
+                      hwKeyClientStatus: OK_SIGNED_SUCCESS
+                      deviceHash: DCkhP7PqJPtCWlhdIo8EIiioJXadZtTb5E1V8GMmKOc=
+                      signerHashes: MWFgoYYrQg07r3I1NIX7J8GZUQIn6YclVVzUZ3arxrk=
+                    created: '2021-01-21T22:47:27.123Z'
+                    completed: '2021-01-21T22:52:27.654Z'
+                    device:
+                      id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                      name: My iPhone
+                    user:
+                      externalRef: Empl10300469
+                      id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    delete:
+      tags:
+      - MobileID device registration
+      summary: Cancel ongoing registration
+      description: This operation cancels an ongoing MobileID device registration.
+      operationId: cancelRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '204':
+          description: Successfully cancelled the registration request.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    AppAttestation:
+      type: object
+      description: 'An object that describes the properties of the attestation.
+
+
+        **Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#app-attestation).
+
+        '
+      properties:
+        playIntegrityStatus:
+          type: string
+          description: 'The Play Integrity attestation status of the ReuseID user''s device that was used for the operation.
+
+
+            **Possible values**: See the [Play Integrity statuses](/apis/reuseid/#section/Common-concepts/Play-Integrity-statuses) table.
+
+            '
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          description: 'The timestamp when the Play Integrity attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          description: 'The App Attest attestation status of the ReuseID user''s device that was used for the operation
+
+
+            **Possible values**: See the [App Attest statuses](/apis/reuseid/#section/Common-concepts/App-Attest-statuses) table.
+
+            '
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          description: 'The timestamp when the App Attest attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:55:03.025Z'
+    postOperationContext:
+      description: 'The context of the operation which is sent to your app, through a secure end-to-end encrypted channel, **after** the operation is successfully completed.<br /><br /> **Note**: To learn more, see our [Operation context](/docs/mobile-identity/mobileid/features/operation-context) feature documentation.'
+      properties:
+        title:
+          type: string
+          description: 'The title of the operation context.
+
+            '
+          example: null
+          default: null
+        content:
+          type: string
+          description: 'The content of the operation context.
+
+
+            **Allowed values**:
+
+            - It must be something that your application is able to process, for example a string.
+
+            - It cannot exceed the maximum character length in the [Operation context maximum character lengths](#section/Common-concepts/Operation-context-maximum-character-lengths) table.
+
+
+            **Note**: ReuseID handles this as a binary blob.
+
+            '
+          example: null
+          default: null
+        mimeType:
+          type: string
+          description: 'The MIME type of the operation context `content`.
+
+
+            **Note**: This must be a valid MIME type, such as `text/plain`.
+
+            '
+          example: text/plain
+          default: null
+      required:
+      - content
+      - mimeType
+      - title
+      example: null
+      default: null
+    Location:
+      type: object
+      properties:
+        accuracy:
+          type: string
+          description: The location accuracy of the ReuseID user's device that was used for the operation.
+          example: '0.564'
+        altitude:
+          type: string
+          description: The location altitude of the ReuseID user's device that was used for the operation.
+          example: 76.2352.3563
+        latitude:
+          type: string
+          description: The location latitude of the ReuseID user's device that was used for the operation.
+          example: 12.34234.143
+        longitude:
+          type: string
+          description: The location longitude of the ReuseID user's device that was used for the operation.
+          example: 32.24314.1431
+    SimpleUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that contains the user attributes that were added to the ReuseID user, given as key-value pairs.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    DeviceRegistration:
+      type: object
+      properties:
+        operationProperties:
+          $ref: '#/components/schemas/registrationOperationProperties'
+          description: An object that contains the configured properties of the operation, which determined how it was carried out.
+        accountId:
+          type: string
+          description: The ID of the account that carried out the operation.
+          example: a-sdge-Abcdefghijk123456789
+        transactionId:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        state:
+          type: string
+          description: 'The state of the operation.
+
+
+            **Possible values**: See the [Operation states](/apis/reuseid/#section/Common-concepts/Operation-states) table.
+
+            '
+          example: PENDING
+        errorCode:
+          type: string
+          description: 'The error code that is given if the operation fails.
+
+
+            **Possible values**: See the [Operation error codes](/apis/reuseid/#section/Common-concepts/Operation-error-codes) table.
+
+            '
+          example: LOCKED_PIN_VERIFICATION_FAILED
+        errorDescription:
+          type: string
+          description: The descriptive error message that is given if the operation fails.
+          example: Operation failed because the device is locked by PIN verification
+        created:
+          type: string
+          description: 'The timestamp when the initial response was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        completed:
+          type: string
+          description: 'The timestamp when the operation was completed.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:33.456Z'
+        device:
+          $ref: '#/components/schemas/SimpleDevice'
+          description: An object that contains information about the ReuseID user's device that was used for the operation.
+        user:
+          $ref: '#/components/schemas/SimpleUser'
+          description: An object that contains information about the ReuseID user that was used for the operation.
+        riskAttributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that contains the risk attributes collected for the device.
+
+
+            **Possible values**: See the [Risk attributes](/apis/reuseid/#section/Common-concepts/Risk-attributes) table.
+
+
+            **Note**: To learn how to configure which attributes are collected, see our [Application configuration](/docs/mobile-identity/mobileid/features/application-configuration#risk-data) feature documentation.
+
+            '
+          example:
+            hwKeyClientStatus: OK_SIGNED_SUCCESS
+            deviceHash: DCkhP7PqJPtCWlhdIo8EIiioJXadZtTb5E1V8GMmKOc=
+            signerHashes: MWFgoYYrQg07r3I1NIX7J8GZUQIn6YclVVzUZ3arxrk=
+        tags:
+          type: array
+          description: The tags that you added so that the callback events can be filtered.
+          items:
+            type: string
+    DeviceRegistrationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The name to set for the ReuseID user''s device being registered.
+
+
+            **Allowed values**:
+
+            It cannot exceed the maximum character length of 128   characters.
+
+            '
+          example: My iPhone
+        id:
+          type: string
+          description: 'The ID of the ReuseID user''s device.
+
+
+            - When the registration mode is set to `REGISTRATION`, you must not supply a value as the `deviceId` is generated by this operation.
+
+            - When the registration mode is set to `RE_REGISTRATION`, you must supply the `deviceId` of the device to be re-registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+    registrationOperationProperties:
+      type: object
+      properties:
+        activationCode:
+          type: string
+          description: 'The activation code, required to complete the registration operation on the device.
+
+            '
+          example: '928401'
+        location:
+          $ref: '#/components/schemas/Location'
+          description: 'An object that describes the location of the ReuseID user''s device that was used for the operation.
+
+
+            **Note**: In order for this object to be returned in the response, you must enable it in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#risk-data).
+
+            '
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+        geofencing:
+          $ref: '#/components/schemas/Geofencing'
+        sessionExpiryTime:
+          type: string
+          description: 'The timestamp when the operation expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        activatedAuthenticationMethods:
+          type: array
+          description: A list of the activated authentication methods.
+          example: '[DEVICE, DEVICE:PIN]'
+          items:
+            type: string
+        postOperationContext:
+          $ref: '#/components/schemas/postOperationContext'
+        authLevel:
+          type: string
+          description: 'The authentication level that was used for the operation.
+
+
+            **Possible values**:
+
+            - See the [Authentication levels](/apis/reuseid/#section/Common-concepts/Authentication-levels) table.
+
+            '
+          example: TWO_FACTOR
+        sessionTimeout:
+          type: string
+          description: 'The specified timeout for the operation, given in milliseconds.
+
+            '
+          example: '240000'
+        metadata:
+          type: string
+          description: 'The meta data that was set for the operation.
+
+            '
+        registrationMode:
+          type: string
+          description: 'The registration mode that was used for the operation.
+
+
+            **Possible values**: See the [Device registration modes](/apis/reuseid/#section/Common-concepts/Device-registration-modes) table.
+
+            '
+          example: RE_REGISTRATION
+        requestedUserAttributes:
+          type: array
+          description: 'The user attributes that were requested for the operation.
+
+
+            **Possible values**:
+
+            - If no value was set, then the user object returned after a successful operation will not include any attributes.
+
+            - If a non-existent user attribute was set, then this will be silently ignored.
+
+            '
+          items:
+            type: string
+    SimpleDevice:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the ReuseID user's device (`deviceId`).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          description: The name of the ReuseID user's device.
+          example: My iPhone
+    RegistrationRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        device:
+          $ref: '#/components/schemas/DeviceRegistrationRequest'
+          description: 'The device object, which contains the properties of the ReuseID user''s device to be registered or re-registered:
+
+
+            - When the registration mode is set to `REGISTRATION`, you can optionally supply this object.
+
+            - When the registration mode is set to `RE_REGISTRATION`, you must supply this object.
+
+            '
+        tags:
+          type: array
+          description: A parameter that can be used to add tags to the callback events, so that you can filter them.
+          items:
+            type: string
+        operationProperties:
+          $ref: '#/components/schemas/RegistrationOperationPropertiesRequest'
+          description: 'An object used to configure the properties of the operation, which determines how it is carried out.
+
+            '
+    Geofencing:
+      type: object
+      description: 'An object that contains information about the geofencing validation.
+
+
+        **Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#geofencing).
+
+        '
+      properties:
+        countryCode:
+          type: string
+          description: 'The country code in an ISO 3166-1 Alpha-2 format, as reported by the SDK.
+
+
+            **Possible values**: For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.
+
+            '
+          example: 'NO'
+        clientStatus:
+          type: string
+          description: 'The status of the geofencing operation, as reported by the SDK.
+
+
+            **Possible values**: See the [Geofencing client statuses](/apis/reuseid/#section/Common-concepts/Geofencing-client-statuses) table.
+
+            '
+          example: GEOCODER_NOT_SUPPORTED
+        serverBoundaryValidation:
+          type: string
+          description: 'The status of the geofencing server validation, after evaluating the country against the allowed region.
+
+
+            **Possible values**: See the [Geofencing server boundary validation statuses](/apis/reuseid/#section/Common-concepts/Geofencing-server-boundary-validation-statuses) table.
+
+            '
+          example: VERIFIED
+    RegistrationOperationPropertiesRequest:
+      type: object
+      properties:
+        postOperationContext:
+          $ref: '#/components/schemas/postOperationContext'
+        registrationMode:
+          type: string
+          description: 'A parameter that determines the registration mode to use for the operation.
+
+
+            **Allowed values**:
+
+            - See the [Device registration modes](/apis/reuseid/#section/Common-concepts/Device-registration-modes) table.
+
+            - If no value is set, then the default mode `REGISTRATION` is used.
+
+            '
+          example: RE_REGISTRATION
+        authLevel:
+          type: string
+          description: 'The authentication level to use for the operation.
+
+
+            **Allowed values**:
+
+            - See the [Authentication levels](/apis/reuseid/#section/Common-concepts/Authentication-levels) table.
+
+            - If no value is set, then the default level `TWO_FACTOR` is used.
+
+            '
+          example: TWO_FACTOR
+        sessionTimeout:
+          type: string
+          description: 'The duration until the operation times out, given in milliseconds.
+
+
+            **Allowed values**: It cannot exceed the maximum configured value of `18720000` milliseconds.
+
+            '
+          example: '240000'
+        metadata:
+          type: string
+          description: 'A parameter that can be used to send meta data for the operation.
+
+
+            **Note**: This value is never changed and is returned in the operation response.
+
+
+            **Allowed values**: It cannot exceed the maximum character length of 1024 characters.
+
+            '
+        requestedUserAttributes:
+          type: array
+          description: 'The user attributes to return.
+
+
+            **Allowed values**:
+
+            - If no value is set, then the user object returned after a successful operation will not include any attributes.
+
+            - If a non-existent user attribute is set, then this will be silently ignored.
+
+            '
+          items:
+            type: string
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

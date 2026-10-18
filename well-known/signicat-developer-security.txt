@@ -1,0 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+#
+# Signicat RFC 9116 security.txt
+# security.txt file for https://www.signicat.com - more info: https://securitytxt.org/
+#
+Canonical: https://www.signicat.com/.well-known/security.txt
+
+Expires: 2027-03-04T16:36:09+00:00
+
+# If you would like to report a security issue please first read our
+# security and compliance policy:
+Policy: https://www.signicat.com/security-and-compliance
+
+# Please only use our responsible disclosure program through Intigriti to report any vulnerabilities
+Contact: https://app.intigriti.com/programs/signicat/signicatresponsibledisclosure/detail
+Contact: mailto:security@signicat.com
+
+# This is the PGP public key that we use to sign our security.txt.
+# Fingerprint: 7AEB 7656 167E C2BD 1D6F 5E27 6C3D 3E9E E2F1 2575
+# Do *not* use it to send encrypted mails to us.
+Encryption: https://www.signicat.com/.well-known/signicat.pub.asc
+
+# We can offer a proper response in the following languages:
+Preferred-Languages: en
+
+# If you think you'd like to join our team, please visit our careers page:
+Hiring: https://www.signicat.com/about/careers
+
+#
+# Thank you!
+#
+-----BEGIN PGP SIGNATURE-----
+
+iIwEARYKADQWIQTuHqYsMx7K/DJ5F4sb1EOIq6Lm2AUCaahfeRYcc2VjdXJpdHlA
+c2lnbmljYXQuY29tAAoJEBvUQ4iroubYk+8BAKJnAngspVhpGbODp6DAdKOkqPWT
+sk0qd+FZCQ5IVBjTAP9EDJDuBQnXUTFQb3R+FoURZrG6erLShVD1AmXYiSqdCg==
+=4HhN
+-----END PGP SIGNATURE-----

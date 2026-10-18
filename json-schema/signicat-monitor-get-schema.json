@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-monitor-get-schema.json",
+  "title": "MonitorGet",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-person-openapi.yml#/components/schemas/MonitorGet",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name of the monitor."
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Description of the monitor."
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "If the register is enabled."
+    },
+    "changeTypes": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/ChangeType"
+      },
+      "description": "Person properties to monitor for changes.",
+      "deprecated": true
+    },
+    "created": {
+      "type": "string",
+      "description": "When the monitor was created.",
+      "format": "date-time"
+    },
+    "details": {
+      "$ref": "#/$defs/MonitorDetails"
+    },
+    "allowMock": {
+      "type": "boolean",
+      "readOnly": true,
+      "deprecated": true
+    },
+    "isMock": {
+      "type": "boolean",
+      "description": "If the monitor is in a mock state."
+    },
+    "sources": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Source"
+      }
+    },
+    "returnBlockDataOnChange": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ChangeType": {
+      "enum": [
+        "name",
+        "address"
+      ],
+      "type": "string",
+      "description": "A type of change that occurred on a person"
+    },
+    "MonitorDetails": {
+      "type": "object",
+      "properties": {
+        "personCount": {
+          "type": "integer",
+          "description": "The number of persons currently being monitored.",
+          "format": "int32"
+        },
+        "unknownCount": {
+          "type": "integer",
+          "description": "The number of persons whose status is `Unknown`.",
+          "format": "int32"
+        },
+        "lastPersonChange": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "When a person change was last detected.",
+          "format": "date-time"
+        },
+        "lastChangeRequest": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "When a change log was last requested.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false,
+      "description": ""
+    },
+    "Source": {
+      "enum": [
+        "nationalRegistry",
+        "trapets"
+      ],
+      "type": "string",
+      "description": "What kind of sources to use for monitoring"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+name: Signicat agent skills
+generated: '2026-10-18'
+method: generated
+source: Generated from Signicat OpenAPI contracts under openapi/; every operation verified verbatim as an operationId in the named spec. No provider-published skills or AGENTS.md were found in https://developer.signicat.com/llms.txt.
+skills:
+- file: signicat-sign-a-document.md
+  name: Sign a document with Sign API v2
+  api: openapi/signicat-sign-openapi.yml
+  operations:
+  - uploadDocument
+  - createSigningSession
+  - getSigningSession
+  - getDocument
+- file: signicat-authenticate-a-user-with-an-eid.md
+  name: Authenticate an end user with an eID (Authentication REST API)
+  api: openapi/signicat-eid-hub-openapi.yml
+  operations:
+  - CreateSession
+  - GetSession
+  - CancelSession
+- file: signicat-verify-an-id-document.md
+  name: Verify an ID document and selfie (Assure API)
+  api: openapi/signicat-id-document-and-biometric-verification-openapi.yml
+  operations:
+  - createDossier
+  - createProcess
+  - setImages
+  - startVerification
+  - getProcess
+- file: signicat-verify-an-organisation.md
+  name: Look up and screen an organisation (Data Verification API)
+  api: openapi/signicat-data-verification-openapi.yml
+  operations:
+  - Organization_GetBasicOrganizationInfo_GET
+  - Organization_GetRoles_GET
+  - Organization_GetUbo_GET
+  - OrganizationGlobal_Screening_GET
+- file: signicat-monitor-customers.md
+  name: Set up ongoing monitoring of organisations and persons
+  api: openapi/signicat-ongoing-monitoring-openapi.yml
+  operations:
+  - CreateMonitor
+  - AddOrganization
+  - AddPerson
+  - GetMonitor
+  - GetChangesByMonitorId

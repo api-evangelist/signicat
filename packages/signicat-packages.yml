@@ -1,0 +1,56 @@
+generated: '2026-10-18'
+method: probed
+generator: harvest-packages.py
+source: registry metadata endpoints (registry.npmjs.org, pypi.org, rubygems.org, api.nuget.org, packagist.org, crates.io)
+ownership_rule: 'official: true only when the registry metadata (homepage, repository, author, URLs) names the provider''s domain (linkedin.com,
+  security/signicat-domain-security.yml, security/signicat-vulnerability-disclosure.yml, signicat.com) or its accepted GitHub org.'
+packages:
+- name: signicat
+  registry: npm
+  url: https://www.npmjs.com/package/signicat
+  language: JavaScript
+  official: true
+  version: 0.10.8
+  published: '2023-09-25'
+  evidence: metadata names signicat.com
+
+- name: signicat-client-ts
+  registry: npm
+  url: https://www.npmjs.com/package/signicat-client-ts
+  language: TypeScript
+  official: false
+  version: 1.4.0
+  published: '2025-06-12'
+  evidence: author is Jungmin Moon, not clearly affiliated with Signicat
+- name: signicat-oidc-client
+  registry: npm
+  url: https://www.npmjs.com/package/signicat-oidc-client
+  language: JavaScript
+  official: false
+  version: 1.0.12
+  published: '2019-05-15'
+  evidence: no clear affiliation with Signicat
+- name: signicat-token
+  registry: npm
+  url: https://www.npmjs.com/package/signicat-token
+  language: JavaScript
+  official: false
+  version: 1.3.8
+  published: '2023-12-29'
+  evidence: no clear affiliation with Signicat
+- name: signicat-signature-api
+  registry: npm
+  url: https://www.npmjs.com/package/signicat-signature-api
+  language: JavaScript
+  official: false
+  version: 1.1.0
+  published: '2024-02-18'
+  evidence: no clear affiliation with Signicat
+- name: '@signicat/designi'
+  registry: npm
+  url: https://www.npmjs.com/package/@signicat/designi
+  language: JavaScript
+  official: true
+  version: 0.5.46
+  published: '2024-10-23'
+  evidence: scoped package @signicat indicates official package

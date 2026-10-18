@@ -1,0 +1,31 @@
+generated: '2026-10-18'
+method: searched
+source: https://developer.signicat.com/docs/data-verification/release-notes.md
+scheme: product-specific release notes
+current_version: null
+entries:
+- version: null
+  date: '2025-12-11'
+  breaking: false
+  highlights:
+  - New sourceSpecific field in Ownership endpoint with extra source-specific information
+  - Backwards compatible functionality
+- version: null
+  date: '2025-09-25'
+  breaking: false
+  highlights:
+  - New data source: OpenRegisters (Kausate) for German Handelsregister data
+  - Available for organization search, basic info, roles, and documents endpoints
+- version: null
+  date: '2024-12-18'
+  breaking: false
+  highlights:
+  - New data source: Kontakt- og reservasjonsregisteret (KRR) for Norwegian contact information
+  - Available for Persons Contacts endpoint
+- version: null
+  date: '2024-11-26'
+  breaking: false
+  highlights:
+  - Updated industry codes in Danish CVR (Central Business Register)
+  - Changes effective from January 1, 2025
+note: Each API product has its own release notes. Data Verification API shows detailed changelog with dates and features.

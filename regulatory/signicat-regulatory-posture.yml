@@ -1,0 +1,141 @@
+generated: '2026-10-18'
+method: searched
+probe: true
+source: https://www.signicat.com/about/privacy-policy
+sources:
+- https://www.signicat.com/about/privacy-policy
+- https://www.signicat.com/about/accessibility-statement
+- https://www.signicat.com/about/privacy-statement-assure
+- https://www.signicat.com/about/privacy-statement-connect
+- https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+- https://developer.signicat.com/terms/agreements/appendix-9-sub-processors/version-3.0.html
+probe_notes: >-
+  The pre-flight dossier had no legal_pages, so the pages were read directly. Conventional paths on www.signicat.com
+  (/accessibility, /legal, /legal/subprocessors, /legal/dpa, /trust, /trust-center, /security, /subprocessors,
+  /sub-processors, /transparency, /ai) returned 404 on 2026-10-18. /privacy redirected to the homepage. The legal
+  agreements (DPA, sub-processors, security requirements, SLA) are published anonymously on developer.signicat.com/terms/agreements/.
+  www.signicat.com briefly returned HTTP 429 or a Cloudflare challenge after repeated probing. A retry a few minutes later
+  returned 200. Nothing was found for sbom, ai_transparency, training_data_summary, global_privacy_control, age_assurance,
+  notice_and_action, transparency_report or support_lifetime. The privacy policy mentions the Do Not Track (DNT) setting
+  but says nothing about Global Privacy Control.
+signals:
+  data_subject_request:
+    url: https://www.signicat.com/about/privacy-policy
+    section: Public websites
+    channel: dataprotectionofficer@signicat.com
+    rights_named: [information, access, rectification, withdrawal of consent / erasure, restriction of processing, objection to direct marketing]
+    escalation: Norwegian Data Protection Authority (Datatilsynet)
+    evidence:
+    - source: https://www.signicat.com/about/privacy-policy
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "Individuals who want to exercise any of these rights can contact Signicat."
+    - source: https://www.signicat.com/about/privacy-policy
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "If our handling of personal data is not found to be satisfactory, and issues cannot be resolved with us directly, individuals can complain to the Norwegian Data Protection Authority (Datatilsynet)."
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "provide assistance to the Controller in fulfilling its duties under the Applicable Data Protection Law, including but without limitation the Controllers obligations towards data subjects to ensure their right to information, access, rectification, erasure, restriction of processing, and data portability, to the extent such assistance is necessary for the Controller to be compliant with Applicable Data Protection Law."
+    note: >-
+      The website privacy policy lists the GDPR rights of website visitors and names a DPO contact. Requests go to
+      Signicat by contacting it. There is no form and no API. For customer end-user data, Signicat is the processor and
+      commits in DPA §2.2 to help the controller with data-subject requests.
+  subprocessors:
+    url: https://developer.signicat.com/terms/agreements/appendix-9-sub-processors.html
+    versioned_url: https://developer.signicat.com/terms/agreements/appendix-9-sub-processors/version-3.0.html
+    last_updated: '01/07/2026'
+    change_notice: '30 days'
+    evidence:
+    - source: https://developer.signicat.com/terms/agreements/appendix-9-sub-processors/version-3.0.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "List of sub-suppliers and sub-processors (other than identity issuers and third-party providers)"
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The Processor may not use a subcontractor to process Personal Data without notifying the Controller in writing at least 30 days before the new Sub-Processor starts processing any Personal Data."
+    note: >-
+      A dated, versioned table of sub-processors (Appendix 9, v3.0, effective 01/07/2026). Older versions v1.0 and v2.0
+      are also published. Each row gives the entity, registration number, address, service, processing and data location.
+      The first rows are Signicat AB, Signicat AS and Google Cloud EMEA Limited. The website privacy policy, by contrast,
+      says only that "A list of third parties involved in personal data processing will be made available upon request."
+  data_residency:
+    url: https://developer.signicat.com/terms/agreements/appendix-9-sub-processors/version-3.0.html
+    regions: [EU/EEA]
+    evidence:
+    - source: https://developer.signicat.com/terms/agreements/appendix-9-sub-processors/version-3.0.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "Google Cloud EMEA Limited ... Hosting services and core systems. End user personal data, as defined in the DPA Appendix Checklist. EU/EEA ... All products"
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The Processor shall specify where the Personal Data is stored at any time and shall ensure that any transfer of data shall be done in accordance with the relevant and applicable transfer mechanisms as set out in Applicable Data Protection Law."
+    note: >-
+      The sub-processor table has a "Data location" column for each processor. The core hosting row (Google Cloud EMEA
+      Limited, all products) reads EU/EEA. The first quote is joined table cells, not a single sentence. The DPA commits
+      Signicat to state where personal data is stored and to use SCC module 2 for transfers outside the EU/EEA.
+      This records published locations only. It is not a selectable-region product feature.
+  incident_notification:
+    url: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+    section: 8 Notification of non-compliance and data breaches
+    stated_sla: 'as soon as possible or at the latest within 24 hours after becoming aware of it'
+    evidence:
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The Processor shall, as soon as possible or at the latest within 24 hours after becoming aware of it, notify the Controller of a breach of security leading to the accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to, Personal Data transmitted, stored or otherwise processed or similar Personal Data breaches."
+    note: The anonymously published DPA (last updated 02/08/2023) commits Signicat to notify a customer of a personal-data breach within 24 hours.
+  exit_assistance:
+    url: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+    section: 11 Termination
+    evidence:
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "After termination of this Agreement, the Processor shall return all Personal Data in a format agreed on between the Parties, and in accordance with reasonable industry standards."
+    - source: https://developer.signicat.com/terms/agreements/appendix-6-data-processing-agreement.html
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The Processor shall further delete or destroy in a secure and definite/irreversible manner, insofar reasonably possible, all Personal Data, as well as any back-up copies."
+    note: >-
+      This is a contractual commitment to return data at termination and then delete it, including backups. The format is
+      "agreed on between the Parties". There is no self-service export tool or switching process, so this is weaker than
+      the EU Data Act's switching obligations.
+  accessibility_conformance:
+    url: https://www.signicat.com/about/accessibility-statement
+    report: https://resources.signicat.com/hubfs/Downloads/Signicat%20Accessibility%20Conformance%20Report.pdf
+    standard: [WCAG 2.1 AA]
+    conformance: partial
+    evidence:
+    - source: https://www.signicat.com/about/accessibility-statement
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "Signicat is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content do not fully conform to the accessibility standard."
+    - source: https://www.signicat.com/about/accessibility-statement
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The accessibility conformance report below indicates that www.signicat.com partially supports WCAG 2.1 Level AA conformance."
+    note: >-
+      The statement says it was created on 20 December 2021. It claims partial WCAG 2.1 AA conformance for signicat.com
+      and links a downloadable conformance report (PDF; fetched 200 application/pdf, 189065 bytes, content not parsed). Product statements are said to be at developer.signicat.com/terms/accessibility/.
+  data_retention:
+    url: https://www.signicat.com/about/privacy-statement-assure
+    evidence:
+    - source: https://www.signicat.com/about/privacy-statement-assure
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "The collected information will be obtained by Signicat’s customer, and will be deleted from Signicat's systems after the default (maximum) retention period of 30 days, or as defined by the controller."
+    - source: https://www.signicat.com/about/privacy-statement-assure
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "In order to be able to resolve issues that can arise after the identification is performed, necessary logs information will be kept for up to 60 days."
+    - source: https://www.signicat.com/about/privacy-statement-connect
+      http_status: 200
+      fetched: '2026-10-18'
+      quote: "For an authentication transaction with Signicat’s Authentication products, logs are never kept more than 12 months before they are permanently deleted."
+    note: >-
+      The per-product privacy statements give specific retention periods. Identity validation (Assure) data defaults to
+      a maximum of 30 days and its logs are kept up to 60 days. Authentication logs are kept no more than 12 months.

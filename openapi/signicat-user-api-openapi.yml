@@ -1,0 +1,2077 @@
+openapi: 3.2.0
+info:
+  title: Signicat User API
+  version: '1.0'
+  description: 'Operations tagged User across 4 of this provider''s published API definitions: mobileid-openapi.json, reuseid-openapi.json, signicat-mobileid-openapi.yml, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/core
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: User
+  description: 'The MobileID user API provides you with operations related to creating and managing users (sometimes referred to as identities) for MobileID.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----
+
+
+    ## Useful information
+
+    Most operations in the MobileID service require a MobileID user, which is identified by a valid user ID (userId).
+
+
+    A user may optionally contain attributes such as an address or phone number, in the form of key-value pairs.
+
+
+    A MobileID user can have two different states:
+
+
+    User stateDescription
+
+
+    ACTIVEAn active state represents a normal MobileID user which is successfully registered.
+
+
+    LOCKEDA locked state represents a MobileID user which has been locked.
+
+
+    You cannot perform any device operations on a MobileID user in a locked state.'
+paths:
+  /users:
+    post:
+      tags:
+      - User
+      summary: Create user
+      description: 'The Create user operation creates a valid MobileID user with an active (ACTIVE) user state (state).
+
+
+        Once the user is successfully created, a unique user ID (userId) is generated. This userId is then used to identify the user in all subsequent MobileID operations.'
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+              additionalProperties: false
+            example:
+              externalRef: Empl10300469
+              segment: SE
+              attributes:
+                firstname: George
+                lastname: Harrison
+        required: true
+      responses:
+        '201':
+          description: Successfully created a MobileID user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                additionalProperties: false
+              example:
+                externalRef: Empl10300469
+                segment: SE
+                id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                created: '2022-08-23T12:28:57.123Z'
+                state: ACTIVE
+                attributes:
+                  firstname: George
+                  lastname: Harrison
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The attribute is invalid.:
+                  description: The attribute is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: Attribute:'FirstName'
+                      reason: Attribute:'FirstName' must start with a letter, digit or an '_', and contain only digits, lowercase letters (a-z), and the characters -._~
+                Multiple attributes are invalid.:
+                  description: Multiple attributes are invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: Attribute:'FirstName'
+                      reason: Attribute:'FirstName' must start with a letter, digit or an '_', and contain only digits, lowercase letters (a-z), and the characters -._~
+                    - name: Attribute:'LastName'
+                      reason: Attribute:'LastName' must start with a letter, digit or an '_', and contain only digits, lowercase letters (a-z), and the characters -._~
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                User already exists:
+                  description: The error response when a user already exists.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: User entity already exists
+                    code: user_entity_already_exists
+                    status: 409
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Aborting user creation. User entity with user ID: Empl10300469 already exists.'
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /users/resolve:
+    post:
+      tags:
+      - User
+      summary: Resolve external reference
+      description: The Resolve external reference operation resolves a specified external reference for an end-user and returns the associated user ID (userId) to use for subsequent MobileID operations.
+      operationId: resolveUserIDByExtref
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalRefResolveRequest'
+              additionalProperties: false
+            example:
+              externalRef: Empl10300469
+        required: true
+      responses:
+        '200':
+          description: Successfully resolved the external reference and fetched the MobileID user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdValue'
+                additionalProperties: false
+              example:
+                externalRef: Empl10300469
+                userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with external reference: bobdylan.'
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /users/{userId}:
+    get:
+      tags:
+      - User
+      summary: Get user
+      description: The Get user operation retrieves detailed information for a MobileID user, specified by the user ID (userId).
+      operationId: getUser
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the MobileID user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                additionalProperties: false
+              example:
+                externalRef: Empl10300469
+                segment: SE
+                id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                created: '2022-08-23T12:28:57.123Z'
+                state: ACTIVE
+                attributes:
+                  firstname: George
+                  lastname: Harrison
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+    delete:
+      tags:
+      - User
+      summary: Delete user
+      description: 'The Delete user operation deletes a MobileID user, specified by the user ID (userId).
+
+
+        Only user entities in a locked (LOCKED) user state (state) can be deleted.'
+      operationId: deleteUser
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '204':
+          description: Successfully deleted the MobileID user.
+        '400':
+          description: The MobileID user must be in a LOCKED state to be deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Invalid operation
+                code: invalid_operation
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: User entity must be in LOCKED state in order to be deleted.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+    patch:
+      tags:
+      - User
+      summary: Update user
+      description: 'The Update user operation updates the attributes of a MobileID user, specified by the user ID (userId).
+
+
+        To do this, you must specify the key-value pairs that you want to add, update or remove. If an attribute is not mentioned, it will stay the same.
+
+
+        In summary, this means that:
+
+
+        If the attribute in the list does not exist, then the new attribute will be added.
+
+
+        If the attribute in the list already exists, then the existing attribute will be updated (patched).
+
+
+        If the attribute in the list already exists and null is specified, then the existing attribute will be removed.
+
+
+        If the attribute in the list does not exist and null is specified, then no action will occur.
+
+
+        ## Example
+
+        If the following attributes were given in the Create user operation:
+
+
+        ```json
+
+        {
+
+        "externalRef":"test1",
+
+        "attributes": {
+
+        "abc": "123",
+
+        "def": "456",
+
+        "ghi": "789"
+
+        }
+
+        }
+
+        ```
+
+        And the following attributes were given in the Update user operation:
+
+
+        ```json
+
+        {
+
+        "abc": "example1",
+
+        "xxx": "example2",
+
+        "ghi": null
+
+        }
+
+        ```
+
+        Then the result would be the following attributes:
+
+
+        ```json
+
+        {
+
+        "abc": "example1",
+
+        "def": "456",
+
+        "xxx": "example2"
+
+        }
+
+        ```'
+      operationId: updateUser
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+              additionalProperties: false
+            example:
+              segment: 'NO'
+              attributes:
+                lastname: null
+                age: '44'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the MobileID user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                additionalProperties: false
+              example:
+                externalRef: Empl10300469
+                segment: 'NO'
+                id: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                created: '2021-01-21T22:47:27.123Z'
+                lastUsed: '2021-01-21T22:47:27.123Z'
+                state: ACTIVE
+                attributes:
+                  firstname: George
+                  age: '44'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The request identifier is invalid.:
+                  description: The request identifier is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    detail: userId must start with a letter or digit and contain only digits, lowercase letters (a-f), and the character -
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: state
+                      reason: User state must be one of ACTIVE|LOCKED
+                Multiple request parameters are invalid.:
+                  description: Multiple request parameters are invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: state
+                      reason: User state must be one of ACTIVE|LOCKED
+                    - name: Attribute:'FirstName'
+                      reason: Attribute:'FirstName' must start with a letter, digit or an '_', and contain only digits, lowercase letters (a-z), and the characters -._~
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity already exists
+                code: user_entity_already_exists
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Aborting user creation. User entity with user ID: Empl10300469 already exists.'
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /users/{userId}/transactions:
+    get:
+      tags:
+      - User
+      summary: Get transactions for user
+      description: 'The Get transactions for user operation returns a list of device transactions for an end-user''s devices.
+
+
+        Note: The list contains device transactions from all of their available devices.'
+      operationId: getUserTransactions
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) that will carry out the operation, in a valid UUID format.
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: deviceId
+        in: query
+        description: 'An optional parameter that you should only pass if you get an error due to a broadcast operation. '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter that you should only pass if you get an error due to a broadcast operation. '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: limit
+        in: query
+        description: 'An optional parameter that determines the number of objects (device transactions) that are shown on each page.
+
+
+          It must be a whole number ranging from <code>1</code> to <code>100</code>.
+
+
+          If not provided, the the default value of <code>100</code> will be used.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter that determines the number of objects (device transactions) that are shown on each page.
+
+
+            It must be a whole number ranging from <code>1</code> to <code>100</code>.
+
+
+            If not provided, the the default value of <code>100</code> will be used.
+
+            '
+          example: 10
+        example: 10
+      - name: offset
+        in: query
+        description: 'An optional parameter that determines the ID of the first transaction to include in the operation response,
+
+          specified by the transaction ID (<code>transactionId</code>).
+
+
+          If not provided, then the result will start with the first transaction in the device history.
+
+          '
+        required: false
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter that determines the ID of the first transaction to include in the operation response,
+
+            specified by the transaction ID (<code>transactionId</code>).
+
+
+            If not provided, then the result will start with the first transaction in the device history.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the transactions for the end-user’s devices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileIDTransaction'
+                additionalProperties: false
+              example:
+                previous: /users/d910994d-80b2-4125-a6b1-062b5b2f43ba/transactions?limit=1&offset=39277b72-53c2-4780-ad56-a8c8d8a33542
+                next: /users/d910994d-80b2-4125-a6b1-062b5b2f43ba/transactions?limit=1&offset=a1c66944-e5e3-46e3-ba36-750622205ef3
+                limit: 1
+                transactions:
+                - transactionId: c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  ref: /authentications/mapped-from-c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  operationType: AUTHENTICATION
+                  state: SUCCESS
+                  created: '2023-08-11T11:30:05.000Z'
+                  expires: '2023-08-11T11:31:05.000Z'
+                  deviceId: db441aa4-dd01-4bf7-8795-f75a94ec8d61
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                offset does not exist:
+                  description: offset does not exist
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: Offset 58ccbe4f-5c81-4425-bb7d-f6378f35d402 does not exist
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Internal error
+                code: internal_error
+                status: 500
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: error occurred
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /users/{userId}/id-verifications:
+    get:
+      tags:
+      - User
+      summary: Get identity verifications for user
+      description: This operation returns a list of all identity verifications that a ReuseID user has carried out.
+      operationId: getIDVerifications
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the identity verification for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IDVerification'
+              example:
+              - verificationId: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+                userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                provider: signicatvideoid
+                dossierId: 66666666-1617-45a7-991d-785c2ad77111
+                processId: 88888888-1617-45a7-991d-785c2ad77222
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+              - verificationId: b412c7fb-91j2-5g5m-gs98-7304bc33ef33
+                userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                provider: signicatvideoid
+                dossierId: 54456566-1777-45a7-321d-115c2ad77132
+                processId: 87081841-1617-45a7-991d-785c2ad77233
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 3775172-3640-44b7-811e-555c2fe30156
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+    post:
+      tags:
+      - User
+      summary: Add identity verification
+      description: This operation adds an entry to the list of identity verifications that a ReuseID user has carried out.
+      operationId: addIDVerification
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IDVerificationAddRequest'
+            example:
+              userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+              provider: signicatvideoid
+              dossierId: 66666666-1617-45a7-991d-785c2ad77111
+              processId: 88888888-1617-45a7-991d-785c2ad77222
+              orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        required: true
+      responses:
+        '201':
+          description: Successfully added an identity verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDVerification'
+              example:
+                verificationId: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+                userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                provider: signicatvideoid
+                dossierId: 66666666-1617-45a7-991d-785c2ad77111
+                processId: 88888888-1617-45a7-991d-785c2ad77222
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /users/{userId}/id-verifications/{verificationId}:
+    get:
+      tags:
+      - User
+      summary: Get identity verification
+      description: This operation returns a specific identity verification that a ReuseID user has carried out.
+      operationId: getIDVerification
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: verificationId
+        in: path
+        description: 'The ID of the identity verification, in a valid UUID format.
+
+
+          **Note**: The `verificationId` is created when the identity verification is added.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the identity verification, in a valid UUID format.
+
+
+            **Note**: The `verificationId` is created when the identity verification is added.
+
+            '
+          example: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+        example: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+      responses:
+        '200':
+          description: Successfully fetched the identity verification for the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDVerification'
+              example:
+                verificationId: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+                userId: 0e99b25c-abde-4553-973b-8d94d49cd87e
+                provider: signicatvideoid
+                dossierId: 66666666-1617-45a7-991d-785c2ad77111
+                processId: 88888888-1617-45a7-991d-785c2ad77222
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: The user identity verification does not exist
+                code: user_id_verification_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching identity verification with verification ID : b477c7fc-93d0-4e9d-bc58-7444bc33ef12 and user ID : a-sdge-Abcdefghijk123456789. '
+    delete:
+      tags:
+      - User
+      summary: Delete identity verification
+      description: This operation deletes a specific identity verification that a ReuseID user has carried out.
+      operationId: deleteIDVerification
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: verificationId
+        in: path
+        description: 'The ID of the identity verification, in a valid UUID format.
+
+
+          **Note**: The `verificationId` is created when the identity verification is added.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the identity verification, in a valid UUID format.
+
+
+            **Note**: The `verificationId` is created when the identity verification is added.
+
+            '
+          example: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+        example: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+      responses:
+        '204':
+          description: Successfully deleted the identity verification.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: The user identity verification does not exist
+                code: user_id_verification_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching identity verification with verification ID : b477c7fc-93d0-4e9d-bc58-7444bc33ef12 and user ID : a-sdge-Abcdefghijk123456789. '
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /users/{userId}/credentials:
+    get:
+      tags:
+      - User
+      summary: Get credentials for user
+      description: This operation returns a list of all device and/or passkey credentials for a ReuseID user.
+      operationId: getCredentials
+      parameters:
+      - name: userId
+        in: path
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: credentialType
+        in: query
+        description: 'A required parameter that determines the credential type of the transactions that are returned for this operation.
+
+
+          **Allowed values**: It must be  either `device` or `passkey`.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'A required parameter that determines the credential type of the transactions that are returned for this operation.
+
+
+            **Allowed values**: It must be  either `device` or `passkey`.
+
+            '
+          example: device
+        example: device
+      - name: limit
+        in: query
+        description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+          **Allowed values**:
+
+          - It must be a whole number ranging from `1` to `100`.
+
+          - If no value is set, then the default value `100` is used.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+            **Allowed values**:
+
+            - It must be a whole number ranging from `1` to `100`.
+
+            - If no value is set, then the default value `100` is used.
+
+            '
+          example: 10
+        example: 10
+      - name: offset
+        in: query
+        description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+          **Allowed values**:
+
+          - You must specify this transaction using its `transactionId`.
+
+          - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+            **Allowed values**:
+
+            - You must specify this transaction using its `transactionId`.
+
+            - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginationCredentials'
+              example:
+                next: /users/db4b1fc1-57fa-46fd-94c6-58aa2bd59d44/credentials?credentialType=device&limit=3&offset=381007a5-56d6-48f2-a9f3-1f6b114b62b8
+                credentials:
+                - type: DEVICE
+                  id: 0f23f8ec-3899-42a2-9f22-b7c8eec8f3e6
+                  name: device name
+                  state: ACTIVE
+                  lastOperationType: AUTHENTICATION
+                  lastUsed: '2025-09-07T13:42:41.141Z'
+                  ref: /credentials/devices/0f23f8ec-3899-42a2-9f22-b7c8eec8f3e6?userId=db4b1fc1-57fa-46fd-94c6-58aa2bd59d44
+                - type: DEVICE
+                  id: 17013a66-01b4-4c3d-8767-a4a0a233024f
+                  name: device name
+                  state: DELETED
+                  lastOperationType: REGISTRATION
+                  lastUsed: '2025-09-06T18:38:37.655Z'
+                  ref: /credentials/devices/17013a66-01b4-4c3d-8767-a4a0a233024f?userId=db4b1fc1-57fa-46fd-94c6-58aa2bd59d44
+                - type: DEVICE
+                  id: 29653db6-5f3f-4be3-b799-4e4d2a72afb5
+                  name: device name
+                  state: DELETED
+                  lastOperationType: AUTHENTICATION
+                  lastUsed: '2025-08-26T07:40:26.627Z'
+                  ref: /credentials/devices/29653db6-5f3f-4be3-b799-4e4d2a72afb5?userId=db4b1fc1-57fa-46fd-94c6-58aa2bd59d44
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Internal error
+                code: internal_error
+                status: 500
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: error occurred
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    UserUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: "An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.\n\nThe identifier must<ul>\n<li>be unique in the scope of the account</li>\n<li>have a max length of 128 characters.</li>\n </ul>\n"
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter, used for segmentation of end-users and their corresponding transactions.
+
+
+            It can have any value, but it cannot exceed the maximum possible length of 128 characters.
+
+            '
+          example: 'NO'
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties: false
+          description: "The user attributes, given as key-value pairs.\n\nThe keys must:<ul>\n<li>Start with a letter (<code>a-z</code>), digit or an underscore (<code>_</code>).</li>\n<li>Contain only digits, lowercase letters (<code>a-z</code>), or certain special characters (<code>-._~:@</code>).</li>\n<li>Have a max length of 128 characters.</li>\n </ul>\nThe values must have a max length of 256 characters.\n"
+          example:
+            firstname: George
+            lastName: Harrison
+    MobileIDTransaction:
+      type: object
+      additionalProperties: false
+      properties:
+        previous:
+          type: string
+          additionalProperties: false
+          description: A URI that can be used to get the previous set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=4e5ea8f1-9ee1-409e-8fc0-2dbc5b9b315a&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          additionalProperties: false
+          description: A URI that can be used to get the next set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          additionalProperties: false
+          description: 'The number of objects (device transactions) that are shown on each page.
+
+
+            This is a whole number ranging from <code>1</code> to <code>100</code>.
+
+            '
+          example: 10
+        transactions:
+          type: array
+          additionalProperties: false
+          description: A list of device transactions.
+          items:
+            $ref: '#/components/schemas/Transaction'
+            additionalProperties: false
+    UserIdValue:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: "An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.\n\nThe identifier must<ul>\n<li>be unique in the scope of the account</li>\n<li>have a max length of 128 characters.</li>\n </ul>\n"
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter, used for segmentation of end-users and their corresponding transactions.
+
+
+            It can have any value, but it cannot exceed the maximum possible length of 128 characters.
+
+            '
+          example: 'NO'
+        userId:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>) as generated upon user creation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+    UserRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: "An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.\n\nThe identifier must<ul>\n<li>be unique in the scope of the account</li>\n<li>have a max length of 128 characters.</li>\n </ul>\n"
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'An optional parameter, used for segmentation of end-users and their corresponding transactions.
+
+
+            It can have any value, but it cannot exceed the maximum possible length of 128 characters.
+
+            '
+          example: 'NO'
+        attributes:
+          type: object
+          additionalProperties: false
+          description: "The user attributes, given as key-value pairs.\n\nThe keys must:<ul>\n<li>Start with a letter (<code>a-z</code>), digit or an underscore (<code>_</code>).</li>\n<li>Contain only digits, lowercase letters (<code>a-z</code>), or certain special characters (<code>-._~:@</code>).</li>\n<li>Have a max length of 128 characters.</li>\n </ul>\nThe values must have a max length of 256 characters.\n"
+          example:
+            firstname: George
+            lastName: Harrison
+    ExternalRefResolveRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: "An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.\n\nThe identifier must<ul>\n<li>be unique in the scope of the account</li>\n<li>have a max length of 128 characters.</li>\n </ul>\n"
+          example: Empl10300469
+          minLength: 1
+      required:
+      - externalRef
+    User:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: 'An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'A parameter used for segmentation of end-users and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user last executed any <code>REGISTRATION</code>, <code>AUTHENTICATION</code> or <code>SIGNATURE</code> operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties: false
+          description: 'The user attributes, given as key-value pairs.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    Transaction:
+      type: object
+      additionalProperties: false
+      properties:
+        transactionId:
+          type: string
+          additionalProperties: false
+          description: The ID of the device transaction.
+          example: 3c68023d-c524-401c-b632-e495c498e2d0
+        ref:
+          type: string
+          additionalProperties: false
+          description: A link to the operation object for the device transaction.
+          example: /registrations/3c68023d-c524-401c-b632-e495c498e2d0
+        operationType:
+          type: string
+          additionalProperties: false
+          description: 'The operation type used for the transaction.
+
+
+            See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values.
+
+            '
+          example: ACTIVATION
+        state:
+          type: string
+          additionalProperties: false
+          description: The state of the device transaction.
+          example: SUCCESS
+        created:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the device transaction was created.
+
+
+            Returned in pattern <code>yyyy-MM-dd''T''HH:mm:ss.SSSZ</code>.
+
+            '
+        expires:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the device transaction expires.
+
+
+            Returned in pattern <code>yyyy-MM-dd''T''HH:mm:ss.SSSZ</code>.
+
+            '
+        deviceId:
+          type: string
+          additionalProperties: false
+          description: ' The ID of the user''s device used for the operation.
+
+            '
+    CredentialTransaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The ID of the transaction.
+          example: 3c68023d-c524-401c-b632-e495c498e2d0
+        ref:
+          type: string
+          description: A link to the operation object for the transaction.
+          example: /registrations/3c68023d-c524-401c-b632-e495c498e2d0
+        operationType:
+          type: string
+          description: 'The operation type that was used for the transaction.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: ACTIVATION
+        state:
+          type: string
+          description: The state of the transaction.
+          example: SUCCESS
+        created:
+          type: string
+          description: 'The timestamp when the transaction was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        expires:
+          type: string
+          description: 'The timestamp when the transaction expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        credentialId:
+          type: string
+          description: 'The ID of the ReuseID user''s credential that was used for the operation.
+
+            '
+        credentialType:
+          type: string
+          description: 'The type of the ReuseID user''s credential that was used for the operation.
+
+            '
+    UserUpdateRequest_2:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'A parameter that allows you to segment ReuseID users and their corresponding transactions.
+
+
+            **Allowed values**:
+
+            - It can have any value.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+
+            **Example**: Group ReuseID users by country using country codes such as `NO`, `SE`, `DK`.
+
+            '
+          example: 'NO'
+        state:
+          type: string
+          description: 'The new state to set for the ReuseID user.
+
+
+            **Allowed values**:
+
+            - An enum that must be either `ACTIVE` or `LOCKED`.
+
+            - See the [User states](/apis/reuseid/#section/Common-concepts/User-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that allows you to add user attributes to the ReuseID user, given as key-value pairs.
+
+
+            **Allowed values**:
+
+            - The keys can only start with a letter (`a-z`), digit or an underscore (`_`).
+
+            - The keys can only contain digits, lowercase letters (`a-z`), or certain special characters (`-._~:@`).
+
+            - The keys cannot exceed the maximum character length of 128 characters.
+
+            - The values cannot exceed the maximum character length of 256 characters.
+
+
+            **Example**: They could contain contact information such as name, address and phone number.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    UserIdValue_2:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        userId:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+    UserRequest_2:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'A parameter that allows you to segment ReuseID users and their corresponding transactions.
+
+
+            **Allowed values**:
+
+            - It can have any value.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+
+            **Example**: Group ReuseID users by country using country codes such as `NO`, `SE`, `DK`.
+
+            '
+          example: 'NO'
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that allows you to add user attributes to the ReuseID user, given as key-value pairs.
+
+
+            **Allowed values**:
+
+            - The keys can only start with a letter (`a-z`), digit or an underscore (`_`).
+
+            - The keys can only contain digits, lowercase letters (`a-z`), or certain special characters (`-._~:@`).
+
+            - The keys cannot exceed the maximum character length of 128 characters.
+
+            - The values cannot exceed the maximum character length of 256 characters.
+
+
+            **Example**: They could contain contact information such as name, address and phone number.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    IDVerification:
+      type: object
+      properties:
+        verificationId:
+          type: string
+          description: The ID of the identity verification, in a valid UUID format.
+          example: f42ac67e-7eb6-40fb-b72e-c48fd9bbd013
+        userId:
+          type: string
+          description: The ID of the ReuseID user, in a valid UUID format.
+          example: 801d7c7f-5d1e-46dc-827a-460e9c622cd4
+        provider:
+          type: string
+          description: 'The name of the provider that performed the identity verification.
+
+            '
+          example: signicatvideoid
+        dossierId:
+          type: string
+          description: 'The ID of the identity verification dossier, in a valid UUID format.
+
+            '
+          example: 12ced477-7ba2-41a6-9f38-4b9f0172bc11
+        processId:
+          type: string
+          description: 'The ID of the identity verification process, in a valid UUID format.
+
+            '
+          example: 7bc36291-b096-4d25-bccc-56680c38c515
+        created:
+          type: string
+          description: 'The timestamp when the identity verification was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-22T21:47:27.233Z'
+        orchestrationId:
+          type: string
+          description: 'The ID of the orchestration used, for workflow synchronisation, in a valid UUID format.
+
+            '
+          example: 8bc36291-b096-4d25-bccc-56680c38c515
+    ExternalRefResolveRequest_2:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+    Credential:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'The type of the ReuseID user''s credential.
+
+
+            **Possible values**: It can be either `DEVICE` or `PASSKEY`.
+
+            '
+          example: DEVICE
+        id:
+          type: string
+          description: 'The ID of the ReuseID user''s credential.
+
+
+            **Possible values**: Depending on the type of credential returned, this can be either the `deviceId` or the `passkeyId`.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          description: The name of the ReuseID user's credential.
+          example: my iPhone
+        state:
+          type: string
+          description: 'The state of the ReuseID user''s credential.
+
+
+            **Possible values**: It can be either `PENDING`, `COMPLETED` or `FAILED`.
+
+            '
+          example: PENDING
+        lastOperationType:
+          type: string
+          description: 'The last operation type that the ReuseID user''s credential carried out.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user''s credential last carried out an operation.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          writeOnly: true
+        ref:
+          type: string
+          description: 'A link to the operation object for the credential.
+
+            '
+    IDVerificationAddRequest:
+      type: object
+      properties:
+        provider:
+          type: string
+          description: 'The name of the provider that performed the identity verification.
+
+
+            **Note**: This should be the same as the provider used in the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) request.
+
+            '
+          example: signicatvideoid
+        dossierId:
+          type: string
+          description: 'The ID of the identity verification dossier, in a valid UUID format.
+
+
+            **Note**: You can obtain this from the [Create dossier](/apis/id-document-and-biometric-verification/#tag/Dossiers/operation/createDossier) response body.
+
+            '
+          example: 12ced477-7ba2-41a6-9f38-4b9f0172bc11
+        processId:
+          type: string
+          description: 'The ID of the identity verification process, in a valid UUID format.
+
+
+            **Note**: You can obtain this from the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) response body.
+
+            '
+          example: 7bc36291-b096-4d25-bccc-56680c38c515
+        orchestrationId:
+          type: string
+          description: 'The ID of the orchestration, used for workflow synchronisation, in a valid UUID format.
+
+            '
+          example: 8cc36291-b096-4d25-bccc-66680c38c516
+    UserTransactions:
+      type: object
+      properties:
+        previous:
+          type: string
+          description: A URI that can used to get the previous set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=4e5ea8f1-9ee1-409e-8fc0-2dbc5b9b315a&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          description: A URI that can be used to get the next set of transactions.
+          example: /devices/7fd01f14-151b-48f4-9aa6-7cfa2140989e/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          description: 'The number of objects (transactions) that are shown on each page.
+
+
+            **Allowed values**: It must be a whole number ranging from `1` to `100`.
+
+            '
+          example: 10
+        transactions:
+          type: array
+          description: A list of all transactions that the ReuseID user has carried out, for the set credential type.
+          items:
+            $ref: '#/components/schemas/CredentialTransaction'
+    PaginationCredentials:
+      type: object
+      properties:
+        previous:
+          type: string
+          description: A URI that can be used to get the previous set of credentials.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=4e5ea8f1-9ee1-409e-8fc0-2dbc5b9b315a&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          description: A URI that can be used to get the next set of credentials.
+          example: /devices/7fd01f14-151b-48f4-9aa6-7cfa2140989e/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          description: 'The number of objects (credentials) that are shown on each page.
+
+
+            **Allowed values**: It must be a whole number ranging from `1` to `100`.
+
+            '
+          example: 10
+        credentials:
+          type: array
+          description: A list of all of the ReuseID user's credentials, for the set credential type.
+          items:
+            $ref: '#/components/schemas/Credential'
+    User_2:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          description: 'The timestamp when the ReuseID user was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user last carried out an operation such as a registration, authentication or signing.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          description: 'The state of the ReuseID user, returned as an enum.
+
+
+            **Possible values**: See the [User states](/apis/reuseid/#section/Common-concepts/User-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that contains the user attributes that were added to the ReuseID user, given as key-value pairs.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    UserUpdateRequest_3:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'A parameter that allows you to segment ReuseID users and their corresponding transactions.
+
+
+            **Allowed values**:
+
+            - It can have any value.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+
+            **Example**: Group ReuseID users by country using country codes such as `NO`, `SE`, `DK`.
+
+            '
+          example: 'NO'
+        state:
+          type: string
+          description: 'The new state to set for the ReuseID user.
+
+
+            **Allowed values**:
+
+            - An enum that must be either `ACTIVE` or `LOCKED`.
+
+            - See the [User states](/apis/reuseid/#section/Common-concepts/User-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that allows you to add user attributes to the ReuseID user, given as key-value pairs.
+
+
+            **Allowed values**:
+
+            - The keys can only start with a letter (`a-z`), digit or an underscore (`_`).
+
+            - The keys can only contain digits, lowercase letters (`a-z`), or certain special characters (`-._~:@`).
+
+            - The keys cannot exceed the maximum character length of 128 characters.
+
+            - The values cannot exceed the maximum character length of 256 characters.
+
+
+            **Example**: They could contain contact information such as name, address and phone number.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    UserIdValue_3:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        userId:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+    UserRequest_3:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'A parameter that allows you to segment ReuseID users and their corresponding transactions.
+
+
+            **Allowed values**:
+
+            - It can have any value.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+
+            **Example**: Group ReuseID users by country using country codes such as `NO`, `SE`, `DK`.
+
+            '
+          example: 'NO'
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that allows you to add user attributes to the ReuseID user, given as key-value pairs.
+
+
+            **Allowed values**:
+
+            - The keys can only start with a letter (`a-z`), digit or an underscore (`_`).
+
+            - The keys can only contain digits, lowercase letters (`a-z`), or certain special characters (`-._~:@`).
+
+            - The keys cannot exceed the maximum character length of 128 characters.
+
+            - The values cannot exceed the maximum character length of 256 characters.
+
+
+            **Example**: They could contain contact information such as name, address and phone number.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+    ExternalRefResolveRequest_3:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'An identifier generated by you, that points to the `userId` generated by ReuseID.
+
+
+            **Allowed values**:
+
+            - It must be unique in the scope of the account.
+
+            - It cannot exceed the maximum character length of 128 characters.
+
+            '
+          example: Empl10300469
+    User_3:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          description: 'The timestamp when the ReuseID user was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user last carried out an operation such as a registration, authentication or signing.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          description: 'The state of the ReuseID user, returned as an enum.
+
+
+            **Possible values**: See the [User states](/apis/reuseid/#section/Common-concepts/User-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that contains the user attributes that were added to the ReuseID user, given as key-value pairs.
+
+            '
+          example:
+            firstname: George
+            lastName: Harrison
+x-refined-from:
+- mobileid-openapi.json
+- reuseid-openapi.json
+- signicat-mobileid-openapi.yml
+- signicat-reuseid-openapi.yml

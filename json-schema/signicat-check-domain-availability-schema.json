@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-check-domain-availability-schema.json",
+  "title": "CheckDomainAvailability",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-domain-management-openapi.yml#/components/schemas/CheckDomainAvailability",
+  "required": [
+    "domain",
+    "kind"
+  ],
+  "type": "object",
+  "properties": {
+    "domain": {
+      "minLength": 1,
+      "type": "string",
+      "description": "The domain to check"
+    },
+    "kind": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DomainKind"
+        }
+      ],
+      "description": "The kind of domain to check"
+    },
+    "requireMutualTls": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Whether the domain will use mTLS or not. Required when Kind = CustomerManaged"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "DomainKind": {
+      "enum": [
+        "SignicatManaged",
+        "CustomerManaged"
+      ],
+      "type": "string"
+    }
+  }
+}

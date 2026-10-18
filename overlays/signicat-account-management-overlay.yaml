@@ -1,0 +1,118 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat Account API
+  version: 1.0.0
+extends: ../openapi/_original/signicat-account-management-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-account-management-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/account-management/
+- target: $.components
+  description: Add the OAuth 2.0 client-credentials scheme Signicat documents for all its APIs (token URL https://api.signicat.com/auth/open/connect/token,
+    scope signicat-api; source https://developer.signicat.com/llms-full.txt "Connecting to Signicat APIs").
+  update:
+    securitySchemes:
+      signicatOAuth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            tokenUrl: https://api.signicat.com/auth/open/connect/token
+            scopes:
+              signicat-api: Access Signicat APIs
+- target: $
+  description: Root security requirement for the added scheme.
+  update:
+    security:
+    - signicatOAuth2:
+      - signicat-api
+- target: $.paths['/accounts'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postAccounts
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/accounts/{accountId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putAccountsAccountId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/accounts/{accountId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteAccountsAccountId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/accounts/{accountId}/delete-protection'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putAccountsAccountIdDeleteProtection
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/accounts/{accountId}/undelete'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postAccountsAccountIdUndelete
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/contacts'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postContacts
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/contacts/{contactId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putContactsContactId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/contacts/{contactId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchContactsContactId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/contacts/{contactId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteContactsContactId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/invoices'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getInvoices
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/invoices/{invoiceNumber}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getInvoicesInvoiceNumber
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/invoices/{invoiceNumber}/pdf'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getInvoicesInvoiceNumberPdf
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/metadata/countries'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMetadataCountries
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/metadata/check-name-validity'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getMetadataCheckNameValidity
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/organizations'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postOrganizations
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/organizations/{organizationId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchOrganizationsOrganizationId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/organizations/{organizationId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteOrganizationsOrganizationId
+    x-apievangelist-derived-operationId: true

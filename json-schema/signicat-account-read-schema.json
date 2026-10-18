@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-account-read-schema.json",
+  "title": "AccountRead",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-account-management-openapi.yml#/components/schemas/AccountRead",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Globally unique ID of account"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "createdDate": {
+      "type": "string",
+      "description": "Timestamp of when account was created."
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "description": "Timestamp of last account modification."
+    },
+    "isSoftDeleted": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "If true, the account has been soft deleted and will soon be permanently deleted."
+    },
+    "softDeletedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Timestamp of when account was soft deleted."
+    },
+    "organization": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/OrganizationChildListItem"
+        }
+      ],
+      "description": "The Organization the account is linked to"
+    },
+    "isSandbox": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Whether the account is a sandbox account"
+    },
+    "region": {
+      "type": "string",
+      "description": "Which region the account belongs to"
+    },
+    "cloud": {
+      "type": "string",
+      "description": "Which cloud the account belongs to"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the account is enabled"
+    },
+    "isDeleteProtected": {
+      "type": "boolean",
+      "description": "Whether the account is delete-protected"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "OrganizationChildListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Globally unique ID of organization"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name"
+        },
+        "url": {
+          "type": "string",
+          "description": "API URL to retrieve Organization object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Suborganization of an organization."
+    }
+  }
+}

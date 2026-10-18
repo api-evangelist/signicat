@@ -1,0 +1,793 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-signing-order-schema.json",
+  "title": "SigningOrder",
+  "description": "The SigingOrder data type describes a signing order for an action on one or more documents by one or more subjects.",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/SigningOrder",
+  "required": [
+    "tasks"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A read-only unique identifier for this SigningOrder. Any value set by the client will be ignored.",
+      "readOnly": true
+    },
+    "artifact": {
+      "type": "string",
+      "description": "A read-only artifact for this SigningOrder. Any value set by the client will be ignored.",
+      "readOnly": true
+    },
+    "clientReference": {
+      "maxLength": 255,
+      "minLength": 1,
+      "type": "string",
+      "description": "A client specific reference. This value will not be used by the service, but will be returned to the client."
+    },
+    "tasks": {
+      "maxItems": 2147483647,
+      "minItems": 1,
+      "type": "array",
+      "description": "One or more tasks. See the documentation of the Task data type.",
+      "items": {
+        "$ref": "#/$defs/Task"
+      }
+    },
+    "notifications": {
+      "maxItems": 2147483647,
+      "minItems": 1,
+      "type": "array",
+      "description": "One or more notifications that will be sent when the signing order has been completed",
+      "items": {
+        "$ref": "#/$defs/SigningOrderNotification"
+      }
+    },
+    "daysUntilDeletion": {
+      "maximum": 30,
+      "minimum": 1,
+      "type": "integer",
+      "description": "The number of days before the signing order is automatically deleted from Signicat’s storage, after every task's days-to-live have passed. (see daysToLive on the Task element). Documents in the archive will not be deleted even if the signing order that created the documents is deleted. All documents that are not in the archive will be deleted.",
+      "format": "int32"
+    },
+    "packagingTasks": {
+      "maxItems": 2147483647,
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PackagingTask"
+      }
+    },
+    "notificationTemplateParams": {
+      "maxItems": 2147483647,
+      "minItems": 1,
+      "type": "array",
+      "description": "A list of template params objects to be used to be used in task notifications of type EMAIL",
+      "items": {
+        "$ref": "#/$defs/NotificationTemplateParams"
+      }
+    }
+  },
+  "$defs": {
+    "Authentication": {
+      "type": "object",
+      "properties": {
+        "methods": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "One or more methods. The method names should match the method definitions on the service.",
+          "items": {
+            "type": "string",
+            "description": "One or more methods. The method names should match the method definitions on the service."
+          }
+        },
+        "artifact": {
+          "type": "boolean",
+          "description": "Set to true if an authentication artifact should be generated"
+        }
+      },
+      "description": "The Authentication data type describes how an end user may authenticate themselves before being presented with the documents"
+    },
+    "Dialog": {
+      "required": [
+        "message",
+        "title"
+      ],
+      "type": "object",
+      "properties": {
+        "title": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "type": "string",
+          "description": "The title or header of the dialog message"
+        },
+        "message": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "type": "string",
+          "description": "The message text"
+        }
+      },
+      "description": "The Dialog data type describes a text message that is connected to a task or a specific document. The dialog message is presented on the web to the end user."
+    },
+    "Document": {
+      "required": [
+        "action",
+        "source"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this document in the signing order"
+        },
+        "description": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "A human readable description of the document. This description is used in the user Interface, and also part of the Signed Data Object for some eIDs."
+        },
+        "action": {
+          "type": "string",
+          "description": "The action that the end user is asked to perform on this document",
+          "enum": [
+            "SIGN",
+            "VIEW",
+            "UPLOAD"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "description": "The source of the document",
+          "enum": [
+            "SESSION",
+            "UPLOAD",
+            "RESULT"
+          ]
+        },
+        "documentRef": {
+          "type": "string",
+          "description": "A reference to a document. If source is set to SESSION, this is the unique identifier of the document outside the signing order. If source is set to UPLOAD, then this should be omitted."
+        },
+        "externalReference": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "Optional information about the document that will be stored in the signed data object as an external reference. Only some SDO formats supports this."
+        },
+        "signTextEntry": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "Optional sign-text information that will be displayed to the end user in the final parts of the signing ceremony. May not be supported by all eID methods and document formats. Meant to be used for relatively short texts. Currently, the max length is 1024 chars."
+        },
+        "sendResultToArchive": {
+          "type": "boolean",
+          "description": "If the signed or uploaded document is to be sent to the archive for permanent storage"
+        },
+        "form": {
+          "$ref": "#/$defs/Form"
+        },
+        "referenceTaskId": {
+          "type": "string"
+        },
+        "referenceDocId": {
+          "type": "string"
+        }
+      },
+      "description": "The Document data type is used for describing a document upon which the end user should perform an action"
+    },
+    "Form": {
+      "type": "object",
+      "properties": {
+        "interactive": {
+          "type": "boolean",
+          "description": "Set to true if the form should be interactive"
+        },
+        "inputParams": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of parameters to be prefilled in the form",
+          "items": {
+            "$ref": "#/$defs/FormParam"
+          }
+        }
+      },
+      "description": "The Form data type is used when requesting an input form. This is only relevant if you are using Signicat Forms."
+    },
+    "FormParam": {
+      "required": [
+        "name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 0,
+          "type": "string",
+          "description": "The name of the parameter. This must match the name of the parameter in the form template."
+        },
+        "value": {
+          "maxLength": 256,
+          "minLength": 0,
+          "type": "string",
+          "description": "The value of the parameter"
+        }
+      },
+      "description": "The FormParam data type describes a specific parameter in a form"
+    },
+    "LoginHint": {
+      "required": [
+        "methods",
+        "name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 0,
+          "type": "string",
+          "description": "The name of the login hint."
+        },
+        "value": {
+          "maxLength": 256,
+          "minLength": 0,
+          "type": "string",
+          "description": "The value of the login hint."
+        },
+        "methods": {
+          "maxItems": 20,
+          "minItems": 1,
+          "type": "array",
+          "description": "The methods for which to use the login hint.",
+          "items": {
+            "type": "string",
+            "description": "The methods for which to use the login hint."
+          }
+        }
+      },
+      "description": "Login hints are supplied as prefilled parameters to methods."
+    },
+    "Method": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the eID method. If the name is specified, the type must also be specified."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of signature to create using the given method",
+          "enum": [
+            "AUTHENTICATION_BASED",
+            "SIGNED_STATEMENT",
+            "THIRD_PARTY"
+          ]
+        },
+        "handwritten": {
+          "type": "boolean",
+          "description": "Set to true if a handwritten signature should be applied after signing. If set to true with no method name given, only a handwritten signature will be requested."
+        }
+      },
+      "description": "The Method data type specifies the name of an eID method to use for signing, the type of the method and if a handwritten signature should be applied or not"
+    },
+    "NotificationTemplateParams": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 190,
+          "minLength": 1,
+          "type": "string",
+          "description": "A unique id for NotificationTemplateParams in the scope of the signing order.The id must be created by the client when the notification is created."
+        },
+        "footer": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "The footer text of the email notification. Supports linebreaks. If no footer is supplied, a default footer will be used."
+        },
+        "button": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The button text for email notification. If no button is supplied, no button element will be displayed."
+        },
+        "linkText": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "An alternative linkText, will be followed by the task URL. If no linkText is supplied, no linkText element will be displayed in the email."
+        },
+        "logoUrl": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The URL to be used for the logo image in the email notification. If no logoUrl is supplied, a default logo wil be used"
+        }
+      },
+      "description": "The NotificationTemplateParams contains values that will be inserted in stylized HTML email notifications."
+    },
+    "PackagingTask": {
+      "required": [
+        "documents",
+        "method"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this packaging task. The id must be specified by the client that creates the packaging task. The id must be unique among all ids in the Packaging Task list."
+        },
+        "sendToArchive": {
+          "type": "boolean",
+          "description": "Set to true if the result of the packaging task is to be sent to the archive for permanent storage after it is packaged. Default value: false."
+        },
+        "method": {
+          "type": "string",
+          "description": "The name of the packaging method to be used in the packaging task. The method name should match the method definition on the service."
+        },
+        "notifications": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "Notifications that should be sent out either when this packaging task is created or later (as specified in the notification).",
+          "items": {
+            "$ref": "#/$defs/PackagingTaskNotification"
+          }
+        },
+        "documents": {
+          "type": "array",
+          "description": "Documents to be used as input to this packaging task. See the documentation of the PackagingTaskDocument data type.",
+          "items": {
+            "$ref": "#/$defs/PackagingTaskDocument"
+          }
+        }
+      },
+      "description": "The PackagingTask data type describes a packaging operation to be performed on one or more signed documents, e.g. packaging one or more XAdES documents into a single PAdES document. The input to the operation is a set of signed documents resulting from the regular tasks in the current request. For packaging across document action requests, the PackagingService must be used."
+    },
+    "PackagingTaskDocument": {
+      "required": [
+        "documentIds"
+      ],
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "description": "The unique identifier of the task"
+        },
+        "documentIds": {
+          "type": "array",
+          "description": "List of document IDs to include from the task with the given taskId.",
+          "items": {
+            "type": "string",
+            "description": "List of document IDs to include from the task with the given taskId."
+          }
+        }
+      },
+      "description": "The PackagingTask data type groups together signed documents that belong to the same task in order to be packed into a single PAdES document."
+    },
+    "PackagingTaskNotification": {
+      "required": [
+        "id",
+        "recipient",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created."
+        },
+        "recipient": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address of the recipient of this notification"
+        },
+        "sender": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS."
+        },
+        "header": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The header or subject text of the Message. Only relevant if the notification type is EMAIL."
+        },
+        "message": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "The message text in the notification. Formatting is not supported in notification messages."
+        },
+        "type": {
+          "type": "string",
+          "description": "The notification type",
+          "enum": [
+            "SMS",
+            "EMAIL",
+            "URL"
+          ]
+        },
+        "schedule": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of PackagingTaskSchedule objects. See the data type for PackagingTaskSchedule.If this field is missing, the notification will be sent once the packaging task is created.",
+          "items": {
+            "$ref": "#/$defs/PackagingTaskSchedule"
+          }
+        }
+      },
+      "description": "The PackagingTaskNotification data type describes a notification to an end user or to a system about a packaging task event in the system"
+    },
+    "PackagingTaskSchedule": {
+      "required": [
+        "triggerStatus"
+      ],
+      "type": "object",
+      "properties": {
+        "triggerStatus": {
+          "type": "string",
+          "description": "The status a packaging task needs to have in order to trigger a notification",
+          "enum": [
+            "CREATED",
+            "COMPLETED",
+            "FAILED"
+          ]
+        }
+      },
+      "description": "The PackagingTaskSchedule data type specifies when a packaging task notification should be sent."
+    },
+    "SigningOrderNotification": {
+      "required": [
+        "id",
+        "recipient",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created."
+        },
+        "recipient": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address of the recipient of this notification"
+        },
+        "sender": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS."
+        },
+        "header": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The header or subject text of the Message. Only relevant if the notification type is EMAIL."
+        },
+        "message": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "type": "string",
+          "description": "The message text in the notification. Formatting is not supported in notification messages. [Supports placeholders.](https://developer.signicat.com/enterprise/apis/sign/sign-api/#placeholders-in-notification-messages)"
+        },
+        "type": {
+          "type": "string",
+          "description": "The notification type",
+          "enum": [
+            "SMS",
+            "EMAIL",
+            "URL"
+          ]
+        }
+      },
+      "description": "The Notification data type describes a notification to an end user or to a system about an event in the system"
+    },
+    "Subject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this subject. The id must be specified by the client that creates the task. The id must be unique in the scope of the signing order. An id can only consist of characters A-Z, a-z, 0-9 and '-',i.e. “A”, “1”, “Agreement”, “Task123456” etc. The task id will be used in URLs and must not contain sensitive information."
+        },
+        "attributes": {
+          "maxItems": 20,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of attributes that are used to validate the signer after the signer has returned from the signing or authentication process",
+          "items": {
+            "$ref": "#/$defs/SubjectAttribute"
+          }
+        },
+        "loginHints": {
+          "maxItems": 20,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of login hints to be passed as prefilled parameters to the method.",
+          "items": {
+            "$ref": "#/$defs/LoginHint"
+          }
+        }
+      },
+      "description": "The subject data type specifies the subject that will be used to validate the signer after the signer has either signed the document(s) or authenticated himself or herself"
+    },
+    "SubjectAttribute": {
+      "required": [
+        "name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 255,
+          "minLength": 0,
+          "type": "string",
+          "description": "The name of the attribute to validate against."
+        },
+        "value": {
+          "maxLength": 255,
+          "minLength": 0,
+          "type": "string",
+          "description": "The value of the attribute to validate against."
+        },
+        "methods": {
+          "maxItems": 20,
+          "minItems": 1,
+          "type": "array",
+          "description": "The ID method or methods to use for validating the attribute value. If set, this attribute will override the specified name and will match only the corresponding value for the given method.",
+          "items": {
+            "type": "string",
+            "description": "The ID method or methods to use for validating the attribute value. If set, this attribute will override the specified name and will match only the corresponding value for the given method."
+          }
+        }
+      },
+      "description": "The subject attribute data type specifies the attributes that will be used to validate the signer after the signer has either signed the document(s) or authenticated himself or herself"
+    },
+    "Task": {
+      "required": [
+        "documents",
+        "signatureMethods"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this task. The id must be specified by the client that creates the task. The id must be unique in the scope of the signing order. An id can only consist of characters A-Z, a-z, 0-9 and '-',i.e. “A”, “1”, “Agreement”, “Task123456” etc. The task id will be used in URLs and must not contain sensitive information."
+        },
+        "profile": {
+          "maxLength": 255,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the graphical profile to use"
+        },
+        "language": {
+          "maxLength": 2,
+          "minLength": 2,
+          "pattern": "[a-z]*",
+          "type": "string",
+          "description": "A two-letter language code. E.g.: en, nb, sv, fi, da"
+        },
+        "daysToLive": {
+          "maximum": 200,
+          "minimum": 1,
+          "type": "integer",
+          "description": "The number of days from the task is created until the task times out. The end user will not be allowed to access or perform any operation on the task after this deadline.",
+          "format": "int32"
+        },
+        "configuration": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of a Responsive Signflow configuration"
+        },
+        "documents": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of the documents in the task",
+          "items": {
+            "$ref": "#/$defs/Document"
+          }
+        },
+        "signatureMethods": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "Specifies the eID signature methods that the end user may use to sign documents",
+          "items": {
+            "$ref": "#/$defs/Method"
+          }
+        },
+        "authentication": {
+          "$ref": "#/$defs/Authentication"
+        },
+        "onTaskPostpone": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string",
+          "description": "The URL where the end user should be returned if they choose to postpone the task"
+        },
+        "onTaskComplete": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string",
+          "description": "The URL where the end user should be returned when the task is completed"
+        },
+        "onTaskReject": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string",
+          "description": "The URL where the end user should be returned if the task is cancelled"
+        },
+        "dialog": {
+          "$ref": "#/$defs/Dialog"
+        },
+        "notifications": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of notifications that should be sent out either when the task is created or later (as specified in the notification)",
+          "items": {
+            "$ref": "#/$defs/TaskNotification"
+          }
+        },
+        "signText": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string",
+          "description": "The text that will be displayed to the end user as part of the signing process and is intended to describe thedocuments, the context and other information about the documents. If configured this field will override the document->signTextEntry field"
+        },
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "dependsOnTasks": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of Task IDs from this Signing Order that this Task depends on. The current Task will not be started before all Tasks in this list are completed.",
+          "items": {
+            "type": "string",
+            "description": "A list of Task IDs from this Signing Order that this Task depends on. The current Task will not be started before all Tasks in this list are completed."
+          }
+        },
+        "signingUrl": {
+          "type": "string",
+          "description": "The URL for the end user to initiate signing. May not be present if Artifact Authentication was used.",
+          "readOnly": true
+        },
+        "useLegacyDocumentViewer": {
+          "type": "boolean",
+          "description": "Use legacy document viewer. Highly recommended to leave this 'false' or 'null' for everything but BIDXML documents",
+          "default": false
+        }
+      },
+      "description": "The Task data type describes a specific task for an end user. A task could be to sign one or more documents or to open and view a document. A task can require the end user to log in. A task will always have one and only one end user (subject)."
+    },
+    "TaskNotification": {
+      "required": [
+        "id",
+        "recipient",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "notificationTemplateParamsId": {
+          "type": "string",
+          "description": "An ID referring to the template params to be used. Only relevant if the notification type is EMAIL. If no notificationTemplateParamsId is supplied, the notification will not be HTML stylized"
+        },
+        "id": {
+          "type": "string",
+          "description": "A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created."
+        },
+        "recipient": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address of the recipient of this notification"
+        },
+        "sender": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS."
+        },
+        "header": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The header or subject text of the Message. Only relevant if the notification type is EMAIL."
+        },
+        "message": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "type": "string",
+          "description": "The message text in the notification. Formatting is not supported in notification messages. [Supports placeholders.](https://developer.signicat.com/enterprise/apis/sign/sign-api/#placeholders-in-notification-messages)"
+        },
+        "type": {
+          "type": "string",
+          "description": "The notification type",
+          "enum": [
+            "SMS",
+            "EMAIL",
+            "URL"
+          ]
+        },
+        "schedule": {
+          "maxItems": 2147483647,
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of TaskSchedule objects. See the data type for TaskSchedule.If this field is missing, the notification will be sent once the task is created.",
+          "items": {
+            "$ref": "#/$defs/TaskSchedule"
+          }
+        }
+      },
+      "description": "The TaskNotification data type describes a notification to an end user or to a system about a task event in the system"
+    },
+    "TaskSchedule": {
+      "required": [
+        "triggerStatus"
+      ],
+      "type": "object",
+      "properties": {
+        "triggerStatus": {
+          "type": "string",
+          "description": "The status a task needs to have in order to trigger a notification",
+          "enum": [
+            "CREATED",
+            "STARTED",
+            "COMPLETED",
+            "REJECTED",
+            "EXPIRED",
+            "FORWARDED"
+          ]
+        },
+        "delay": {
+          "$ref": "#/$defs/TaskScheduleDelay"
+        }
+      },
+      "description": "The TaskSchedule data type specifies when a task notification should be sent."
+    },
+    "TaskScheduleDelay": {
+      "type": "object",
+      "properties": {
+        "minutes": {
+          "maximum": 59,
+          "minimum": 1,
+          "type": "integer",
+          "description": "The number of minutes this notification is delayed when the triggerStatus condition is met. When the signing order gets deleted this notification will become obsolete",
+          "format": "int32"
+        },
+        "hours": {
+          "maximum": 23,
+          "minimum": 1,
+          "type": "integer",
+          "description": "The number of hours this notification is delayed when the triggerStatus condition is met. When the signing order gets deleted this notification will become obsolete",
+          "format": "int32"
+        },
+        "days": {
+          "minimum": 1,
+          "type": "integer",
+          "description": "The number of days this notification is delayed when the triggerStatus condition is metWhen the signing order gets deleted this notification will become obsolete",
+          "format": "int32"
+        }
+      },
+      "description": "The Task Schedule Delay data type describes the delay before sending a notification after it has entered its scheduled state defined by triggerStatus. The total delay is = days + hours + minutes."
+    }
+  }
+}

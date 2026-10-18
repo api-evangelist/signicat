@@ -1,0 +1,1481 @@
+openapi: 3.2.0
+info:
+  title: Signicat Capture API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Capture across 2 of this provider''s published API definitions: id-document-and-biometric-verification-openapi.json, signicat-id-document-and-biometric-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/assure
+  description: Generated server url
+security:
+- basicAuth: []
+tags:
+- name: Capture
+paths:
+  /capture/configurations/{configurationId}:
+    get:
+      tags:
+      - Capture
+      summary: Get capture configuration
+      description: 'This service returns an existing capture configuration in JSON format.
+
+        Capture configurations section in the integration documentation.'
+      operationId: getCaptureConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a capture configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaptureConfiguration'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/capture/configurations/<CONFIGURATION-ID> -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    put:
+      tags:
+      - Capture
+      summary: Update capture configuration
+      description: This service updates an existing capture configuration.The capture configuration impacts the frontend workflow and the graphical interface. Capture configurations section in the integration documentation.
+      operationId: updateCaptureConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a capture configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      requestBody:
+        description: Capture configuration payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureConfiguration'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaptureConfigurationResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X PUT https://api.signicat.com/assure/capture/configurations/<CONFIGURATION-ID> -H ''Authorization: Bearer <ACCESS_TOKEN>'' -d ''<ADD-PAYLOAD-HERE>'';'
+    post:
+      tags:
+      - Capture
+      summary: Create capture configuration
+      description: This service creates a new configuration to be used with the “Start capture flow” service. This configuration specifies the frontend workflow and graphical interface. For details about the configuration options, see the Capture configurations section in the integration documentation.
+      operationId: createCaptureConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a capture configuration.
+        required: true
+        schema:
+          type: string
+          maxLength: 100
+          minLength: 0
+        example: Configuration1
+      requestBody:
+        description: Capture configuration payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureConfiguration'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaptureConfigurationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json: {}
+        '409':
+          description: Conflict
+          content:
+            application/json: {}
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/capture/configurations/<CONFIGURATION-ID> -H ''Authorization: Bearer <ACCESS_TOKEN>'' -d ''<ADD-PAYLOAD-HERE>'';'
+    delete:
+      tags:
+      - Capture
+      summary: Delete capture configuration
+      description: This service deletes an existing capture configuration.The capture configuration impacts the frontend workflow and the graphical interface. For details about the configuration options, see the Capture configurations section in the integration documentation.
+      operationId: deleteCaptureConfiguration
+      parameters:
+      - name: configurationId
+        in: path
+        description: The ID of a capture configuration.
+        required: true
+        schema:
+          type: string
+        example: Configuration1
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X DELETE https://api.signicat.com/assure/capture/configurations/<CONFIGURATION-ID> -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /dossiers/{dossierId}/capture:
+    post:
+      tags:
+      - Capture
+      summary: Start capture flow
+      description: 'This service initiates a flow for performing an identity document verification in a web context. Since this service encapsulates all providers’ Web SDKs, you do not have to integrate with the provider’s SDK yourself. When you call this service, it will:
+
+
+        Create a new service on your behalf.
+
+
+        Integrate directly with the provider''s JS SDK and use it to display a web view to the end-user where they can capture and upload the ID images.
+
+
+        Request to start the verification.
+
+
+        When you call this service, you must provide similar request parameters as in the Create process service. For more details, see the parameter descriptions below.
+
+
+        This service also provides other useful features. For example, you can configure the user interface during the web flow. For more usage details about this, see the general documentation in the Start Capture flow section.'
+      operationId: createArtifact
+      parameters:
+      - name: dossierId
+        in: path
+        description: This ID is obtained from the "Create dossier" response body.
+        required: true
+        schema:
+          type: string
+        example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureRequest'
+            examples:
+              Example using onfido provider:
+                summary: Onfido example
+                description: Example using onfido provider
+                value:
+                  providers:
+                  - provider: onfido
+                    processType: documentSelfie
+                  sdk: native
+                  redirectUrl: https://customer.site.com
+              Example using onfido provider with extra dl information:
+                summary: Onfido request with extra information from driving license
+                description: Example using onfido provider with extra dl information
+                value:
+                  providers:
+                  - provider: onfido
+                    processType: documentSelfie
+                    requestExtraDataFromDrivingLicense: true
+                  sdk: native
+                  redirectUrl: https://customer.site.com
+              Example using signicatvideoid provider:
+                summary: Signicat VideoID example
+                description: Example using signicatvideoid provider
+                value:
+                  providers:
+                  - provider: signicatvideoid
+                    processType: substantial
+                  sdk: native
+                  redirectUrl: https://customer.site.com
+              Example using signicatpaper provider:
+                summary: Signicat Paper example
+                description: Example using signicatpaper provider
+                value:
+                  providers:
+                  - provider: paper
+                  sdk: capture
+                  redirectUrl: https://customer.redirect.site.com
+              Example using readid provider:
+                summary: ReadID example
+                description: Example using readid provider
+                value:
+                  providers:
+                  - provider: readid
+                    processType: ready
+                  sdk: native
+                  redirectUrl: https://customer.redirect.site.com
+              Example using signicatpictureid provider:
+                summary: Signicat PictureID documentSelfie example
+                description: Example using signicatpictureid provider
+                value: "{\n    \"providers\": [\n        {\n            \"provider\": \"signicatpictureid,\n            \"processType\": \"documentSelfie\",\n            \"documentId\":137\n        }\n    ],\n    \"sdk\": \"capture\",\n    \"redirectUrl\": \"https://customer.redirect.site.com\"\n}\n"
+        required: true
+      responses:
+        '201':
+          description: The URL artifact was successfully created.<p>You send the end-user to this URL. This is where the JS SDK of the provider is loaded so that the end-user can capture and upload the ID images. For more information about available SDKs, see <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#using-the-sdks-available-in-the-capture-service">Using the SDKs available in the Capture service</a>.</p>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebURL'
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/dossiers/<DOSSIER-ID>/capture -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type: application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /capture/configurations:
+    get:
+      tags:
+      - Capture
+      summary: Get all available capture configuration IDs
+      description: Gets all existing capture configuration IDs.
+      operationId: getCaptureConfigurations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaptureConfigurationSlimResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionNotFound'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/capture/configurations -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+components:
+  schemas:
+    WebIDUser:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Academic title of the user. Will be synchronised with the corresponding field in the ID document.
+        gender:
+          type: string
+          description: The end user's gender.
+          enum:
+          - M
+          - F
+          example: M
+          pattern: '[FM]'
+        firstName:
+          type: string
+          description: The end-user's given name(s).
+          example: John
+        lastName:
+          type: string
+          description: The end-user's surname(s).
+          example: Smith
+        dateOfBirth:
+          type: string
+          description: The end-user's date of birth (YYYY-MM-DD).
+          example: '2000-12-29'
+        address:
+          $ref: '#/components/schemas/WebIDAddress'
+          description: Residence or postal address, according to the ID document. Either street or addressLine1 is required. Street and streetNumber may be used to infer the required part of the address. For international addresses, addressLine1 and addressLine2 may be used to infer the required part of the address.
+        contact:
+          $ref: '#/components/schemas/WebIDContact'
+      required:
+      - contact
+      - dateOfBirth
+      - firstName
+      - lastName
+    SignicatPictureIdConfig:
+      type: object
+      description: Custom configurations for the Signicat PictureID processes. This configuration applies when <code>provider</code> is set to <code>signicatpictureid</code> in Start capture flow.This object is in JSON format
+      example:
+        allowedIdTypes:
+        - 222
+        - 136
+        - 137
+        - 271
+        allowFileUpload:
+        - desktop
+        allowTakePhoto:
+        - mobile
+        - desktop
+        defaultCountry: NLD
+        translations:
+          en:
+            start_title: NEW TRANSLATION
+      properties:
+        defaultCountry:
+          type: string
+          default: 'null'
+          description: 'Country to be pre-selected on the country selection list. String in ISO 3166 Alpha 3 format (ex: “GBR”, “PRT”)'
+          example: GBR
+        allowFileUpload:
+          type: array
+          default: []
+          description: Allows to upload the image of the ID document from the desktop and/or mobile.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        allowTakePhoto:
+          type: array
+          default:
+          - mobile
+          - desktop
+          description: Allows to capture the image of the ID document from the desktop and/or mobile, using the device camera.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        translations:
+          $ref: '#/components/schemas/SignicatPictureIdTranslations'
+          description: Allows to override the UI strings with new values.
+        allowedIdTypes:
+          type: array
+          default: []
+          description: Allow to filter the list of documents displayed on the document picker list
+          example:
+          - 61
+          - 62
+          - 188
+          items:
+            type: integer
+            format: int32
+    WebIDContact:
+      type: object
+      description: WebID contact
+      properties:
+        email:
+          type: string
+          description: The end-user's email address.
+        cell:
+          type: string
+          writeOnly: true
+        mobile:
+          type: string
+          description: The end-user's mobile phone number. Required for `accountid` processes only (not `videoid`).
+        phone:
+          type: string
+          description: The end-user's home phone number
+      required:
+      - email
+    CaptureProcessRequest:
+      type: object
+      properties:
+        provider:
+          type: string
+          description: The provider that performs the identity document verification. This field is always required for all the providers (see `Enum` above).
+          enum:
+          - onfido
+          - signicatpaper
+          - readid
+          - signicatpictureid
+          - signicatvideoid
+          - webid
+          example: onfido
+        processType:
+          type: string
+          description: 'This field is optional for ''signicatvideoid'' and ''onfido'' and required for ''readid'' and ''webid''. <br><br>The available values are:<ul><li>For ''signicatvideoid'':<ul><li>`high` (default): A human agent will review the process. This is done asynchronously.<li>`substantial`: Process verification is done automatically, meaning no human agent is involved.<li>`substantialFullyAuto`: Similar to `substantial` but without any `inconclusive` status. It will automatically reach an `accepted` or `rejected` status. For more information about what each status means, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#status">Get process</a> page in the integration guide.</li></ul></li><li>For ''onfido''<ul><li>`document`: The verification is only done on the provided identity document.</li><li>`documentSelfie` (default): The verification is done on the identity document and the photo of the end-user. The photo allows assessing whether the holder of the identity document is the same person as the one in the ID document (facial similarity). The photo must be taken at the time of the request. </li><li>`documentVideo`: The verification is done on the identity document and also a video-call while the end-user does some requested actions (e.g. “Look over your left shoulder”). The video allows assessing whether the holder of the identity document is the same person as the one on the video-call(facial similarity). It also detects liveness information.</li></ul></li><li>For ''readid''<ul><li>`ready` (required)</li></ul></li><li>For ''webid''<ul><li>`accountid`</li><li>`videoid`</li><li>`accountidQES`</li><li>`videoidQES`</li></ul></li></ul></ul>'
+          enum:
+          - substantial
+          - substantialFullyAuto
+          - high
+          - document
+          - documentSelfie
+          - documentVideo
+          - ready
+          - accountid
+          - videoid
+          - accountidQES
+          - videoidQES
+          example: documentSelfie
+        redact:
+          type: array
+          description: This field can only be used when the provider is 'signicatpaper')<br>It indicates which field(s) should be redacted from the ID images.<br>This will affect the 'front' and 'back' images you are able to get from the <a href='https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getImages'>process</a> If you request redaction, you will only be able to get those images if they were successfully redacted (i.e., if 'isFullRedaction':'true' in the <a href='https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getProcess'>Get Process</a> response).
+          enum:
+          - firstName
+          - lastName
+          - fullName
+          - gender
+          - address
+          - personalIdentificationNumber
+          - documentNumber
+          - date
+          - dateOfBirth
+          - dateOfIssue
+          - dateOfExpiry
+          - photo
+          - signature
+          - accessNumber
+          - drivingPermits
+          - issuingAuthority
+          - mrz
+          - barcode
+          items:
+            type: string
+        requestExtraDataFromDrivingLicense:
+          type: boolean
+          default: false
+          description: '(Warning: This is a Beta feature. Please contact your account manager for details.) This field is available only for "onfido" processes and for specific Driving License documents. If enabled, the process result will contain more information extracted from the Driving License (ex: license category and vehicle classes). '
+          example: false
+        webid:
+          $ref: '#/components/schemas/WebIDParameters'
+          description: This object only applies to the 'webid' provider and is required.<br> The information in this field must be provided at the creation of the process. It will be compared with the user information gathered during the process.
+      required:
+      - provider
+    CaptureRequest:
+      type: object
+      description: Capture request
+      properties:
+        providers:
+          type: array
+          description: This is a list (array) of providers that perform the verification. Please, use only one provider per request.
+          items:
+            $ref: '#/components/schemas/CaptureProcessRequest'
+        sdk:
+          type: string
+          description: 'Identifies which SDK will be used to capture and upload the images. The available values are:<ul><li>`native`: Uses the provider''s native SDK. This is default when the provider is `signicatvideoid`, `readid` or `onfido`.</li><li>`capture`: Uses Signicat''s SDK. This is default when the provider is `signicatpaper`.</li></ul>See also the general documentation, <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#using-the-sdks-available-in-the-capture-service">Using the SDKs available in the Capture service</a>.'
+          enum:
+          - native
+          - capture
+          example: native
+        redirectUrl:
+          type: string
+          description: Contains the URL where the end-user will be redirected to when the image upload is finished (either successfully, failed or canceled).
+          example: https://some-redirect-url.com
+        requestDomain:
+          type: string
+          description: This specifies the domain you want to use for this specific artifact. The domain will be visible in the end-user's browser. This domain needs to be correctly configured on your account!
+          example: myapp.app.signicat.com
+        captureParameters:
+          $ref: '#/components/schemas/CaptureProcessParameters'
+        eventTags:
+          type: array
+          description: List of tags to be used on events API
+          example:
+          - customerId
+          items:
+            type: string
+      required:
+      - providers
+      - redirectUrl
+      - sdk
+    CaptureConfiguration:
+      type: object
+      description: Capture Configuration payload
+      properties:
+        pageTitle:
+          type: string
+          default: Signicat Capture
+          description: 'The title to be displayed in the browser tab. <br>Maximum length: 60 characters. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.'
+          example: This is a title
+        favicon:
+          type: string
+          default: (signicat icon)
+          description: ' A custom favicon to be displayed in the browser tab. This must be a valid data-uri or link. <br>Allowed data formats: [ "jpeg", "png", "ico"] <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.'
+          example: data:image/x-icon;base64,/9j/4AAQSkZJRg
+        fontName:
+          type: string
+          description: The name of the font to be used in the Capture SDK user interface. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: Raleway
+        fontUrl:
+          type: string
+          description: 'The URL to the CSS file with the font-face.<br> Limitations: This field only accepts Google Font urls; Custom fonts require prior submission of the domain to be whitelisted.In addition to Capture, this field also affects the VideoID SDK. '
+          example: https://fonts.googleapis.com/css?family=Raleway:400,500,600,700&display=swap
+        primaryColor:
+          type: string
+          description: 'The HEX or RGB code for the primary color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK. '
+          example: '#5AAFFF'
+        fontColor:
+          type: string
+          default: black
+          description: The HEX or RGB code for the general font color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsColor:
+          type: string
+          description: The HEX or RGB code for the background color of the buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsHoverColor:
+          type: string
+          description: The HEX or RGB code for the background color of the hover buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsTextColor:
+          type: string
+          default: white
+          description: The HEX or RGB code for the text color on the buttons. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        spinnerColor:
+          type: string
+          description: The HEX or RGB code for the color of the loading spinner. If not set, it will default to primaryColor. <br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        documentTypes:
+          type: array
+          description: Filters the list of document types that the end-user can choose from. If the field is empty or not defined, all the document types supported by the provider will be displayed.<br>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent.
+          example:
+          - identityCard
+          - passport
+          - driversLicense
+          items:
+            type: string
+            enum:
+            - driversLicense
+            - passport
+            - identityCard
+            - residencePermit
+            - workPermit
+            - voterId
+            - postalIdCard
+            - professionalQualificationCard
+            - professionalPermit
+            - socialSecurity
+            - panCard
+            - passportCard
+            - stateId
+            - visa
+            - asylumRegistrationCard
+            - nationalHealthInsuranceCard
+            - aadharCard
+            - immigrationStatusDocument
+            - indigenousCard
+            - municipalityIdentityCard
+            - privateOperatorsCard
+            - certificateOfSponsorship
+            - serviceIdCard
+            - taxId
+        documentCountries:
+          type: object
+          additionalProperties: {}
+          description: "Filters the list of countries that the end-user can choose from. The value will always be an object with the keys corresponding to `documentTypes`. The value of the keys can be:<ul><li> Empty: If the field is empty or not defined, all the countries supported by the provider will be displayed. </li><li> `univ` (string): The `univ` value (in lower case) is only available for passports. It displays a list of all the countries in the world. Code example: <pre>\"documentCountries\": {\n    \"passport\": \"univ\"\n} </pre></li><li> Array of country codes (ISO 3166 Alpha 3): This displays only the defined countries. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\" ]\n} </pre>In this case, the end-user will only see the Portuguese and Norwegian document options. <li> `UNIV` in an array with country codes: The `UNIV` value (upper case) is only available for the ‘signicatpaper’ provider with passport as document type. It will display an additional option for \"Other countries\", so the end-user can choose other countries than the ones that are supported in Signicat Paper's template. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\", \"UNIV\" ]\n} </pre>In this example, the list of passports will show \"Portuguese\", \"Norwegian\" and \"Other countries\" (3 options). You should be aware of the following when using `UNIV`:<br>- Only data from the MRZ area is extracted.<br>- Redaction will not be performed.<br>- It only works for ICAO compliant passports (that comply with the <a href=\"https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf\">ICAO9303 rule)</a>.</li></ul>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent."
+          example:
+            passport:
+            - NLD
+            - GBR
+            - PRT
+            identityCard:
+            - NLD
+        twoSidedPassports:
+          description: List of countries where also the backside of the passport should be captured.The value can be either an array of country codes (ISO 3166 Alpha 3), or a string `all` (to ask for the backside  of all passports) or `null` (to not ask for the backside of any passports).
+          example:
+          - NLD
+          - PRT
+        languages:
+          type: array
+          default: en
+          description: 'List of languages the end-user can choose from (ISO 639-1,  two-letter codes). In addition to the standard two-letter country codes, we support the following old country codes for backwards compatibility: [ "cz", "gb", "gr", "uk" ]. <br>For supported languages, see the  <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the  VideoID SDK.'
+          example:
+          - nl
+          - pt
+          - en
+          items:
+            type: string
+          uniqueItems: true
+        translations:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: Custom translations for the Capture SDK. For more details about supported languages and how to create your own translations, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the VideoID SDK.
+          example:
+            nl:
+              chooseCountry: Selecteer het uitgifteland van het identiteitsbewijs
+              verifyingOrientationHint: Wordt de tekst op beide foto's horizontaalweergegeven zoals in de voorbeelden?
+            pt:
+              chooseCountry: Selecione a sua nacionalidade
+              verifyingOrientationHint: O seu documento está na mesma orientação que a ilustração em cima?
+        defaultCountry:
+          type: string
+          default: NOR
+          description: 'Helps the UI decide which country to select by default when multiple options are available. For example: To pre-select the phone country code in the mobile handover screen or to set the default country (ISO 3166 Alpha 3) in the list of countries of the document selection screen. <br/>In addition to Capture, this field also affects the VideoID SDK.'
+          example: NOR
+        allowFileUpload:
+          type: array
+          default: '[mobile, desktop]'
+          description: Enables/disables the file upload option for mobile and desktop.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        allowTakePhoto:
+          type: array
+          default: '[mobile, desktop]'
+          description: Enables/disables the "take photo" option for mobile and desktop.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        allowZoomOnPreview:
+          type: array
+          description: Enables/disables the option to zoom the uploaded image when previewing it for both the "take photo" and "upload photo" flows.
+          example:
+          - uploadPhoto
+          - takePhoto
+          items:
+            type: string
+        useSignicatTheming:
+          type: boolean
+          default: false
+          description: Enables/disables the use of Signicat Theming.
+          example: true
+        enableMobileHandover:
+          type: boolean
+          default: true
+          description: Enables/disables the mobile handover feature. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: false
+        enableOrientationConfirmation:
+          type: boolean
+          default: false
+          description: Enables/disables the orientation confirmation step at the end of the file upload flow.
+          example: false
+        autoCapture:
+          type: boolean
+          default: false
+          description: Enables/disables the auto-capture feature on the camera flow. Available for passports only.
+          example: false
+        detectGlare:
+          description: Enables/disables glare detection for both the "take photo" and "upload photo" flows.It can be a boolean or array.
+          example:
+          - uploadPhoto
+          - takePhoto
+        customRedactionError:
+          type: boolean
+          default: false
+          description: If the redaction failed, it enables/disables a specific error page in the mobile flow. If set to true, it will redirect to the red error page. If there was an error but the redaction went well, it will redirect to the yellow error page.
+          example: false
+        takeSelfie:
+          type: boolean
+          default: false
+          description: Enables/disables the selfie step at the end of the Capture flow (both camera and file upload). This is required if you want to use both the Onfido documentSelfie and the Capture SDK.
+          example: false
+        smsDefaultCountry:
+          type: string
+          default: NOR
+          description: Country prefix (ISO 3166 Alpha 3) to be pre-selected on the mobile handover popup screen for phone number input. <br> In addition to Capture, this field also affects the VideoID SDK.
+          example: NOR
+        maxRetries:
+          type: integer
+          format: int32
+          default: 0
+          description: The maximum number of retries after the verification fails (e.g. if the document is not valid or possible to read etc.). <br> In addition to Capture, this field also affects the VideoID SDK. *Default value is 0 for 'capture' SDK and 4 for 'native' SDK with provider 'signicatvideoid'
+          example: 3
+        showModalBeforeRedirect:
+          type: boolean
+          default: true
+          description: If true, the app shows the success/error modal before redirecting to the redirectUrl. If false, it redirects immediately.
+          example: true
+        mobileHandoverTimeout:
+          type: integer
+          format: int32
+          default: 0
+          description: Number of minutes before the mobile handover loading page times out and cancels the process. <br> In addition to Capture, this field also affects the VideoID SDK.
+          example: 3
+        mobileHandoverModes:
+          type: array
+          default: '[ sms, qrCode ]'
+          description: A list of mobile handover modes the user can choose from. Supported modes are "sms" and "qrCode". The first in the list is used as default.<br/>In addition to Capture, this field also affects the VideoID SDK.
+          example:
+          - sms
+          - qrCode
+          items:
+            type: string
+        forceMobileHandover:
+          type: boolean
+          default: false
+          description: Forces the end-user to take photos with their mobile device.
+          example: true
+        useNativeCamera:
+          type: boolean
+          default: false
+          description: Forces the end-user to take photos with the native camera app instead of the browser camera on the mobile.
+          example: true
+        customCss:
+          type: string
+          description: Optional.<br> The custom CSS to be loaded in the app. The string should contain the CSS code. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: 'html, body {\n    margin: 0;\n    padding: 0;\n}\nbody {\n    background-color: #F7F7F7;\n    font-family: ''Roboto Condensed'', sans-serif;\n    color: #4F5B63;\n    background-size: cover;\n    background-repeat: no-repeat;\n    min-height:100vh;\n}\n.top {\n    width: 512px;\n    margin: 0 auto;\n}'
+        onfidoConfig:
+          $ref: '#/components/schemas/JsonNode'
+          description: "Custom configurations for the native Onfido Web SDK. This configuration applies when provider is set to onfido and sdk is set to native in Start capture flow. This object is in JSON format. Accepted elements are the ones listed below plus any field included in the Onfido initialisation object: <a href=\"https://documentation.onfido.com/sdk/web/\">Onfido Web SDK Reference</a><ul><li><code>customHtml</code> Optional.<br> Custom HTML code (in the form of a string) to replace the HTML of the app. This should always include an element with the ID \"onfido-mount\" where the Onfido SDK will be mounted.</li><li><code>customHeaderLogo</code> Optional.<br> An image, provided in a Data URI or link format, indicating the logo image that will be displayed in the top left corner of the page.</li><li><code>customBackgroundImage</code> Optional.<br> An image provided in a  Data URI or link format, indicating the image to be displayed as background under the Onfido SDK.</li><li><code>language</code> Optional.<br> You can customise the SDK language by passing a string. Available languages are: [en, nb, sv, nl]</li><li><code>translations</code> Optional.<br> An object where the keys are the language code and have the phrases and mobilePhrases Onfido translations. Refer to the <a href=\"https://documentation.onfido.com/sdk/web/#identifying-text-keys-in-the-onfido-screens\">Onfido documentation</a> for instructions on how to find the right keys. <br/>Code example: <pre>\"en\": {\n    \"phrases\": { 'capture.driving_licence.instructions': 'This custom string will appear by default' }\n    \"mobilePhrases\": { 'capture.driving_licence.instructions': 'This custom string will only appear on mobile' }\n} </pre></li><li><code>useOnfidoTranslations</code> Optional.<br>This field only applies to the Onfido provider when `sdk` is set to `native`. It enables Capture to use <a href=\"https://github.com/onfido/onfido-sdk-ui/tree/master/locales\">Onfido's own translations</a> instead of Signicat's translations. For information about the languages Onfido supports, see <a href=\"https://developers.onfido.com/guide/sdk-customization#supported-languages\">Supported Languages</a>.</li></ul>"
+          example:
+            customHtml: "<div class='theme-spp login-main'>\n    <nav>\n        <div class='nav-background-right'></div>\n        <div id='kc-logo'>\n         <div class='nav-background-right'></div>\n            <div id='logo-wrapper'></div>\n            <div class='right'></div>\n        </div>\n    </nav>\n\n    <div id='onfido-mount'></div>\n</div>"
+            customHeaderLogo: data:image/png;base64,/9j/4AAQSkZJRg
+            customBackgroundImage: data:image/png;base64,/9j/4AAQSkZJRg
+            containerId: onfido-mount
+            language: en
+            smsNumberCountryCode: NL
+            steps:
+            - type: document
+              options:
+                useLiveDocumentCapture: false
+                documentTypes:
+                  passport: true
+                  driving_licence: false
+                  national_identity_card: false
+            - type: face
+              options:
+                requestedVariant: ${processType}
+            - type: complete
+              options: {}
+            translations:
+              locale: en_US
+              phrases:
+                welcome:
+                  title: ''
+                  description_p_1: ''
+                  description_p_2: ''
+                  next_button: ''
+        signicatvideoidConfig:
+          $ref: '#/components/schemas/SignicatVideoIdConfig'
+        signicatpictureidConfig:
+          $ref: '#/components/schemas/SignicatPictureIdConfig'
+        showConsentPage:
+          type: boolean
+          description: If true, the app shows the consent page before starting the flow
+        showAccessibilityLink:
+          type: boolean
+          description: If true, the app shows the accessibility statement link at the bottom of the screen.
+        showDocumentInstructionsScreen:
+          type: boolean
+          description: Enables/disables a screen between the document country picker screen and the take photo or upload photo screen. This screen shows the end-user instructions on how to take or upload a valid photo of an identity document.
+        documentInstructionsScreenItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentInstructionScreenItem'
+        showPrerequisitesScreen:
+          type: boolean
+          description: If enabled, this is the first screen the end-user sees when the capture UI is loaded. It presents tips about what they should have ready before they continue the identification. You can see an example of how this screen looks like in the integration documentation under <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations > Prerequisites screen</a>.
+        prerequisitesScreenItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrerequisiteScreenItem'
+        showCountryBeforeDocumentType:
+          type: boolean
+          description: If true, the app will show the document country picker before the document type picker.
+    StandardExceptionNotFound:
+      type: object
+      description: Standard Exception Not Found
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 404
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Not Found
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Dossier not found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    WebIDIdDocument:
+      type: object
+      description: Data about the physical ID document. Required for `accountid` processes only (not `videoid`).
+      properties:
+        authority:
+          type: string
+          description: Name of the authority that issued the ID document. Might be empty.
+        dateOfExpiry:
+          type: string
+          description: ID document's expiry date (YYYY-MM-DD).
+        dateOfIssue:
+          type: string
+          description: Date when the ID document was issued. No time zone. Might be empty.
+        documentType:
+          type: string
+          description: Type (or name) of the ID document, for example, passport. Only specified values are supported. Other values will be ignored.
+        idNumber:
+          type: string
+          description: The end-user's national identity number.
+        mrz:
+          type: string
+          description: Value of the "Machine Readable Zone" in the ID document. Cannot include line breaks or special characters for multi-line variants. Might be empty.
+        nameAtBirth:
+          type: string
+          description: Maiden name as specified in the ID document.
+        nationality:
+          type: string
+          description: The end-user's nationality (country code in ISO 3166 Alpha 3 format). Required for `accountid` processes only (not `videoid`).
+        placeOfBirth:
+          type: string
+          description: The end-user's birth place.
+      required:
+      - nationality
+    WebURL:
+      type: object
+      description: Artifact Web URL
+      properties:
+        url:
+          type: string
+          example: https://api.signicat.com/assure/capture/#/artifact=2qxoa5ybea75iy122vkltm4xou0o0uvpkyh69kex1iac0dyvpb
+    StandardExceptionUnauthorized:
+      type: object
+      description: Standard Exception Unauthorized
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 401
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: The signature of the JWT could not be validated because the key was not found.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: The given JWT is signed by a key with key ID 'signing-key-aaaaaaaaaaaaaaaaaaaaaaaaaaa', but no such key was found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    WebIDUserActionParameters:
+      type: object
+      description: Parameters the WebID service needs for the end-user flow.
+      properties:
+        redirectUrl:
+          type: string
+          description: 'URL to redirect the user after a successful identification (or signature) (only in web browsers). '
+        redirectDeclineUrl:
+          type: string
+          description: 'URL to redirect the user after an unsuccessful identification (only in web browsers). '
+        redirectMismatchUrl:
+          type: string
+          description: 'URL to redirect the user after a successful identification, even if the user data has changed during the  identification (only in web browsers). '
+        redirectSkipQesUrl:
+          type: string
+          description: URL to redirect the user when they click the Cancel button on the contract signing page.
+        redirectCancelUrl:
+          type: string
+          description: URL to redirect the user when they manually cancel the identification process.
+        redirectTime:
+          type: integer
+          format: int32
+          description: '(When testing in sandbox, this needs to be > 0 https://developer.signicat.com/docs/id-document-and-biometric-verification/provider-specific-integrations/webid/#test-webid) Time in seconds to delay redirect to one of the redirect URLs. If this is 0, users will be redirected directly to those URLs. Otherwise, a success page will be shown after successful identification and redirect occurs after the specified delay. '
+        clientName:
+          type: string
+          description: Name of client or brand customer if the user-action is attributed to a sub-customer. May be shown to a support agent.
+        productType:
+          type: string
+          description: 'The product type shown to the support agent to help detect fraud. The value should only be one single product type or category, and it should be either in German or English. Examples: "Account Opening", "Loan Application", "Credit Card", "Financing", "SIM Card Activation", "Age Verification", "Contract".'
+      required:
+      - clientName
+      - productType
+      - redirectCancelUrl
+      - redirectDeclineUrl
+      - redirectMismatchUrl
+      - redirectUrl
+    StandardExceptionBadRequest:
+      type: object
+      description: Standard Exception Bad Request
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 400
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Malformed Authorization header.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Please provide a valid Bearer authentication.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    WebIDAddress:
+      type: object
+      properties:
+        street:
+          type: string
+          description: Available only if addressLine1 and addressLine2 are empty.
+        streetNumber:
+          type: string
+          description: Available only if addressLine1 and addressLine2 are empty.
+        addressLine1:
+          type: string
+          description: For example, street number and street, or post box or rural route. Available only if street and streetNumber are empty.
+        addressLine2:
+          type: string
+          description: Available only if street and streetNumber are empty.
+        region:
+          type: string
+          description: For example, state, district, province or any local region.
+        zip:
+          type: string
+          description: Zip code.
+        city:
+          type: string
+          description: City.
+        country:
+          type: string
+          description: Country name component (ISO-3166 Alpha 3).
+    JsonNode: {}
+    CaptureConfigurationResponse:
+      type: object
+      description: Capture Configuration Response
+      properties:
+        pageTitle:
+          type: string
+          default: Signicat Capture
+          description: 'The title to be displayed in the browser tab. <br>Maximum length: 60 characters. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.'
+          example: This is a title
+        favicon:
+          type: string
+          default: (signicat icon)
+          description: ' A custom favicon to be displayed in the browser tab. This must be a valid data-uri or link. <br>Allowed data formats: [ "jpeg", "png", "ico"] <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.'
+          example: data:image/x-icon;base64,/9j/4AAQSkZJRg
+        fontName:
+          type: string
+          description: The name of the font to be used in the Capture SDK user interface. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: Raleway
+        fontUrl:
+          type: string
+          description: 'The URL to the CSS file with the font-face.<br> Limitations: This field only accepts Google Font urls; Custom fonts require prior submission of the domain to be whitelisted.In addition to Capture, this field also affects the VideoID SDK. '
+          example: https://fonts.googleapis.com/css?family=Raleway:400,500,600,700&display=swap
+        primaryColor:
+          type: string
+          description: 'The HEX or RGB code for the primary color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK. '
+          example: '#5AAFFF'
+        fontColor:
+          type: string
+          default: black
+          description: The HEX or RGB code for the general font color.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsColor:
+          type: string
+          description: The HEX or RGB code for the background color of the buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsHoverColor:
+          type: string
+          description: The HEX or RGB code for the background color of the hover buttons. If not set, it will default to primaryColor.<br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        buttonsTextColor:
+          type: string
+          default: white
+          description: The HEX or RGB code for the text color on the buttons. <br>In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        spinnerColor:
+          type: string
+          description: The HEX or RGB code for the color of the loading spinner. If not set, it will default to primaryColor. <br> In addition to Capture, this field also affects the Onfido and VideoID SDK.
+          example: '#000000'
+        documentTypes:
+          type: array
+          description: Filters the list of document types that the end-user can choose from. If the field is empty or not defined, all the document types supported by the provider will be displayed.<br>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent.
+          example:
+          - identityCard
+          - passport
+          - driversLicense
+          items:
+            type: string
+            enum:
+            - driversLicense
+            - passport
+            - identityCard
+            - residencePermit
+            - workPermit
+            - voterId
+            - postalIdCard
+            - professionalQualificationCard
+            - professionalPermit
+            - socialSecurity
+            - panCard
+            - passportCard
+            - stateId
+            - visa
+            - asylumRegistrationCard
+            - nationalHealthInsuranceCard
+            - aadharCard
+            - immigrationStatusDocument
+            - indigenousCard
+            - municipalityIdentityCard
+            - privateOperatorsCard
+            - certificateOfSponsorship
+            - serviceIdCard
+            - taxId
+        documentCountries:
+          type: object
+          additionalProperties: {}
+          description: "Filters the list of countries that the end-user can choose from. The value will always be an object with the keys corresponding to `documentTypes`. The value of the keys can be:<ul><li> Empty: If the field is empty or not defined, all the countries supported by the provider will be displayed. </li><li> `univ` (string): The `univ` value (in lower case) is only available for passports. It displays a list of all the countries in the world. Code example: <pre>\"documentCountries\": {\n    \"passport\": \"univ\"\n} </pre></li><li> Array of country codes (ISO 3166 Alpha 3): This displays only the defined countries. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\" ]\n} </pre>In this case, the end-user will only see the Portuguese and Norwegian document options. <li> `UNIV` in an array with country codes: The `UNIV` value (upper case) is only available for the ‘signicatpaper’ provider with passport as document type. It will display an additional option for \"Other countries\", so the end-user can choose other countries than the ones that are supported in Signicat Paper's template. Code example: <pre>\"documentCountries\": {\n    \"passport\": [ \"PRT\", \"NOR\", \"UNIV\" ]\n} </pre>In this example, the list of passports will show \"Portuguese\", \"Norwegian\" and \"Other countries\" (3 options). You should be aware of the following when using `UNIV`:<br>- Only data from the MRZ area is extracted.<br>- Redaction will not be performed.<br>- It only works for ICAO compliant passports (that comply with the <a href=\"https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf\">ICAO9303 rule)</a>.</li></ul>In addition to Capture, this field also affects the VideoID SDK.<br>This setting will not take effect for <b>signicatvideoid</b> processes if <b>eidConfig > idTypes</b> is also sent."
+          example:
+            passport:
+            - NLD
+            - GBR
+            - PRT
+            identityCard:
+            - NLD
+        twoSidedPassports:
+          description: List of countries where also the backside of the passport should be captured.The value can be either an array of country codes (ISO 3166 Alpha 3), or a string `all` (to ask for the backside  of all passports) or `null` (to not ask for the backside of any passports).
+          example:
+          - NLD
+          - PRT
+        languages:
+          type: array
+          default: en
+          description: 'List of languages the end-user can choose from (ISO 639-1,  two-letter codes). In addition to the standard two-letter country codes, we support the following old country codes for backwards compatibility: [ "cz", "gb", "gr", "uk" ]. <br>For supported languages, see the  <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the  VideoID SDK.'
+          example:
+          - nl
+          - pt
+          - en
+          items:
+            type: string
+          uniqueItems: true
+        translations:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          description: Custom translations for the Capture SDK. For more details about supported languages and how to create your own translations, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations</a> section in the integration documentation.<br> In addition to Capture, this field also affects the VideoID SDK.
+          example:
+            nl:
+              chooseCountry: Selecteer het uitgifteland van het identiteitsbewijs
+              verifyingOrientationHint: Wordt de tekst op beide foto's horizontaalweergegeven zoals in de voorbeelden?
+            pt:
+              chooseCountry: Selecione a sua nacionalidade
+              verifyingOrientationHint: O seu documento está na mesma orientação que a ilustração em cima?
+        defaultCountry:
+          type: string
+          default: NOR
+          description: 'Helps the UI decide which country to select by default when multiple options are available. For example: To pre-select the phone country code in the mobile handover screen or to set the default country (ISO 3166 Alpha 3) in the list of countries of the document selection screen. <br/>In addition to Capture, this field also affects the VideoID SDK.'
+          example: NOR
+        allowFileUpload:
+          type: array
+          default: '[mobile, desktop]'
+          description: Enables/disables the file upload option for mobile and desktop.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        allowTakePhoto:
+          type: array
+          default: '[mobile, desktop]'
+          description: Enables/disables the "take photo" option for mobile and desktop.
+          example:
+          - mobile
+          - desktop
+          items:
+            type: string
+        allowZoomOnPreview:
+          type: array
+          description: Enables/disables the option to zoom the uploaded image when previewing it for both the "take photo" and "upload photo" flows.
+          example:
+          - uploadPhoto
+          - takePhoto
+          items:
+            type: string
+        useSignicatTheming:
+          type: boolean
+          default: false
+          description: Enables/disables the use of Signicat Theming.
+          example: true
+        enableMobileHandover:
+          type: boolean
+          default: true
+          description: Enables/disables the mobile handover feature. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: false
+        enableOrientationConfirmation:
+          type: boolean
+          default: false
+          description: Enables/disables the orientation confirmation step at the end of the file upload flow.
+          example: false
+        autoCapture:
+          type: boolean
+          default: false
+          description: Enables/disables the auto-capture feature on the camera flow. Available for passports only.
+          example: false
+        detectGlare:
+          description: Enables/disables glare detection for both the "take photo" and "upload photo" flows.It can be a boolean or array.
+          example:
+          - uploadPhoto
+          - takePhoto
+        customRedactionError:
+          type: boolean
+          default: false
+          description: If the redaction failed, it enables/disables a specific error page in the mobile flow. If set to true, it will redirect to the red error page. If there was an error but the redaction went well, it will redirect to the yellow error page.
+          example: false
+        takeSelfie:
+          type: boolean
+          default: false
+          description: Enables/disables the selfie step at the end of the Capture flow (both camera and file upload). This is required if you want to use both the Onfido documentSelfie and the Capture SDK.
+          example: false
+        smsDefaultCountry:
+          type: string
+          default: NOR
+          description: Country prefix (ISO 3166 Alpha 3) to be pre-selected on the mobile handover popup screen for phone number input. <br> In addition to Capture, this field also affects the VideoID SDK.
+          example: NOR
+        maxRetries:
+          type: integer
+          format: int32
+          default: 0
+          description: The maximum number of retries after the verification fails (e.g. if the document is not valid or possible to read etc.). <br> In addition to Capture, this field also affects the VideoID SDK. *Default value is 0 for 'capture' SDK and 4 for 'native' SDK with provider 'signicatvideoid'
+          example: 3
+        showModalBeforeRedirect:
+          type: boolean
+          default: true
+          description: If true, the app shows the success/error modal before redirecting to the redirectUrl. If false, it redirects immediately.
+          example: true
+        mobileHandoverTimeout:
+          type: integer
+          format: int32
+          default: 0
+          description: Number of minutes before the mobile handover loading page times out and cancels the process. <br> In addition to Capture, this field also affects the VideoID SDK.
+          example: 3
+        mobileHandoverModes:
+          type: array
+          default: '[ sms, qrCode ]'
+          description: A list of mobile handover modes the user can choose from. Supported modes are "sms" and "qrCode". The first in the list is used as default.<br/>In addition to Capture, this field also affects the VideoID SDK.
+          example:
+          - sms
+          - qrCode
+          items:
+            type: string
+        forceMobileHandover:
+          type: boolean
+          default: false
+          description: Forces the end-user to take photos with their mobile device.
+          example: true
+        useNativeCamera:
+          type: boolean
+          default: false
+          description: Forces the end-user to take photos with the native camera app instead of the browser camera on the mobile.
+          example: true
+        customCss:
+          type: string
+          description: Optional.<br> The custom CSS to be loaded in the app. The string should contain the CSS code. <br>In addition to Capture, this field also affects the VideoID SDK.
+          example: 'html, body {\n    margin: 0;\n    padding: 0;\n}\nbody {\n    background-color: #F7F7F7;\n    font-family: ''Roboto Condensed'', sans-serif;\n    color: #4F5B63;\n    background-size: cover;\n    background-repeat: no-repeat;\n    min-height:100vh;\n}\n.top {\n    width: 512px;\n    margin: 0 auto;\n}'
+        onfidoConfig:
+          $ref: '#/components/schemas/JsonNode'
+          description: "Custom configurations for the native Onfido Web SDK. This configuration applies when provider is set to onfido and sdk is set to native in Start capture flow. This object is in JSON format. Accepted elements are the ones listed below plus any field included in the Onfido initialisation object: <a href=\"https://documentation.onfido.com/sdk/web/\">Onfido Web SDK Reference</a><ul><li><code>customHtml</code> Optional.<br> Custom HTML code (in the form of a string) to replace the HTML of the app. This should always include an element with the ID \"onfido-mount\" where the Onfido SDK will be mounted.</li><li><code>customHeaderLogo</code> Optional.<br> An image, provided in a Data URI or link format, indicating the logo image that will be displayed in the top left corner of the page.</li><li><code>customBackgroundImage</code> Optional.<br> An image provided in a  Data URI or link format, indicating the image to be displayed as background under the Onfido SDK.</li><li><code>language</code> Optional.<br> You can customise the SDK language by passing a string. Available languages are: [en, nb, sv, nl]</li><li><code>translations</code> Optional.<br> An object where the keys are the language code and have the phrases and mobilePhrases Onfido translations. Refer to the <a href=\"https://documentation.onfido.com/sdk/web/#identifying-text-keys-in-the-onfido-screens\">Onfido documentation</a> for instructions on how to find the right keys. <br/>Code example: <pre>\"en\": {\n    \"phrases\": { 'capture.driving_licence.instructions': 'This custom string will appear by default' }\n    \"mobilePhrases\": { 'capture.driving_licence.instructions': 'This custom string will only appear on mobile' }\n} </pre></li><li><code>useOnfidoTranslations</code> Optional.<br>This field only applies to the Onfido provider when `sdk` is set to `native`. It enables Capture to use <a href=\"https://github.com/onfido/onfido-sdk-ui/tree/master/locales\">Onfido's own translations</a> instead of Signicat's translations. For information about the languages Onfido supports, see <a href=\"https://developers.onfido.com/guide/sdk-customization#supported-languages\">Supported Languages</a>.</li></ul>"
+          example:
+            customHtml: "<div class='theme-spp login-main'>\n    <nav>\n        <div class='nav-background-right'></div>\n        <div id='kc-logo'>\n         <div class='nav-background-right'></div>\n            <div id='logo-wrapper'></div>\n            <div class='right'></div>\n        </div>\n    </nav>\n\n    <div id='onfido-mount'></div>\n</div>"
+            customHeaderLogo: data:image/png;base64,/9j/4AAQSkZJRg
+            customBackgroundImage: data:image/png;base64,/9j/4AAQSkZJRg
+            containerId: onfido-mount
+            language: en
+            smsNumberCountryCode: NL
+            steps:
+            - type: document
+              options:
+                useLiveDocumentCapture: false
+                documentTypes:
+                  passport: true
+                  driving_licence: false
+                  national_identity_card: false
+            - type: face
+              options:
+                requestedVariant: ${processType}
+            - type: complete
+              options: {}
+            translations:
+              locale: en_US
+              phrases:
+                welcome:
+                  title: ''
+                  description_p_1: ''
+                  description_p_2: ''
+                  next_button: ''
+        signicatvideoidConfig:
+          $ref: '#/components/schemas/SignicatVideoIdConfig'
+        signicatpictureidConfig:
+          $ref: '#/components/schemas/SignicatPictureIdConfig'
+        showConsentPage:
+          type: boolean
+          description: If true, the app shows the consent page before starting the flow
+        showAccessibilityLink:
+          type: boolean
+          description: If true, the app shows the accessibility statement link at the bottom of the screen.
+        showDocumentInstructionsScreen:
+          type: boolean
+          description: Enables/disables a screen between the document country picker screen and the take photo or upload photo screen. This screen shows the end-user instructions on how to take or upload a valid photo of an identity document.
+        documentInstructionsScreenItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentInstructionScreenItem'
+        showPrerequisitesScreen:
+          type: boolean
+          description: If enabled, this is the first screen the end-user sees when the capture UI is loaded. It presents tips about what they should have ready before they continue the identification. You can see an example of how this screen looks like in the integration documentation under <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations > Prerequisites screen</a>.
+        prerequisitesScreenItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrerequisiteScreenItem'
+        showCountryBeforeDocumentType:
+          type: boolean
+          description: If true, the app will show the document country picker before the document type picker.
+        id:
+          type: string
+          description: The ID of a capture configuration.
+          example: Configuration1
+          maxLength: 100
+        createdAt:
+          type: string
+          description: 'The date and time the data was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ.)'
+          example: '2022-01-01T09:00:00Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the data was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T10:30:00Z'
+    WebIDParameters:
+      type: object
+      properties:
+        preferredLanguage:
+          type: string
+          description: Your preferred language as a two-letter ISO-3166-1 Alpha-2 code (optional). If specified, this will be used for web pages, emails, etc. directed to the user. Supported language codes are en, de, fr, it. Other values will be mapped to one of these.
+          example: en
+        user:
+          $ref: '#/components/schemas/WebIDUser'
+          description: Data about the end-user. Usually, entered by the end-user into your system.
+        idDocument:
+          $ref: '#/components/schemas/WebIDIdDocument'
+        userActionParameters:
+          $ref: '#/components/schemas/WebIDUserActionParameters'
+          writeOnly: true
+        hasProvidedConsent:
+          type: boolean
+          description: If the user has already accepted the terms and conditions. Default is 'false'.
+        file:
+          $ref: '#/components/schemas/WebIDFile'
+          description: PDF file which must correspond to the PDF/A standard (PDF/A 1.3b recommended). Documents on QES processes are intended to be digitally signed by a user throughout the process.
+      required:
+      - idDocument
+      - user
+      - userActionParameters
+    DocumentInstructionScreenItem:
+      type: object
+      description: Allows customisation of the instruction elements (images, icons, titles, and descriptions) on the document instructions screen.
+      properties:
+        image:
+          type: string
+          description: Hyperlink of the image that you want to present in the instruction guide.
+          example: https://www.example.com/image.jpg
+        icon:
+          type: string
+          description: 'Instruction icon. Available options can be found in the following link: https://fonts.google.com/icons'
+          example: check_circle
+        title:
+          type: string
+          description: Instruction title.
+          example: Ready
+        description:
+          type: string
+          description: Instruction description.
+          example: The photo is good!
+    PrerequisiteScreenItem:
+      type: object
+      description: Allows you to override the default prerequisites items (“Identity document”, “Lightning”, “Internet“, “Camera and microphone“) with your own items. Do not set this field if you want to use the default ones. You can see how the default items look like in the integration documentation under <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations > Prerequisites screen</a>.
+      properties:
+        icon:
+          type: string
+          description: 'Instruction icon. Available options can be found in the following link: https://fonts.google.com/icons'
+          example: light
+        title:
+          type: string
+          description: Instruction title.
+          example: lightning
+        description:
+          type: string
+          description: Instruction description.
+          example: A well lit place!
+    SignicatPictureIdTranslations:
+      type: object
+      description: Translations strings, where the key is the language code (e.g., 'en', 'es') and the value is a map of translation keys to strings.
+      properties:
+        translations:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+    SignicatVideoIdConfig:
+      type: object
+      description: Custom configurations for the native Signicat VideoID Web SDK. This configuration applies when <code>provider</code> is set to <code>signicatvideoid</code> and <code>sdk</code> is set to <code>native</code> in Start capture flow. This object is in JSON format
+      properties:
+        checkRequirements:
+          type: boolean
+          description: Default value is <b>false</b>. Enable this setting to run a network connectivity check before the VideoID starts. This will allow to confirm if the current network speed is high enough to allow for video streaming and will only allow the end-user to continue if minimum requirements are met. Note that other checks, such as browser, camera and microphone, are always done and are not controlled by this setting. Also note that checking the network requirements will take some seconds (depending on the network).
+          example: false
+        useModal:
+          type: boolean
+          description: Default value is <b>false</b>. Launches the Signicat VideoID SDK inside a modal / popup instead of full-screen.
+          example: false
+        minRequirementsMandatory:
+          type: boolean
+          description: If enabled, the end-user will only be allowed to continue with the VideoID if the minimum requirements are met (camera, microphone, OS, browser and also network if <code>checkRequirements</code> is enabled)
+          example: true
+        allowedIdTypes:
+          type: array
+          description: This setting only affects <b>signicatvideoid</b> processes.It will overrule any values that are sent in <b>documentTypes</b> or <b>documentCountries</b> in this configurations.
+          example:
+          - 61
+          - 62
+          - 188
+          items:
+            type: integer
+            format: int32
+        sdkLoadTimeout:
+          type: integer
+          format: int32
+          description: Number of seconds to wait for the VideoID SDK to load. After this time, the process status will be set to `failed`. This is a UX measure to avoid end-users getting stuck waiting (and the process stuck at `pending`) if there are problems with VideoID services.
+          example: 8
+    CaptureConfigurationSlimResponse:
+      type: object
+      description: Capture Configuration Slim Response
+      properties:
+        id:
+          type: string
+          description: The ID of a capture configuration.
+          example: Configuration1
+          maxLength: 100
+        createdAt:
+          type: string
+          description: 'The date and time the data was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ.)'
+          example: '2022-01-01T09:00:00Z'
+        updatedAt:
+          type: string
+          description: 'The date and time the data was updated (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ).'
+          example: '2022-01-01T10:30:00Z'
+    CaptureProcessParameters:
+      type: object
+      description: Provider specific process parameters
+      properties:
+        uiProfile:
+          type: string
+          description: This is the graphical profile used when loading the SDK. This graphical profile impacts the frontend layout (e.g. font, colour) and the end-user workflow (e.g. available documents, auto capture, glare detection). For more details about the uiProfile and configurations, please see the general documentation <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#capture-configurations-uiprofile">Capture configurations (uiProfile)</a>. If a uiProfile is not set, a default value will be used.<br><br>To create a uiProfile configuration use the <a href="https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Capture/operation/createCaptureConfiguration">Create capture configuration</a> endpoint.<br><br>To get all available configurations use the <a href="https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Capture/operation/getCaptureConfigurations">Get all configurations</a> endpoint.
+          example: darkmode
+        uiProfileJSON:
+          $ref: '#/components/schemas/JsonNode'
+          description: This is JSON format of the graphical profile used when loading the SDK. <b>Attention</b> this will override configuration properties defined in the uiProfile.For more details about the uiProfile and configurations, please see the general documentation <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#capture-configurations-uiprofile">Capture configurations (uiProfile)</a>.
+          example:
+            pageTitle: This is a json profile
+        uiLanguage:
+          type: string
+          description: Sets the initial language for the user interface. Default value is 'en' (English). For details about possible values, see the <a href="https://developer.signicat.com/docs/id-document-and-biometric-verification/services/capture/#translations-for-capture-sdk">Translations</a> section in the integration documentation.
+          example: en
+        smsSender:
+          type: string
+          description: Name of the sender that will appear in the text message if the end-user chooses to capture the images with their mobile phone (mobile handover). This field must either be numeric and consist of up to 15 digits ([0-9]), or be alphanumeric and consist of 1 to 11 characters in the range [A-Za-z0-9]. Default value is 'Signicat'.
+          example: Signicat
+        smsMessage:
+          type: string
+          description: 'The text that will appear in the text message. This message is prepended to the URL where the end-user must click to continue the verification process on their mobile phone, if they decided to do a mobile handover (see ''smsSender''). This message must follow the regex expression: `^[A-Za-z0-9-.:s]{1,200}$`Thus, it cannot exceed 200 characters. Default value is ''To continue, please click here:'''
+          example: 'To continue please click here:'
+        defaultCountry:
+          type: string
+          description: 'The default country (ISO 3166 Alpha 3) to be used during the flow. This country is selected when there is a list of countries. Setting `defaultCountry` here in the request will override whatever  defaultCountry is set in the capture configuration. '
+          example: NOR
+    WebIDFile:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: File name with extension. Extension must be "pdf". Slashes ('/') are not allowed in this field.
+        fileContent:
+          type: string
+          description: File content as base64 string.
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: JWT Security Scheme
+      scheme: bearer
+      bearerFormat: JWT
+externalDocs:
+  description: See also the user docs on how to get started with the Assure API.
+  url: https://developer.signicat.com/docs/id-document-and-biometric-verification/guides/#set-up-an-api-integration
+x-refined-from:
+- id-document-and-biometric-verification-openapi.json
+- signicat-id-document-and-biometric-verification-openapi.yml

@@ -1,0 +1,557 @@
+openapi: 3.2.0
+info:
+  title: Signicat MobileID account recovery API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged MobileID account recovery across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: MobileID account recovery
+  description: 'You can use the **MobileID account recovery** resource for operations related to MobileID account recovery for your ReuseID users.
+
+
+    ## Useful information
+
+
+    - A MobileID account recovery operation is identified by its `transactionId`.
+
+    - The `transactionId` can be used to get details about the recovery.'
+paths:
+  /credentials/devices/recoveries/{transactionId}:
+    get:
+      tags:
+      - MobileID account recovery
+      summary: Get details of account recovery
+      description: 'This operation returns information about a recovery that a ReuseID user carried out for a specific device.
+
+
+        ### How to get the transaction ID
+
+
+        To get the `transactionId` required for the operation request, you need to do the following steps:
+
+        1. Use the Get device transactions endpoint to see all device transactions for a specified device.
+
+        2. Look for transactions with `operationType` returned as `RECOVERY`.
+
+        3. Locate the `transactionId` in this response.'
+      operationId: getAccountRecovery
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '200':
+          description: Successfully fetched the details of the account recovery.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRecoveryDetails'
+              examples:
+                Account recovery fetch COMPLETED.:
+                  description: Sample response when account recovery has been completed successfully.
+                  value:
+                    transactionId: a75064fe-c528-478d-81d3-0a7b404b84b9
+                    accountId: a-ppge-abcd1234ABCDxxxxxxx
+                    state: COMPLETED
+                    device:
+                      id: b6759679-f956-4691-aebf-6ff5e6f924ec
+                      name: ''
+                      state: ACTIVE
+                      lastOperationType: REGISTRATION
+                      lastUsed: '2024-06-25T06:18:13.002Z'
+                      created: '2024-06-25T06:18:12.969Z'
+                    user:
+                      externalRef: '1234567890'
+                      id: 23ae6e6c-242d-4834-bbed-a9308218e5c4
+                      created: '2024-06-20T09:46:14.133Z'
+                      lastUsed: '2024-06-25T06:18:12.937Z'
+                      state: ACTIVE
+                    created: 2024-06-25T06:18:23.000UTC
+                    operationProperties:
+                      sessionExpiryTime: 2024-06-25T06:23:23.000UTC
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                    riskAttributes:
+                    - name: is_debuggable
+                      value: 'true'
+                    - name: is_power_connected
+                      value: 'false'
+                    - name: is_debugger_connected
+                      value: 'false'
+                    - name: is_secure_screen_lock_enabled
+                      value: 'false'
+                    - name: is_debug_enabled
+                      value: 'true'
+                    - name: is_emulator
+                      value: 'true'
+                    - name: is_root_available
+                      value: 'false'
+                    recoveryMethod: CLOUD_BACKUP_SERVER_SIDE_FACE
+                    recoveryStatus: RECOVERED
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                detail: 'Getting account recovery details failed. Transaction ID: 8eea29b2-8de6-4db5-8725-941905d7a792'
+                traceId: '00000000000000000000000000000000'
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    AppAttestation:
+      type: object
+      description: 'An object that describes the properties of the attestation.
+
+
+        **Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#app-attestation).
+
+        '
+      properties:
+        playIntegrityStatus:
+          type: string
+          description: 'The Play Integrity attestation status of the ReuseID user''s device that was used for the operation.
+
+
+            **Possible values**: See the [Play Integrity statuses](/apis/reuseid/#section/Common-concepts/Play-Integrity-statuses) table.
+
+            '
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          description: 'The timestamp when the Play Integrity attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          description: 'The App Attest attestation status of the ReuseID user''s device that was used for the operation
+
+
+            **Possible values**: See the [App Attest statuses](/apis/reuseid/#section/Common-concepts/App-Attest-statuses) table.
+
+            '
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          description: 'The timestamp when the App Attest attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:55:03.025Z'
+    BaseUser:
+      type: object
+      properties:
+        externalRef:
+          type: string
+          description: 'The identifier generated by you, that points to the `userId` generated by ReuseID.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          description: 'The segment that was assigned to the ReuseID user and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          description: 'The timestamp when the ReuseID user was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user last carried out an operation such as a registration, authentication or signing.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          description: 'The state of the ReuseID user, returned as an enum.
+
+
+            **Possible values**: See the [User states](/apis/reuseid/#section/Common-concepts/User-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+    Location:
+      type: object
+      properties:
+        accuracy:
+          type: string
+          description: The location accuracy of the ReuseID user's device that was used for the operation.
+          example: '0.564'
+        altitude:
+          type: string
+          description: The location altitude of the ReuseID user's device that was used for the operation.
+          example: 76.2352.3563
+        latitude:
+          type: string
+          description: The location latitude of the ReuseID user's device that was used for the operation.
+          example: 12.34234.143
+        longitude:
+          type: string
+          description: The location longitude of the ReuseID user's device that was used for the operation.
+          example: 32.24314.1431
+    AccountRecoveryDetails:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The transaction ID of the recovery session.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        accountId:
+          type: string
+          description: The ID of the account that the device belongs to.
+          example: a-ppge-abcd1234ABCDxxxxxxx
+        state:
+          type: string
+          description: The state of the recovery operation.
+        device:
+          $ref: '#/components/schemas/Device'
+          description: The device performing the recovery.
+        user:
+          $ref: '#/components/schemas/BaseUser'
+          description: The user performing the recovery.
+        created:
+          type: string
+          description: 'The timestamp when the recovery session was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        operationProperties:
+          $ref: '#/components/schemas/OperationProperties'
+          description: An object that contains the configured properties of the operation, which determined how it was carried out.
+        riskAttributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'An object that contains the risk attributes collected for the device.
+
+
+            **Possible values**: See the [Risk attributes](/apis/reuseid/#section/Common-concepts/Risk-attributes) table.
+
+
+            **Note**: To learn how to configure which attributes are collected, see the [Application configuration](/docs/mobile-identity/mobileid/features/application-configuration#risk-data) feature documentation.
+
+            '
+        location:
+          $ref: '#/components/schemas/Location'
+          description: 'An object that describes the location of the ReuseID user''s device that was used for the operation.
+
+
+            **Note**: To be returned in the response, you need to enable it in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#location-risk-data).
+
+            '
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          description: 'An object that describes the properties of the attestation.
+
+
+            **Note**: To be returned in the response, you need to enable it in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#app-attestation).
+
+            '
+        recoveryMethod:
+          type: string
+          description: 'The recovery method that is used for the recovery.
+
+
+            **Possible values**: See the [Recovery methods](/apis/reuseid/#section/Common-concepts/Recovery-methods) table.
+
+            '
+        recoveryStatus:
+          type: string
+          description: 'The status of the recovery.
+
+
+            **Possible values**: See the [Recovery statuses](/apis/reuseid/#section/Common-concepts/Recovery-statuses) table.
+
+            '
+    AccountRecovery:
+      type: object
+      properties:
+        recoveryId:
+          type: string
+          description: The ID of the recovery.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        recoveryMethod:
+          type: string
+          description: 'The recovery method that was used for the recovery.
+
+
+            **Possible values**: See the [Recovery methods](/apis/reuseid/#section/Common-concepts/Recovery-methods) table.
+
+            '
+          example: CLOUD_BACKUP_RECOVERY_CODE
+        recoveryStatus:
+          type: string
+          description: 'The status of the recovery.
+
+
+            **Possible values**: See the [Recovery statuses](/apis/reuseid/#section/Common-concepts/Recovery-statuses) table.
+
+            '
+          example: ACTIVATED
+        created:
+          type: string
+          description: 'The timestamp when the recovery was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        modified:
+          type: string
+          description: 'The timestamp when the recovery was updated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        recovered:
+          type: string
+          description: 'The timestamp when the recovery was used.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.373Z'
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the ReuseID user's device (`deviceId`).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          description: The name of the ReuseID user's device.
+          example: My iPhone
+        state:
+          type: string
+          description: 'The state of the ReuseID user''s device.
+
+
+            **Possible values**: See the [Device states](/apis/reuseid/#section/Common-concepts/Device-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lastOperationType:
+          type: string
+          description: 'The last operation type that the ReuseID user''s device carried out.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device last carried out an operation.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device was originally activated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27'
+        deviceDetails:
+          $ref: '#/components/schemas/DeviceDetails'
+          description: 'An object that contains a more extensive set of information about the ReuseID user''s device.
+
+
+            **Note**: This is only returned when the `detailed` query parameter is set to `true`.
+
+            '
+    DeviceLock:
+      type: object
+      properties:
+        lockReason:
+          type: array
+          description: 'A list that contains all reasons why the ReuseID user''s device has been locked.
+
+
+            **Possible values**: See the [Lock reason](/apis/reuseid/#section/Common-concepts/Lock-reason) table.
+
+            '
+          example:
+          - LOCKED_BY_ADMIN
+          - DEVICE_VERIFICATION_FAILED
+          items:
+            type: string
+          readOnly: true
+    DeviceDetails:
+      type: object
+      properties:
+        lock:
+          $ref: '#/components/schemas/DeviceLock'
+          description: 'An object that contains information about why the device is locked.
+
+
+            **Note**: This object is only returned when the ReuseID user''s device is locked.
+
+            '
+        activationTime:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device was originally activated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2017-04-05T12:23:00.000Z'
+          readOnly: true
+        deviceHash:
+          type: string
+          description: A SHA256 hash of the unique hardware device ID of the ReuseID user's device.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+          readOnly: true
+        applicationId:
+          type: string
+          description: The application ID being used for the ReuseID user's device.
+          example: encap
+          readOnly: true
+        currentClientApiVersion:
+          type: string
+          description: The Encap client API version that the ReuseID user's device used for its last operation.
+          example: 3.15.0
+        activatedClientApiVersion:
+          type: string
+          description: The Encap client API version that the ReuseID user's device was originally activated on.
+          example: 3.15.0
+        activatedEncapRelease:
+          type: string
+          description: The Encap server release version that the ReuseID user's device was originally activated on.
+          example: R_3_3
+          readOnly: true
+        pushAddress:
+          type: string
+          description: 'The push address for the ReuseID user''s device.
+
+
+            This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS).
+
+            '
+          example: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+          readOnly: true
+        operatingSystemType:
+          type: string
+          description: 'The operating system type of the ReuseID user''s device.
+
+            '
+          example: iOS
+          readOnly: true
+        activatedAuthenticationMethods:
+          type: array
+          description: 'A list of the activated authentication methods for the ReuseID user''s device.
+
+
+            **Possible values**: See the [Authentication methods](/apis/reuseid/#section/Common-concepts/Authentication-methods) table.
+
+            '
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+          readOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+        recoveries:
+          type: array
+          description: 'A list of all recoveries that a ReuseID user''s device has carried out.
+
+            '
+          items:
+            $ref: '#/components/schemas/AccountRecovery'
+        recoveryLock:
+          type: boolean
+          description: 'A property that informs you whether the recovery lock is activated, which determines if the account recovery feature is locked for a ReuseID user''s device.
+
+
+            **Example**: When `false`, the account recovery feature is not locked for the ReuseID user''s device and recovery operations can be performed.
+
+            '
+    OperationProperties:
+      type: object
+      properties:
+        sessionExpiryTime:
+          type: string
+          description: 'The timestamp when the recovery session expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T21:56:01.405Z'
+        activatedAuthenticationMethods:
+          type: array
+          description: A list of the activated authentication methods.
+          items:
+            type: string
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

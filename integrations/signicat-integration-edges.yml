@@ -1,0 +1,16 @@
+generated: '2026-10-18'
+method: none
+source:
+- https://zapier.com/apps/signicat/integrations
+- https://n8n.io/integrations/signicat/
+- https://composio.dev/toolkits/signicat
+- https://monid.ai/tools/signicat
+checked:
+- https://composio.dev/toolkits/signicat
+- https://monid.ai/tools/signicat
+- https://n8n.io/integrations/signicat/
+- https://zapier.com/apps/signicat/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []

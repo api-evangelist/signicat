@@ -1,0 +1,59 @@
+openapi: 3.2.0
+info:
+  title: Signicat Liquid API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Liquid across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Liquid
+paths:
+  /liquid/validate:
+    post:
+      tags:
+      - Liquid
+      summary: Validate Liquid template
+      description: Validates a Liquid template.
+      operationId: ValidateLiquid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateLiquidRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateLiquidResponse'
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    ValidateLiquidRequest:
+      required:
+      - template
+      type: object
+      properties:
+        template:
+          maxLength: 25000
+          minLength: 0
+          type: string
+          description: The Liquid template to validate.
+    ValidateLiquidResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: Indicates whether the Liquid template is valid.
+        error:
+          type:
+          - 'null'
+          - string
+          description: Error message if the Liquid template is invalid.
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

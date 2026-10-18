@@ -1,0 +1,718 @@
+openapi: 3.2.0
+info:
+  title: Signicat Recipients API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Recipients across 2 of this provider''s published API definitions: secure-share-openapi.json, signicat-secure-share-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/secure-share
+tags:
+- name: Recipients
+  description: Contains requests related to recipients
+paths:
+  /shares/{shareId}/recipients:
+    post:
+      tags:
+      - Recipients
+      summary: Create recipient
+      description: Create a recipient and add it to an existing share
+      operationId: CreateRecipientEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: The identifier of the share this recipient belongs to
+        schema:
+          type: string
+          format: guid
+        example: ad50fe53-e4a4-46e1-9f55-af81abc18521
+      requestBody:
+        x-name: CreateRecipientDto
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecipientDto'
+        required: true
+        x-position: 1
+      responses:
+        '201':
+          description: Recipient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientDto'
+              example:
+                id: 597e005f-84df-42fd-8160-1a2989483d8f
+                externalReference: 174d675c-cfc5-4251-89b9-b5398b46aa8b
+                firstName: John
+                lastName: Johnson
+                email: john.johnson@signicat.com
+                mobile: '0777777777'
+                fileAccessInfos:
+                - id: 9ecef354-a2e2-43ba-89fc-bb83d699ff65
+                  lastDownloadedAt: '2026-10-13T15:31:47.10028+00:00'
+                fileRestrictions:
+                - 9ecef354-a2e2-43ba-89fc-bb83d699ff65
+                authentication:
+                - identityProvider: otp-sms
+                  idpId: null
+                  nin: null
+                - identityProvider: otp-email
+                  idpId: null
+                  nin: null
+                loggedInTime: '2026-10-13T15:26:47.1002853+00:00'
+                url: null
+                notification:
+                  sendEmail: true
+                  sendSms: true
+                  language: En
+        '400':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Share not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+  /shares/{shareId}/recipients/{recipientId}:
+    delete:
+      tags:
+      - Recipients
+      summary: Delete recipient
+      description: Remove a recipient from an existing share
+      operationId: DeleteRecipientEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: 3a852790-e854-4549-a86b-18d7e133d7be
+      - name: recipientId
+        in: path
+        required: true
+        description: Unique Recipient identifier
+        schema:
+          type: string
+          format: guid
+        example: 0cf3193a-39d9-4b21-b197-278612886771
+      responses:
+        '204':
+          description: Recipient deleted successfully
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Recipient not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    get:
+      tags:
+      - Recipients
+      summary: Get recipient
+      description: Get a recipient from an existing share
+      operationId: GetRecipientEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: f6c11770-9326-4335-83cc-4bb08c0c5c2c
+      - name: recipientId
+        in: path
+        required: true
+        description: Unique Recipient identifier
+        schema:
+          type: string
+          format: guid
+        example: b75b0146-ae2b-4b50-931f-4fa1112e2773
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientDto'
+              example:
+                id: f069c9f1-0365-491e-bca7-beea8f265651
+                externalReference: 249fa90d-2f92-40dd-9d55-5218404eef59
+                firstName: John
+                lastName: Johnson
+                email: john.johnson@signicat.com
+                mobile: '0777777777'
+                fileAccessInfos:
+                - id: ff1fb749-5113-4334-b34b-66af51096262
+                  lastDownloadedAt: '2026-10-13T15:31:47.1018858+00:00'
+                fileRestrictions:
+                - ff1fb749-5113-4334-b34b-66af51096262
+                authentication:
+                - identityProvider: otp-sms
+                  idpId: null
+                  nin: null
+                - identityProvider: otp-email
+                  idpId: null
+                  nin: null
+                loggedInTime: '2026-10-13T15:26:47.1018913+00:00'
+                url: null
+                notification:
+                  sendEmail: true
+                  sendSms: true
+                  language: En
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Recipient not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    patch:
+      tags:
+      - Recipients
+      summary: Update recipient
+      description: Update a recipient from an existing share
+      operationId: UpdateRecipientEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: The identifier of the share this recipient belongs to
+        schema:
+          type: string
+          format: guid
+        example: 04815b4b-173f-4ef4-a855-f69d88cac87c
+      - name: recipientId
+        in: path
+        required: true
+        description: Unique recipient identifier
+        schema:
+          type: string
+          format: guid
+        example: 9b35df3b-5683-4581-91e1-117e498c44a3
+      requestBody:
+        x-name: UpdateRecipientDto
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRecipientDto'
+        required: true
+        x-position: 1
+      responses:
+        '201':
+          description: Share updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientDto'
+              example:
+                id: c91c1388-a238-49a8-9429-4eebeb4c5998
+                externalReference: 0f5b3473-86f2-4536-9818-6653b95e0710
+                firstName: John
+                lastName: Johnson
+                email: john.johnson@signicat.com
+                mobile: '0777777777'
+                fileAccessInfos: []
+                fileRestrictions: []
+                authentication:
+                - identityProvider: sbid
+                  idpId: 5678-1234-3456
+                  nin: '10234567893'
+                loggedInTime: '2026-10-13T15:26:47.1088365+00:00'
+                url: null
+                notification:
+                  sendEmail: true
+                  sendSms: true
+                  language: En
+        '400':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+  /shares/{shareId}/recipients/{recipientId}/reminder:
+    get:
+      tags:
+      - Recipients
+      summary: Remind recipient
+      description: Send a reminder notification to a specific recipient
+      operationId: ReminderNotificationEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: b190e4d5-e5c2-4f8e-a818-b80412dc5670
+      - name: recipientId
+        in: path
+        required: true
+        description: Unique Recipient identifier
+        schema:
+          type: string
+          format: guid
+        example: 2f03883b-3cbd-42ea-bb65-dcf63bf91a7e
+      responses:
+        '204':
+          description: Recipient deleted successfully
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Recipient not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+components:
+  schemas:
+    UpdateRecipientDto:
+      type: object
+      example:
+        firstName: John
+        lastName: Johnson
+        email: john.johnson@signicat.com
+        mobile: '+4771234567'
+        externalReference: 5ec14035-18c6-4c94-ac3a-6678c821a5f1
+        fileRestrictions: []
+        authentication:
+        - identityProvider: sbid
+          idpId: 5678-1234-3456
+          nin: '10234567893'
+        notification:
+          sendEmail: true
+          sensSms: true
+          language: null
+      additionalProperties: false
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: Recipient first name
+          example: John
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: Recipient last name
+          example: Johnson
+        email:
+          type:
+          - string
+          - 'null'
+          description: Recipient email
+          format: email
+          pattern: ^[^@]+@[^@]+$
+          example: john.johnson@signicat.com
+        mobile:
+          type:
+          - string
+          - 'null'
+          description: Recipient mobile
+          example: '+4771234567'
+        externalReference:
+          type:
+          - string
+          - 'null'
+          description: Create a reference to your own system
+          example: 5ec14035-18c6-4c94-ac3a-6678c821a5f1
+        fileRestrictions:
+          type:
+          - array
+          - 'null'
+          description: A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share
+          example: []
+          items:
+            type: string
+            format: guid
+        authentication:
+          type:
+          - array
+          - 'null'
+          description: List of authentication methods for a recipient
+          example:
+          - identityProvider: sbid
+            idpId: 5678-1234-3456
+            nin: '10234567893'
+          items:
+            $ref: '#/components/schemas/AuthenticationDto'
+        notification:
+          description: Recipient notification setup
+          example:
+            sendEmail: true
+            sensSms: true
+            language: null
+          oneOf:
+          - $ref: '#/components/schemas/UpdateNotificationDto'
+    RecipientDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        externalReference:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        mobile:
+          type:
+          - string
+          - 'null'
+        fileAccessInfos:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FileAccessInfosDto'
+        fileRestrictions:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: guid
+        authentication:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuthenticationDto'
+        loggedInTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        url:
+          type:
+          - string
+          - 'null'
+        notification:
+          oneOf:
+          - $ref: '#/components/schemas/NotificationDto'
+    UpdateNotificationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        sendEmail:
+          type: boolean
+        sensSms:
+          type: boolean
+        language:
+          type:
+          - string
+          - 'null'
+    NotificationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        sendEmail:
+          type: boolean
+        sendSms:
+          type: boolean
+        language:
+          $ref: '#/components/schemas/Language'
+    ProblemDetails:
+      type: object
+      additionalProperties: {}
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+    CreateRecipientDto:
+      type: object
+      example:
+        firstName: John
+        lastName: Johnson
+        email: john.johnson@signicat.com
+        mobile: '+4771234567'
+        fileRestrictions: []
+        authentication:
+        - identityProvider: nbid
+          idpId: 1234-3456-5678
+          nin: '12345678901'
+        notification:
+          sendEmail: true
+          sendSms: true
+          language: En
+        externalReference: f42a0230-bfa9-4021-8c9a-54ae832f981c
+      additionalProperties: false
+      required:
+      - authentication
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: Recipient first name
+          example: John
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: Recipient last name
+          example: Johnson
+        email:
+          type:
+          - string
+          - 'null'
+          description: Recipient email. Email is required if mobile is not provided or if it used by authentications or notifications
+          format: email
+          pattern: ^[^@]+@[^@]+$
+          example: john.johnson@signicat.com
+        mobile:
+          type:
+          - string
+          - 'null'
+          description: Recipient mobile. Mobile is required if email is not provided or if it used by authentications or notifications
+          example: '+4771234567'
+        fileRestrictions:
+          type:
+          - array
+          - 'null'
+          description: A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share
+          example: []
+          items:
+            type: string
+            format: guid
+        authentication:
+          type: array
+          description: List of authentication methods for a recipient
+          minLength: 1
+          example:
+          - identityProvider: nbid
+            idpId: 1234-3456-5678
+            nin: '12345678901'
+          items:
+            $ref: '#/components/schemas/AuthenticationDto'
+        notification:
+          description: Recipient notification setup
+          example:
+            sendEmail: true
+            sendSms: true
+            language: En
+          oneOf:
+          - $ref: '#/components/schemas/NotificationDto'
+        externalReference:
+          type:
+          - string
+          - 'null'
+          description: Create a reference to your own system
+          example: f42a0230-bfa9-4021-8c9a-54ae832f981c
+    AuthenticationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        identityProvider:
+          type: string
+        idpId:
+          type:
+          - string
+          - 'null'
+        nin:
+          type:
+          - string
+          - 'null'
+    FileAccessInfosDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        lastDownloadedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    Language:
+      type: string
+      description: ''
+      x-enumNames:
+      - En
+      - 'No'
+      - Fi
+      - De
+      - Fr
+      - Nl
+      - Da
+      - Sv
+      enum:
+      - En
+      - 'No'
+      - Fi
+      - De
+      - Fr
+      - Nl
+      - Da
+      - Sv
+  securitySchemes:
+    JWTBearerAuth:
+      type: http
+      description: Enter a JWT token to authorize the requests...
+      scheme: Bearer
+      bearerFormat: JWT
+x-refined-from:
+- secure-share-openapi.json
+- signicat-secure-share-openapi.yml

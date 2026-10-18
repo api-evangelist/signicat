@@ -1,0 +1,861 @@
+openapi: 3.2.0
+info:
+  title: Signicat Organization API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Organization across 2 of this provider''s published API definitions: account-management-openapi.json, signicat-account-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /account-management
+tags:
+- name: Organization
+  description: Provides management endpoints for Organizations.
+paths:
+  /organizations:
+    get:
+      tags:
+      - Organization
+      summary: List organizations
+      operationId: list_organizations
+      parameters:
+      - name: page
+        in: query
+        description: Opaque pagination token.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Max results to return.
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_OrganizationListItem'
+              example:
+                data:
+                - id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  lastModifiedDate: '2022-05-01T03:14:39Z'
+                  entityId: '999000999'
+                  entityVatNumber: null
+                  entityLegalName: null
+                  country: 'NO'
+                  parentOrganization:
+                    id: o-p-avKce97dOKlnAlOw2R55
+                    name: My Parent Organization
+                    url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                  url: https://api.signicat.com/account-management/organizations/o-p-0TgcUq7CylltM7OkwB4t
+                - id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  lastModifiedDate: ''
+                  entityId: '111999555'
+                  entityVatNumber: null
+                  entityLegalName: null
+                  country: 'NO'
+                  parentOrganization: null
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                next: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Page_OrganizationListItem'
+              example:
+                data:
+                - id: o-p-0TgcUq7CylltM7OkwB4t
+                  name: My Organization
+                  lastModifiedDate: '2022-05-01T03:14:39Z'
+                  entityId: '999000999'
+                  entityVatNumber: null
+                  entityLegalName: null
+                  country: 'NO'
+                  parentOrganization:
+                    id: o-p-avKce97dOKlnAlOw2R55
+                    name: My Parent Organization
+                    url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                  url: https://api.signicat.com/account-management/organizations/o-p-0TgcUq7CylltM7OkwB4t
+                - id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  lastModifiedDate: ''
+                  entityId: '111999555'
+                  entityVatNumber: null
+                  entityLegalName: null
+                  country: 'NO'
+                  parentOrganization: null
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                next: null
+    post:
+      tags:
+      - Organization
+      summary: Create organization
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/OrganizationCreate'
+            example:
+              name: My Organization
+              website: https://myorg.com
+              entityId: '999000999'
+              entityVatNumber: null
+              entityLegalName: null
+              country: 'NO'
+              billingEmail: billing@myorg.com
+              billingAddress:
+                street: Signistreet 39
+                postalCode: '5089'
+                city: Bergen
+                region: null
+                country: 'NO'
+              parentOrganizationId: o-p-avKce97dOKlnAlOw2R55
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationRead'
+              example:
+                id: o-p-0TgcUq7CylltM7OkwB4t
+                name: My Organization
+                lastModifiedDate: '2022-05-01T03:14:39Z'
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                parentOrganization:
+                  id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                childOrganizations: []
+                billingContact:
+                  id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+                accounts:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  enabled: true
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  enabled: false
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                contacts:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OrganizationRead'
+              example:
+                id: o-p-0TgcUq7CylltM7OkwB4t
+                name: My Organization
+                lastModifiedDate: '2022-05-01T03:14:39Z'
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                parentOrganization:
+                  id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                childOrganizations: []
+                billingContact:
+                  id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+                accounts:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  enabled: true
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  enabled: false
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                contacts:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+      operationId: postOrganizations
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /organizations/{organizationId}:
+    get:
+      tags:
+      - Organization
+      summary: Retrieve organization
+      operationId: retrieve_organization
+      parameters:
+      - name: organizationId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: deletedAccounts
+        in: query
+        description: If true, the resulting `accounts` property will include currently soft-deleted accounts
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationRead'
+              example:
+                id: o-p-0TgcUq7CylltM7OkwB4t
+                name: My Organization
+                lastModifiedDate: '2022-05-01T03:14:39Z'
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                parentOrganization:
+                  id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                childOrganizations: []
+                billingContact:
+                  id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+                accounts:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  enabled: true
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  enabled: false
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                contacts:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OrganizationRead'
+              example:
+                id: o-p-0TgcUq7CylltM7OkwB4t
+                name: My Organization
+                lastModifiedDate: '2022-05-01T03:14:39Z'
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                parentOrganization:
+                  id: o-p-avKce97dOKlnAlOw2R55
+                  name: My Parent Organization
+                  url: https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55
+                childOrganizations: []
+                billingContact:
+                  id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+                accounts:
+                - id: a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  name: My Account
+                  url: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+                  isSandbox: false
+                  enabled: true
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                - id: a-spge-PmN5cDIdq0cz93ZUS276
+                  name: My Sandbox Account
+                  url: https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276
+                  isSandbox: true
+                  enabled: false
+                  region: EU
+                  cloud: GCP
+                  isSoftDeleted: null
+                  softDeletedAt: null
+                contacts:
+                - id: c-p-5831eMDkMehkgq39L3KK
+                  name: Harald Hårfagre
+                  email: harald@hårfagre.no
+                  mobile: '+4799999999'
+                  url: https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK
+                  roles: null
+    patch:
+      tags:
+      - Organization
+      summary: Update organization
+      parameters:
+      - name: organizationId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/OrganizationWrite'
+            example:
+              name: My Organization
+              website: https://myorg.com
+              entityId: '999000999'
+              entityVatNumber: null
+              entityLegalName: null
+              country: 'NO'
+              billingEmail: billing@myorg.com
+              billingAddress:
+                street: Signistreet 39
+                postalCode: '5089'
+                city: Bergen
+                region: null
+                country: 'NO'
+              billingContactId: c-p-5831eMDkMehkgq39L3KK
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationWrite'
+              example:
+                name: My Organization
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                billingContactId: c-p-5831eMDkMehkgq39L3KK
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OrganizationWrite'
+              example:
+                name: My Organization
+                website: https://myorg.com
+                entityId: '999000999'
+                entityVatNumber: null
+                entityLegalName: null
+                country: 'NO'
+                billingEmail: billing@myorg.com
+                billingAddress:
+                  street: Signistreet 39
+                  postalCode: '5089'
+                  city: Bergen
+                  region: null
+                  country: 'NO'
+                billingContactId: c-p-5831eMDkMehkgq39L3KK
+      operationId: patchOrganizationsByOrganizationId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Organization
+      summary: Delete organization
+      parameters:
+      - name: organizationId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+      operationId: deleteOrganizationsByOrganizationId
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+components:
+  schemas:
+    OrganizationRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of organization
+        name:
+          type: string
+          description: Name
+        lastModifiedDate:
+          type: string
+          description: Timestamp of last organization modification.
+        website:
+          type:
+          - string
+          - 'null'
+          description: Home page
+        entityId:
+          type:
+          - string
+          - 'null'
+          description: Organization Entity ID / Org.no
+        entityVatNumber:
+          type:
+          - string
+          - 'null'
+          description: VAT Number
+        entityLegalName:
+          type:
+          - string
+          - 'null'
+          description: Legal name of the entity / organization
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country the organization is registered in
+        billingEmail:
+          type:
+          - string
+          - 'null'
+          description: Billing email
+        billingAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: Billing address
+        parentOrganization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The parent organization
+        childOrganizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The child organizations
+        billingContact:
+          allOf:
+          - $ref: '#/components/schemas/ContactChildListItem'
+          description: Billing contact person
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountChildListItem'
+          description: The organization accounts
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactChildListItem'
+          description: The organization contacts
+      additionalProperties: false
+    OrganizationChildListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of organization
+        name:
+          type: string
+          description: Name
+        url:
+          type: string
+          description: API URL to retrieve Organization object
+      additionalProperties: false
+      description: Suborganization of an organization.
+    OrganizationListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of organization
+        name:
+          type: string
+          description: Name
+        lastModifiedDate:
+          type: string
+          description: Timestamp of last organization modification.
+        entityId:
+          type:
+          - string
+          - 'null'
+          description: Organization Entity ID / Org.no
+        entityVatNumber:
+          type:
+          - string
+          - 'null'
+          description: VAT Number
+        entityLegalName:
+          type:
+          - string
+          - 'null'
+          description: Legal name of the entity / organization
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country the organization is registered in
+        parentOrganization:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationChildListItem'
+          description: The parent organization
+        url:
+          type: string
+          description: API URL to retrieve Organization object
+      additionalProperties: false
+    AccountChildListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of account
+          example: a-ppge-ovC1eMDgt0hkgqZUSaPh
+        name:
+          type: string
+          description: Display name
+          example: My Account
+        url:
+          type: string
+          description: API URL to retrieve Account object
+          example: https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh
+        isSandbox:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the account is a sandbox account
+          example: 'false'
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+          example: 'true'
+        region:
+          type: string
+          description: Which region the account belongs to
+          example: EU
+        cloud:
+          type: string
+          description: Which cloud the account belongs to
+          example: GCP
+        isSoftDeleted:
+          type:
+          - boolean
+          - 'null'
+          description: If true, the account has been soft deleted and will soon be permanently deleted.
+          example: '`null`'
+        softDeletedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of when account was soft deleted.
+          example: 'null'
+      additionalProperties: false
+      description: Account of an organization.
+    ContactChildListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Globally unique ID of contact
+        name:
+          type: string
+          description: Display name
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address
+        mobile:
+          type:
+          - string
+          - 'null'
+          description: Mobile phone number
+        url:
+          type: string
+          description: API URL to retrieve Contact object
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContactRole'
+          description: Roles of the contact
+      additionalProperties: false
+      description: Contact of an organization.
+    Page_OrganizationListItem:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationListItem'
+          description: The contents of the current page.
+        next:
+          type:
+          - string
+          - 'null'
+          description: URL to the next page, if more data may be available.
+      additionalProperties: false
+    OrganizationCreate:
+      required:
+      - name
+      - parentOrganizationId
+      type: object
+      properties:
+        name:
+          maxLength: 80
+          minLength: 3
+          type: string
+          description: Name
+        website:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Home page
+        entityId:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Organization Entity ID / Org.no
+        entityVatNumber:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: VAT Number
+        entityLegalName:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Legal name of the entity / organization
+        country:
+          maxLength: 2
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country the organization is registered in
+        billingEmail:
+          maxLength: 80
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Billing email
+          format: email
+        billingAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: Billing address
+        parentOrganizationId:
+          minLength: 1
+          type: string
+          description: The parent organization of the organization
+      additionalProperties: false
+    OrganizationWrite:
+      type: object
+      properties:
+        name:
+          maxLength: 80
+          minLength: 3
+          type:
+          - string
+          - 'null'
+          description: Name
+        website:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Home page
+        entityId:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Organization Entity ID / Org.no
+        entityVatNumber:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: VAT Number
+        entityLegalName:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Legal name of the entity / organization
+        country:
+          maxLength: 2
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country the organization is registered in
+        billingEmail:
+          maxLength: 80
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Billing email
+          format: email
+        billingAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: Billing address
+        billingContactId:
+          type:
+          - string
+          - 'null'
+          description: ID of the billing contact person
+      additionalProperties: false
+    Address:
+      type: object
+      properties:
+        street:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Street. May be multiline.
+        postalCode:
+          maxLength: 20
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Postal Code / Zip Code
+        city:
+          maxLength: 40
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: City
+        region:
+          maxLength: 80
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Region / State
+        country:
+          maxLength: 2
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country.
+      additionalProperties: false
+    ContactRole:
+      enum:
+      - Other
+      - CommercialOwner
+      - MainTechnicalContact
+      - FinancialContact
+      type: string
+x-refined-from:
+- account-management-openapi.json
+- signicat-account-management-openapi.yml

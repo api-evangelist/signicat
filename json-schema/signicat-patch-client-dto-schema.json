@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-patch-client-dto-schema.json",
+  "title": "PatchClientDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-oidc-config-openapi.yml#/components/schemas/PatchClientDto",
+  "type": "object",
+  "properties": {
+    "name": {
+      "maxLength": 255,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Client name."
+    },
+    "acr": {
+      "$ref": "#/$defs/Acr"
+    },
+    "pairWiseSubjectSalt": {
+      "maxLength": 255,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Salt value used in pair-wise subjectId generation for users of this client."
+    },
+    "uri": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "URI to further information about client (used on consent screen).",
+      "format": "uri"
+    },
+    "logoUri": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "URI to client logo (used on consent screen).\n\nMust be an absolute URI and Https.",
+      "format": "uri"
+    },
+    "encryptIdTokens": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Enable/Disable IDTokens encryption.\n\nIf enabled requires public keys allowed to encrypt."
+    },
+    "requireSecret": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether this client needs a secret to request tokens from the token endpoint.\n\nAt least one of these attributes must be 'true' (RequireSecret or RequirePkce).\nWhen 'PrimaryGrantType' is set to 'ClientCredentials' or 'DeviceFlow' it must be 'true'."
+    },
+    "requirePkce": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether clients using an authorization code based grant type must send a proof key.\n\nAt least one of these attributes must be 'true' (RequireSecret or RequirePkce)."
+    },
+    "requireRequestObject": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether this client needs to wrap the authorize request parameters in a JWT.\n\nWhen 'PrimaryGrantType' is set to 'ClientCredentials' or 'DeviceFlow' it must be 'false'."
+    },
+    "useReferenceAccessTokens": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether should use reference tokens or not."
+    },
+    "redirectUris": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Specifies the allowed URIs to return tokens or authorization codes to.\n\nMust have at least one redirect URI in case of PrimaryGrantType attribute is DeviceFlow.\nMust be an absolute URI and Https.\nHttp URIs are only allowed if pointing at localhost."
+    },
+    "allowedScopes": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specifies the allowed resources that client as access."
+    },
+    "allowOfflineAccess": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether this client can request refresh tokens."
+    },
+    "allowAccessTokensViaBrowser": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether this client is allowed to receive access tokens via the browser. This is useful to harden flows that allow multiple response types (e.g. by disallowing a hybrid flow client that is supposed to use code id_token to add the token response type and thus leaking the token to the browser)."
+    },
+    "postLogoutRedirectUris": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Specifies allowed URIs to redirect to after logout. See the OIDC Connect Session Management spec (https://openid.net/specs/openid-connect-session-1_0.html) for more details."
+    },
+    "frontChannelLogoutUri": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Specifies logout URI at client for HTTP based front-channel logout. See the OIDC Front-Channel spec (https://openid.net/specs/openid-connect-frontchannel-1_0.html) for more details.\n\nThe URIs must be an absolute URI and Https.\nHttp uris are only allowed if pointing at localhost.",
+      "format": "uri"
+    },
+    "frontChannelLogoutSessionRequired": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies if the user’s session id should be sent to the FrontChannelLogoutUri."
+    },
+    "identityProviderRestrictions": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specifies which external IdPs can be used with this client (if list is empty all IdPs are allowed).\n\nDefaults to empty."
+    },
+    "userSsoLifetime": {
+      "maximum": 10800,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "The maximum duration (in seconds) since the last time the user authenticated.\n\nYou can adjust the lifetime of a session token to control when and how often a user is required to reenter credentials instead of being silently authenticated, when using a web application.\nThe default value is 3600 seconds.",
+      "format": "int32"
+    },
+    "identityTokenLifetime": {
+      "maximum": 3600,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Lifetime to identity token in seconds.\n\nThe default value is 600 seconds.",
+      "format": "int32"
+    },
+    "accessTokenLifetime": {
+      "maximum": 3600,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Lifetime of access token in seconds.\n\nThe default value is 600 seconds.",
+      "format": "int32"
+    },
+    "authorizationCodeLifetime": {
+      "maximum": 60,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Lifetime of authorization code in seconds.\n\nThe default value is 15 seconds.",
+      "format": "int32"
+    },
+    "absoluteRefreshTokenLifetime": {
+      "maximum": 2592000,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Maximum lifetime of a refresh token in seconds.\n\nThe default value is 86400 seconds.\nMust be greater then 1 when attribute SlidingRefreshTokenExpiry is off and AllowOfflineAccess is on.",
+      "format": "int32"
+    },
+    "slidingRefreshTokenLifetime": {
+      "maximum": 1296000,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Sliding lifetime of a refresh token in seconds.\n\nThe default value is 86400 seconds.\nMust be greater then 1 when attribute SlidingRefreshTokenExpiry and AllowOfflineAccess is on.",
+      "format": "int32"
+    },
+    "allowRefreshTokenReuse": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Allow reuse refresh token. The refresh token handle will stay the same when refreshing tokens.\n\nIf set to false (default value) then the refresh token handle will be updated when refreshing tokens."
+    },
+    "slidingRefreshTokenExpiry": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether refresh token should expire or not.\n\nCurrently don´t have any default value and fail if not set.\nWhen set to 'true' and AllowOfflineAccess is on then SlidingRefreshTokenLifetime attribute must be greater then 0.\nWhen set to 'false' and AllowOfflineAccess is on then AbsoluteRefreshTokenLifetime attribute must be greater then 0."
+    },
+    "deviceCodeLifetime": {
+      "maximum": 600,
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Lifetime to device code in seconds.\n\nThe default value is 300 seconds.\nMust be greater then 0 when PrimaryGrantType attribute is DeviceFlow grant type.",
+      "format": "int32"
+    },
+    "allowedCorsOrigins": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specifies the allowed CORS origins that will be used by the default CORS policy service implementations (In-Memory and EF) to build a CORS policy for JavaScript clients."
+    },
+    "primaryGrantType": {
+      "enum": [
+        "ClientCredentials",
+        "AuthorizationCode",
+        "Hybrid",
+        "Ciba",
+        "DeviceFlow"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Specifies the primary grant type the client is allowed to use."
+    },
+    "contentEncryptionAlgorithm": {
+      "enum": [
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Content encryption algorithm for ID tokens and the UserInfo response.\n\nDefaults to A256CBC-HS512."
+    },
+    "idTokenUserData": {
+      "enum": [
+        "Minimal",
+        "StandardScopes",
+        "All"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Defines the IdToken user data level."
+    },
+    "userInfoResponseType": {
+      "enum": [
+        "Json",
+        "Signed",
+        "Encrypted",
+        "SignedAndEncrypted"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "User info response type.\n\nDefaults to 'Json'."
+    },
+    "version": {
+      "maxLength": 255,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Internal version of the client (Read only)."
+    },
+    "requireConsent": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Specifies whether a consent screen is required."
+    },
+    "lastUpdatedDate": {
+      "type": "string",
+      "description": "Defines the last change on the client (Read only).",
+      "format": "date-time"
+    },
+    "automaticRedirectAfterSignOut": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Indicates if after a logout, the client should be redirected automatically.\n\nDepends on the existence of at least one Uri in the PostLogoutRedirectUris property to operate as designed."
+    },
+    "usageExternalReference": {
+      "maxLength": 100,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "External reference for transaction provided by the customer.\n\nUsed to group transactions together for the customer.<example>orderid:121232</example>"
+    },
+    "subjectLookupsEnabled": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Enables the Enterprise Subject Lookup migration feature.\n\nNote: You need admin permissions to enable this feature."
+    },
+    "useCookieless": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Enables the Client to not use cookies.\n\nNote: You need admin permissions to enable this feature."
+    },
+    "requirePushedAuthorization": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Enables the Client to require pushed authorization requests."
+    },
+    "embeddedParentDomains": {
+      "maxItems": 200,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Acr": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "maxLength": 255,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Gets or Sets the ACR values (space separated)."
+        },
+        "forced": {
+          "type": "boolean",
+          "description": "Gets or sets a value indicating whether gets or Sets if the ACR value should be always used."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

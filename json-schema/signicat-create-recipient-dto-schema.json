@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-create-recipient-dto-schema.json",
+  "title": "CreateRecipientDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-secure-share-openapi.yml#/components/schemas/CreateRecipientDto",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authentication"
+  ],
+  "properties": {
+    "firstName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient first name"
+    },
+    "lastName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient last name"
+    },
+    "email": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient email. Email is required if mobile is not provided or if it used by authentications or notifications",
+      "format": "email",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "mobile": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient mobile. Mobile is required if email is not provided or if it used by authentications or notifications"
+    },
+    "fileRestrictions": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share",
+      "items": {
+        "type": "string",
+        "format": "guid"
+      }
+    },
+    "authentication": {
+      "type": "array",
+      "description": "List of authentication methods for a recipient",
+      "minLength": 1,
+      "nullable": false,
+      "items": {
+        "$ref": "#/$defs/AuthenticationDto"
+      }
+    },
+    "notification": {
+      "description": "Recipient notification setup",
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NotificationDto"
+        }
+      ]
+    },
+    "externalReference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Create a reference to your own system"
+    }
+  },
+  "$defs": {
+    "AuthenticationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityProvider": {
+          "type": "string"
+        },
+        "idpId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Language": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ],
+      "enum": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ]
+    },
+    "NotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sendSms": {
+          "type": "boolean"
+        },
+        "language": {
+          "$ref": "#/$defs/Language"
+        }
+      }
+    }
+  }
+}

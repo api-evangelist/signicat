@@ -1,0 +1,198 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat Signature API
+  version: 1.0.0
+extends: ../openapi/_original/signicat-signing-express-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-signing-express-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/electronic-signing/express/
+- target: $.components
+  description: Add the OAuth 2.0 client-credentials scheme Signicat documents for all its APIs (token URL https://api.signicat.com/auth/open/connect/token,
+    scope signicat-api; source https://developer.signicat.com/llms-full.txt "Connecting to Signicat APIs").
+  update:
+    securitySchemes:
+      signicatOAuth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            tokenUrl: https://api.signicat.com/auth/open/connect/token
+            scopes:
+              signicat-api: Access Signicat APIs
+- target: $
+  description: Root security requirement for the added scheme.
+  update:
+    security:
+    - signicatOAuth2:
+      - signicat-api
+- target: $.paths['/documents/{documentId}/attachments'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postDocumentsDocumentIdAttachments
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/attachments'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdAttachments
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/attachments/{attachmentId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdAttachmentsAttachmentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/attachments/{attachmentId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchDocumentsDocumentIdAttachmentsAttachmentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/attachments/{attachmentId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteDocumentsDocumentIdAttachmentsAttachmentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postDocuments
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchDocumentsDocumentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/cancel'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postDocumentsDocumentIdCancel
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/status'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdStatus
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/summary'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdSummary
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/summary'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsSummary
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/files'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdFiles
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/files/signers/{signerId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdFilesSignersSignerId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/files/attachments/{attachmentId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdFilesAttachmentsAttachmentId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/files/attachments/{attachmentId}/signers/{signerId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdFilesAttachmentsAttachmentIdSignersSignerId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/jwt/validate'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postJwtValidate
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/merchant/signature'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postMerchantSignature
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/notifications'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdNotifications
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/notifications/reminder'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postDocumentsDocumentIdNotificationsReminder
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/signature-methods'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getSignatureMethods
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/signature-methods/account'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getSignatureMethodsAccount
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers/{signerId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdSignersSignerId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers/{signerId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteDocumentsDocumentIdSignersSignerId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers/{signerId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchDocumentsDocumentIdSignersSignerId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getDocumentsDocumentIdSigners
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postDocumentsDocumentIdSigners
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/documents/{documentId}/signers/{signerId}/signature'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteDocumentsDocumentIdSignersSignerIdSignature
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/themes/list/themes'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getThemesListThemes
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/themes/list/spinners'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getThemesListSpinners
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/validate/nbid/sdo'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postValidateNbidSdo
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/validate/nbid/sdo/parse'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postValidateNbidSdoParse
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/validate/nbid/sdo/parse/xml'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postValidateNbidSdoParseXml
+    x-apievangelist-derived-operationId: true

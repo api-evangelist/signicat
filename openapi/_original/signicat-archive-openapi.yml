@@ -1,0 +1,1352 @@
+# x-archived-from: signicat-archive-openapi.yml
+# x-archived-on: 2026-10-18
+openapi: 3.1.0
+info:
+  title: Archiving API
+  description: '
+
+    - **Base URL**: `https://api.signicat.com/archive/`
+
+    - **Documentation**: See the [Signicat Archive](/docs/signicat-archive/) developer documentation.
+
+    - **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.
+
+
+    # Introduction
+
+
+    The Signicat Archive API ensures long‑term integrity, legal compliance and easy access to signed and other documents requiring secure, tamper‑proof retention.
+
+
+    This REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.
+
+
+    # Get started
+
+
+    Before you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).
+
+
+    # Using this API
+
+
+    ## Audit logs
+
+
+    Use the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.
+
+
+    - Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)
+
+    - For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.
+
+
+    ## Errors
+
+
+    When you make an API call to Signicat and an error occurs, you will receive a response message with an error code.
+
+
+    - For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.
+
+
+    ## Events (callback)
+
+
+    Use the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.
+
+
+    - Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)
+
+    - For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.
+
+
+    > **Note**: This is often referred to as callback.
+
+    '
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+servers:
+- url: /
+  description: ''
+security:
+- JWT: []
+tags: []
+paths:
+  /archive:
+    get:
+      operationId: api_archive_get
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+        '422':
+          $ref: '#/components/responses/Error422'
+      summary: Retrieves the collection of Archive resources.
+      description: Retrieves the collection of Archive resources.
+      parameters:
+      - name: tags
+        in: query
+        description: Comma-separated list of tags
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: createdAtFrom
+        in: query
+        description: "Filter objects created at or after this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: createdAtTo
+        in: query
+        description: "Filter objects created at or before this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: updatedAtFrom
+        in: query
+        description: "Filter objects updated at or after this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: updatedAtTo
+        in: query
+        description: "Filter objects updated at or before this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: fileName
+        in: query
+        description: Archive fileName
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 500
+        style: form
+        explode: false
+        allowReserved: false
+      - name: contentType
+        in: query
+        description: application/pdf
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 255
+        style: form
+        explode: false
+        allowReserved: false
+      - name: state
+        in: query
+        description: Filter by archive object state.
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          enum:
+          - Expired
+          - Deleted
+          - Active
+        style: form
+        explode: false
+        allowReserved: false
+      - name: keywords
+        in: query
+        description: Single keyword
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 500
+        style: form
+        explode: false
+        allowReserved: false
+      - name: sort
+        in: query
+        description: "Sorting expression. Supports multiple fields, comma-separated.\n                        Prefix with '-' for descending order (e.g., -createdAt).\n                        Prefix with '+'('%2B') for ascending order (e.g., %2BcreatedAt)."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: detailed
+        in: query
+        description: 'Default: false . If true, returns a more detailed representation of each object.'
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: boolean
+        style: form
+        explode: false
+        allowReserved: false
+      - name: page
+        in: query
+        description: Archive page
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: integer
+          minimum: 1
+        style: form
+        explode: false
+        allowReserved: false
+      - name: pageSize
+        in: query
+        description: Archive pageSize
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+        style: form
+        explode: false
+        allowReserved: false
+      deprecated: false
+    post:
+      operationId: api_archive_post
+      tags:
+      - Archive
+      responses:
+        '201':
+          description: Archive resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+          links: {}
+        '400':
+          description: Invalid input
+        '422':
+          description: Unprocessable entity
+      summary: Creates a Archive resource.
+      description: Creates a Archive resource.
+      parameters: []
+      requestBody:
+        description: The new Archive resource
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive'
+          application/ld+json:
+            schema:
+              $ref: '#/components/schemas/Archive.jsonld'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Archive'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Archive'
+        required: true
+      deprecated: false
+  /archive/{objectId}:
+    get:
+      operationId: api_archive_objectId_get
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '404':
+          description: Resource not found
+      summary: Retrieves a Archive resource.
+      description: Retrieves a Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    delete:
+      operationId: api_archive_objectId_delete
+      tags:
+      - Archive
+      responses:
+        '204':
+          description: Archive resource deleted
+        '404':
+          description: Resource not found
+      summary: Removes the Archive resource.
+      description: Removes the Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    patch:
+      operationId: api_archive_objectId_patch
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+          links: {}
+        '400':
+          description: Invalid input
+        '404':
+          description: Resource not found
+        '422':
+          description: Unprocessable entity
+      summary: Updates the Archive resource.
+      description: Updates the Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: The updated Archive resource
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive-archive.patch'
+        required: true
+      deprecated: false
+  /archive/direct:
+    post:
+      operationId: api_archivedirect_post
+      tags:
+      - Archive Direct
+      responses:
+        '201':
+          description: Archive Direct resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive.Direct'
+          links: {}
+        '400':
+          description: Invalid input
+        '422':
+          description: Unprocessable entity
+      summary: Creates Archive resource with direct file upload
+      description: Creates a Archive Direct resource.
+      parameters:
+      - name: signicat-archive-retention-period
+        in: header
+        description: "The duration for which the archive object should be retained, specified in ISO 8601\n                    duration format"
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: P1Y
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: signicat-archive-tags
+        in: header
+        description: "A comma-separated list of tags associated with the archive object for categorization\n                    or search purposes."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          nullable: true
+          example: assure, dossier
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: signicat-archive-keywords
+        in: header
+        description: "JSON formatted string for storing additional information regarding\n                    the archive object."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          nullable: true
+          example: '{"color": "blue", "size": "M"}'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-disposition
+        in: header
+        description: "The Content-Disposition header specifying how the content should be handled.\n                    Mapped to the object field File.Name. Format should be: attachment; filename=\"filename.ext\""
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: attachment; filename="filename.ext"
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-digest
+        in: header
+        description: "The Content-Digest header contains a SHA-256 hash of the content, used to verify its\n                    integrity and ensure that the data has not been tampered with during transmission.\n                    The hash value must be encoded in base64 format."
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: 'sha-256=:base64-value:'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-type
+        in: header
+        description: The MIME type of the file being uploaded.
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: application/pdf
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: Upload a binary file (e.g., image, document).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+          application/ld+json:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct.jsonld'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Archive.Direct'
+        required: true
+      deprecated: false
+  /archive/{objectId}/audit-log:
+    get:
+      operationId: api_archive_objectIdaudit-log_get_collection
+      tags:
+      - AuditLog
+      responses:
+        '200':
+          description: AuditLog collection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+            application/ld+json:
+              schema:
+                type: object
+                properties:
+                  hydra:member:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditLog.jsonld'
+                  hydra:totalItems:
+                    type: integer
+                    minimum: 0
+                  hydra:view:
+                    type: object
+                    properties:
+                      '@id':
+                        type: string
+                        format: iri-reference
+                      '@type':
+                        type: string
+                      hydra:first:
+                        type: string
+                        format: iri-reference
+                      hydra:last:
+                        type: string
+                        format: iri-reference
+                      hydra:previous:
+                        type: string
+                        format: iri-reference
+                      hydra:next:
+                        type: string
+                        format: iri-reference
+                    example:
+                      '@id': string
+                      type: string
+                      hydra:first: string
+                      hydra:last: string
+                      hydra:previous: string
+                      hydra:next: string
+                  hydra:search:
+                    type: object
+                    properties:
+                      '@type':
+                        type: string
+                      hydra:template:
+                        type: string
+                      hydra:variableRepresentation:
+                        type: string
+                      hydra:mapping:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            '@type':
+                              type: string
+                            variable:
+                              type: string
+                            property:
+                              type:
+                              - string
+                              - 'null'
+                            required:
+                              type: boolean
+                required:
+                - hydra:member
+            multipart/form-data:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+      summary: Retrieves the collection of AuditLog resources.
+      description: Retrieves the collection of AuditLog resources.
+      parameters:
+      - name: objectId
+        in: path
+        description: AuditLog identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: page
+        in: query
+        description: The collection page number
+        required: false
+        deprecated: false
+        allowEmptyValue: true
+        schema:
+          type: integer
+          default: 1
+        style: form
+        explode: false
+        allowReserved: false
+      deprecated: false
+  /archive/{objectId}/file:
+    get:
+      operationId: api_archive_objectIdfile_get
+      tags:
+      - File
+      responses:
+        '200':
+          description: Binary file
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/Error400'
+        '404':
+          $ref: '#/components/responses/Error404'
+      summary: Download archived file
+      description: Returns any binary file (PDF, image, zip...)
+      parameters:
+      - name: objectId
+        in: path
+        description: File identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    post:
+      operationId: api_archive_objectIdfile_post
+      tags:
+      - File
+      responses:
+        '202':
+          description: File resource created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/File'
+          links: {}
+        '400':
+          $ref: '#/components/responses/Error400'
+        '422':
+          description: Unprocessable entity
+      summary: Creates a File resource.
+      description: Creates a File resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: File identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-disposition
+        in: header
+        description: "The Content-Disposition header specifying how the content should be handled. \n                    Mapped to the object field File.Name. Format should be: attachment; filename=\"filename.ext\""
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          name: test
+          example: attachment; filename="filename.ext"
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-digest
+        in: header
+        description: "The Content-Digest header contains a SHA-256 hash of the content, used to verify its \n                    integrity and ensure that the data has not been tampered with during transmission. \n                    The hash value must be encoded in base64 format."
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: 'sha-256=:base64-value:'
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: content-type
+        in: header
+        description: The MIME type of the file being uploaded.
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: application/pdf
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: Upload a binary file (e.g., image, document).
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/File'
+        required: true
+      deprecated: false
+  /archive/{objectId}/report:
+    get:
+      operationId: api_archive_objectIdreport_get
+      tags:
+      - Report
+      responses:
+        '200':
+          description: Report resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Report.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Report'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Report'
+        '404':
+          description: Resource not found
+      summary: Retrieves a Report resource.
+      description: Retrieves a Report resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Report identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      - name: timezone
+        in: query
+        description: IANA timezone used to display report dates and times.
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          example: Europe/Vilnius
+        style: form
+        explode: false
+        allowReserved: false
+      deprecated: false
+webhooks: {}
+components:
+  schemas:
+    Archive:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        objectId:
+          readOnly: true
+          example: 93684e36-6f32-4845-9727-840c2d628673
+          type: string
+        status:
+          readOnly: true
+          example: in_progress
+          type: string
+          enum:
+          - created
+          - running_pipeline
+          - in_sync
+          - error
+          - missing_file
+          - processing
+          - failed
+          - expired
+          - deleted
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+        file:
+          $ref: '#/components/schemas/UploadedFileData'
+        createdAt:
+          readOnly: true
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          readOnly: true
+          type: string
+          format: date-time
+        expiresAt:
+          readOnly: true
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - retentionPeriod
+    Archive-archive.patch:
+      type: object
+      description: ''
+      deprecated: false
+      required:
+      - retentionPeriod
+      properties:
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+    Archive.ArchiveObjectsRepresentation:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        totalItems:
+          type: integer
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        items:
+          description: Collection of Archive items
+          type: array
+          items:
+            $ref: '#/components/schemas/Archive'
+    Archive.ArchiveObjectsRepresentation.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+        totalItems:
+          type: integer
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        items:
+          description: Collection of Archive items
+          type: array
+          items:
+            $ref: '#/components/schemas/Archive'
+    Archive.Direct:
+      type: object
+      description: ''
+      deprecated: false
+    Archive.Direct.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+    Archive.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+        objectId:
+          readOnly: true
+          example: 93684e36-6f32-4845-9727-840c2d628673
+          type: string
+        status:
+          readOnly: true
+          example: in_progress
+          type: string
+          enum:
+          - created
+          - running_pipeline
+          - in_sync
+          - error
+          - missing_file
+          - processing
+          - failed
+          - expired
+          - deleted
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+        file:
+          $ref: '#/components/schemas/UploadedFileData.jsonld'
+        createdAt:
+          readOnly: true
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          readOnly: true
+          type: string
+          format: date-time
+        expiresAt:
+          readOnly: true
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - retentionPeriod
+    AuditLog:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        clientId:
+          type:
+          - string
+          - 'null'
+        userId:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+        messageId:
+          type: string
+        eventType:
+          type: string
+    AuditLog.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+        id:
+          type: string
+        accountId:
+          type: string
+        clientId:
+          type:
+          - string
+          - 'null'
+        userId:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+        messageId:
+          type: string
+        eventType:
+          type: string
+    File:
+      type: object
+      description: ''
+      deprecated: false
+    File.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+    Report:
+      type: object
+      description: ''
+      deprecated: false
+    Report.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+    UploadedFileData:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        name:
+          type: string
+        contentType:
+          type: string
+        sha256:
+          type: string
+    UploadedFileData.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@type':
+          readOnly: true
+          type: string
+        name:
+          type: string
+        contentType:
+          type: string
+        sha256:
+          type: string
+  responses:
+    Error400:
+      description: "Bad Request. The server cannot or will not process the request due to something \n            that is perceived to be a client error."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              code:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+                format: uri
+              traceId:
+                type: string
+            required:
+            - status
+            - code
+            - title
+            - type
+            - traceId
+    Error401:
+      description: Unauthorized. The client must authenticate itself to get the requested response.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              code:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+                format: uri
+              traceId:
+                type: string
+            required:
+            - status
+            - code
+            - title
+            - type
+            - traceId
+    Error422:
+      description: Unprocessable Entity. Request parameters failed validation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                format: uri
+                example: https://developer.signicat.com/errors#validation_error
+              title:
+                type: string
+                example: An error occurred
+              status:
+                type: integer
+                example: 422
+              detail:
+                type: string
+                example: Error while processing your request
+              code:
+                type: string
+                example: validation_error
+              invalidParams:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: tags
+                    reason:
+                      type: string
+                      example: This value should not be blank.
+                  required:
+                  - name
+                  - reason
+            required:
+            - type
+            - title
+            - status
+            - detail
+            - code
+            - invalidParams
+    Error404:
+      description: Not Found. The server can not find the requested resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              code:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+                format: uri
+              traceId:
+                type: string
+            required:
+            - status
+            - code
+            - title
+            - type
+            - traceId
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    JWT:
+      type: apiKey
+      description: Value for the Authorization header parameter.
+      name: Authorization
+      in: header

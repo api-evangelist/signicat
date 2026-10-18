@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-artifact-schema.json",
+  "title": "Artifact",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/Artifact",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "type": "string",
+      "description": "The authentication artifact"
+    },
+    "orderId": {
+      "type": "string",
+      "description": "The unique identifier of the signing order"
+    },
+    "taskId": {
+      "type": "string",
+      "description": "The unique identifier of the task (is omitted if task status is “deleted”)"
+    },
+    "signingUrl": {
+      "type": "string",
+      "description": "The URL for the end user to initiate signing. May not be present if Artifact Authentication was used."
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organization-write-schema.json",
+  "title": "OrganizationWrite",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-account-management-openapi.yml#/components/schemas/OrganizationWrite",
+  "type": "object",
+  "properties": {
+    "name": {
+      "maxLength": 80,
+      "minLength": 3,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name"
+    },
+    "website": {
+      "maxLength": 255,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Home page"
+    },
+    "entityId": {
+      "maxLength": 100,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Organization Entity ID / Org.no"
+    },
+    "entityVatNumber": {
+      "maxLength": 255,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "VAT Number"
+    },
+    "entityLegalName": {
+      "maxLength": 255,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Legal name of the entity / organization"
+    },
+    "country": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country the organization is registered in"
+    },
+    "billingEmail": {
+      "maxLength": 80,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Billing email",
+      "format": "email"
+    },
+    "billingAddress": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Address"
+        }
+      ],
+      "description": "Billing address",
+      "nullable": true
+    },
+    "billingContactId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of the billing contact person"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "maxLength": 255,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Street. May be multiline."
+        },
+        "postalCode": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Postal Code / Zip Code"
+        },
+        "city": {
+          "maxLength": 40,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City"
+        },
+        "region": {
+          "maxLength": 80,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Region / State"
+        },
+        "country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

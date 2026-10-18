@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organisation-request-dto-schema.json",
+  "title": "OrganisationRequestDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-openapi.yml#/components/schemas/OrganisationRequestDto",
+  "required": [
+    "organisationNumber",
+    "referenceKey",
+    "source"
+  ],
+  "type": "object",
+  "properties": {
+    "organisationNumber": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string",
+      "description": "Represents the unique identification number of an organisation."
+    },
+    "source": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string",
+      "description": "Represents the source of the organisation information."
+    },
+    "country": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Represents the country associated with the organisation."
+    },
+    "companyName": {
+      "maxLength": 100,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Represents the name of the company associated with the organisation."
+    },
+    "referenceKey": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string",
+      "description": "Represents the unique key that identifies a specific reference for an organisation."
+    },
+    "externalId": {
+      "maxLength": 100,
+      "minLength": 0,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Represents an optional external identifier for an organisation."
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,240 @@
+openapi: 3.2.0
+info:
+  title: Signicat Risk indicators configuration API
+  version: '1.0'
+  description: 'Operations tagged Risk indicators configuration across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: Risk indicators configuration
+  description: 'You can use the Risk indicators configuration resource for operations related to retrieving and updating risk indicator properties.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----'
+paths:
+  /risk-indicators-config:
+    get:
+      tags:
+      - Risk indicators configuration
+      summary: Get risk indicators configuration
+      description: This operation returns the risk indicators for a specified account.
+      operationId: getRiskIndicators
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '200':
+          description: The request to fetch the risk indicators was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskIndicatorsConfig'
+              example:
+                riskIndicatorsConfiguration:
+                  allowedNrOfUsersWithSameDeviceHash: '1'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Account config does not exist
+                code: account_config_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching account configuration with UUID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    patch:
+      tags:
+      - Risk indicators configuration
+      summary: Update risk indicators configuration
+      description: This operation updates the risk indicators for a specified account.
+      operationId: updateRiskIndicators
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiskIndicatorsUpdateRequest'
+            example:
+              riskIndicatorsConfiguration:
+                allowedNrOfUsersWithSameDeviceHash: '4'
+        required: true
+      responses:
+        '200':
+          description: The request to update the risk indicators was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskIndicatorsConfig'
+              example:
+                riskIndicatorsConfiguration:
+                  allowedNrOfUsersWithSameDeviceHash: '4'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Account ID missing:
+                  description: Account ID missing
+                  value:
+                    type: https://developer.signicat.com/errors?code=account_id_missing
+                    title: An Account ID must be specified for this request
+                    code: account_id_missing
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'An Account ID must be specified for this request. An AccountID can be specified in three ways. 1) For machine clients configured on an Account, the provided access token will specify the account ID. 2) Account ID can be provided as a query parameter `signicat-accountId=<accountId>`. 3) Account ID can be provided as a HTTP Header `Signicat-AccountId: <accountId>`. A request will be rejected if more than one account ID is specified.'
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Account config does not exist
+                code: account_config_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching account configuration with UUID : cae9d09d-abaf-486b-a5ca-35ba82435123 for account ID : a-sdge-abcdefghijk123456789.'
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    RiskIndicatorsUpdateRequest:
+      type: object
+      properties:
+        riskIndicatorsConfiguration:
+          $ref: '#/components/schemas/RiskIndicatorsProperties'
+          description: Account configuration properties. To delete an existing property, supply value <code>null</code> for the property to be deleted
+          example:
+            riskIndicatorsConfiguration:
+              allowedNrOfUsersWithSameDeviceHash: '3'
+    RiskIndicatorsConfig:
+      type: object
+      properties:
+        riskIndicatorsConfiguration:
+          $ref: '#/components/schemas/RiskIndicatorsProperties'
+          description: An object that contains a list of risk indicators for the specified account.
+    RiskIndicatorsProperties:
+      type: object
+      properties:
+        allowedNrOfUsersWithSameDeviceHash:
+          type: string
+          description: 'The maximum number of users that can have devices with the same device hash without it being flagged as suspicious. Allowed values: The default value is 2'
+          example: '2'
+        minimalNumberOfTransactionsForDevice:
+          type: string
+          description: 'The minimum number of transactions that one device must have in order for it to be evaluated for suspicious battery level patterns.<br /><br />**Allowed values**: The default value is `5`.'
+          example: '2'
+        detectionConfidenceLevel:
+          type: string
+          description: 'Indicates how confident the detection should be before a device is flagged as suspicious.<br /><br />Higher values make the detection stricter. This means that fewer devices are flagged, but with higher certainty that they are suspicious.<br /><br />**Allowed values**: Service configured value, typically from `90` to `99`. The default value is `98`.'
+          example: '95'
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

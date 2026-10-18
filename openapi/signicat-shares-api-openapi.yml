@@ -1,0 +1,1065 @@
+openapi: 3.2.0
+info:
+  title: Signicat Shares API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Shares across 2 of this provider''s published API definitions: secure-share-openapi.json, signicat-secure-share-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/secure-share
+tags:
+- name: Shares
+  description: Contains requests related to share objects
+paths:
+  /shares:
+    post:
+      tags:
+      - Shares
+      summary: Create share
+      description: Create a secure share to upload files into
+      operationId: CreateShareEndpoint
+      requestBody:
+        x-name: CreateShareDto
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShareDto'
+        required: true
+        x-position: 1
+      responses:
+        '201':
+          description: Share created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareResponseDto'
+              example:
+                id: 70a194c0-7611-4dd4-90e4-e152060b9e6d
+                title: Title of the share
+                description: Description of what this share contains
+                externalReference: 25470687-d0b9-4659-8688-013ebf31065e
+                usageReference: c93d1b6a-3827-4eec-a454-e3fd2e809455
+                recipients: []
+                files: []
+                expires: '2026-10-20T15:31:47.071875+00:00'
+                created: '2026-10-13T15:31:47.0792206+00:00'
+                contactDetails:
+                  email: email@example.com
+                  name: name
+                  mobile: null
+                  notificationOptions: null
+                tags:
+                - custom-tag
+                - another-custom-tag
+                requestDomain: my-custom-domain
+                completedRecipients: 0
+                status: Active
+                providerPath: secure-share
+        '400':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    get:
+      tags:
+      - Shares
+      summary: List shares
+      description: List shares created by your account using filters
+      operationId: ListSharesEndpoint
+      parameters:
+      - name: from
+        in: query
+        description: Starting date for share create time
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        example: '2026-10-06T15:31:47.0951694+00:00'
+      - name: to
+        in: query
+        description: Ending date for share create time
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        example: '2026-10-13T15:31:47.0952106+00:00'
+      - name: offset
+        in: query
+        description: The number of share to skip
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        example: 10
+      - name: limit
+        in: query
+        description: The maximum number of fetched shares
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        example: 50
+      - name: sort
+        in: query
+        description: 'Supported fields: `title`, `created`, `expires`'
+        schema:
+          type:
+          - string
+          - 'null'
+        example: null
+      - name: search
+        in: query
+        description: Keywords to search for in the share title
+        schema:
+          type:
+          - string
+          - 'null'
+        example: important
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResultDtoOfShareResponseDto'
+              example:
+                limit: 50
+                offset: 10
+                count: 1
+                total: 1
+                data:
+                - id: 8c2927f1-f340-4ff5-9a40-e2e9d4fc17ac
+                  title: Title of the share
+                  description: Description of the share
+                  externalReference: b44f7dce-d336-4480-9477-7f7ac2d1d90c
+                  usageReference: fffac269-9df1-4cf8-a24e-cdec26a01857
+                  recipients:
+                  - id: 21d59234-81ff-4092-b7c5-1c8e2205c694
+                    externalReference: f278389e-bd47-4733-ba64-74b48974cd0b
+                    firstName: John
+                    lastName: Johnson
+                    email: john.johnson@signicat.com
+                    mobile: '0777777777'
+                    fileAccessInfos:
+                    - id: a1e53c20-8870-4eb9-aec5-1545306b2dd8
+                      lastDownloadedAt: '2026-10-13T15:31:47.0955224+00:00'
+                    fileRestrictions:
+                    - a1e53c20-8870-4eb9-aec5-1545306b2dd8
+                    authentication:
+                    - identityProvider: otp-sms
+                      idpId: null
+                      nin: null
+                    - identityProvider: otp-email
+                      idpId: null
+                      nin: null
+                    loggedInTime: '2026-10-13T15:26:47.095533+00:00'
+                    url: null
+                    notification:
+                      sendEmail: true
+                      sendSms: true
+                      language: En
+                  files:
+                  - id: a1e53c20-8870-4eb9-aec5-1545306b2dd8
+                    name: File1
+                    status: Success
+                    size: 1234
+                    message: null
+                  - id: e0c65d2b-fec5-45ca-af55-5b2d393f2472
+                    name: File2
+                    status: VirusFound
+                    size: 5023412
+                    message: This file contains a malicious script
+                  - id: 72f2cc80-24c2-4853-a0c9-eddb2df30ab6
+                    name: File3
+                    status: Failed
+                    size: 5678
+                    message: Something went wrong uploading the file
+                  - id: 173424b8-4a00-4918-9b75-50a306d55f7c
+                    name: File4
+                    status: Success
+                    size: 69420
+                    message: null
+                  expires: '2026-10-20T15:31:47.0955383+00:00'
+                  created: '2026-10-13T15:31:47.0955385+00:00'
+                  contactDetails:
+                    email: email@example.com
+                    name: John Musk
+                    mobile: null
+                    notificationOptions: null
+                  tags:
+                  - custom-tag
+                  requestDomain: my-custom-domain
+                  completedRecipients: 0
+                  status: Active
+                  providerPath: secure-share
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/SignicatValidationProblemDetails'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+  /shares/{shareId}:
+    get:
+      tags:
+      - Shares
+      summary: Get share
+      description: Get a secure share object
+      operationId: GetShareEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: fb3b90fc-0b90-4063-b7a8-b36218b4df5b
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareResponseDto'
+              example:
+                id: 84fbf8e1-853d-4fa5-89bc-c7f050a338a5
+                title: Title of the share
+                description: Description of the share
+                externalReference: 70d0a4cf-af59-4732-8f3c-6b75c9712034
+                usageReference: 247b8d6e-f243-4be6-9288-a2acf7b34d0e
+                recipients:
+                - id: aa067628-13bf-41c9-a602-c994a77a568f
+                  externalReference: 35afe9a8-735e-4452-b8f7-e65af3cc57db
+                  firstName: John
+                  lastName: Johnson
+                  email: john.johnson@signicat.com
+                  mobile: '0777777777'
+                  fileAccessInfos:
+                  - id: b8ed11f4-9554-4534-a406-53ed8cbde951
+                    lastDownloadedAt: '2026-10-13T15:31:47.0833227+00:00'
+                  fileRestrictions:
+                  - b8ed11f4-9554-4534-a406-53ed8cbde951
+                  authentication:
+                  - identityProvider: otp-sms
+                    idpId: null
+                    nin: null
+                  - identityProvider: otp-email
+                    idpId: null
+                    nin: null
+                  loggedInTime: '2026-10-13T15:26:47.0906893+00:00'
+                  url: null
+                  notification:
+                    sendEmail: true
+                    sendSms: true
+                    language: En
+                - id: 277870aa-588d-4b40-bea9-0eb8bc5e50e7
+                  externalReference: b68c31c2-fa69-4de1-8f11-6580a91b6997
+                  firstName: Mark
+                  lastName: Markus
+                  email: mark.markus@signicat.com
+                  mobile: '0771234567'
+                  fileAccessInfos:
+                  - id: b8ed11f4-9554-4534-a406-53ed8cbde951
+                    lastDownloadedAt: '2026-10-13T15:31:47.0908254+00:00'
+                  - id: 32de1f53-9e3e-42b1-8baa-40cfbfa0f8c1
+                    lastDownloadedAt: '2026-10-13T15:31:47.0911113+00:00'
+                  fileRestrictions: null
+                  authentication:
+                  - identityProvider: nbid
+                    idpId: 1234-5678-7890
+                    nin: null
+                  - identityProvider: mitid
+                    idpId: null
+                    nin: '12351246127'
+                  loggedInTime: '2026-10-13T15:26:47.0911198+00:00'
+                  url: null
+                  notification:
+                    sendEmail: true
+                    sendSms: false
+                    language: En
+                files:
+                - id: b8ed11f4-9554-4534-a406-53ed8cbde951
+                  name: File1
+                  status: Success
+                  size: 1234
+                  message: null
+                - id: 5e4b388c-0408-4bc9-9da2-e2db408915ea
+                  name: File2
+                  status: VirusFound
+                  size: 5023412
+                  message: This file contains a malicious script
+                - id: 57b80b2a-81d6-480d-a2ff-2098f13e9b3b
+                  name: File3
+                  status: Failed
+                  size: 5678
+                  message: Something went wrong uploading the file
+                - id: 32de1f53-9e3e-42b1-8baa-40cfbfa0f8c1
+                  name: File4
+                  status: Success
+                  size: 69420
+                  message: null
+                expires: '2026-10-20T15:31:47.0911292+00:00'
+                created: '2026-10-13T15:31:47.0911296+00:00'
+                contactDetails:
+                  email: email@example.com
+                  name: John Musk
+                  mobile: null
+                  notificationOptions: null
+                tags:
+                - custom-tag
+                requestDomain: my-custom-domain
+                completedRecipients: 0
+                status: Active
+                providerPath: secure-share
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Share not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    delete:
+      tags:
+      - Shares
+      summary: Delete share
+      description: Remove a secure share with all the data in it (recipients/files)
+      operationId: HardDeleteShareEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: efb57f5f-10e5-44aa-8d86-7c167e18ca9d
+      responses:
+        '204':
+          description: Share deleted successfully
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Share not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    patch:
+      tags:
+      - Shares
+      summary: Update share
+      description: Update an existing share object
+      operationId: UpdateShare
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: guid
+        example: 79b73bb9-406e-4610-b71c-8ce4b85138ea
+      requestBody:
+        x-name: UpdateShareDto
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShareDto'
+        required: true
+        x-position: 1
+      responses:
+        '201':
+          description: Share updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareResponseDto'
+              example:
+                id: 3bc51528-c289-4f97-a725-2bb895e5c927
+                title: Title of the share
+                description: Description of what this share contains
+                externalReference: 2c15730c-8342-41de-af45-5eddca224f90
+                usageReference: 761df435-21a7-4afb-9669-9e46c394884f
+                recipients: []
+                files: []
+                expires: '2026-10-13T15:31:47.0974166+00:00'
+                created: '2026-10-06T15:31:47.0974166+00:00'
+                contactDetails:
+                  email: email@example.com
+                  name: name
+                  mobile: null
+                  notificationOptions: null
+                tags: []
+                requestDomain: null
+                completedRecipients: 0
+                status: Active
+                providerPath: secure-share
+        '400':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+      x-operation-id-source: normalized
+      x-operation-id-original: Update share
+    servers:
+    - url: https://api.signicat.com/secure-share
+components:
+  schemas:
+    ShareStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Active
+      - Expired
+      - Completed
+      - Empty
+      enum:
+      - Active
+      - Expired
+      - Completed
+      - Empty
+    PaginatedResultDtoOfShareResponseDto:
+      type: object
+      additionalProperties: false
+      properties:
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        count:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ShareResponseDto'
+    ShareResponseDto:
+      type: object
+      additionalProperties: false
+      required:
+      - contactDetails
+      - providerPath
+      properties:
+        id:
+          type: string
+          format: guid
+        title:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        externalReference:
+          type:
+          - string
+          - 'null'
+        usageReference:
+          type:
+          - string
+          - 'null'
+        recipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RecipientDto'
+        files:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UploadFileDto'
+        expires:
+          type: string
+          format: date-time
+        created:
+          type: string
+          format: date-time
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetailsDto'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        requestDomain:
+          type:
+          - string
+          - 'null'
+        completedRecipients:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/ShareStatus'
+        providerPath:
+          type: string
+    AuthenticationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        identityProvider:
+          type: string
+        idpId:
+          type:
+          - string
+          - 'null'
+        nin:
+          type:
+          - string
+          - 'null'
+    RecipientDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        externalReference:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        mobile:
+          type:
+          - string
+          - 'null'
+        fileAccessInfos:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FileAccessInfosDto'
+        fileRestrictions:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: guid
+        authentication:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuthenticationDto'
+        loggedInTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        url:
+          type:
+          - string
+          - 'null'
+        notification:
+          oneOf:
+          - $ref: '#/components/schemas/NotificationDto'
+    UploadFileDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/FileStatus'
+        size:
+          type: integer
+          format: int64
+        message:
+          type:
+          - string
+          - 'null'
+    UpdateShareDto:
+      type: object
+      example:
+        title: Title of the share
+        description: Description of what this share contains
+        contactDetails:
+          email: email@example.com
+          name: name
+          mobile: null
+          notificationOptions: null
+        expires: '2026-10-13T15:31:47.0974166+00:00'
+      additionalProperties: false
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the share
+          example: Title of the share
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of what this share contains
+          example: Description of what this share contains
+        contactDetails:
+          example:
+            email: email@example.com
+            name: name
+            mobile: null
+            notificationOptions: null
+          oneOf:
+          - $ref: '#/components/schemas/UpdateContactDetailsDto'
+        expires:
+          type:
+          - string
+          - 'null'
+          description: Expire date for this share, after that you and your recipients can't access the share anymore
+          format: date-time
+          example: '2026-10-13T15:31:47.0974166+00:00'
+    CreateShareDto:
+      type: object
+      example:
+        title: Title of the share
+        description: Description of what this share contains
+        externalReference: 25470687-d0b9-4659-8688-013ebf31065e
+        usageReference: c93d1b6a-3827-4eec-a454-e3fd2e809455
+        recipients: []
+        contactDetails:
+          email: email@example.com
+          name: name
+          mobile: null
+          notificationOptions: null
+        tags:
+        - custom-tag
+        - another-custom-tag
+        expires: '2026-10-20T15:31:47.071875+00:00'
+        requestDomain: my-custom-domain
+      additionalProperties: false
+      required:
+      - contactDetails
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the share
+          example: Title of the share
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of what this share contains
+          example: Description of what this share contains
+        externalReference:
+          type:
+          - string
+          - 'null'
+          description: Create a reference to your own system, this value is also used for binding billing events
+          example: 25470687-d0b9-4659-8688-013ebf31065e
+        usageReference:
+          type:
+          - string
+          - 'null'
+          example: c93d1b6a-3827-4eec-a454-e3fd2e809455
+        recipients:
+          type: array
+          description: A list of recipients for this share, we recommend to add them later after you add the files
+          example: []
+          items:
+            $ref: '#/components/schemas/CreateShareRecipientDto'
+        contactDetails:
+          description: Sender contact details that the recipients can see after they authenticate
+          example:
+            email: email@example.com
+            name: name
+            mobile: null
+            notificationOptions: null
+          $ref: '#/components/schemas/ContactDetailsDto'
+        tags:
+          type:
+          - array
+          - 'null'
+          description: Keywords you can use for filtering your shares
+          example:
+          - custom-tag
+          - another-custom-tag
+          items:
+            type: string
+        expires:
+          type:
+          - string
+          - 'null'
+          description: Expire date for this share, after that you and your recipients can't access the share anymore
+          format: date-time
+          example: '2026-10-20T15:31:47.071875+00:00'
+        requestDomain:
+          type:
+          - string
+          - 'null'
+          description: This specifies the domain you want to use for this specific session. The domain will be visible in the end-user's browser. This domain needs to be correctly configured on your account!
+          example: my-custom-domain
+    ProblemDetails:
+      type: object
+      additionalProperties: {}
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+    FileAccessInfosDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        lastDownloadedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    UpdateContactDetailsDto:
+      type: object
+      additionalProperties: false
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          pattern: ^[^@]+@[^@]+$
+        name:
+          type:
+          - string
+          - 'null'
+        mobile:
+          type:
+          - string
+          - 'null'
+        notificationOptions:
+          oneOf:
+          - $ref: '#/components/schemas/SenderNotificationDto'
+    NotificationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        sendEmail:
+          type: boolean
+        sendSms:
+          type: boolean
+        language:
+          $ref: '#/components/schemas/Language'
+    CreateShareRecipientDto:
+      type: object
+      additionalProperties: false
+      required:
+      - authentication
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          pattern: ^[^@]+@[^@]+$
+        mobile:
+          type:
+          - string
+          - 'null'
+        authentication:
+          type: array
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/AuthenticationDto'
+        notification:
+          $ref: '#/components/schemas/NotificationDto'
+        externalReference:
+          type:
+          - string
+          - 'null'
+    InvalidParam:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - reason
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+    SignicatValidationProblemDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+    ContactDetailsDto:
+      type: object
+      additionalProperties: false
+      required:
+      - email
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[^@]+@[^@]+$
+        name:
+          type:
+          - string
+          - 'null'
+        mobile:
+          type:
+          - string
+          - 'null'
+        notificationOptions:
+          oneOf:
+          - $ref: '#/components/schemas/SenderNotificationDto'
+    SenderNotificationDto:
+      type: object
+      additionalProperties: false
+      properties:
+        sendEmail:
+          type: boolean
+        sendSms:
+          type: boolean
+    FileStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Pending
+      - UploadedToQuarantine
+      - Scanning
+      - Success
+      - Failed
+      - VirusFound
+      - Skipped
+      enum:
+      - Pending
+      - UploadedToQuarantine
+      - Scanning
+      - Success
+      - Failed
+      - VirusFound
+      - Skipped
+    Language:
+      type: string
+      description: ''
+      x-enumNames:
+      - En
+      - 'No'
+      - Fi
+      - De
+      - Fr
+      - Nl
+      - Da
+      - Sv
+      enum:
+      - En
+      - 'No'
+      - Fi
+      - De
+      - Fr
+      - Nl
+      - Da
+      - Sv
+  securitySchemes:
+    JWTBearerAuth:
+      type: http
+      description: Enter a JWT token to authorize the requests...
+      scheme: Bearer
+      bearerFormat: JWT
+x-refined-from:
+- secure-share-openapi.json
+- signicat-secure-share-openapi.yml

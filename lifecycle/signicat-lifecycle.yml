@@ -1,0 +1,14 @@
+generated: '2026-10-18'
+method: searched
+source: https://developer.signicat.com/docs/, https://status.signicat.com/
+versioning:
+  scheme: product-specific
+  description: Different APIs have their own versioning schemes
+deprecation:
+  policy: documented
+  description: Deprecated APIs and endpoints are marked in documentation with deprecation notices
+status_page:
+  url: https://status.signicat.com/
+  provider: incident.io
+  components_monitored: 95+
+note: Person Monitoring API is deprecated with support until summer 2027. SIMPLE and ADVANCED audit levels are deprecated and only supported for existing integrations.

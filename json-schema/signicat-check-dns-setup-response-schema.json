@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-check-dns-setup-response-schema.json",
+  "title": "CheckDnsSetupResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-domain-management-openapi.yml#/components/schemas/CheckDnsSetupResponse",
+  "type": "object",
+  "properties": {
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CheckDnsSetupResponseItem"
+      },
+      "description": "Contains the records that must be configured."
+    },
+    "valid": {
+      "type": "boolean",
+      "description": "True if all `records` are valid. If false, see `records` for errors."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CheckDnsSetupResponseItem": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "The domain for which the DNS record must be added."
+        },
+        "type": {
+          "type": "string",
+          "description": "What kind of DNS record this is."
+        },
+        "value": {
+          "type": "string",
+          "description": "The required value of the DNS record."
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Whether the DNS record has been setup correctly."
+        },
+        "dnsCorrect": {
+          "type": "boolean",
+          "description": "True if record is valid on account of the DNS record being correctly configured."
+        },
+        "dnsValidationOverride": {
+          "type": "boolean",
+          "description": "True if record is valid on account of Signicat having configured a special override."
+        },
+        "partnerWildcardDns": {
+          "type": "boolean",
+          "description": "True if record is valid of domain being a verified partner DNS domain."
+        },
+        "pointsToSignicatIdentityBrokerCname": {
+          "type": "boolean",
+          "description": "True if the current DNS record is pointing to Signicat Identity Broker's domain."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,113 @@
+openapi: 3.2.0
+info:
+  title: Signicat Step definitions API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Step definitions across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Step definitions
+paths:
+  /step-definitions:
+    get:
+      tags:
+      - Step definitions
+      summary: List step definitions
+      description: Returns a list of all step definitions.
+      operationId: ListStepDefinitions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StepDefinition'
+    servers:
+    - url: https://api.signicat.com/mint
+  /step-definitions/{stepType}/schemas:
+    get:
+      tags:
+      - Step definitions
+      summary: Retrieve step definition schemas
+      description: Retrieves the JSON schemas for a step definition.
+      operationId: GetStepDefinitionSchemas
+      parameters:
+      - name: stepType
+        in: path
+        description: The step type.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StepDefinitionSchemasResponse'
+        '404':
+          description: Not Found
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    StepDefinitionSchemasResponse:
+      type: object
+      properties:
+        inputJsonSchema:
+          description: The JSON schema for the step input.
+        outputJsonSchema:
+          description: The JSON schema for the step output.
+    StepDefinition:
+      required:
+      - type
+      - displayName
+      - category
+      type: object
+      properties:
+        type:
+          type: string
+          description: The step type.
+        displayName:
+          type: string
+          description: The display name of the step.
+        description:
+          type:
+          - 'null'
+          - string
+          description: The description of the step.
+        category:
+          type: string
+          description: The step category.
+        documentationUrl:
+          type:
+          - 'null'
+          - string
+          description: URL to the documentation page for the step.
+        keywords:
+          type: array
+          items:
+            type: string
+          description: List of keywords associated with the step.
+        outcomes:
+          type: array
+          items:
+            type: string
+          description: List of possible step outcomes.
+        requiredPermissions:
+          type: array
+          items:
+            type: string
+          description: List of required permissions to use the step.
+        deprecated:
+          type: boolean
+          description: Whether the step is deprecated.
+        interactive:
+          type: boolean
+          description: Whether the step requires end user interaction.
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

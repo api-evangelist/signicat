@@ -1,0 +1,78 @@
+generated: '2026-10-18'
+method: searched
+source: openapi/signicat-archive-openapi.yml, openapi/signicat-id-document-and-biometric-verification-openapi.yml,
+  openapi/signicat-mobileid-admin-openapi.yml, openapi/signicat-oidc-config-openapi.yml, openapi/signicat-reuseid-onboarding-openapi.yml,
+  openapi/signicat-secure-share-openapi.yml, openapi/signicat-siam-openapi.yml, openapi/signicat-sign-openapi.yml,
+  openapi/signicat-signing-enterprise-openapi.yml, openapi/signicat-usage-openapi.yml, https://developer.signicat.com/docs/dashboard/connect-to-signicat-apis/quick-start-guide.md
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+  - clientCredentials
+schemes:
+- name: JWT
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: Value for the Authorization header parameter.
+  sources:
+  - openapi/signicat-archive-openapi.yml
+  - openapi/signicat-usage-openapi.yml
+- name: basicAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: JWT Security Scheme
+  sources:
+  - openapi/signicat-id-document-and-biometric-verification-openapi.yml
+  - openapi/signicat-mobileid-admin-openapi.yml
+  - openapi/signicat-siam-openapi.yml
+  - openapi/signicat-sign-openapi.yml
+- name: Signicat-OIDC
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: http://api.signicat.com/auth/open/connect/token
+    scopes: 0
+  - flow: authorizationCode
+    authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+    tokenUrl: http://api.signicat.com/auth/open/connect/token
+    scopes: 2
+  sources:
+  - openapi/signicat-oidc-config-openapi.yml
+- name: Token
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    scopes: 0
+  sources:
+  - openapi/signicat-reuseid-onboarding-openapi.yml
+  - openapi/signicat-signing-enterprise-openapi.yml
+- name: JWTBearerAuth
+  type: http
+  scheme: Bearer
+  bearerFormat: JWT
+  description: Enter a JWT token to authorize the requests...
+  sources:
+  - openapi/signicat-secure-share-openapi.yml
+
+docs: https://developer.signicat.com/docs/dashboard/connect-to-signicat-apis/quick-start-guide.md
+authentication_flow:
+  description: OAuth 2.0 client credentials flow with API clients (client_id/client_secret pairs)
+  steps:
+  - Create API client in Signicat Dashboard with scope `signicat-api`
+  - Set permissions for specific API products
+  - Request access token from authorization server (/auth/open/connect/token)
+  - Use access token in Authorization header for API requests
+api_clients:
+  management: Signicat Dashboard > Settings > API clients
+  recommendation: Create one API client per API product
+  credentials: client_id/client_secret pairs
+  scope: signicat-api (required)
+token_endpoint: https://api.signicat.com/auth/open/connect/token
+authorization_endpoint: https://api.signicat.com/auth/open/connect/authorize

@@ -1,0 +1,324 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Signicat Usage Api",
+    "version": "1",
+    "description": "\n- **Base URL**: `https://api.signicat.com/usage/`\n- **Documentation**: See the [Dashboard](/docs/dashboard/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Usage API enables you to retrieve usage information from your Signicat organisations and accounts.\n\nThis API is part of our management APIs, which allow you to programmatically manage configurations that are typically handled in the Signicat Dashboard.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n\n# Get started\n\n> **Note**: You need to provide `signicat-organizationid` or `signicat-accountid` in the request headers for all API calls.",
+    "contact": "",
+    "license": "",
+    "termsOfService": ""
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "usage",
+      "description": "Api for reading usage\nNote! Header signicat-organizationid or signicat-accountid must be provided for all calls"
+    }
+  ],
+  "paths": {
+    "/usage/transactions": {
+      "get": {
+        "tags": [
+          "usage"
+        ],
+        "summary": "Request to read usage data for either an organisation or an account",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "First date to fetch usage",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2024-03-01"
+            },
+            "example": "2024-03-01"
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "Last date to fetch usage",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-01-15"
+            },
+            "example": "2025-01-15"
+          },
+          {
+            "name": "includeExternalReference",
+            "in": "query",
+            "description": "Set to true if external references are to be included in the response",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "aggregateByPeriod",
+            "in": "query",
+            "description": "Timeframe to aggregate usage. Daily, Monthly, Quarterly or Yearly",
+            "schema": {
+              "$ref": "#/components/schemas/PeriodAggregationLevel"
+            },
+            "example": "monthly"
+          },
+          {
+            "name": "aggregateByLevel",
+            "in": "query",
+            "description": "Specifies if aggregation of usage is done at account or organisation level",
+            "schema": {
+              "$ref": "#/components/schemas/ScopeAggregationLevel"
+            },
+            "example": "organization"
+          },
+          {
+            "name": "includeChildOrganizations",
+            "in": "query",
+            "description": "Set to true if child organisations are to be included",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Which entry to start reading the response",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 200
+            },
+            "example": 200
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of entries to included in the response",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 100
+            },
+            "example": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageSet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Period": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "First date",
+            "format": "date",
+            "example": "2024-02-03"
+          },
+          "end": {
+            "type": "string",
+            "description": "Last date",
+            "format": "date",
+            "example": "2024-02-05"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Period of aggregated usage"
+      },
+      "PeriodAggregationLevel": {
+        "enum": [
+          "daily",
+          "monthly",
+          "quarterly",
+          "yearly"
+        ],
+        "type": "string"
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ScopeAggregationLevel": {
+        "enum": [
+          "account",
+          "organization"
+        ],
+        "type": "string"
+      },
+      "UsageData": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Total value for this usage",
+            "format": "double",
+            "example": 236
+          },
+          "state": {
+            "$ref": "#/components/schemas/UsageState"
+          },
+          "period": {
+            "$ref": "#/components/schemas/Period"
+          },
+          "usageType": {
+            "type": "string",
+            "description": "Name of emitted event",
+            "example": "srn:sue:1:authbroker:nbid:auth:bidbax"
+          },
+          "unitOfMeasure": {
+            "type": "string",
+            "description": "The unit for the Count field",
+            "nullable": true,
+            "example": "Authentications"
+          },
+          "invoiced": {
+            "type": "boolean",
+            "description": "Set to true if this usage is invoiced. Typically Failed usage is reported but not invoiced",
+            "example": true
+          },
+          "productName": {
+            "type": "string",
+            "description": "Name of product shown on invoice where usage is potentially invoiced",
+            "nullable": true,
+            "example": "Norwegian BankId - Authentications"
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "Id of organisation owning the account where usage is produced",
+            "example": "o-p-9gcrvUvHz3cYxKrAsm1p"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Id of account where usage is produced. Will be null if aggregation level is organisation",
+            "nullable": true,
+            "example": "a-ppge-jkQaJ4Od2e5giZh1BiSp"
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "External reference, if supplied. Will be null unless explicitly requested",
+            "nullable": true,
+            "example": "client-id:sleepy-fish-698"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Usage for requested period, grouped by State, UsageType, OrganizationId, AccountId and ExternalReference"
+      },
+      "UsageSet": {
+        "type": "object",
+        "properties": {
+          "previous": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "next": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsageData"
+            },
+            "description": "Array of usage for this page"
+          }
+        },
+        "additionalProperties": false,
+        "description": "One page of usage data"
+      },
+      "UsageState": {
+        "enum": [
+          "completed",
+          "started",
+          "loaded",
+          "userAborted",
+          "failed"
+        ],
+        "type": "string",
+        "description": "Final state of usage"
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

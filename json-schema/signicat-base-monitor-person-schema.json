@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-base-monitor-person-schema.json",
+  "title": "BaseMonitorPerson",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-person-openapi.yml#/components/schemas/BaseMonitorPerson",
+  "required": [
+    "nationality"
+  ],
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The person's first name."
+    },
+    "lastName": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The person's last name."
+    },
+    "middleName": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The person's middle name."
+    },
+    "dateOfBirth": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The person's date of birth, if available.",
+      "format": "yyyy-MM-dd"
+    },
+    "nationalIdentityNumber": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The person's national identity number, if available."
+    },
+    "nationality": {
+      "maxLength": 3,
+      "minLength": 2,
+      "type": "string",
+      "description": "Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2)."
+    },
+    "address": {
+      "$ref": "#/$defs/PersonAddress"
+    },
+    "screening": {
+      "$ref": "#/$defs/PersonScreening"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "PersonAddress": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "maxLength": 400,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Address line."
+        },
+        "zipCode": {
+          "maxLength": 20,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Zip code / Postal code."
+        },
+        "city": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City."
+        },
+        "country": {
+          "maxLength": 3,
+          "minLength": 2,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country (ISO 3166-1 alpha-2)."
+        }
+      },
+      "additionalProperties": false,
+      "description": "The person's address"
+    },
+    "PersonScreening": {
+      "type": "object",
+      "properties": {
+        "riskLevel": {
+          "maximum": 5,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int32"
+        },
+        "listType": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "Attribute providing information about the Screening status of the person"
+    }
+  }
+}

@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-process-request-schema.json",
+  "title": "ProcessRequest",
+  "description": "Create process payload",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-id-document-and-biometric-verification-openapi.yml#/components/schemas/ProcessRequest",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "description": "The provider that performs the identity document verification. This field is always required for all the providers (see `Enum` above). <br><br>For more information about supported eIDV methods from Signicat, see <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/#eidv-services\">the overview of eIDVs</a> in the general documentation. ",
+      "enum": [
+        "onfido",
+        "readid",
+        "signicatpaper",
+        "facetec",
+        "webid",
+        "signicatpictureid",
+        "signicatvideoid",
+        "connect:idmethod"
+      ]
+    },
+    "processType": {
+      "type": "string",
+      "description": "The available values are:<ul><li>For 'signicatvideoid':<ul><li>`high` (default): A human agent will review the process. This is done asynchronously.<li>`substantial`: Process verification is done automatically, meaning no human agent is involved.</li><li>`substantialFullyAuto`: Similar to `substantial` but without any `inconclusive` status. It will automatically reach an `accepted` or `rejected` status. For more information about what each status means, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#status\">Get process</a> page in the integration guide.</li></ul></li><li>For 'onfido'<ul><li>`document`: The verification is only done on the provided identity document.</li><li>`documentSelfie` (default): The verification is done on the identity document and the photo of the end-user. The photo allows assessing whether the holder of the identity document is the same person as the one in the ID document (facial similarity). The photo must be taken at the time of the request.</li><li>`documentVideo`: The verification is done on the identity document and also a video-call while the end-user does some requested actions (e.g. “Look over your left shoulder”). The video allows assessing whether the holder of the identity document is the same person as the one on the video-call(facial similarity). It also detects liveness information.</li></ul></li><li>For 'readid'<ul><li>`sdk` (default)</li><li>`ready`</li></ul></li><li>For 'webid'<ul><li>`videoid`: The end-user is identified by a support agent in a live video call.</li><li>`accountid`: The end-user identifies themselves by capturing their ID and selfie.</li><li>`videoidQES`: Similar to videoid but also including a QES. This process type requires a PDF document to be uploaded so it can be presented in the WebID flow to the user and after signing made available in the result of the transaction. The signed document will be added to the evidence file.</li><li>`accountidQES`: Similar to accountid, which already includes a QES by default. This process type requires a PDF document to be uploaded. In addition to the ‘container document’ with the QES as a result from the WebID accountid transaction, there will also be a signed document in the evidence file.</li></ul></li><li>For 'signicatpictureid'<ul><li>`document`: The verification is only done on the provided identity document.</li><li>`documentSelfie` (default): The verification is done on the identity document and the photo of the end-user. The photo allows assessing whether the holder of the identity document is the same person as the one in the ID document (facial similarity). The photo must be taken at the time of the request.</li></ul></li></ul></ul>",
+      "enum": [
+        "substantial",
+        "substantialFullyAuto",
+        "high",
+        "document",
+        "documentSelfie",
+        "documentVideo",
+        "sdk",
+        "ready",
+        "accountid",
+        "videoid",
+        "accountidQES",
+        "videoidQES"
+      ]
+    },
+    "documentType": {
+      "type": "string",
+      "description": "This field only applies to the 'onfido' or 'signicatpaper' provider.<br> It is required when images are uploaded via the Assure API (not via the SDK). <br> This field defines the document type used in the verification.<br> To check the available values, use the \"Get Document Types\" service.",
+      "enum": [
+        "driversLicense",
+        "passport",
+        "identityCard",
+        "residencePermit",
+        "workPermit",
+        "voterId",
+        "postalIdCard",
+        "professionalQualificationCard",
+        "professionalPermit",
+        "socialSecurity",
+        "panCard",
+        "passportCard",
+        "stateId",
+        "visa",
+        "asylumRegistrationCard",
+        "nationalHealthInsuranceCard",
+        "aadharCard",
+        "immigrationStatusDocument",
+        "indigenousCard",
+        "municipalityIdentityCard",
+        "privateOperatorsCard",
+        "certificateOfSponsorship",
+        "serviceIdCard",
+        "taxId"
+      ]
+    },
+    "processParameters": {
+      "$ref": "#/$defs/ProcessParameters"
+    },
+    "documentCountry": {
+      "type": "string",
+      "description": "This field only applies to the 'signicatpaper' provider and is then a required field. <br/>It represents the country of the document that will be used in the verification (ISO 3166-1 Alpha 2), e.g. `NL`. <br/><br/>For passports only, it is also possible to use the `UNIV` value. This allows any <a href=\"https://www.icao.int/publications/doc-series/doc-9303\">ICAO compliant passport</a> to be used in the verification. However, in this case, Signicat Paper will only extract information from the MRZ area. This is useful, for example,  if you want information from a passport that is not supported by Signicat Paper and you only need information that is in the MRZ area. For a full list of documents supported by Signicat, see the <a href=\"https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Assure/operation/getDocumentTypes\">Get document types</a> endpoint.<br><b>Note</b>: If you use the `UNIV` value, redaction will not be performed."
+    },
+    "redact": {
+      "type": "array",
+      "description": "This field can only be used when the provider is 'signicatpaper')<br>It indicates which field(s) should be redacted from the ID images.<br>This will affect the 'front' and 'back' images you are able to get from the <a href='https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getImages'>process</a> If you request redaction, you will only be able to get those images if they were successfully redacted (i.e., if 'isFullRedaction':'true' in the <a href='https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getProcess'>Get Process</a> response).",
+      "enum": [
+        "firstName",
+        "lastName",
+        "fullName",
+        "gender",
+        "address",
+        "personalIdentificationNumber",
+        "documentNumber",
+        "date",
+        "dateOfBirth",
+        "dateOfIssue",
+        "dateOfExpiry",
+        "photo",
+        "signature",
+        "accessNumber",
+        "drivingPermits",
+        "issuingAuthority",
+        "mrz",
+        "barcode"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "redactionLevel": {
+      "type": "string",
+      "description": "This field can only be used when the provider is 'signicatpaper'.<br>This is the size of the bounding box for the redaction functionality. 'standard' (smallest) is default.",
+      "enum": [
+        "standard",
+        "medium",
+        "high",
+        "veryHigh"
+      ]
+    },
+    "eventTags": {
+      "type": "array",
+      "description": "List of tags to be used on events API",
+      "items": {
+        "type": "string"
+      }
+    },
+    "documentId": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Required for provider '<b>signicatpictureid</b>'. Unique id for the document that will be used to identify the end-user. Get the full list of possible id document from <a href=\"https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Assure/operation/getDocumentTypes\">Get Document Types</a>."
+    }
+  },
+  "required": [
+    "provider"
+  ],
+  "$defs": {
+    "Consents": {
+      "type": "object",
+      "properties": {
+        "privacy": {
+          "type": "boolean",
+          "description": "This field is used only if `processType` is `documentSelfie` or `documentVideo` and is only required if the end-user is located in the USA or unknown location.<br><br>Indicates if the end-user has read and agreed to <a href=\"https://developers.onfido.com/guide/onfido-privacy-notices-and-consent\">Onfido’s Privacy Notices and Consent</a>. If the end-user does not agree, <a href=\"https://developer.signicat.com/enterprise/apis/assure/#operation/verifyProcess_1\">Start Verification</a> will fail."
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "ipAddress": {
+          "type": "string",
+          "description": "The end-user’s IP address."
+        },
+        "countryOfResidence": {
+          "type": "string",
+          "description": "The country where the end-user lives (in ISO 3166 Alpha 3 format. ex: “USA”, “NOR”, “GBR”).\nIf this field is not provided, it will be inferred from the IP address, which may result in an incorrect value."
+        }
+      }
+    },
+    "ProcessParameters": {
+      "type": "object",
+      "description": "Provider specific process parameters",
+      "properties": {
+        "referrer": {
+          "type": "string",
+          "description": "This field is required for 'onfido' processes where the images  are uploaded via JS (Web) SDK. <br>This is the URL of the web page where the Web SDK will be used."
+        },
+        "mobileAppId": {
+          "type": "string",
+          "description": "This field is required for 'onfido' processes where the images are uploaded via  iOS/Android (mobile) SDK. <br>This is a unique ID of the mobile app that will integrate with the provider's iOS/Android SDK. This is either a bundle ID for iOS or application ID for Android. "
+        },
+        "location": {
+          "$ref": "#/$defs/Location",
+          "description": "This field is required for `onfido` processes where the images are uploaded via the <a href=\"https://developer.signicat.com/enterprise/apis/assure/#operation/setImages_1\">Set Images endpoint</a>.<br><br>The end-user’s location."
+        },
+        "consents": {
+          "$ref": "#/$defs/Consents",
+          "description": "This field is used only for `onfido` processes where the images will be uploaded using the <a href=\"https://developer.signicat.com/enterprise/apis/assure/#operation/setImages_1\">Set Images endpoint</a>."
+        },
+        "requestExtraDataFromDrivingLicense": {
+          "type": "boolean",
+          "default": false,
+          "description": "(Warning: This is a Beta feature. Please contact your account manager for details.) This field is available only for \"onfido\" processes and for specific Driving License documents. If enabled, the process result will contain more information extracted from the Driving License (ex: license category and vehicle classes). "
+        },
+        "webid": {
+          "$ref": "#/$defs/WebIDParameters",
+          "description": "This object only applies to the 'webid' provider and is required.<br> The information in this field must be provided at the creation of the process. It will be compared with the user information gathered during the process."
+        }
+      }
+    },
+    "WebIDAddress": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string",
+          "description": "Available only if addressLine1 and addressLine2 are empty."
+        },
+        "streetNumber": {
+          "type": "string",
+          "description": "Available only if addressLine1 and addressLine2 are empty."
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "For example, street number and street, or post box or rural route. Available only if street and streetNumber are empty."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Available only if street and streetNumber are empty."
+        },
+        "region": {
+          "type": "string",
+          "description": "For example, state, district, province or any local region."
+        },
+        "zip": {
+          "type": "string",
+          "description": "Zip code."
+        },
+        "city": {
+          "type": "string",
+          "description": "City."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country name component (ISO-3166 Alpha 3)."
+        }
+      }
+    },
+    "WebIDContact": {
+      "type": "object",
+      "description": "WebID contact",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The end-user's email address."
+        },
+        "cell": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "mobile": {
+          "type": "string",
+          "description": "The end-user's mobile phone number. Required for `accountid` processes only (not `videoid`)."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The end-user's home phone number"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "WebIDFile": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "File name with extension. Extension must be \"pdf\". Slashes ('/') are not allowed in this field."
+        },
+        "fileContent": {
+          "type": "string",
+          "description": "File content as base64 string."
+        }
+      }
+    },
+    "WebIDIdDocument": {
+      "type": "object",
+      "description": "Data about the physical ID document. Required for `accountid` processes only (not `videoid`).",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "description": "Name of the authority that issued the ID document. Might be empty."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "ID document's expiry date (YYYY-MM-DD)."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "Date when the ID document was issued. No time zone. Might be empty."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Type (or name) of the ID document, for example, passport. Only specified values are supported. Other values will be ignored."
+        },
+        "idNumber": {
+          "type": "string",
+          "description": "The end-user's national identity number."
+        },
+        "mrz": {
+          "type": "string",
+          "description": "Value of the \"Machine Readable Zone\" in the ID document. Cannot include line breaks or special characters for multi-line variants. Might be empty."
+        },
+        "nameAtBirth": {
+          "type": "string",
+          "description": "Maiden name as specified in the ID document."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The end-user's nationality (country code in ISO 3166 Alpha 3 format). Required for `accountid` processes only (not `videoid`)."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The end-user's birth place."
+        }
+      },
+      "required": [
+        "nationality"
+      ]
+    },
+    "WebIDParameters": {
+      "type": "object",
+      "properties": {
+        "preferredLanguage": {
+          "type": "string",
+          "description": "Your preferred language as a two-letter ISO-3166-1 Alpha-2 code (optional). If specified, this will be used for web pages, emails, etc. directed to the user. Supported language codes are en, de, fr, it. Other values will be mapped to one of these."
+        },
+        "user": {
+          "$ref": "#/$defs/WebIDUser",
+          "description": "Data about the end-user. Usually, entered by the end-user into your system."
+        },
+        "idDocument": {
+          "$ref": "#/$defs/WebIDIdDocument"
+        },
+        "userActionParameters": {
+          "$ref": "#/$defs/WebIDUserActionParameters",
+          "writeOnly": true
+        },
+        "hasProvidedConsent": {
+          "type": "boolean",
+          "description": "If the user has already accepted the terms and conditions. Default is 'false'."
+        },
+        "file": {
+          "$ref": "#/$defs/WebIDFile",
+          "description": "PDF file which must correspond to the PDF/A standard (PDF/A 1.3b recommended). Documents on QES processes are intended to be digitally signed by a user throughout the process."
+        }
+      },
+      "required": [
+        "idDocument",
+        "user",
+        "userActionParameters"
+      ]
+    },
+    "WebIDUser": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Academic title of the user. Will be synchronised with the corresponding field in the ID document."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ],
+          "pattern": "[FM]"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The end-user's given name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The end-user's surname(s)."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The end-user's date of birth (YYYY-MM-DD)."
+        },
+        "address": {
+          "$ref": "#/$defs/WebIDAddress",
+          "description": "Residence or postal address, according to the ID document. Either street or addressLine1 is required. Street and streetNumber may be used to infer the required part of the address. For international addresses, addressLine1 and addressLine2 may be used to infer the required part of the address."
+        },
+        "contact": {
+          "$ref": "#/$defs/WebIDContact"
+        }
+      },
+      "required": [
+        "contact",
+        "dateOfBirth",
+        "firstName",
+        "lastName"
+      ]
+    },
+    "WebIDUserActionParameters": {
+      "type": "object",
+      "description": "Parameters the WebID service needs for the end-user flow.",
+      "properties": {
+        "redirectUrl": {
+          "type": "string",
+          "description": "URL to redirect the user after a successful identification (or signature) (only in web browsers). "
+        },
+        "redirectDeclineUrl": {
+          "type": "string",
+          "description": "URL to redirect the user after an unsuccessful identification (only in web browsers). "
+        },
+        "redirectMismatchUrl": {
+          "type": "string",
+          "description": "URL to redirect the user after a successful identification, even if the user data has changed during the  identification (only in web browsers). "
+        },
+        "redirectSkipQesUrl": {
+          "type": "string",
+          "description": "URL to redirect the user when they click the Cancel button on the contract signing page."
+        },
+        "redirectCancelUrl": {
+          "type": "string",
+          "description": "URL to redirect the user when they manually cancel the identification process."
+        },
+        "redirectTime": {
+          "type": "integer",
+          "format": "int32",
+          "description": "(When testing in sandbox, this needs to be > 0 https://developer.signicat.com/docs/id-document-and-biometric-verification/provider-specific-integrations/webid/#test-webid) Time in seconds to delay redirect to one of the redirect URLs. If this is 0, users will be redirected directly to those URLs. Otherwise, a success page will be shown after successful identification and redirect occurs after the specified delay. "
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Name of client or brand customer if the user-action is attributed to a sub-customer. May be shown to a support agent."
+        },
+        "productType": {
+          "type": "string",
+          "description": "The product type shown to the support agent to help detect fraud. The value should only be one single product type or category, and it should be either in German or English. Examples: \"Account Opening\", \"Loan Application\", \"Credit Card\", \"Financing\", \"SIM Card Activation\", \"Age Verification\", \"Contract\"."
+        }
+      },
+      "required": [
+        "clientName",
+        "productType",
+        "redirectCancelUrl",
+        "redirectDeclineUrl",
+        "redirectMismatchUrl",
+        "redirectUrl"
+      ]
+    }
+  }
+}

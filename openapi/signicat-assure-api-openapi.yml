@@ -1,0 +1,387 @@
+openapi: 3.2.0
+info:
+  title: Signicat Assure API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Assure across 2 of this provider''s published API definitions: id-document-and-biometric-verification-openapi.json, signicat-id-document-and-biometric-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/assure
+  description: Generated server url
+security:
+- basicAuth: []
+tags:
+- name: Assure
+paths:
+  /watermark:
+    post:
+      tags:
+      - Assure
+      summary: Watermark
+      description: Apply a watermark on an image with a selected title, text and date. You can apply the watermark directly on an image sent in the request or on an image from a dossier or process. See also the "general documentation on how to use the Watermark service.
+      operationId: watermark
+      requestBody:
+        description: Watermark payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatermarkAssureRequest'
+        required: true
+      responses:
+        '200':
+          description: Watermark successfully applied to image.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/watermark -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type:application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /redact:
+    post:
+      tags:
+      - Assure
+      summary: Redact
+      description: Redact selected fields in document images. You can apply the redaction directly on an image sent in the request or on an image from a dossier or process. See also the "general documentation on how to use the Redaction service.
+      operationId: redact
+      requestBody:
+        description: Redaction payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedactionAssureRequest'
+        required: true
+      responses:
+        '200':
+          description: Image(s) redacted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedactionResponse'
+        '400':
+          description: The request cannot be fulfilled due to bad syntax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionBadRequest'
+        '401':
+          description: The Bearer token provided in the Authorization header was not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardExceptionUnauthorized'
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X POST https://api.signicat.com/assure/redact -H ''Authorization: Bearer <ACCESS_TOKEN>'' -H ''Content-Type:application/json'' -d ''<ADD-PAYLOAD-HERE>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+  /{providerName}/document-types:
+    get:
+      tags:
+      - Assure
+      summary: Get document types
+      description: 'This service returns a list with document types supported by each provider, e.g. passport, driving licence etc.
+
+
+        Note: There might be limitations for specific services. For example, retrieving Onfido''s extra driving licence information is only supported for specific documents. For a list of supported DL documents, see Use Onfido to extract extra driving licence information in the integration guide.'
+      operationId: getDocumentTypes
+      parameters:
+      - name: providerName
+        in: path
+        description: The ID of one of the supported providers.<br>
+        required: true
+        schema:
+          type: string
+          enum:
+          - onfido
+          - signicatpaper
+          - signicatpictureid
+          - signicatvideoid
+        example: signicatvideoid
+      responses:
+        '200':
+          description: The list of document types was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EidCountryAndDocumentType'
+        '204':
+          description: No document types were found for the requested provider.
+      x-codeSamples:
+      - lang: curl
+        source: 'curl -X GET https://api.signicat.com/assure/onfido/document-types -H ''Accept: application/json'' -H ''Authorization: Bearer <ACCESS_TOKEN>'';'
+    servers:
+    - url: https://api.signicat.com/assure
+      description: Generated server url
+components:
+  schemas:
+    Watermark:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Who asked for the image.
+          example: MyCompany
+        description:
+          type: string
+          description: Why the image was requested.
+          example: Loan
+        date:
+          type: string
+          description: 'Date of request (YYYY-MM-DD). '
+          example: '2024-01-10'
+      required:
+      - date
+      - description
+      - title
+    StandardExceptionUnauthorized:
+      type: object
+      description: Standard Exception Unauthorized
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 401
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: The signature of the JWT could not be validated because the key was not found.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: The given JWT is signed by a key with key ID 'signing-key-aaaaaaaaaaaaaaaaaaaaaaaaaaa', but no such key was found.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    WatermarkAssureRequest:
+      type: object
+      description: Watermark Assure Request
+      properties:
+        image:
+          type: string
+          description: 'Image to be watermarked.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i><br>The following formats are supported: <b>png</b>, <b>jpg</b><br>Minimum image size allowed is 250x120 pixels.<br>Maximum size allowed is:<ul><li>4MB</li><li>5000px</li></ul><b>Note:</b> Recommended maximum size is <b>1080px</b>.'
+          example: data:image/png;base64,iVBORw...
+        dossierId:
+          type: string
+          description: Apply a watermark on the image from this dossier.
+          example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+        processId:
+          type: string
+          description: Apply a watermark on the image from this process.
+          example: 8afb3ac6-6780-42e4-bbc2-3713e2f6d97c
+        imageDepiction:
+          type: string
+          description: The type of image to be retrieved from the process.<br>The <code>portrait</code> value is only available for the 'signicatvideoid' and 'readid' providers.
+          enum:
+          - selfie
+          - front
+          example: selfie
+        watermark:
+          $ref: '#/components/schemas/Watermark'
+          description: Watermark object to be applied to the image.
+      required:
+      - watermark
+    RedactionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: '''true'' if redaction was successful, ''false'' otherwise.'
+          example: true
+        redactedFrontImage:
+          type: string
+          description: Redacted front image in dataURL format
+          example: data:image/png;base64,iVBORw....
+        redactedBackImage:
+          type: string
+          description: Redacted back image in dataURL format
+          example: data:image/png;base64,iVBORw....
+        detail:
+          type: string
+          description: Detail on the outcome of the redaction process
+          example: Please check the image has enough quality and that the document provided is from the list of supported documents.
+    EidCountryAndDocumentType:
+      type: object
+      description: Process country and document type
+      properties:
+        country:
+          type: string
+          description: Three letter country code (ISO 3166 Alpha 3) representing the country of the document.
+          example: DEU
+        countryName:
+          type: string
+          description: Name of the type of the document.
+          example: Germany
+        type:
+          type: string
+          description: The type of document.
+          enum:
+          - driversLicense
+          - passport
+          - identityCard
+          - residencePermit
+          - workPermit
+          - voterId
+          - postalIdCard
+          - professionalQualificationCard
+          - socialSecurity
+          - panCard
+          - passportCard
+          - stateId
+          - visa
+          - asylumRegistrationCard
+          - nationalHealthInsuranceCard
+          - aadharCard
+          example: identityCard
+        id:
+          type: integer
+          format: int32
+          description: This field only applies to the 'signicatvideoid' provider. The unique ID of the document.
+          example: 191
+        name:
+          type: string
+          description: Name of the type of the document.
+          example: Germany
+        subType:
+          type: string
+          description: The subtype of document.
+          example: Passport
+        icao:
+          type: string
+          description: The icao of document.
+          example: TD3
+    StandardExceptionBadRequest:
+      type: object
+      description: Standard Exception Bad Request
+      properties:
+        instance:
+          type: string
+          description: URI of the endpoint called.
+          example: /assure/dossiers/
+        method:
+          type: string
+          description: HTTP method associated to the type of request done.
+          example: POST
+        status:
+          type: integer
+          format: int32
+          description: HTTP status associated with the exception generated.
+          example: 400
+        type:
+          type: string
+          description: Type of the exception generated.
+          example: base:client-problem
+        title:
+          type: string
+          description: Title of the exception generated.
+          example: Malformed Authorization header.
+        detail:
+          type: string
+          description: Detailed message containing information of the exception generated.
+          example: Please provide a valid Bearer authentication.
+        traceId:
+          type: string
+          description: TraceID for logging purposes.
+          example: 034fb8bbc5da31f4dd2cf66e70ef313c
+    RedactionAssureRequest:
+      type: object
+      description: Redaction Assure Request
+      properties:
+        front:
+          type: string
+          description: 'Front image to be redacted.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i>'
+          example: data:image/png;base64,iVBORw...
+        back:
+          type: string
+          description: 'Back image to be redacted.<br>Must be in dataURL format <i>(Example: `data:image/png;base64,iVBORw....`)</i>'
+          example: data:image/png;base64,iVBORw...
+        dossierId:
+          type: string
+          description: Redact the image from this dossier
+          example: 37191afe-25b3-4c30-b42a-b0ab64aa1d64
+        processId:
+          type: string
+          description: Redact the image from this process
+          example: 8afb3ac6-6780-42e4-bbc2-3713e2f6d97c
+        documentType:
+          type: string
+          description: Type of the document to be redacted.
+          enum:
+          - passport
+          - identityCard
+          - driversLicense
+          - residencePermit
+        documentCountry:
+          type: string
+          description: Country of the document to be redacted (ISO 3166 Alpha 3).
+          enum:
+          - NLD
+        fieldsToRedact:
+          type: array
+          description: It indicates which field(s) should be redacted from the ID images.
+          enum:
+          - personalIdentificationNumber
+          - photo
+          example:
+          - personalIdentificationNumber
+          - photo
+          items:
+            type: string
+        redactionLevel:
+          type: string
+          description: This is the size of the bounding box for the redaction functionality. 'standard' (smallest) is default.
+          enum:
+          - standard
+          - medium
+          - high
+          - veryHigh
+      required:
+      - documentCountry
+      - documentType
+      - fieldsToRedact
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: JWT Security Scheme
+      scheme: bearer
+      bearerFormat: JWT
+externalDocs:
+  description: See also the user docs on how to get started with the Assure API.
+  url: https://developer.signicat.com/docs/id-document-and-biometric-verification/guides/#set-up-an-api-integration
+x-refined-from:
+- id-document-and-biometric-verification-openapi.json
+- signicat-id-document-and-biometric-verification-openapi.yml

@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organization-ownership-dto-schema.json",
+  "title": "Organization.OwnershipDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-data-verification-openapi.yml#/components/schemas/Organization.OwnershipDto",
+  "type": "object",
+  "properties": {
+    "companies": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Organization.ShareholderCompanyDto"
+      },
+      "description": "List of shareholding companies"
+    },
+    "persons": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Organization.ShareholderPersonDto"
+      },
+      "description": "List of shareholding persons"
+    },
+    "otherShareholders": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Organization.OtherShareholderDto"
+      },
+      "description": "List of shareholders who's type is not known"
+    },
+    "sourceSpecific": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available."
+    },
+    "metadata": {
+      "$ref": "#/$defs/MetadataDto"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "MetadataDto": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of sources for the data"
+        },
+        "urls": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Public urls to the sources"
+        },
+        "lastChanged": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date the data was last changed",
+          "format": "date-time"
+        },
+        "rawJson": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The raw JSON if it was requested and supported by the source"
+        },
+        "isCache": {
+          "type": "boolean",
+          "description": "Return boolean whether data is retrieved from cache."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Metadata about the response"
+    },
+    "NameDto": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/NameStatus"
+        },
+        "full": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Full name of the entity"
+        },
+        "first": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "First/given name of the entity"
+        },
+        "last": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Last/surname of the entity"
+        },
+        "middle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Middle name of the entity"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Name of the entity"
+    },
+    "NameStatus": {
+      "enum": [
+        "partial",
+        "all"
+      ],
+      "type": "string",
+      "description": "A hint to which attributes are set.\n`partial` : only full name,\n`all` : all attributes."
+    },
+    "Organization.IntegratedRangeDto": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Greater than or equal to",
+          "format": "double"
+        },
+        "to": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Less than or equal to",
+          "format": "double"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Shareholders integrated percentage range"
+    },
+    "Organization.OtherShareholderDto": {
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholding percentage in the organization",
+          "format": "double"
+        },
+        "percentageRange": {
+          "$ref": "#/$defs/Organization.PercentageRangeDto"
+        },
+        "votingRights": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholders Voting rights percentage",
+          "format": "double"
+        },
+        "votingRightsRange": {
+          "$ref": "#/$defs/Organization.VotingRightsRangeDto"
+        },
+        "integratedOwnership": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Integrated shareholding percentage in the organization",
+          "format": "double"
+        },
+        "integratedOwnershipRange": {
+          "$ref": "#/$defs/Organization.IntegratedRangeDto"
+        },
+        "sourceSpecific": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the entity"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Id of the entity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Organization.PercentageRangeDto": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Greater than or equal to",
+          "format": "double"
+        },
+        "to": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Less than or equal to",
+          "format": "double"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Shareholding percentage range"
+    },
+    "Organization.ShareholderCompanyDto": {
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholding percentage in the organization",
+          "format": "double"
+        },
+        "percentageRange": {
+          "$ref": "#/$defs/Organization.PercentageRangeDto"
+        },
+        "votingRights": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholders Voting rights percentage",
+          "format": "double"
+        },
+        "votingRightsRange": {
+          "$ref": "#/$defs/Organization.VotingRightsRangeDto"
+        },
+        "integratedOwnership": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Integrated shareholding percentage in the organization",
+          "format": "double"
+        },
+        "integratedOwnershipRange": {
+          "$ref": "#/$defs/Organization.IntegratedRangeDto"
+        },
+        "sourceSpecific": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the company"
+        },
+        "organizationNumber": {
+          "$ref": "#/$defs/OrganizationNumberDto"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Organization.ShareholderPersonDto": {
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholding percentage in the organization",
+          "format": "double"
+        },
+        "percentageRange": {
+          "$ref": "#/$defs/Organization.PercentageRangeDto"
+        },
+        "votingRights": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Shareholders Voting rights percentage",
+          "format": "double"
+        },
+        "votingRightsRange": {
+          "$ref": "#/$defs/Organization.VotingRightsRangeDto"
+        },
+        "integratedOwnership": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Integrated shareholding percentage in the organization",
+          "format": "double"
+        },
+        "integratedOwnershipRange": {
+          "$ref": "#/$defs/Organization.IntegratedRangeDto"
+        },
+        "sourceSpecific": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Source-specific supplementary data that is not part of the normalised schema. Contains additional fields unique to the originating data provider, or null if no source-specific data is available."
+        },
+        "name": {
+          "$ref": "#/$defs/NameDto"
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "yyyy-MM-dd"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Organization.VotingRightsRangeDto": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Greater than or equal to",
+          "format": "double"
+        },
+        "to": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Less than or equal to",
+          "format": "double"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Shareholders voting rights percentage range"
+    },
+    "OrganizationNumberDto": {
+      "type": "object",
+      "properties": {
+        "domestic": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The domestic organization number"
+        },
+        "dunsNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Data Universal Numbering System (DUNS number) for the organization. https://en.wikipedia.org/wiki/Data_Universal_Numbering_System"
+        },
+        "legalEntityIdentifier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Legal Entity Identifier (LEI) - global identifier of legal entities participating in financial transactions. https://en.wikipedia.org/wiki/Legal_Entity_Identifier"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Organization numbers in different formats"
+    }
+  }
+}

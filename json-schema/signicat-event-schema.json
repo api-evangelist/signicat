@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-event-schema.json",
+  "title": "Event",
+  "description": "The Event data type describes an event that has occurred in the signing order",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/Event",
+  "type": "object",
+  "properties": {
+    "eventType": {
+      "type": "string",
+      "description": "The type of the event that has occured",
+      "enum": [
+        "TASK_CREATED",
+        "NOTIFICATION_SENT",
+        "TASK_STARTED",
+        "TASK_REJECTED",
+        "TASK_POSTPONED",
+        "TASK_COMPLETED",
+        "TASK_FORWARDED",
+        "ERROR",
+        "DOCUMENT_UPLOADED",
+        "DOCUMENT_SIGNED",
+        "DOCUMENT_VIEWED",
+        "DOCUMENT_SIGN_CANCELLED",
+        "DOCUMENT_DELETED",
+        "USER_AUTHENTICATED",
+        "USER_AUTHENTICATION_CANCELLED",
+        "PACKAGING_TASK_CREATED",
+        "PACKAGING_TASK_COMPLETED",
+        "PACKAGING_TASK_FAILED",
+        "INTERNAL"
+      ]
+    },
+    "eventTime": {
+      "type": "string",
+      "description": "The time of the event. The pattern will be \"yyyy-MM-dd'T'HH:mm:ssZ\".",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "string",
+      "description": "Some event types define additional data to give more detail about the event that occurred"
+    }
+  }
+}

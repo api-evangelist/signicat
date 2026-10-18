@@ -1,0 +1,13 @@
+overlay: 1.0.0
+info:
+  title: 'API Evangelist overlay for ID Document and Biometric Verification: Assure API'
+  version: 1.0.0
+extends: ../openapi/_original/signicat-id-document-and-biometric-verification-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-id-document-and-biometric-verification-openapi.yml
+actions:
+- target: $.info
+  description: No enhancements needed beyond provenance marker.
+  update:
+    x-apievangelist-reviewed: '2026-10-18'

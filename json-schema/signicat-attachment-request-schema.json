@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-attachment-request-schema.json",
+  "title": "AttachmentRequest",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-express-openapi.yml#/components/schemas/AttachmentRequest",
+  "required": [
+    "data",
+    "fileName",
+    "title"
+  ],
+  "type": "object",
+  "properties": {
+    "fileName": {
+      "maxLength": 200,
+      "minLength": 0,
+      "type": "string",
+      "description": "Filename with file extension. <span style=\"color:red;\">We only support PDF for attachments, set `convertToPdf` to `true` if you have a convertible file type.</span>"
+    },
+    "title": {
+      "maxLength": 300,
+      "minLength": 0,
+      "type": "string",
+      "description": "The title of the attachment which will be presented to the user."
+    },
+    "data": {
+      "minLength": 1,
+      "type": "string",
+      "description": "Base64-encoded attachment (UTF-8-encoded)"
+    },
+    "convertToPdf": {
+      "type": "boolean",
+      "description": "Determines if the attachment should be converted to PDF. See our documentation for supported file types."
+    },
+    "signers": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "description": "An optional list of signers that should be able to see / sign the attachment."
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "An optional description of the attachment."
+    },
+    "type": {
+      "$ref": "#/$defs/AttachmentType"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AttachmentType": {
+      "enum": [
+        "show_accept",
+        "read_accept",
+        "sign"
+      ],
+      "type": "string"
+    }
+  }
+}

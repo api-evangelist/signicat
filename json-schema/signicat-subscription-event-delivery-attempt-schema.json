@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-subscription-event-delivery-attempt-schema.json",
+  "title": "SubscriptionEventDeliveryAttempt",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-events-openapi.yml#/components/schemas/SubscriptionEventDeliveryAttempt",
+  "required": [
+    "subscriptionId",
+    "subscriptionName",
+    "subscriptionType"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Unique ID for this delivery attempt"
+    },
+    "timestamp": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the delivery was attempted",
+      "format": "date-time"
+    },
+    "success": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Whether the delivery was successful"
+    },
+    "event": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Event"
+        }
+      ],
+      "description": "The raw event data being delivered",
+      "nullable": true
+    },
+    "attempt": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "How many attempts to deliver the event prior to this attempt",
+      "format": "int32"
+    },
+    "properties": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "nullable": true
+      },
+      "description": "Additional properties depending upon the subscription type and error"
+    },
+    "errorMessage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The error message for the delivery attempt, if any"
+    },
+    "subscriptionId": {
+      "type": "string",
+      "description": "ID of the subscription the event was delivered to"
+    },
+    "subscriptionType": {
+      "type": "string",
+      "description": "Type of the subscription the event was delivered to"
+    },
+    "subscriptionName": {
+      "type": "string",
+      "description": "Name of the subscription the event was delivered to"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Event": {
+      "required": [
+        "accountId",
+        "eventData",
+        "eventName",
+        "expiresAt",
+        "id",
+        "organizationId",
+        "sender",
+        "tags",
+        "timestamp"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of the event"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the event was generated",
+          "format": "date-time"
+        },
+        "sender": {
+          "type": "string",
+          "description": "ID of the sending service"
+        },
+        "eventName": {
+          "type": "string",
+          "description": "Name of the event, unique per sender"
+        },
+        "eventData": {
+          "description": "Arbitrary event data"
+        },
+        "accountId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The target Account ID"
+        },
+        "organizationId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The target Organization ID"
+        },
+        "expiresAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The event's expiration tim",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "The event's tags"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The event data"
+    }
+  }
+}

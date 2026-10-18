@@ -1,0 +1,945 @@
+openapi: 3.2.0
+info:
+  title: Signicat Signing sessions API
+  version: 1.5.2
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Signing sessions across 2 of this provider''s published API definitions: sign-openapi.json, signicat-sign-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/sign
+  description: Sign API
+security:
+- bearerAuth: []
+tags:
+- name: Signing sessions
+paths:
+  /signing-sessions:
+    post:
+      operationId: createSigningSession
+      tags:
+      - Signing sessions
+      summary: Create a new signing session
+      description: Creates a new signing session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigningSessions'
+      responses:
+        '201':
+          description: The signing session was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigningSessions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      operationId: listSigningSessions
+      tags:
+      - Signing sessions
+      summary: Retrieve a paginated list of signing sessions
+      description: Returns a paginated list of signing sessions, with optional controls for `offset`, `limit` and `sort`.
+      parameters:
+      - name: offset
+        description: Number of rows to skip before returning results.
+        in: query
+        schema:
+          type: integer
+          default: 0
+          minimum: 0
+          maximum: 100000
+      - name: limit
+        description: Maximum number of rows to return.
+        in: query
+        schema:
+          type: integer
+          default: 100
+          minimum: 1
+          maximum: 1000
+      - name: sort
+        in: query
+        description: Sorting field. Default value is -createdAt. E.g., +dueDate
+        schema:
+          type: array
+          items:
+            type: string
+      - name: createdDateFrom
+        in: query
+        description: Filter signing sessions created on or after this date and time
+        schema:
+          type: string
+        example: '2024-01-01T00:00:00Z'
+      - name: createdDateTo
+        in: query
+        description: Filter signing sessions created on or before this date and time
+        schema:
+          type: string
+        example: '2024-12-31T23:59:59Z'
+      - name: state
+        in: query
+        description: Search field for state. Multiple values allowed. E.g., BLOCKED, READY. See also SessionState enum for possible values.
+        schema:
+          type: array
+          items:
+            type: string
+          example:
+          - READY
+          - BLOCKED
+      - name: dueDateFrom
+        in: query
+        description: Filter signing sessions with due date on or after this date and time
+        schema:
+          type: string
+        example: '2024-06-01T00:00:00Z'
+      - name: dueDateTo
+        in: query
+        description: Filter signing sessions with due date on or before this date and time
+        schema:
+          type: string
+        example: '2024-06-30T23:59:59Z'
+      - name: sessionTitleLike
+        in: query
+        description: Filter signing sessions by title using partial text matching (case-insensitive)
+        schema:
+          type: string
+        example: Contract
+      responses:
+        '200':
+          description: The list of signing sessions was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSigningSessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+  /signing-sessions/{sessionId}:
+    get:
+      operationId: getSigningSession
+      tags:
+      - Signing sessions
+      summary: Retrieve a signing session
+      description: Returns the signing session with the given ID.
+      parameters:
+      - name: sessionId
+        description: The unique ID of the session.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The signing session was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigningSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: The signing session was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Signing session not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      operationId: deleteSigningSession
+      tags:
+      - Signing sessions
+      summary: Delete a signing session
+      description: Deletes the signing session with the given ID.
+      parameters:
+      - name: sessionId
+        description: The unique ID of the session.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: The signing session was successfully deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: The signing session was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Signing session not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      operationId: patchSigningSession
+      tags:
+      - Signing sessions
+      summary: Update an existing signing session
+      description: Updates an existing signing session.
+      parameters:
+      - name: sessionId
+        description: The unique ID of the session.
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigningSessionPatch'
+      responses:
+        '204':
+          description: The signing session was updated successfully
+        '400':
+          description: Invalid request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: The signing session was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+components:
+  schemas:
+    SessionSignature:
+      type: object
+      required:
+      - resultDocumentId
+      - signatureType
+      properties:
+        documentCollectionId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0854
+        resultDocumentId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0855
+        originalDocumentId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0856
+        resultArchiveId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0857
+        signatureType:
+          $ref: '#/components/schemas/ArtifactType'
+    SessionState:
+      type: string
+      enum:
+      - BLOCKED
+      - READY
+      - SIGNED
+      - REJECTED
+    ForwardingFlow:
+      type: string
+      enum:
+      - FORWARD_AND_CONTINUE
+      - NONE
+    SigningSetup:
+      type: object
+      description: What IdPs are available to the end-user and what type of signing flow should take place.
+      properties:
+        vendor:
+          $ref: '#/components/schemas/VendorEnum'
+        identityProviders:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/IdentityProvider'
+          description: The list of identity providers (IdPs) available for the end-user to choose from. If not specified, all configured IdPs on the account will be shown as options.
+        signingFlow:
+          $ref: '#/components/schemas/SigningFlow'
+          description: 'The type of signing flow to be  performed. `AUTHENTICATION_BASED` is a simple flow which  uses authentication evidence as input for displaying information in the PAdES/XAdES.
+
+            '
+        additionalParameters:
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 1000
+          description: 'Additional parameters that modify the authentication flow. Depends on selected IdP. See <a href="https://developer.signicat.com/identity-methods/">developer documentation</a> for details.
+
+            '
+          nullable: true
+        requestedAttributes:
+          type: array
+          items:
+            type: string
+          description: Requested Attributes from IDP (name and idp attributes are default)
+          nullable: true
+          example:
+          - nin
+          - dateOfBirth
+      required:
+      - signingFlow
+      - identityProviders
+    LanguageEnum:
+      type: string
+      enum:
+      - da
+      - de
+      - en
+      - fi
+      - nb
+      - nn
+      - sv
+    ProblemDetail:
+      title: ProblemDetail
+      description: The common error object. Adheres to RFC7807
+      type: object
+      additionalProperties: true
+      readOnly: true
+      required:
+      - type
+      - title
+      - code
+      - detail
+      properties:
+        status:
+          type: integer
+          description: HTTP Status
+          example: 500
+        type:
+          type: string
+          description: An RFC3986 URI reference to the documentation that identifies the problem
+          example: https://developer.signicat.com/errors?code=internal_server_error
+        title:
+          type: string
+          description: A short, human-readable summary of the problem
+          example: Internal server error
+        code:
+          type: string
+          description: A short machine-readable string indicating the error code
+          example: internal_server_error
+        traceId:
+          type: string
+          description: The request identifier
+          example: ffb75ca1385ecb0a362ff9cd029d23de
+        invalidParams:
+          type: array
+          description: Used when handling validation errors. Can report multiple errors in the same call
+          items:
+            $ref: '#/components/schemas/InvalidParamDetail'
+          example:
+          - name: version
+            reason: must be greater than 0
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: An internal server error happened.
+    NotificationMessage:
+      type: object
+      required:
+      - communicationMethod
+      - category
+      properties:
+        category:
+          $ref: '#/components/schemas/NotificationCategory'
+        communicationMethod:
+          $ref: '#/components/schemas/CommunicationMethod'
+        tags:
+          type: array
+          maxItems: 25
+          items:
+            type: string
+            maxLength: 50
+        message:
+          description: Message settings for the notification
+          $ref: '#/components/schemas/NotificationMessageContent'
+    SealPackageType:
+      type: string
+      enum:
+      - XADES_CONTAINER
+    ArtifactType:
+      type: string
+      enum:
+      - XADES
+      - PADES
+    PreAuthentication:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+        identityProviders:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/IdentityProvider'
+          description: The identity providers offered to the signer during pre-authentication.
+    PaginatedSigningSessionResponse:
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: Number of items per page
+          example: 100
+        offset:
+          type: integer
+          description: Page number
+          example: 0
+        count:
+          type: integer
+          description: Number of items in current page
+          example: 100
+        total:
+          type: integer
+          description: Total number of items
+          example: 1000
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SigningSession'
+    Ui:
+      type: object
+      properties:
+        language:
+          description: Specifies the language to be used in the signing UI.
+          $ref: '#/components/schemas/LanguageEnum'
+        hideWelcomeScreen:
+          type: boolean
+          description: Hides the welcome dialog in the signing UI
+        minimalTextMode:
+          type: boolean
+          description: Enables a minimal UI mode for a single and short text/plain document
+    SigningSessionPatch:
+      type: object
+      properties:
+        dueDate:
+          type: string
+          format: date-time
+          example: '2025-12-31T23:59:59Z'
+    SessionLifecycle:
+      type: object
+      description: Contains session lifecycle metadata.
+      readOnly: true
+      properties:
+        state:
+          $ref: '#/components/schemas/SessionState'
+        stateIsFinal:
+          type: boolean
+        rejectReason:
+          type: string
+          nullable: true
+          maxLength: 1024
+    NotificationMessageContent:
+      type: object
+      required:
+      - text
+      properties:
+        language:
+          description: Specifies the language to be used in the notification
+          $ref: '#/components/schemas/LanguageEnum'
+        header:
+          type: string
+          example: Document ready for signing
+        text:
+          type: string
+          example: A signing session has been created and is ready for your signature.
+        senderAddress:
+          type: string
+        senderName:
+          type: string
+        includeFile:
+          type: boolean
+    Signer:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 6
+          maxLength: 127
+          example: mail@example.org
+        mobile:
+          type: string
+          maxLength: 20
+          example: +47 123 45 678
+        nationalIdentificationNumber:
+          type: string
+          maxLength: 20
+        username:
+          type: string
+          example: username123
+        prefill:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignerPrefillEnum'
+        validations:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/SignerValidationEnum'
+          uniqueItems: true
+    SessionDocument:
+      type: object
+      required:
+      - documentCollectionId
+      - action
+      - documentId
+      properties:
+        documentCollectionId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0853
+          description: The unique ID of the document collection this document belongs to.
+        action:
+          type: string
+          enum:
+          - VIEW
+          - SIGN
+          example: SIGN
+          description: The action the signer is meant to perform on this document.
+        documentId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0857
+          description: The unique ID of the uploaded document.
+    SigningSession:
+      type: object
+      required:
+      - title
+      - documents
+      - signingSetup
+      properties:
+        id:
+          type: string
+          readOnly: true
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0852
+        signatureUrl:
+          type: string
+          readOnly: true
+          example: https://signtest-account.sandbox.signicat.com/sign/?sessionId=8ce3dac2-74b3-429c-adf7-fe6d277186d0
+        signatureUrlTTL:
+          type: integer
+          deprecated: true
+          example: 5
+          description: Deprecated! Use signatureUrlTimeToLive instead. Time-to-live for the signature URL in minutes
+          minimum: 5
+          maximum: 525600
+        signatureUrlTimeToLive:
+          type: string
+          description: Time-to-live for the signature URL. Must be an ISO 8601 duration and a maximum of 45 days.
+          example: PT1M30S
+        signatureUrlExpiresAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2026-01-15T14:05:00Z'
+        title:
+          type: string
+          maxLength: 255
+          example: Rental agreement
+          description: A title for the signing session.
+        signText:
+          type: string
+          maxLength: 2048
+          example: Please sign this document
+          description: Text displayed when starting the signing process. The signer must explicitly consent to this text before signing.
+        dueDate:
+          type: string
+          format: date-time
+          example: '2025-04-01T17:32:28Z'
+          description: The deadline for signing the document(s). Optional; if omitted, defaults to 30 days after session creation. You can explicitly set a deadline up to 45 days into the future.
+        documents:
+          type: array
+          minItems: 1
+          maxItems: 100
+          nullable: false
+          items:
+            $ref: '#/components/schemas/SessionDocument'
+        lifecycle:
+          $ref: '#/components/schemas/SessionLifecycle'
+          readOnly: true
+        output:
+          $ref: '#/components/schemas/SessionOutput'
+        externalReference:
+          type: string
+          maxLength: 1024
+          description: Custom identifier for linking the signing session to your internal process. Passed back in redirect URLs.
+          nullable: true
+        signingSetup:
+          description: The user interaction setups for this signing session describing which IDPs are available for the end-user.
+          type: array
+          items:
+            $ref: '#/components/schemas/SigningSetup'
+          maxItems: 1
+          minItems: 1
+          nullable: false
+        subsequentTo:
+          description: IDs of signing sessions that must be signed before this one.
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+            example: f05d0dce-a7af-432b-b6b8-e455ab7c0858
+        packageTo:
+          description: A list of formats the signing session should be packaged to when signed.
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/PackageType'
+        sealTo:
+          description: A list of formats the signing session should be sealed to when signed.
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/SealPackageType'
+        signer:
+          description: The intended signer of the signing Session.
+          $ref: '#/components/schemas/Signer'
+        archive:
+          description: Defines what objects should be added to archive. To use this functionality you must contact <a target="_blank" rel="noopener noreferrer" href="https://dashboard.signicat.com/contact-us/tickets/new">Signicat Support</a>.
+          $ref: '#/components/schemas/ArchiveSettings'
+        preAuthentication:
+          description: Sets up authentication of the signer before presenting documents.
+          $ref: '#/components/schemas/PreAuthentication'
+        ui:
+          description: Defines UI settings for the signing session.
+          $ref: '#/components/schemas/Ui'
+        intentionText:
+          description: A text indicating the end-user's intention when signing a document. Applicable when using flow PKISIGNING
+          $ref: '#/components/schemas/IntentionText'
+        redirectSettings:
+          description: Defines URLs for redirects.
+          $ref: '#/components/schemas/RedirectSettings'
+        notifications:
+          type: array
+          items:
+            description: Defines SMS and EMAIL notifications.
+            $ref: '#/components/schemas/NotificationMessage'
+        usageTags:
+          type: array
+          maxItems: 25
+          items:
+            type: string
+            maxLength: 50
+          description: A list of tags to emit with events for the sign sessions
+        forwarding:
+          $ref: '#/components/schemas/Forwarding'
+    ArchiveSettings:
+      type: object
+      required:
+      - retentionPeriod
+      properties:
+        sendSignatureResultsToArchive:
+          type: boolean
+          example: true
+        sendPackagingResultToArchive:
+          type: boolean
+          example: true
+        sendSealingResultToArchive:
+          type: boolean
+          description: Whether generated sealing results should be sent to Archive.
+          example: true
+        retentionPeriod:
+          type: string
+          description: How long the archived documents should be stored, in ISO 8601 duration format. Maximum 50 years.
+          example: P1Y
+        archiveTags:
+          type: array
+          maxItems: 25
+          items:
+            type: string
+            maxLength: 50
+          description: A list of tags to associate with the archived document.
+    SignerValidationEnum:
+      type: string
+      enum:
+      - NATIONAL_IDENTIFICATION_NUMBER
+    RedirectSettings:
+      type: object
+      properties:
+        error:
+          type: string
+          format: url
+          maxLength: 2048
+          example: http://example.com/error
+        cancel:
+          type: string
+          format: url
+          maxLength: 2048
+          example: http://example.com/cancel
+        success:
+          type: string
+          format: url
+          maxLength: 2048
+          example: http://example.com/complete
+        reject:
+          type: string
+          format: url
+          maxLength: 2048
+          nullable: true
+          example: http://example.com/reject
+      required:
+      - error
+      - cancel
+      - success
+    SessionPackage:
+      type: object
+      description: Contains session package metadata
+      properties:
+        packageId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        resultDocumentId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        resultArchiveId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        packageType:
+          $ref: '#/components/schemas/PackageType'
+    CommunicationMethod:
+      type: string
+      enum:
+      - SMS
+      - EMAIL
+    IntentionTextFormat:
+      type: string
+      enum:
+      - TEXT
+      - MARKDOWN
+    SigningFlow:
+      type: string
+      enum:
+      - AUTHENTICATION_BASED
+      - PKISIGNING
+    InvalidParamDetail:
+      type: object
+      description: Contains information about how validation failed for a parameter
+      readOnly: true
+      required:
+      - name
+      - reason
+      properties:
+        name:
+          type: string
+          description: The name of the parameter that failed validation
+          example: SigningSession.title
+        reason:
+          type: string
+          description: The reason why the validation failed
+          example: title cannot exceed 255 characters
+    IntentionText:
+      type: object
+      required:
+      - value
+      - format
+      properties:
+        value:
+          type: string
+          maxLength: 1024
+          description: Intention text value to display in the UI
+        format:
+          description: Format of the intention text to display in the UI
+          $ref: '#/components/schemas/IntentionTextFormat'
+    UserInfo:
+      type: object
+      description: The subject attributes of the signer, as described by the IdP.
+      properties:
+        signingTime:
+          type: string
+          example: '2026-01-20T10:30:00Z'
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+        nin:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        extra:
+          type: object
+          additionalProperties:
+            type: string
+    SignerPrefillEnum:
+      type: string
+      enum:
+      - NATIONAL_IDENTIFICATION_NUMBER
+    SessionOutput:
+      type: object
+      readOnly: true
+      properties:
+        signatures:
+          type: array
+          minItems: 1
+          maxItems: 100
+          nullable: true
+          items:
+            $ref: '#/components/schemas/SessionSignature'
+        packages:
+          type: array
+          minItems: 1
+          maxItems: 100
+          nullable: true
+          items:
+            $ref: '#/components/schemas/SessionPackage'
+        userInfo:
+          $ref: '#/components/schemas/UserInfo'
+          nullable: true
+        seals:
+          type: array
+          minItems: 1
+          maxItems: 100
+          nullable: true
+          items:
+            $ref: '#/components/schemas/SessionSeal'
+    VendorEnum:
+      type: string
+      enum:
+      - NBID
+    IdentityProvider:
+      type: object
+      properties:
+        idpName:
+          type: string
+          maxLength: 64
+      required:
+      - idpName
+    SessionSeal:
+      type: object
+      description: Contains session seal metadata
+      properties:
+        sealId:
+          type: string
+          format: uuid
+        resultDocumentId:
+          type: string
+          format: uuid
+        resultArchiveId:
+          type: string
+          format: uuid
+        packageType:
+          $ref: '#/components/schemas/SealPackageType'
+        originalDocumentId:
+          type: string
+          format: uuid
+    Forwarding:
+      type: object
+      properties:
+        flow:
+          $ref: '#/components/schemas/ForwardingFlow'
+        parentSessionId:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+          description: The ID of the session that was forwarded to create this session
+        childSessionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+          description: List of child session IDs created by forwarding this session
+        senderAddress:
+          type: string
+          maxLength: 255
+          description: The email address that the person forwarded to receives email notifications from.
+    PackageType:
+      type: string
+      enum:
+      - PADES_CONTAINER
+    NotificationCategory:
+      type: string
+      enum:
+      - SIGNING_NOTIFICATION
+      - FORWARDING_NOTIFICATION
+    SigningSessions:
+      type: array
+      minItems: 1
+      maxItems: 100
+      nullable: false
+      items:
+        $ref: '#/components/schemas/SigningSession'
+  responses:
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Not Found
+            status: 404
+            code: not_found
+            detail: Not found
+    InternalServerError:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Unexpected error
+            status: 500
+            code: unexpected_error
+            detail: An unexpected error occurred.
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Bad request
+            status: 400
+            code: bad_request
+            detail: The request was malformed.
+  securitySchemes:
+    bearerAuth:
+      description: Access token for protecting the API.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- sign-openapi.json
+- signicat-sign-openapi.yml

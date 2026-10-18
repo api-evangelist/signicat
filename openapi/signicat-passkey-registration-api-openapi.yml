@@ -1,0 +1,549 @@
+openapi: 3.2.0
+info:
+  title: Signicat Passkey registration API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Passkey registration across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: Passkey registration
+  description: 'You can use the **Passkey registration** resource for operations related to registering passkeys for your ReuseID users.
+
+
+    ## Useful information
+
+
+    - A passkey registration operation is identified by its `transactionId`.
+
+    - The `transactionId` can be used for subsequent operations such as to check the state of an ongoing passkey registration or to cancel it.'
+paths:
+  /credentials/passkeys/registrations:
+    post:
+      tags:
+      - Passkey registration
+      summary: Start passkey registration
+      description: 'This operation initiates a passkey registration valid for the given domain, for a ReuseID user.
+
+
+        ### How to add a passkey name and display name
+
+
+        During this operation, we attempt to retrieve the following user attributes from the ReuseID user:
+
+        - `passkeys-name`
+
+        - `passkeys-displayname`
+
+
+        If they do exist, then they are used as the `name` and `displayName` respectively when creating the passkey.
+
+
+        Depending on the passkey provider that the ReuseID user is using, these may be displayed in the overlays to help identify the passkey during registration and authentication operations.
+
+
+        If they do not exist, then the `userId` supplied in the request is used instead when creating the passkey.
+
+
+        **Note**: To add these user attributes to a user, you can use the Update user endpoint.'
+      operationId: addPasskeyRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyRegistrationRequest'
+            example:
+              rpRedirectUri: https://customerdomain.com/final
+              userId: 8710745d-18bd-441d-91f8-44fd040323a9
+              passkey:
+                domain: acme.com
+                name: myPassKeyName
+              operationProperties:
+                sessionTimeout: 30000
+                userVerification: preferred
+              tags:
+              - tag1
+              - tag2
+        required: true
+      responses:
+        '201':
+          description: The request to start passkey registration was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyRegistrationResponse'
+              example:
+                transactionId: e625212d-48c8-4a35-89c5-0e1a7ac348aa
+                accountId: a-sdge-N27GjPSzXO8JLcf8G1AN
+                state: PENDING
+                created: '2025-06-06T09:38:18.359Z'
+                passkey:
+                  name: myPassKeyName
+                  domain: app.signicat.com
+                user:
+                  id: 8710745d-18bd-441d-91f8-44fd040323a9
+                  externalRef: tttt22
+                rpRedirectUri: https://myredirectdomain.com/final
+                idpRedirectUri: https://mycompany.app.signicat.com/passkeys/web/registrations/start?transactionId=1f63b88a-4fed-4018-b80a-04e2cec065bf&messageId=d79dbbff-9e50-448f-92b0-966f6ea4dad5
+                operationProperties:
+                  sessionTimeout: 30000
+                  sessionExpiryTime: '2025-06-06T09:43:18.345863918Z'
+                  userVerification: preferred
+                tags:
+                - Tag 1
+                - Tag 2
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/passkeys/registrations/{transactionId}:
+    get:
+      tags:
+      - Passkey registration
+      summary: Get ongoing passkey registration
+      description: This operation returns the registration response for an ongoing passkey registration.
+      operationId: getPasskeyRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '200':
+          description: Successfully fetched properties of the passkey registration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyRegistrationResponse'
+              examples:
+                Passkey registration PENDING.:
+                  description: Response sample of when a passkey registration is in progress.
+                  value:
+                    transactionId: 6ee33f52-e5e3-4f37-9c7b-7b3c3c40a88d
+                    accountId: a-sdge-N27GjPSzXO8JLcf8G1AN
+                    state: PENDING
+                    created: '2025-06-10T06:06:17.362Z'
+                    passkey:
+                      name: myPassKeyName
+                      domain: app.signicat.com
+                    user:
+                      id: 8710745d-18bd-441d-91f8-44fd040323a9
+                      externalRef: tttt22
+                    rpRedirectUri: https://www.myredirectdomain.com/final
+                    idpRedirectUri: https://mycompany.app.signicat.com/passkeys/web/registrations/start?transactionId=f0fc294e-2eac-4fb4-8f87-c2bc248c3b27&messageId=f2ab2a14-d99a-4fa7-a3f5-eee52f71ad52
+                    operationProperties:
+                      sessionTimeout: 30000
+                      sessionExpiryTime: '2025-06-10T06:11:17.304453737Z'
+                      userVerification: preferred
+                    tags:
+                    - Tag 1
+                    - Tag 2
+                Passkey registration COMPLETED.:
+                  description: Response sample of when a passkey registration has been completed successfully.
+                  value:
+                    transactionId: e2a024de-2997-47ab-890e-d9991223ed64
+                    accountId: a-sdge-N27GjPSzXO8JLcf8G1AN
+                    state: COMPLETED
+                    created: '2025-06-10T06:12:17.447Z'
+                    completed: '2025-06-10T04:12:31.137Z'
+                    passkey:
+                      id: e0c9183f-a890-41fb-b908-df4817b30958
+                      name: myPassKeyName
+                      domain: app.signicat.com
+                      created: '2025-06-10T04:12:31.132Z'
+                      aaGuid: 00000000-0000-0000-0000-000000000000
+                      userVerificationRequested: true
+                      userPresenceRequested: true
+                    user:
+                      id: 8710745d-18bd-441d-91f8-44fd040323a9
+                      externalRef: tttt22
+                    rpRedirectUri: https://www.myredirectdomain.com/final
+                    idpRedirectUri: https://mycompany.app.signicat.com/passkeys/web/registrations/start?transactionId=03c56f4c-4359-4b17-b2b7-3bcf7c1d56f0&messageId=5e94ac2d-680c-49c7-a61b-e880a362a34f
+                    operationProperties:
+                      sessionTimeout: 30000
+                      sessionExpiryTime: '2025-06-10T06:17:17.432078999Z'
+                      userVerification: preferred
+                      userVerificationRequired: true
+                      userPresenceRequired: true
+                    riskAttributes:
+                      userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+                    tags:
+                    - Tag 1
+                    - Tag 2
+                Passkey registration FAILED.:
+                  description: Response sample of when a passkey registration has failed.
+                  value:
+                    transactionId: 76d4230f-1b66-4b26-a9ec-d623f44c0d3a
+                    accountId: a-sdge-N27GjPSzXO8JLcf8G1AN
+                    state: FAILED
+                    errorCode: CANCELLED_BY_SP
+                    errorDescription: Cancelled by SP
+                    created: '2025-06-10T06:22:14.490Z'
+                    passkey:
+                      name: myPassKeyName
+                      domain: app.signicat.com
+                    user:
+                      id: 8710745d-18bd-441d-91f8-44fd040323a9
+                      externalRef: tttt22
+                    rpRedirectUri: https://www.myredirectdomain.com
+                    idpRedirectUri: https://mycompany.app.signicat.com/passkeys/web/registrations/start?transactionId=a0ab4af4-4566-4b40-aa59-d2f6d3e79697&messageId=e3268599-9d57-4d36-9cfb-385432d512d8
+                    operationProperties:
+                      sessionTimeout: 30000
+                      sessionExpiryTime: '2025-06-10T06:27:14.473723280Z'
+                      userVerification: preferred
+                    riskAttributes: {}
+                    tags:
+                    - Tag 1
+                    - Tag 2
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    delete:
+      tags:
+      - Passkey registration
+      summary: Cancel ongoing passkey registration
+      description: This operation cancels an ongoing passkey registration.
+      operationId: cancelPasskeyRegistration
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '204':
+          description: Successfully cancelled the passkey registration request.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: There is no request with the specified transaction ID
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    PasskeyRegOperationPropertiesRequest:
+      type: object
+      properties:
+        sessionTimeout:
+          type: integer
+          format: int64
+          description: 'The duration until the operation times out, given in milliseconds.
+
+
+            **Note**: The maximum and default values vary depending on what is passed for the `userVerification` parameter. This is explained in the table linked below.
+
+
+            **Allowed values**:
+
+            - It cannot be less that the minimum value of `30000` milliseconds.
+
+            - It cannot exceed the maximum value in the [Passkey session timeout values](/apis/reuseid/#section/Common-concepts/Passkey-session-timeout-values) table.
+
+            - If no value is set, then the default in the [Passkey session timeout values](/apis/reuseid/#section/Common-concepts/Passkey-session-timeout-values) table is used.
+
+            '
+        userVerification:
+          type: string
+          description: 'A parameter that determines the passkey user verification.
+
+
+            **Note**: There is no guarantee that the browser handling the authentication uses or acknowledges this parameter.
+
+
+            **Allowed values**:
+
+            - See the [Passkey user verification](/apis/reuseid/#section/Common-concepts/Passkey-user-verification) table.
+
+            - If no value is set, then the default value `preferred` is used.
+
+            '
+        requestedUserAttributes:
+          type: array
+          description: "  The user attributes to return.\n\n  **Allowed values**:\n  - If no value is set, then the user object returned after a successful operation will not include any attributes.\n  - If a non-existent user attribute is set, then this will be silently ignored.\n"
+          items:
+            type: string
+    PasskeysServiceOperationProperties:
+      type: object
+      properties:
+        sessionTimeout:
+          type: integer
+          format: int64
+          description: The duration after which the operation will timeout, given in milliseconds.
+        sessionExpiryTime:
+          type: string
+          description: 'The timestamp when the operation expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        userVerification:
+          type: string
+          description: 'The passkey user verification that was used.
+
+
+            **Note**: There is no guarantee that the browser handling the authentication uses or acknowledges this parameter.
+
+
+            **Possible values**: See the [Passkey user verification](/apis/reuseid/#section/Common-concepts/Passkey-user-verification) table.
+
+            '
+        userVerificationRequired:
+          type: boolean
+          description: A flag that indicates whether a user verification check was carried out during the creation of a passkey.
+        userPresenceRequired:
+          type: boolean
+          description: A flag that indicates whether a user presence check was carried out during the creation of a passkey.
+        requestedUserAttributes:
+          type: array
+          description: 'The user attributes to return.
+
+
+            **Possible values**:
+
+            - If no value is set, then the user object returned after a successful operation will not include any attributes.
+
+            - If a non-existent user attribute is set, then this will be silently ignored.
+
+            '
+          items:
+            type: string
+    RiskAttributes:
+      type: object
+      properties:
+        userAgent:
+          type: string
+          description: The user agent used during the passkey operation
+    PasskeyRegistrationRequest:
+      type: object
+      properties:
+        passkey:
+          $ref: '#/components/schemas/PasskeyRequest'
+          description: An object used to configure the properties of the passkey for the operation.
+        rpRedirectUri:
+          type: string
+          description: Your redirect URI, where the ReuseID user's browser is redirected to after the passkey operation is completed.
+        operationProperties:
+          $ref: '#/components/schemas/PasskeyRegOperationPropertiesRequest'
+          description: An object used to configure the properties of the operation, which determines how it is carried out.
+        tags:
+          type: array
+          description: A parameter that can be used to add tags to the callback events, so that you can filter them.
+          items:
+            type: string
+        userId:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      required:
+      - userId
+    RegPasskey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the passkey, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        name:
+          type: string
+          description: 'The name that the ReuseID user gives the passkey.
+
+
+            **Note**:
+
+            - This is a user-friendly name that helps the ReuseID user to identify their passkey in ReuseID.
+
+            - This is not the same as the `name` derived from the user attributes, shown in the overlays for some passkey providers.
+
+            '
+        domain:
+          type: string
+          description: The domain that the passkey is valid for.
+        created:
+          type: string
+          description: 'The timestamp when the passkey was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        aaGuid:
+          type: string
+          description: The Authenticator Attestation Global Unique Identifier (AAGUID), which uniquely identifies the make and model of a security key or passkey-providing software.
+        userVerificationRequested:
+          type: boolean
+          description: A flag that indicates whether a user verification check was carried out during the creation of a passkey.
+        userPresenceRequested:
+          type: boolean
+          description: A flag that indicates whether a user presence check was carried out during the creation of a passkey.
+    PasskeyRegistrationResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        accountId:
+          type: string
+          description: The ID of the account that carried out the operation.
+          example: a-sdge-Abcdefghijk123456789
+        state:
+          type: string
+          description: 'The state of the operation.
+
+
+            **Possible values**: See the [Operation states](/apis/reuseid/#section/Common-concepts/Operation-states) table.
+
+            '
+          example: PENDING
+        errorCode:
+          type: string
+          description: 'The error code that is given if the operation fails.
+
+
+            **Possible values**: See the [Operation error codes](/apis/reuseid/#section/Common-concepts/Operation-error-codes) table.
+
+            '
+        errorDescription:
+          type: string
+          description: The descriptive error message that is given if the operation fails.
+        created:
+          type: string
+          description: 'The timestamp when the initial response was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        completed:
+          type: string
+          description: 'The timestamp when the operation was completed.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        passkey:
+          $ref: '#/components/schemas/RegPasskey'
+          description: An object that contains information about the passkey for the operation.
+        user:
+          $ref: '#/components/schemas/PasskeyUser'
+          description: An object that contains information about the ReuseID user for the operation.
+        rpRedirectUri:
+          type: string
+          description: The URI where you want the ReuseID user's browser to be redirected after the passkey operation is completed.
+        idpRedirectUri:
+          type: string
+          description: The URI generated by ReuseID, that is used to start the passkey operation in the ReuseID user's browser.
+        operationProperties:
+          $ref: '#/components/schemas/PasskeysServiceOperationProperties'
+          description: An object that contains the configured properties of the operation, which determined how it was carried out.
+        riskAttributes:
+          $ref: '#/components/schemas/RiskAttributes'
+          description: 'An object that contains the risk attributes collected for the device.
+
+            '
+        tags:
+          type: array
+          description: The tags that you added so that the callback events can be filtered.
+          items:
+            type: string
+    PasskeyUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID (`userId`) of the ReuseID user, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        externalRef:
+          type: string
+          description: The identifier generated by you, that points to the `userId` generated by ReuseID.
+          example: Empl10300469
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: An object that contains the user attributes that were added to the ReuseID user, given as key-value pairs.
+          example:
+            firstname: George
+            lastName: Harrison
+    PasskeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The name that the ReuseID user gives the passkey.
+
+
+            **Note**:
+
+            - This is a user-friendly name that helps the ReuseID user to identify their passkey in ReuseID.
+
+            - This is not the same as the `name` derived from the user attributes, shown in the overlays for some passkey providers.
+
+            '
+          example: Passkey for my mail account
+        domain:
+          type: string
+          description: The domain that the passkey is valid for.
+          example: mydomain.acme.com
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-document-collection-schema.json",
+  "title": "DocumentCollection",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-sign-openapi.yml#/components/schemas/DocumentCollection",
+  "type": "object",
+  "required": [
+    "documents"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "readOnly": true,
+      "description": "The unique ID of the document collection."
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "nullable": false,
+      "items": {
+        "$ref": "#/$defs/DocumentReference"
+      }
+    },
+    "packageTo": {
+      "description": "A list of formats the collection should be packaged to when all sessions connected to it are signed.",
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/PackageType"
+      }
+    },
+    "output": {
+      "$ref": "#/$defs/CollectionOutput"
+    },
+    "serialSigning": {
+      "type": "boolean",
+      "description": "Whether to enable serial signing for the document collection."
+    }
+  },
+  "$defs": {
+    "CollectionOutput": {
+      "readOnly": true,
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SessionPackage"
+          }
+        },
+        "serialSigning": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SerialSigningOutput"
+          }
+        }
+      }
+    },
+    "DocumentReference": {
+      "type": "object",
+      "required": [
+        "documentId"
+      ],
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the uploaded document."
+        }
+      }
+    },
+    "PackageType": {
+      "type": "string",
+      "enum": [
+        "PADES_CONTAINER"
+      ]
+    },
+    "SerialSigningOutput": {
+      "type": "object",
+      "description": "Contains metadata of a completed serial signing.",
+      "properties": {
+        "originalDocumentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the original document that was signed."
+        },
+        "archiveResultId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the archived result document."
+        },
+        "resultDocumentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the signed document stored in Docstore."
+        },
+        "numberOfSignatures": {
+          "type": "integer",
+          "description": "The number of signatures added to the document."
+        },
+        "signatureType": {
+          "$ref": "#/$defs/SerialSigningType"
+        }
+      }
+    },
+    "SerialSigningType": {
+      "type": "string",
+      "enum": [
+        "PADES"
+      ],
+      "description": "The serial signing signature format."
+    },
+    "SessionPackage": {
+      "type": "object",
+      "description": "Contains session package metadata",
+      "properties": {
+        "packageId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultArchiveId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "packageType": {
+          "$ref": "#/$defs/PackageType"
+        }
+      }
+    }
+  }
+}

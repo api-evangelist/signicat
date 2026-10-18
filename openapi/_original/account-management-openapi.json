@@ -1,0 +1,4167 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Signicat Account API",
+    "version": "v1",
+    "description": "\n- **Base URL**: `https://api.signicat.com/account-management/`\n- **Documentation**: See the [Accounts](/docs/dashboard/organisation-management/accounts/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Account Management API enables you to manage your Signicat organisations, accounts and company information. You can also retrieve and download invoices.\n\nThis API is part of our management APIs, which allow you to programmatically manage configurations that are typically handled in the Signicat Dashboard.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.",
+    "contact": "",
+    "license": "",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "/account-management"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Provides management endpoints for Accounts."
+    },
+    {
+      "name": "Contact",
+      "description": "Provides management endpoints for contact persons."
+    },
+    {
+      "name": "Invoice"
+    },
+    {
+      "name": "Metadata"
+    },
+    {
+      "name": "Organization",
+      "description": "Provides management endpoints for Organizations."
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "List accounts",
+        "operationId": "list_accounts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max results to return.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Opaque pagination token.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "description": "If true, will only retrieve soft deleted accounts.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AccountListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "createdDate": "",
+                      "lastModifiedDate": "2022-05-11T11:28:59Z",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null,
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "enabled": true,
+                      "isDeleteProtected": false,
+                      "organization": {
+                        "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                        "name": "My Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                      }
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "createdDate": "",
+                      "lastModifiedDate": "",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null,
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "enabled": false,
+                      "isDeleteProtected": false,
+                      "organization": null
+                    }
+                  ],
+                  "next": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AccountListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "createdDate": "",
+                      "lastModifiedDate": "2022-05-11T11:28:59Z",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null,
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "enabled": true,
+                      "isDeleteProtected": false,
+                      "organization": {
+                        "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                        "name": "My Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                      }
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "createdDate": "",
+                      "lastModifiedDate": "",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null,
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "enabled": false,
+                      "isDeleteProtected": false,
+                      "organization": null
+                    }
+                  ],
+                  "next": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Create account",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AccountCreate"
+                  }
+                ]
+              },
+              "example": {
+                "name": "My Account",
+                "organizationId": "o-p-0TgcUq7CylltM7OkwB4t",
+                "isSandbox": false,
+                "region": "EU",
+                "cloud": "GCP"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{accountId}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Retrieve account",
+        "operationId": "retrieve_account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "description": "If true, will allow retrieving an account even if it has been soft deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Update account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AccountWrite"
+                  }
+                ]
+              },
+              "example": {
+                "name": "My Account",
+                "enabled": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Delete account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "permanent",
+            "in": "query",
+            "description": "If true, will delete the account permanently.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/accounts/{accountId}/delete-protection": {
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Set delete protection",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AccountSetDeleteProtection"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/accounts/{accountId}/undelete": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Undelete account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRead"
+                },
+                "example": {
+                  "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                  "name": "My Account",
+                  "createdDate": "",
+                  "lastModifiedDate": "2022-05-11T11:28:59Z",
+                  "isSoftDeleted": null,
+                  "softDeletedAt": null,
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "isSandbox": false,
+                  "region": "EU",
+                  "cloud": "GCP",
+                  "enabled": true,
+                  "isDeleteProtected": false,
+                  "products": [
+                    "auth",
+                    "auth-nbid",
+                    "auth-sbid",
+                    "sign",
+                    "sign-nbid"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "List contacts",
+        "operationId": "list_contacts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max results to return.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Opaque pagination token.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ContactListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "firstName": "Harald",
+                      "middleName": "",
+                      "lastName": "Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "phone": "",
+                      "country": "NO",
+                      "roles": null,
+                      "organization": {
+                        "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                        "name": "My Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                      }
+                    }
+                  ],
+                  "next": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ContactListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "firstName": "Harald",
+                      "middleName": "",
+                      "lastName": "Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "phone": "",
+                      "country": "NO",
+                      "roles": null,
+                      "organization": {
+                        "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                        "name": "My Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                      }
+                    }
+                  ],
+                  "next": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Create contact",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ContactCreate"
+                  }
+                ]
+              },
+              "example": {
+                "organizationId": "o-p-0TgcUq7CylltM7OkwB4t",
+                "firstName": "Harald",
+                "middleName": null,
+                "lastName": "Hårfagre",
+                "email": "harald@hårfagre.no",
+                "mobile": "+4799999999",
+                "phone": null,
+                "country": "NO",
+                "roles": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Retrieve contact",
+        "operationId": "retrieve_contact",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Update contact",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ContactWrite"
+                  }
+                ]
+              },
+              "example": {
+                "organizationId": "o-p-0TgcUq7CylltM7OkwB4t",
+                "firstName": "Harald",
+                "middleName": null,
+                "lastName": "Hårfagre",
+                "email": "harald@hårfagre.no",
+                "mobile": "+4799999999",
+                "phone": null,
+                "country": "NO",
+                "roles": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Update contact",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ContactWrite"
+                  }
+                ]
+              },
+              "example": {
+                "organizationId": "o-p-0TgcUq7CylltM7OkwB4t",
+                "firstName": "Harald",
+                "middleName": null,
+                "lastName": "Hårfagre",
+                "email": "harald@hårfagre.no",
+                "mobile": "+4799999999",
+                "phone": null,
+                "country": "NO",
+                "roles": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactRead"
+                },
+                "example": {
+                  "id": "c-p-5831eMDkMehkgq39L3KK",
+                  "name": "Harald Hårfagre",
+                  "firstName": "Harald",
+                  "middleName": null,
+                  "lastName": "Hårfagre",
+                  "email": "harald@hårfagre.no",
+                  "mobile": "+4799999999",
+                  "phone": null,
+                  "country": "NO",
+                  "organization": {
+                    "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                    "name": "My Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/-p-0TgcUq7CylltM7OkwB4t"
+                  },
+                  "roles": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Delete contact",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "tags": [
+          "Invoice"
+        ],
+        "summary": "List invoices",
+        "description": "The default value of `invoiceDateBefore` is the current time.",
+        "parameters": [
+          {
+            "name": "invoiceDateAfter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "invoiceDateBefore",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvoiceListItem"
+                  }
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvoiceListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices/{invoiceNumber}": {
+      "get": {
+        "tags": [
+          "Invoice"
+        ],
+        "summary": "Retrieve invoice",
+        "parameters": [
+          {
+            "name": "invoiceNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceItem"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices/{invoiceNumber}/pdf": {
+      "get": {
+        "tags": [
+          "Invoice"
+        ],
+        "summary": "Download invoice",
+        "parameters": [
+          {
+            "name": "invoiceNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metadata/countries": {
+      "get": {
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "List countries",
+        "description": "Returns a list of all countries supported by the API.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesResponse"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metadata/check-name-validity": {
+      "get": {
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "Validate name",
+        "description": "Validates the given account or organization name and returns 200 OK if it can be used to create an organization or account, otherwise 400 Bad Request with the error(s)",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NameValidityResult"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NameValidityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations": {
+      "get": {
+        "tags": [
+          "Organization"
+        ],
+        "summary": "List organizations",
+        "operationId": "list_organizations",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Opaque pagination token.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max results to return.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_OrganizationListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                      "name": "My Organization",
+                      "lastModifiedDate": "2022-05-01T03:14:39Z",
+                      "entityId": "999000999",
+                      "entityVatNumber": null,
+                      "entityLegalName": null,
+                      "country": "NO",
+                      "parentOrganization": {
+                        "id": "o-p-avKce97dOKlnAlOw2R55",
+                        "name": "My Parent Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                      },
+                      "url": "https://api.signicat.com/account-management/organizations/o-p-0TgcUq7CylltM7OkwB4t"
+                    },
+                    {
+                      "id": "o-p-avKce97dOKlnAlOw2R55",
+                      "name": "My Parent Organization",
+                      "lastModifiedDate": "",
+                      "entityId": "111999555",
+                      "entityVatNumber": null,
+                      "entityLegalName": null,
+                      "country": "NO",
+                      "parentOrganization": null,
+                      "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                    }
+                  ],
+                  "next": null
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_OrganizationListItem"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                      "name": "My Organization",
+                      "lastModifiedDate": "2022-05-01T03:14:39Z",
+                      "entityId": "999000999",
+                      "entityVatNumber": null,
+                      "entityLegalName": null,
+                      "country": "NO",
+                      "parentOrganization": {
+                        "id": "o-p-avKce97dOKlnAlOw2R55",
+                        "name": "My Parent Organization",
+                        "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                      },
+                      "url": "https://api.signicat.com/account-management/organizations/o-p-0TgcUq7CylltM7OkwB4t"
+                    },
+                    {
+                      "id": "o-p-avKce97dOKlnAlOw2R55",
+                      "name": "My Parent Organization",
+                      "lastModifiedDate": "",
+                      "entityId": "111999555",
+                      "entityVatNumber": null,
+                      "entityLegalName": null,
+                      "country": "NO",
+                      "parentOrganization": null,
+                      "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                    }
+                  ],
+                  "next": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organization"
+        ],
+        "summary": "Create organization",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/OrganizationCreate"
+                  }
+                ]
+              },
+              "example": {
+                "name": "My Organization",
+                "website": "https://myorg.com",
+                "entityId": "999000999",
+                "entityVatNumber": null,
+                "entityLegalName": null,
+                "country": "NO",
+                "billingEmail": "billing@myorg.com",
+                "billingAddress": {
+                  "street": "Signistreet 39",
+                  "postalCode": "5089",
+                  "city": "Bergen",
+                  "region": null,
+                  "country": "NO"
+                },
+                "parentOrganizationId": "o-p-avKce97dOKlnAlOw2R55"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationRead"
+                },
+                "example": {
+                  "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                  "name": "My Organization",
+                  "lastModifiedDate": "2022-05-01T03:14:39Z",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "parentOrganization": {
+                    "id": "o-p-avKce97dOKlnAlOw2R55",
+                    "name": "My Parent Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                  },
+                  "childOrganizations": [],
+                  "billingContact": {
+                    "id": "c-p-5831eMDkMehkgq39L3KK",
+                    "name": "Harald Hårfagre",
+                    "email": "harald@hårfagre.no",
+                    "mobile": "+4799999999",
+                    "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                    "roles": null
+                  },
+                  "accounts": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "enabled": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "enabled": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    }
+                  ],
+                  "contacts": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "roles": null
+                    }
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationRead"
+                },
+                "example": {
+                  "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                  "name": "My Organization",
+                  "lastModifiedDate": "2022-05-01T03:14:39Z",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "parentOrganization": {
+                    "id": "o-p-avKce97dOKlnAlOw2R55",
+                    "name": "My Parent Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                  },
+                  "childOrganizations": [],
+                  "billingContact": {
+                    "id": "c-p-5831eMDkMehkgq39L3KK",
+                    "name": "Harald Hårfagre",
+                    "email": "harald@hårfagre.no",
+                    "mobile": "+4799999999",
+                    "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                    "roles": null
+                  },
+                  "accounts": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "enabled": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "enabled": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    }
+                  ],
+                  "contacts": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "roles": null
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organizationId}": {
+      "get": {
+        "tags": [
+          "Organization"
+        ],
+        "summary": "Retrieve organization",
+        "operationId": "retrieve_organization",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deletedAccounts",
+            "in": "query",
+            "description": "If true, the resulting `accounts` property will include currently soft-deleted accounts",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationRead"
+                },
+                "example": {
+                  "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                  "name": "My Organization",
+                  "lastModifiedDate": "2022-05-01T03:14:39Z",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "parentOrganization": {
+                    "id": "o-p-avKce97dOKlnAlOw2R55",
+                    "name": "My Parent Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                  },
+                  "childOrganizations": [],
+                  "billingContact": {
+                    "id": "c-p-5831eMDkMehkgq39L3KK",
+                    "name": "Harald Hårfagre",
+                    "email": "harald@hårfagre.no",
+                    "mobile": "+4799999999",
+                    "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                    "roles": null
+                  },
+                  "accounts": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "enabled": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "enabled": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    }
+                  ],
+                  "contacts": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "roles": null
+                    }
+                  ]
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationRead"
+                },
+                "example": {
+                  "id": "o-p-0TgcUq7CylltM7OkwB4t",
+                  "name": "My Organization",
+                  "lastModifiedDate": "2022-05-01T03:14:39Z",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "parentOrganization": {
+                    "id": "o-p-avKce97dOKlnAlOw2R55",
+                    "name": "My Parent Organization",
+                    "url": "https://api.signicat.com/account-management/organizations/o-p-avKce97dOKlnAlOw2R55"
+                  },
+                  "childOrganizations": [],
+                  "billingContact": {
+                    "id": "c-p-5831eMDkMehkgq39L3KK",
+                    "name": "Harald Hårfagre",
+                    "email": "harald@hårfagre.no",
+                    "mobile": "+4799999999",
+                    "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                    "roles": null
+                  },
+                  "accounts": [
+                    {
+                      "id": "a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "name": "My Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh",
+                      "isSandbox": false,
+                      "enabled": true,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    },
+                    {
+                      "id": "a-spge-PmN5cDIdq0cz93ZUS276",
+                      "name": "My Sandbox Account",
+                      "url": "https://api.signicat.com/account-management/accounts/a-spge-PmN5cDIdq0cz93ZUS276",
+                      "isSandbox": true,
+                      "enabled": false,
+                      "region": "EU",
+                      "cloud": "GCP",
+                      "isSoftDeleted": null,
+                      "softDeletedAt": null
+                    }
+                  ],
+                  "contacts": [
+                    {
+                      "id": "c-p-5831eMDkMehkgq39L3KK",
+                      "name": "Harald Hårfagre",
+                      "email": "harald@hårfagre.no",
+                      "mobile": "+4799999999",
+                      "url": "https://api.signicat.com/account-management/contacts/c-p-5831eMDkMehkgq39L3KK",
+                      "roles": null
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Organization"
+        ],
+        "summary": "Update organization",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/OrganizationWrite"
+                  }
+                ]
+              },
+              "example": {
+                "name": "My Organization",
+                "website": "https://myorg.com",
+                "entityId": "999000999",
+                "entityVatNumber": null,
+                "entityLegalName": null,
+                "country": "NO",
+                "billingEmail": "billing@myorg.com",
+                "billingAddress": {
+                  "street": "Signistreet 39",
+                  "postalCode": "5089",
+                  "city": "Bergen",
+                  "region": null,
+                  "country": "NO"
+                },
+                "billingContactId": "c-p-5831eMDkMehkgq39L3KK"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationWrite"
+                },
+                "example": {
+                  "name": "My Organization",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "billingContactId": "c-p-5831eMDkMehkgq39L3KK"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationWrite"
+                },
+                "example": {
+                  "name": "My Organization",
+                  "website": "https://myorg.com",
+                  "entityId": "999000999",
+                  "entityVatNumber": null,
+                  "entityLegalName": null,
+                  "country": "NO",
+                  "billingEmail": "billing@myorg.com",
+                  "billingAddress": {
+                    "street": "Signistreet 39",
+                    "postalCode": "5089",
+                    "city": "Bergen",
+                    "region": null,
+                    "country": "NO"
+                  },
+                  "billingContactId": "c-p-5831eMDkMehkgq39L3KK"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Organization"
+        ],
+        "summary": "Delete organization",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountChildListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of account",
+            "example": "a-ppge-ovC1eMDgt0hkgqZUSaPh"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name",
+            "example": "My Account"
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Account object",
+            "example": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh"
+          },
+          "isSandbox": {
+            "type": "boolean",
+            "description": "Whether the account is a sandbox account",
+            "nullable": true,
+            "example": "false"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the account is enabled",
+            "example": "true"
+          },
+          "region": {
+            "type": "string",
+            "description": "Which region the account belongs to",
+            "example": "EU"
+          },
+          "cloud": {
+            "type": "string",
+            "description": "Which cloud the account belongs to",
+            "example": "GCP"
+          },
+          "isSoftDeleted": {
+            "type": "boolean",
+            "description": "If true, the account has been soft deleted and will soon be permanently deleted.",
+            "nullable": true,
+            "example": "`null`"
+          },
+          "softDeletedAt": {
+            "type": "string",
+            "description": "Timestamp of when account was soft deleted.",
+            "nullable": true,
+            "example": "null"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Account of an organization."
+      },
+      "AccountCreate": {
+        "required": [
+          "cloud",
+          "isSandbox",
+          "name",
+          "organizationId",
+          "region"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name",
+            "example": "My Account"
+          },
+          "organizationId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Organization ID to place the account under",
+            "example": "o-p-0TgcUq7CylltM7OkwB4t"
+          },
+          "isSandbox": {
+            "type": "boolean",
+            "description": "Whether the account is a sandbox account",
+            "example": "false"
+          },
+          "region": {
+            "minLength": 1,
+            "pattern": "^EU$",
+            "type": "string",
+            "description": "Which region the account belongs to",
+            "example": "EU"
+          },
+          "cloud": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Which cloud the account belongs to",
+            "example": "GCP"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of account",
+            "example": "a-ppge-ovC1eMDgt0hkgqZUSaPh"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name",
+            "example": "My Account"
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "Timestamp of when account was created.",
+            "example": "2021-04-01T09:14:22Z"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "description": "Timestamp of last account modification.",
+            "example": "2022-05-11T11:28:59Z"
+          },
+          "isSoftDeleted": {
+            "type": "boolean",
+            "description": "If true, the account has been soft deleted and will soon be permanently deleted.",
+            "nullable": true,
+            "example": "`null`"
+          },
+          "softDeletedAt": {
+            "type": "string",
+            "description": "Timestamp of when account was soft deleted.",
+            "nullable": true,
+            "example": "null"
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Account object",
+            "example": "https://api.signicat.com/account-management/accounts/a-ppge-ovC1eMDgt0hkgqZUSaPh"
+          },
+          "isSandbox": {
+            "type": "boolean",
+            "description": "Whether the account is a sandbox account",
+            "nullable": true,
+            "example": "false"
+          },
+          "region": {
+            "type": "string",
+            "description": "Which region the account belongs to",
+            "example": "EU"
+          },
+          "cloud": {
+            "type": "string",
+            "description": "Which cloud the account belongs to",
+            "example": "GCP"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the account is enabled",
+            "example": "true"
+          },
+          "isDeleteProtected": {
+            "type": "boolean",
+            "description": "Whether the account is delete-protected",
+            "example": "true"
+          },
+          "organization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The Organization the account is linked to"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of account",
+            "example": "a-ppge-ovC1eMDgt0hkgqZUSaPh"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name",
+            "example": "My Account"
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "Timestamp of when account was created.",
+            "example": "2021-04-01T09:14:22Z"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "description": "Timestamp of last account modification.",
+            "example": "2022-05-11T11:28:59Z"
+          },
+          "isSoftDeleted": {
+            "type": "boolean",
+            "description": "If true, the account has been soft deleted and will soon be permanently deleted.",
+            "nullable": true,
+            "example": "`null`"
+          },
+          "softDeletedAt": {
+            "type": "string",
+            "description": "Timestamp of when account was soft deleted.",
+            "nullable": true,
+            "example": "null"
+          },
+          "organization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The Organization the account is linked to"
+          },
+          "isSandbox": {
+            "type": "boolean",
+            "description": "Whether the account is a sandbox account",
+            "nullable": true,
+            "example": "false"
+          },
+          "region": {
+            "type": "string",
+            "description": "Which region the account belongs to",
+            "example": "EU"
+          },
+          "cloud": {
+            "type": "string",
+            "description": "Which cloud the account belongs to",
+            "example": "GCP"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the account is enabled",
+            "example": "true"
+          },
+          "isDeleteProtected": {
+            "type": "boolean",
+            "description": "Whether the account is delete-protected",
+            "example": "true"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountSelectorV2": {
+        "required": [
+          "organizations"
+        ],
+        "type": "object",
+        "properties": {
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountSelectorV2Organization"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountSelectorV2Account": {
+        "required": [
+          "cloud",
+          "enabled",
+          "id",
+          "isSandbox",
+          "name",
+          "region",
+          "stack"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "stack": {
+            "type": "string"
+          },
+          "cloud": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "isSandbox": {
+            "type": "boolean"
+          },
+          "isInternal": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountSelectorV2Organization": {
+        "required": [
+          "accounts",
+          "customerStatus",
+          "customerType",
+          "displayName",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerType": {
+            "type": "string"
+          },
+          "customerStatus": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountSelectorV2Account"
+            }
+          },
+          "churnDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isInternal": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountSetDeleteProtection": {
+        "type": "object",
+        "properties": {
+          "isDeleteProtected": {
+            "type": "boolean",
+            "description": "Whether the account is delete-protected",
+            "example": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountTransfer": {
+        "required": [
+          "reason",
+          "sourceOrganization",
+          "targetOrganization"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceOrganization": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "targetOrganization": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 10,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountWrite": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name",
+            "example": "My Account"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the account is enabled",
+            "example": "true"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActivityTrackerAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "isSandbox": {
+            "type": "boolean"
+          },
+          "deletedTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deleteMeThreshold": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastDbUpdate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActivityTrackerOrganization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "parentCrmId": {
+            "type": "string"
+          },
+          "salesforceBillingAccount": {
+            "type": "string",
+            "nullable": true
+          },
+          "deleteMeThreshold": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastDbUpdate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActivityTrackerSalesforceAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "deleteMeThreshold": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastDbUpdate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Street. May be multiline.",
+            "nullable": true
+          },
+          "postalCode": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "Postal Code / Zip Code",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "City",
+            "nullable": true
+          },
+          "region": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "description": "Region / State",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "Country.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactChildListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of contact"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Mobile phone number",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Contact object"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactRole"
+            },
+            "description": "Roles of the contact",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Contact of an organization."
+      },
+      "ContactCreate": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "description": "Organization ID to place the contact under",
+            "nullable": true
+          },
+          "firstName": {
+            "maxLength": 40,
+            "minLength": 1,
+            "type": "string",
+            "description": "First name"
+          },
+          "middleName": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Middle name",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string",
+            "description": "Last name"
+          },
+          "email": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "description": "Email address",
+            "nullable": true
+          },
+          "mobile": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Mobile phone number",
+            "nullable": true
+          },
+          "phone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Phone number",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "Country the contact resides in",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactRole"
+            },
+            "description": "Roles of the contact",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of contact"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Contact object"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "description": "Middle name",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Mobile phone number",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "Country the contact resides in",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactRole"
+            },
+            "description": "Roles of the contact",
+            "nullable": true
+          },
+          "organization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The Organization the contact is linked to"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of contact"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "description": "Middle name",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Mobile phone number",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "Country the contact resides in",
+            "nullable": true
+          },
+          "organization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The Organization the contact is linked to"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactRole"
+            },
+            "description": "Roles of the contact",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactRole": {
+        "enum": [
+          "Other",
+          "CommercialOwner",
+          "MainTechnicalContact",
+          "FinancialContact"
+        ],
+        "type": "string"
+      },
+      "ContactWrite": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "description": "Organization ID to place the contact under",
+            "nullable": true
+          },
+          "firstName": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "First name",
+            "nullable": true
+          },
+          "middleName": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Middle name",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string",
+            "description": "Last name",
+            "nullable": true
+          },
+          "email": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "description": "Email address",
+            "nullable": true
+          },
+          "mobile": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Mobile phone number",
+            "nullable": true
+          },
+          "phone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string",
+            "description": "Phone number",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 0,
+            "type": "string",
+            "description": "Country the contact resides in",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactRole"
+            },
+            "description": "Roles of the contact",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CountriesResponse": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Country"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Country": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the country, in English"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "ISO-3166 alpha-2 country code"
+          },
+          "supportedOrganizationCountry": {
+            "type": "boolean",
+            "description": "Whether this country can be specified as a country in Organization CUD opearations",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InternalOrg": {
+        "required": [
+          "crmId",
+          "crmLink",
+          "dynamicsCalculatedCustomerAccountNumber",
+          "dynamicsCalculatedDataAreaId",
+          "id",
+          "parentCrmId",
+          "parentId",
+          "productCodes",
+          "salesforceAccountNumber",
+          "salesforceBillingAccountId",
+          "salesforceBillingCompanyId",
+          "salesforceBillingDepartmentId",
+          "salesforceEndpointNames",
+          "salesforceIndustry",
+          "salesforceName",
+          "salesforceStatus",
+          "salesforceTerminationDate",
+          "salesforceType",
+          "technicalDeliveries"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "salesforceName": {
+            "type": "string"
+          },
+          "salesforceBillingAccountId": {
+            "type": "string"
+          },
+          "crmId": {
+            "type": "string"
+          },
+          "crmLink": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "parentCrmId": {
+            "type": "string"
+          },
+          "technicalDeliveries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductInfo"
+            }
+          },
+          "salesforceEndpointNames": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceTerminationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "salesforceBillingCompanyId": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceBillingDepartmentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesforceIndustry": {
+            "type": "string",
+            "nullable": true
+          },
+          "dynamicsCalculatedDataAreaId": {
+            "type": "string",
+            "nullable": true
+          },
+          "dynamicsCalculatedCustomerAccountNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceItem": {
+        "required": [
+          "invoiceDate",
+          "invoiceNumber",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "description": "ID of the Organization who was invoiced",
+            "nullable": true
+          },
+          "organizationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "usageOrganizationId": {
+            "type": "string",
+            "description": "ID of the Organization who the usage was registered at",
+            "nullable": true
+          },
+          "usageOrganizationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceNumber": {
+            "type": "string"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "invoiceAddressCountryRegionISOCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressZipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalTaxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoiceAddressStreetNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressStreet": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalChargeAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDiscountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesOrderNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressCity": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceHeaderTaxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoiceAddressState": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressCountryRegionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customersOrderReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalInvoiceAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceCustomerAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sigContractRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "sigDocumentRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "settled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineItem"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceLineItem": {
+        "type": "object",
+        "properties": {
+          "lineTotalDiscountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "lineTotalTaxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "salesUnitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "lineTotalChargeAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoicedQuantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "lineAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "revRecContractStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "revRecContractEndDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sigContractStart": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sigContractEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "itemNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceListItem": {
+        "required": [
+          "invoiceDate",
+          "invoiceNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "description": "ID of the Organization who was invoiced",
+            "nullable": true
+          },
+          "organizationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "usageOrganizationId": {
+            "type": "string",
+            "description": "ID of the Organization who the usage was registered at",
+            "nullable": true
+          },
+          "usageOrganizationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceNumber": {
+            "type": "string"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "invoiceAddressCountryRegionISOCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressZipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalTaxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoiceAddressStreetNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressStreet": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalChargeAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDiscountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesOrderNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressCity": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceHeaderTaxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoiceAddressState": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceAddressCountryRegionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customersOrderReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalInvoiceAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceCustomerAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sigContractRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "sigDocumentRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "settled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceTransferStartResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "complete": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItem"
+            }
+          },
+          "error": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LookupResult": {
+        "required": [
+          "accountId",
+          "organizationId"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "vanillaAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantEnvironment": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketplaceOrgDetails": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "nullable": true
+          },
+          "operatesInCountries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NameValidityResult": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpaAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "parentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "isSandbox": {
+            "type": "boolean"
+          },
+          "region": {
+            "type": "string"
+          },
+          "cloud": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "quotaProducts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isInternal": {
+            "type": "boolean"
+          },
+          "lastDbUpdate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vanillaAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantEnvironment": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpaOrganization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "isInternal": {
+            "type": "boolean"
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "lastDbUpdate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationChildListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of organization"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name"
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Organization object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Suborganization of an organization."
+      },
+      "OrganizationCreate": {
+        "required": [
+          "name",
+          "parentOrganizationId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 3,
+            "type": "string",
+            "description": "Name"
+          },
+          "website": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Home page",
+            "nullable": true
+          },
+          "entityId": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string",
+            "description": "Organization Entity ID / Org.no",
+            "nullable": true
+          },
+          "entityVatNumber": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "VAT Number",
+            "nullable": true
+          },
+          "entityLegalName": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Legal name of the entity / organization",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "Country the organization is registered in",
+            "nullable": true
+          },
+          "billingEmail": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "description": "Billing email",
+            "format": "email",
+            "nullable": true
+          },
+          "billingAddress": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Billing address",
+            "nullable": true
+          },
+          "parentOrganizationId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The parent organization of the organization"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of organization"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "description": "Timestamp of last organization modification."
+          },
+          "entityId": {
+            "type": "string",
+            "description": "Organization Entity ID / Org.no",
+            "nullable": true
+          },
+          "entityVatNumber": {
+            "type": "string",
+            "description": "VAT Number",
+            "nullable": true
+          },
+          "entityLegalName": {
+            "type": "string",
+            "description": "Legal name of the entity / organization",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "Country the organization is registered in",
+            "nullable": true
+          },
+          "parentOrganization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The parent organization",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL to retrieve Organization object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID of organization"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "description": "Timestamp of last organization modification."
+          },
+          "website": {
+            "type": "string",
+            "description": "Home page",
+            "nullable": true
+          },
+          "entityId": {
+            "type": "string",
+            "description": "Organization Entity ID / Org.no",
+            "nullable": true
+          },
+          "entityVatNumber": {
+            "type": "string",
+            "description": "VAT Number",
+            "nullable": true
+          },
+          "entityLegalName": {
+            "type": "string",
+            "description": "Legal name of the entity / organization",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "Country the organization is registered in",
+            "nullable": true
+          },
+          "billingEmail": {
+            "type": "string",
+            "description": "Billing email",
+            "nullable": true
+          },
+          "billingAddress": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Billing address",
+            "nullable": true
+          },
+          "parentOrganization": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrganizationChildListItem"
+              }
+            ],
+            "description": "The parent organization",
+            "nullable": true
+          },
+          "childOrganizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationChildListItem"
+            },
+            "description": "The child organizations"
+          },
+          "billingContact": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ContactChildListItem"
+              }
+            ],
+            "description": "Billing contact person",
+            "nullable": true
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountChildListItem"
+            },
+            "description": "The organization accounts"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactChildListItem"
+            },
+            "description": "The organization contacts"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationWrite": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 3,
+            "type": "string",
+            "description": "Name",
+            "nullable": true
+          },
+          "website": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Home page",
+            "nullable": true
+          },
+          "entityId": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string",
+            "description": "Organization Entity ID / Org.no",
+            "nullable": true
+          },
+          "entityVatNumber": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "VAT Number",
+            "nullable": true
+          },
+          "entityLegalName": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Legal name of the entity / organization",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "Country the organization is registered in",
+            "nullable": true
+          },
+          "billingEmail": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "description": "Billing email",
+            "format": "email",
+            "nullable": true
+          },
+          "billingAddress": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Billing address",
+            "nullable": true
+          },
+          "billingContactId": {
+            "type": "string",
+            "description": "ID of the billing contact person",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Page_AccountListItem": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountListItem"
+            },
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Page_ContactListItem": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactListItem"
+            },
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Page_InvoiceItem": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItem"
+            },
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Page_OrganizationListItem": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationListItem"
+            },
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ProductCodeSource": {
+        "type": "object",
+        "properties": {
+          "sourceType": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceCreatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductInfo": {
+        "required": [
+          "code",
+          "metadata",
+          "productCodeSource"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The actual usage event. Starts with `srn:`, or in special cases `SUBDOMAIN(`"
+          },
+          "productCodeSource": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductCodeSource"
+              }
+            ],
+            "description": "Source of product code. Used for debugging purposes."
+          },
+          "metadata": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductMetadata"
+              }
+            ],
+            "description": "Additional metadata for the product.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductMetadata": {
+        "type": "object",
+        "properties": {
+          "ignoreReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Reasons why this product should be ignored for product check purposes.",
+            "nullable": true
+          },
+          "ySubStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "ySubStartDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "ySubEndDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "yProductName": {
+            "type": "string",
+            "nullable": true
+          },
+          "yProductCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "yProductNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargePlanNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargePlanName": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargeNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargeUnitCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "yChargeSKU": {
+            "type": "string",
+            "nullable": true
+          },
+          "sfProduct2Id": {
+            "type": "string",
+            "nullable": true
+          },
+          "sfProduct2Code": {
+            "type": "string",
+            "nullable": true
+          },
+          "sfProduct2Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "sfSubStartDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "sfSubEndDate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductOverrideItem": {
+        "required": [
+          "entries",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOverrideItemEntry"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductOverrideItemEntry": {
+        "required": [
+          "enabledForProduction",
+          "enabledForSandbox",
+          "product"
+        ],
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "enabledForSandbox": {
+            "type": "boolean"
+          },
+          "enabledForProduction": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SasAccountListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vanillaAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantEnvironment": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SasOrgProductCacheItem": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string"
+          },
+          "productCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codesWithIgnoreReasons": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SasOrganizationListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SasProductOverrideItem": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SasProductOverrideItemEntry"
+            }
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SasProductOverrideItemEntry": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "production": {
+            "type": "boolean"
+          },
+          "sandbox": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StackConfig": {
+        "type": "object",
+        "properties": {
+          "vanillaAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "yellowTenantEnvironment": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "YellowTenantCreateRequest": {
+        "required": [
+          "company",
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "company": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/YellowTenantCreateRequestCompany"
+              }
+            ]
+          },
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/YellowTenantCreateRequestUser"
+              }
+            ]
+          },
+          "isSandbox": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "YellowTenantCreateRequestCompany": {
+        "required": [
+          "email",
+          "name",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "dtpAccountId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "YellowTenantCreateRequestUser": {
+        "required": [
+          "email",
+          "name",
+          "phoneNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "phoneNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

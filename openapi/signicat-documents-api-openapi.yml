@@ -1,0 +1,2445 @@
+openapi: 3.2.0
+info:
+  title: Signicat Documents API
+  contact: ''
+  license: ''
+  termsOfService: ''
+  version: '1.0'
+  description: 'Operations tagged Documents across 4 of this provider''s published API definitions: sign-openapi.json, signing-express-openapi.json, signicat-sign-openapi.yml, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/sign
+  description: Sign API
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Documents
+paths:
+  /documents:
+    post:
+      summary: Upload a new document
+      description: 'Uploads the document as a binary stream; MIME type is defined by the
+
+        Content-Type header. The response will be the resulting document reference.'
+      tags:
+      - Documents
+      operationId: uploadDocument
+      parameters:
+      - name: Content-Type
+        description: Content type header
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              format: binary
+          text/markdown:
+            schema:
+              type: string
+              format: binary
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Successful upload, returns new document ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDocumentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+  /documents/{documentId}:
+    parameters:
+    - name: documentId
+      description: The unique ID of the document.
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      summary: Retrieve a single document
+      description: Returns the binary contents of the stored document.
+      operationId: getDocument
+      tags:
+      - Documents
+      responses:
+        '200':
+          description: The binary contents of the stored document
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            text/markdown:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Unknown document ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+      - bearerAuth: []
+    delete:
+      summary: Permanently delete a single document and its metadata
+      description: Deletes the document and all associated metadata permanently.
+      operationId: deleteDocument
+      tags:
+      - Documents
+      responses:
+        '204':
+          description: Successful removal of the document
+        '400':
+          description: Empty document ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Unknown document ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Documents
+      summary: Update document
+      description: Include the properties/fields you want to update in your request
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+            example:
+              title: Updated title
+              description: This is an updated description
+              contactDetails:
+                email: test@test.com
+                url: https://signicat.io
+              advanced:
+                tags:
+                - develop
+                - fun_with_documents
+                attachments: 0
+                requiredSignatures: 0
+                getSocialSecurityNumber: false
+                timeToLive:
+                  deadline: '2026-10-17T14:13:00Z'
+                  deleteAfterHours: 1
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+            example:
+              title: Updated title
+              description: This is an updated description
+              contactDetails:
+                email: test@test.com
+                url: https://signicat.io
+              advanced:
+                tags:
+                - develop
+                - fun_with_documents
+                attachments: 0
+                requiredSignatures: 0
+                getSocialSecurityNumber: false
+                timeToLive:
+                  deadline: '2026-10-17T14:13:00Z'
+                  deleteAfterHours: 1
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+            example:
+              title: Updated title
+              description: This is an updated description
+              contactDetails:
+                email: test@test.com
+                url: https://signicat.io
+              advanced:
+                tags:
+                - develop
+                - fun_with_documents
+                attachments: 0
+                requiredSignatures: 0
+                getSocialSecurityNumber: false
+                timeToLive:
+                  deadline: '2026-10-17T14:13:00Z'
+                  deleteAfterHours: 1
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+            example:
+              title: Updated title
+              description: This is an updated description
+              contactDetails:
+                email: test@test.com
+                url: https://signicat.io
+              advanced:
+                tags:
+                - develop
+                - fun_with_documents
+                attachments: 0
+                requiredSignatures: 0
+                getSocialSecurityNumber: false
+                timeToLive:
+                  deadline: '2026-10-17T14:13:00Z'
+                  deleteAfterHours: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDocumentResponse'
+              example:
+                documentId: 94865b6f-2aa9-436d-8b3c-a85e00efd034
+                signers:
+                - id: 3944592c-de6e-491c-be92-58088d6bf27f
+                  ui:
+                    dialogs:
+                      before:
+                        useCheckBox: false
+                        title: Info
+                        message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                    language: EN
+                    styling:
+                      colorTheme: Pink
+                      spinner: Cubes
+                      hideTopBar: false
+                  externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+                  redirectSettings:
+                    redirectMode: donot_redirect
+                  signatureType:
+                    mechanism: pkisignature
+                  order: 0
+                  required: false
+                  getSocialSecurityNumber: false
+                title: Updated title
+                description: This is an updated description
+                externalId: ae7b9ca7-3839-4e0d-a070-9f14bffbbf55
+                dataToSign:
+                  title: Document title
+                  description: Document description
+                  fileName: sample.txt
+                  convertToPDF: false
+                contactDetails:
+                  email: test@test.com
+                  url: https://signicat.io
+                advanced:
+                  tags:
+                  - develop
+                  - fun_with_documents
+                  attachments: 0
+                  requiredSignatures: 0
+                  getSocialSecurityNumber: false
+                  timeToLive:
+                    deadline: '2026-10-17T14:13:00Z'
+                    deleteAfterHours: 1
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateDocumentResponse'
+              example:
+                documentId: 94865b6f-2aa9-436d-8b3c-a85e00efd034
+                signers:
+                - id: 3944592c-de6e-491c-be92-58088d6bf27f
+                  ui:
+                    dialogs:
+                      before:
+                        useCheckBox: false
+                        title: Info
+                        message: Please read the contract on the next pages carefully. Pay some extra attention to paragraph 5.
+                    language: EN
+                    styling:
+                      colorTheme: Pink
+                      spinner: Cubes
+                      hideTopBar: false
+                  externalSignerId: uoiahsd321982983jhrmnec2wsadm32
+                  redirectSettings:
+                    redirectMode: donot_redirect
+                  signatureType:
+                    mechanism: pkisignature
+                  order: 0
+                  required: false
+                  getSocialSecurityNumber: false
+                title: Updated title
+                description: This is an updated description
+                externalId: ae7b9ca7-3839-4e0d-a070-9f14bffbbf55
+                dataToSign:
+                  title: Document title
+                  description: Document description
+                  fileName: sample.txt
+                  convertToPDF: false
+                contactDetails:
+                  email: test@test.com
+                  url: https://signicat.io
+                advanced:
+                  tags:
+                  - develop
+                  - fun_with_documents
+                  attachments: 0
+                  requiredSignatures: 0
+                  getSocialSecurityNumber: false
+                  timeToLive:
+                    deadline: '2026-10-17T14:13:00Z'
+                    deleteAfterHours: 1
+      security:
+      - bearerAuth: []
+      operationId: patchDocumentsByDocumentId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+  /documents/{documentId}/metadata:
+    parameters:
+    - name: documentId
+      description: The unique ID of the document.
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    patch:
+      summary: Store optional descriptive data about a stored document
+      description: Updates the optional metadata fields (filename, title, description) for a stored document.
+      operationId: updateDocumentMetadata
+      tags:
+      - Documents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '200':
+          description: Successful update of optional data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          description: Trying to change read-only fields
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Unknown document ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+      - bearerAuth: []
+    get:
+      summary: Retrieve all information stored about a single document
+      description: Returns all available information about a document except for the document itself.
+      operationId: getDocumentInfo
+      tags:
+      - Documents
+      responses:
+        '200':
+          description: All available information except for the document itself was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Unknown document ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+  /documents/{documentId}/cancel:
+    post:
+      tags:
+      - Documents
+      summary: Cancel document
+      description: Cancel a document, after a document is canceled it cannot be signed. The signer will be presented the reason if they click the sign-url
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: reason
+        in: query
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+      operationId: postDocumentsByDocumentIdCancel
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/status:
+    get:
+      tags:
+      - Documents
+      summary: Retrieve document status
+      description: Get the status of a document
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              example:
+                documentStatus: signed
+                completedPackages:
+                - standard_packaging
+                - pades
+                attachmentPackages: {}
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              example:
+                documentStatus: signed
+                completedPackages:
+                - standard_packaging
+                - pades
+                attachmentPackages: {}
+      operationId: getDocumentsByDocumentIdStatus
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/summary:
+    get:
+      tags:
+      - Documents
+      summary: Retrieve document summary
+      description: Get information about a document
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSummary'
+              example:
+                documentId: dfd65f1c-b73c-46ee-a6b9-0fd5b34ca3cc
+                accountId: 9c6b1eba-1571-4081-8d47-66496acc1134
+                title: House contract
+                description: Sample avenue 42
+                lastUpdated: '2026-10-15T03:13:00Z'
+                deadline: '2026-10-20T14:13:00Z'
+                status:
+                  documentStatus: partialsigned
+                externalId: ipoqj9r8232j54rmno2i3lmfrå2q034frlk
+                documentSignatures:
+                - signerId: 2f7b12b7-9955-463a-a3b3-aac73c4a0465
+                  externalSignerId: oiuhw2n97483hr3w9oiufn2wi3
+                  signatureMethod: no_bankid_netcentric
+                  fullName: Superhero, Awesome
+                  firstName: Awesome
+                  lastName: Superhero
+                  signedTime: '2026-10-16T09:13:00Z'
+                  dateOfBirth: '1984-10-21'
+                  signatureMethodUniqueId: ''
+                  socialSecurityNumber:
+                    value: '21108412345'
+                    countryCode: 'NO'
+                  clientIp: 69.89.31.226
+                  mechanism: pkisignature
+                  personalInfoOrigin: unknown
+                requiredSignatures: 2
+                currentSignatures: 1
+                tags:
+                - departement4
+                attachments:
+                - 008a8aec-35fc-412f-bd3d-d016e31e9858
+                signers:
+                - 2f7b12b7-9955-463a-a3b3-aac73c4a0465
+                - 43ab2190-3501-4260-a646-d6a89174a1dc
+                created: '2026-10-15T03:13:00Z'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSummary'
+              example:
+                documentId: dfd65f1c-b73c-46ee-a6b9-0fd5b34ca3cc
+                accountId: 9c6b1eba-1571-4081-8d47-66496acc1134
+                title: House contract
+                description: Sample avenue 42
+                lastUpdated: '2026-10-15T03:13:00Z'
+                deadline: '2026-10-20T14:13:00Z'
+                status:
+                  documentStatus: partialsigned
+                externalId: ipoqj9r8232j54rmno2i3lmfrå2q034frlk
+                documentSignatures:
+                - signerId: 2f7b12b7-9955-463a-a3b3-aac73c4a0465
+                  externalSignerId: oiuhw2n97483hr3w9oiufn2wi3
+                  signatureMethod: no_bankid_netcentric
+                  fullName: Superhero, Awesome
+                  firstName: Awesome
+                  lastName: Superhero
+                  signedTime: '2026-10-16T09:13:00Z'
+                  dateOfBirth: '1984-10-21'
+                  signatureMethodUniqueId: ''
+                  socialSecurityNumber:
+                    value: '21108412345'
+                    countryCode: 'NO'
+                  clientIp: 69.89.31.226
+                  mechanism: pkisignature
+                  personalInfoOrigin: unknown
+                requiredSignatures: 2
+                currentSignatures: 1
+                tags:
+                - departement4
+                attachments:
+                - 008a8aec-35fc-412f-bd3d-d016e31e9858
+                signers:
+                - 2f7b12b7-9955-463a-a3b3-aac73c4a0465
+                - 43ab2190-3501-4260-a646-d6a89174a1dc
+                created: '2026-10-15T03:13:00Z'
+      operationId: getDocumentsByDocumentIdSummary
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/summary:
+    get:
+      tags:
+      - Documents
+      summary: List document summaries
+      description: Queries your documents using the provided parameters.
+      parameters:
+      - name: ExternalId
+        in: query
+        description: Documents external id
+        schema:
+          maxLength: 500
+          minLength: 0
+          type: string
+      - name: SignerId
+        in: query
+        description: External signer Id
+        schema:
+          type: string
+          format: uuid
+      - name: ExternalSignerId
+        in: query
+        description: External signer Id
+        schema:
+          maxLength: 500
+          minLength: 0
+          type: string
+      - name: FromDate
+        in: query
+        description: Documents created from date
+        schema:
+          type: string
+          format: date-time
+      - name: ToDate
+        in: query
+        description: Documents created to date
+        schema:
+          type: string
+          format: date-time
+      - name: LastUpdated
+        in: query
+        description: Documents updated after this date
+        schema:
+          type: string
+          format: date-time
+      - name: SignedDate
+        in: query
+        description: Documents signed after this date
+        schema:
+          type: string
+          format: date-time
+      - name: NameOfSigner
+        in: query
+        description: Name of one of the signers
+        schema:
+          maxLength: 500
+          minLength: 0
+          type: string
+      - name: Title
+        in: query
+        description: Filter by specific document title
+        schema:
+          maxLength: 500
+          minLength: 0
+          type: string
+      - name: Status
+        in: query
+        description: Filter by specific document status
+        schema:
+          $ref: '#/components/schemas/DocumentStatus'
+      - name: Tags
+        in: query
+        description: Filter by tags (comma separated list)
+        schema:
+          maxLength: 500
+          minLength: 0
+          type: string
+      - name: Offset
+        in: query
+        description: Used for paging (will be automatically set in response links)
+        schema:
+          type: integer
+          format: int32
+      - name: Limit
+        in: query
+        description: Set how many results you want per page (max/default 100)
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSummaryCollectionWithPaging'
+              example:
+                offset: 0
+                limit: 2
+                size: 45
+                links:
+                  next: https://api.idfy.io/signature/documents/summary?limit=2&offset=2
+                  first: https://api.idfy.io/signature/documents/summary?limit=2
+                data:
+                - documentId: 2bd5f034-d128-4626-87f6-2423fc6496af
+                  accountId: 46a9e26f-f7a4-4db5-881f-ab6efe01da59
+                  title: House contract
+                  description: Sample avenue 42
+                  lastUpdated: '2026-10-15T03:13:00Z'
+                  deadline: '2026-10-20T14:13:00Z'
+                  status:
+                    documentStatus: partialsigned
+                  externalId: ipoqj9r8232j54rmno2i3lmfrå2q034frlk
+                  documentSignatures:
+                  - signerId: 77598cb8-da0f-43a0-a6d9-02af958c93da
+                    externalSignerId: oiuhw2n97483hr3w9oiufn2wi3
+                    signatureMethod: no_bankid_netcentric
+                    fullName: Superhero, Awesome
+                    firstName: Awesome
+                    lastName: Superhero
+                    signedTime: '2026-10-16T09:13:00Z'
+                    dateOfBirth: '1984-10-21'
+                    signatureMethodUniqueId: ''
+                    socialSecurityNumber:
+                      value: '21108412345'
+                      countryCode: 'NO'
+                    clientIp: 69.89.31.226
+                    mechanism: pkisignature
+                    personalInfoOrigin: unknown
+                  requiredSignatures: 2
+                  currentSignatures: 1
+                  tags:
+                  - departement4
+                  attachments:
+                  - 81e15414-1849-4441-91dc-d7728fb9c792
+                  signers:
+                  - 77598cb8-da0f-43a0-a6d9-02af958c93da
+                  - 5b8ef73f-9632-441f-9ba1-2c69588974ee
+                  created: '2026-10-15T03:13:00Z'
+                - documentId: cec8e352-6317-4c72-8091-b6ec01024895
+                  accountId: e06028fc-aff7-48d2-a7c8-0818b80af876
+                  title: House contract
+                  description: Sample avenue 51
+                  lastUpdated: '2026-10-15T03:13:00Z'
+                  deadline: '2026-10-20T14:13:00Z'
+                  status:
+                    documentStatus: unsigned
+                  externalId: 9w87eht3984inf3wo0mf43p0owke
+                  requiredSignatures: 2
+                  currentSignatures: 0
+                  tags:
+                  - departement4
+                  signers:
+                  - bf3ddbe7-45fb-4528-93f4-0d9cd89dd070
+                  - dc086ef9-c342-40a8-92e9-306f75a1d8b7
+                  created: '2026-10-15T03:13:00Z'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSummaryCollectionWithPaging'
+              example:
+                offset: 0
+                limit: 2
+                size: 45
+                links:
+                  next: https://api.idfy.io/signature/documents/summary?limit=2&offset=2
+                  first: https://api.idfy.io/signature/documents/summary?limit=2
+                data:
+                - documentId: 2bd5f034-d128-4626-87f6-2423fc6496af
+                  accountId: 46a9e26f-f7a4-4db5-881f-ab6efe01da59
+                  title: House contract
+                  description: Sample avenue 42
+                  lastUpdated: '2026-10-15T03:13:00Z'
+                  deadline: '2026-10-20T14:13:00Z'
+                  status:
+                    documentStatus: partialsigned
+                  externalId: ipoqj9r8232j54rmno2i3lmfrå2q034frlk
+                  documentSignatures:
+                  - signerId: 77598cb8-da0f-43a0-a6d9-02af958c93da
+                    externalSignerId: oiuhw2n97483hr3w9oiufn2wi3
+                    signatureMethod: no_bankid_netcentric
+                    fullName: Superhero, Awesome
+                    firstName: Awesome
+                    lastName: Superhero
+                    signedTime: '2026-10-16T09:13:00Z'
+                    dateOfBirth: '1984-10-21'
+                    signatureMethodUniqueId: ''
+                    socialSecurityNumber:
+                      value: '21108412345'
+                      countryCode: 'NO'
+                    clientIp: 69.89.31.226
+                    mechanism: pkisignature
+                    personalInfoOrigin: unknown
+                  requiredSignatures: 2
+                  currentSignatures: 1
+                  tags:
+                  - departement4
+                  attachments:
+                  - 81e15414-1849-4441-91dc-d7728fb9c792
+                  signers:
+                  - 77598cb8-da0f-43a0-a6d9-02af958c93da
+                  - 5b8ef73f-9632-441f-9ba1-2c69588974ee
+                  created: '2026-10-15T03:13:00Z'
+                - documentId: cec8e352-6317-4c72-8091-b6ec01024895
+                  accountId: e06028fc-aff7-48d2-a7c8-0818b80af876
+                  title: House contract
+                  description: Sample avenue 51
+                  lastUpdated: '2026-10-15T03:13:00Z'
+                  deadline: '2026-10-20T14:13:00Z'
+                  status:
+                    documentStatus: unsigned
+                  externalId: 9w87eht3984inf3wo0mf43p0owke
+                  requiredSignatures: 2
+                  currentSignatures: 0
+                  tags:
+                  - departement4
+                  signers:
+                  - bf3ddbe7-45fb-4528-93f4-0d9cd89dd070
+                  - dc086ef9-c342-40a8-92e9-306f75a1d8b7
+                  created: '2026-10-15T03:13:00Z'
+      operationId: getDocumentsSummary
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    DocumentHash:
+      type: object
+      readOnly: true
+      properties:
+        hash:
+          type: string
+        hashAlgorithm:
+          $ref: '#/components/schemas/HashAlgorithmEnum'
+    PostDocumentResponse:
+      type: object
+      properties:
+        mimeType:
+          type: string
+          readOnly: true
+          description: The MIME type of the uploaded document. Supported types are text/plain, text/markdown and application/pdf.
+          example: application/pdf
+        documentId:
+          type: string
+          readOnly: true
+          description: The unique ID of the uploaded document.
+          example: d1234567-89ab-cdef-0123-456789abcdef
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date and time when the document was uploaded.
+          example: '2023-04-12T10:30:00Z'
+        documentHash:
+          readOnly: true
+          description: The calculated hash of the document. This contains the following two items.
+          $ref: '#/components/schemas/DocumentHash'
+    InvalidParamDetail:
+      type: object
+      description: Contains information about how validation failed for a parameter
+      readOnly: true
+      required:
+      - name
+      - reason
+      properties:
+        name:
+          type: string
+          description: The name of the parameter that failed validation
+          example: SigningSession.title
+        reason:
+          type: string
+          description: The reason why the validation failed
+          example: title cannot exceed 255 characters
+    Document:
+      type: object
+      properties:
+        mimeType:
+          type: string
+          readOnly: true
+          example: application/pdf
+        documentId:
+          type: string
+          readOnly: true
+          example: d1234567-89ab-cdef-0123-456789abcdef
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2023-04-12T10:30:00Z'
+        documentHash:
+          readOnly: true
+          $ref: '#/components/schemas/DocumentHash'
+        filename:
+          type: string
+          maxLength: 255
+          description: A name to use if the document is to be stored as a file. Optional metadata about the stored document which the customer can supply.
+          example: invoice_001.pdf
+        description:
+          type: string
+          maxLength: 1000
+          description: A description of the document for display purposes. Optional metadata about the stored document which the customer can supply.
+          example: 'Invoice for order #001'
+        title:
+          type: string
+          maxLength: 255
+          description: A title of the document for display purposes. Optional metadata about the stored document which the customer can supply.
+          example: 'Invoice #001'
+    ProblemDetail:
+      title: ProblemDetail
+      description: The common error object. Adheres to RFC7807
+      type: object
+      additionalProperties: true
+      readOnly: true
+      required:
+      - type
+      - title
+      - code
+      - detail
+      properties:
+        status:
+          type: integer
+          description: HTTP Status
+          example: 500
+        type:
+          type: string
+          description: An RFC3986 URI reference to the documentation that identifies the problem
+          example: https://developer.signicat.com/errors?code=internal_server_error
+        title:
+          type: string
+          description: A short, human-readable summary of the problem
+          example: Internal server error
+        code:
+          type: string
+          description: A short machine-readable string indicating the error code
+          example: internal_server_error
+        traceId:
+          type: string
+          description: The request identifier
+          example: ffb75ca1385ecb0a362ff9cd029d23de
+        invalidParams:
+          type: array
+          description: Used when handling validation errors. Can report multiple errors in the same call
+          items:
+            $ref: '#/components/schemas/InvalidParamDetail'
+          example:
+          - name: version
+            reason: must be greater than 0
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: An internal server error happened.
+    HashAlgorithmEnum:
+      type: string
+      readOnly: true
+      enum:
+      - SHA256
+      example: SHA256
+    UIResponse:
+      type: object
+      properties:
+        dialogs:
+          $ref: '#/components/schemas/DialogsResponse'
+        language:
+          $ref: '#/components/schemas/Language'
+        styling:
+          $ref: '#/components/schemas/Styling'
+      additionalProperties: false
+    Language:
+      enum:
+      - EN
+      - 'NO'
+      - DA
+      - SV
+      - FI
+      - NL
+      - DE
+      type: string
+    Dialogs:
+      type: object
+      properties:
+        before:
+          $ref: '#/components/schemas/DialogBefore'
+        after:
+          $ref: '#/components/schemas/DialogAfter'
+      additionalProperties: false
+      description: Dialogs that will be prestented to the signer in the signature process.
+    AddonSignerRequest:
+      type: object
+      properties:
+        types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignerAddon'
+          description: A list of the addons you want to order, see documentation for more information. Additional cost will incur
+      additionalProperties: false
+    Link:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+        rel:
+          type:
+          - string
+          - 'null'
+        contentType:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - string
+          - 'null'
+        resourceStatus:
+          $ref: '#/components/schemas/ResourceStatus'
+      additionalProperties: false
+    SignRequest:
+      type: object
+      properties:
+        includeOriginalFile:
+          type: boolean
+          description: Determines if you want to include the unsigned main document as an attachment to the email notification.
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications reminding the signers that they have received a new document to sign.
+    AuthMechanism:
+      enum:
+      - 'off'
+      - eid
+      - smsOtp
+      - eidAndSmsOtp
+      type: string
+    Notifications:
+      type: object
+      properties:
+        setup:
+          type:
+          - object
+          - 'null'
+          properties:
+            request:
+              $ref: '#/components/schemas/NotificationSetting'
+            reminder:
+              $ref: '#/components/schemas/NotificationSetting'
+            signatureReceipt:
+              $ref: '#/components/schemas/NotificationSetting'
+            finalReceipt:
+              $ref: '#/components/schemas/NotificationSetting'
+            canceled:
+              $ref: '#/components/schemas/NotificationSetting'
+            expired:
+              $ref: '#/components/schemas/NotificationSetting'
+          additionalProperties: false
+          description: Notification setup for the signer. All notifications defaults to `"off"`.
+        mergeFields:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: "If you create your own notifications texts (See the root object -> Notification), you can create your own merge fields with your own keys. \nYou can then specify the text you want to insert in these fields per signer in this dictionary. Set the dictionary key to the same value as the merge field value in your notification text, and the value to the text you want us to merge in."
+      additionalProperties: false
+      description: Email/SMS notification settings for the signer.
+    SignatureType:
+      required:
+      - mechanism
+      type: object
+      properties:
+        signatureMethods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignatureMethod'
+          description: 'A list of signature methods that the signer is allowed to use when signing the document.
+
+            If not specified, all available signature methods for your Idfy account will be displayed to the signer.'
+        mechanism:
+          $ref: '#/components/schemas/Mechanisms'
+      additionalProperties: false
+      description: Settings for the allowed signature methods.
+    DocumentStatus:
+      enum:
+      - unsigned
+      - waiting_for_attachments
+      - partialsigned
+      - signed
+      - canceled
+      - expired
+      type: string
+    SignatureReceipt:
+      type: object
+      properties:
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications as a receipt for a successful signature.
+    DataToSign:
+      type: object
+      properties:
+        title:
+          maxLength: 300
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Document title (Only relevant if Base64Content is specified)
+        description:
+          type:
+          - string
+          - 'null'
+          description: Document description (Only relevant if Base64Content is specified)
+        base64Content:
+          type:
+          - string
+          - 'null'
+          description: 'Base64-encoded string of the document, UTF-8-encoded. This is optional if you have specified advanced.attachments > 0.
+
+            (this field will be null after we retrieve the initial request, to retrieve the data at a later time you should use the files controller)'
+        base64ContentStyleSheet:
+          type:
+          - string
+          - 'null'
+          description: Stylesheet to be included if you are uploading XML.
+        fileName:
+          maxLength: 200
+          minLength: 3
+          type:
+          - string
+          - 'null'
+          description: The document file name. Must include a valid file extension (.pdf, .xml, .txt, .doc, .docx, .rtf, .ott, odt).
+        convertToPDF:
+          type: boolean
+          description: 'Determines if the document should be converted to PDF. Supported formats are word documents, rich text format, and OpenOffice (.doc, .docx, .rtf, .odt, .ott).
+
+            Remark: When using this, the converted document (and not the original) is the one that will be signed.'
+        packaging:
+          $ref: '#/components/schemas/Packaging'
+      additionalProperties: false
+      description: The data that will be signed.
+    DocumentSummaryCollectionWithPaging:
+      type: object
+      properties:
+        offset:
+          type:
+          - integer
+          - 'null'
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type:
+          - integer
+          - 'null'
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/Links'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DocumentSummary'
+      additionalProperties: false
+    SignerExtraInfo:
+      enum:
+      - personLookup
+      type: string
+    SignerAddon:
+      enum:
+      - secureShare
+      type: string
+    DialogBeforeResponse:
+      type: object
+      properties:
+        useCheckBox:
+          type: boolean
+          description: Determines if a the user must confirm that the dialog message has been read before they can continue.
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+    ExtendedDocumentSignature:
+      type: object
+      properties:
+        signerId:
+          type: string
+          description: The signer's unique identifier.
+          format: uuid
+        externalSignerId:
+          type:
+          - string
+          - 'null'
+          description: Your reference for the signer.
+        signatureMethod:
+          $ref: '#/components/schemas/SignatureMethod'
+        fullName:
+          type:
+          - string
+          - 'null'
+          description: The signer's full name, retrieved from the signature-method provider.
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: The signer's first name.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: The signer's last name.
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: The signer's middle name.
+        signedTime:
+          type:
+          - string
+          - 'null'
+          description: Time at which the signature was registered (ISO 8601).
+          format: date-time
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The signer's date of birth (yyyy-MM-dd).
+        signatureMethodUniqueId:
+          type:
+          - string
+          - 'null'
+          description: The signature method unique ID.
+        socialSecurityNumber:
+          $ref: '#/components/schemas/SocialSecurityNumber'
+        clientIp:
+          type:
+          - string
+          - 'null'
+          description: The IP address of the signer.
+        mechanism:
+          $ref: '#/components/schemas/Mechanisms'
+        personalInfoOrigin:
+          $ref: '#/components/schemas/PersonalInfoOrigin'
+        organization:
+          $ref: '#/components/schemas/Organization'
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: Additional signature attributes
+      additionalProperties: false
+    CanceledReceipt:
+      type: object
+      properties:
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications when a document has been cancelled and can no longer be signed.
+    TopBarMode:
+      enum:
+      - Default
+      - Visible
+      - OnlyMenu
+      - Hidden
+      type: string
+    Authentication:
+      type: object
+      properties:
+        mechanism:
+          $ref: '#/components/schemas/AuthMechanism'
+        socialSecurityNumber:
+          type:
+          - string
+          - 'null'
+          description: The signer's social security number.
+        signatureMethodUniqueId:
+          type:
+          - string
+          - 'null'
+          description: The signer's unique ID for a signature method (for example the Norwegian BankID PID).
+      additionalProperties: false
+      description: Authentication settings for the signer.
+    Packaging:
+      type: object
+      properties:
+        signaturePackageFormats:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignaturePackageFormat'
+          description: 'A list of signature formats that will be created and made available for download after the document is signed.
+
+            See our documentation for more information about these formats. The native package format is included automatically (i.e. BankID SDO).'
+        padesSettings:
+          $ref: '#/components/schemas/PadesSettings'
+      additionalProperties: false
+      description: Settings for packaging of the signed document.
+    PersonalInfoOrigin:
+      enum:
+      - unknown
+      - eid
+      - userFormInput
+      type: string
+    Email:
+      required:
+      - language
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The email subject.
+        text:
+          type:
+          - string
+          - 'null'
+          description: The email notification body. Plain text and markdown is supported.
+        senderName:
+          type:
+          - string
+          - 'null'
+          description: The name to use as email sender.
+      additionalProperties: false
+    Mobile:
+      type: object
+      properties:
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: The country calling code, e.g. `+47` for a norwegian number. <a href="https://en.wikipedia.org/wiki/List_of_country_calling_codes" target="_blank">Country calling codes on Wikipedia</a>
+        number:
+          type:
+          - string
+          - 'null'
+          description: The mobile number.
+      additionalProperties: false
+      description: The signer's mobile number. Define this if you are using notifications.
+    DialogsResponse:
+      type: object
+      properties:
+        before:
+          $ref: '#/components/schemas/DialogBeforeResponse'
+        after:
+          $ref: '#/components/schemas/DialogAfter'
+      additionalProperties: false
+    Status:
+      type: object
+      properties:
+        documentStatus:
+          $ref: '#/components/schemas/DocumentStatus'
+        completedPackages:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FileFormat'
+          description: A list of all the completed files/packages for the main document.
+        attachmentPackages:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/FileFormat'
+          description: A set of key-value pairs with all the completed packages for the signable attachments, where the key is equal to the attachment's ID.
+      additionalProperties: false
+      description: The status of the document.
+    OrganizationInfo:
+      type: object
+      properties:
+        orgNo:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+        companyName:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+          description: Which company does the signer represent? Can merged into the PadES-frontpage (in PadES setting set)
+        countryCode:
+          maxLength: 10
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: The signer's organization info.
+    NotificationSetting:
+      enum:
+      - 'off'
+      - sendSms
+      - sendEmail
+      - sendBoth
+      type: string
+    AdditionalRecipient:
+      required:
+      - email
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+        email:
+          minLength: 1
+          type: string
+          description: The email address of the recipient
+          format: email
+        customMergeFields:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: If you have custom merge fields in the email texts, the values can be included here
+      additionalProperties: false
+    ExtraInfoSignerRequest:
+      type: object
+      properties:
+        types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignerExtraInfo'
+          description: A list of the extra information you want to order, in production this has to be configured on your account by Signicat. Additional cost may incur.
+      additionalProperties: false
+      description: Settings for extra information to collect about the signer.
+    Notification:
+      type: object
+      properties:
+        signRequest:
+          $ref: '#/components/schemas/SignRequest'
+        reminder:
+          $ref: '#/components/schemas/Reminder'
+        signatureReceipt:
+          $ref: '#/components/schemas/SignatureReceipt'
+        finalReceipt:
+          $ref: '#/components/schemas/FinalReceipt'
+        canceledReceipt:
+          $ref: '#/components/schemas/CanceledReceipt'
+        expiredReceipt:
+          $ref: '#/components/schemas/ExpiredReceipt'
+      additionalProperties: false
+      description: 'Settings for custom notification texts as well as additional email addresses to receive the signed document under finalReceipt. Remark: Also requires you to setup notifications for each signer you want to notify.'
+    SignatureMethod:
+      enum:
+      - no_buypass
+      - se_bankid
+      - dk_nemid
+      - fi_eid
+      - sms_otp
+      - unknown
+      - no_bankid_mobile
+      - no_bankid_netcentric
+      - itsme
+      - idin
+      - digid
+      - eherkenning
+      - mitid
+      - no_bankid_oidc
+      - sk_mobileid
+      - sk_smartid
+      - et_smartcard
+      - no_bankid_csc
+      type: string
+    RedirectSettings:
+      required:
+      - redirectMode
+      type: object
+      properties:
+        redirectMode:
+          $ref: '#/components/schemas/RedirectMode'
+        domain:
+          type:
+          - string
+          - 'null'
+          description: 'The domain your website is hosted on.  <span style="color: red;">Required if you specify one of the iframe redirect modes for the signer.</span>'
+        error:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to if something goes wrong. <span style="color: red;">Required if you use redirect for the signer.</span>'
+        cancel:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to if the signing is cancelled. <span style="color: red;">Required if you use redirect for the signer.</span>'
+        success:
+          type:
+          - string
+          - 'null'
+          description: 'The URL that the signer is redirected to after a successful signing. <span style="color: red;">Required if you use redirect for the signer.</span>'
+      additionalProperties: false
+      description: Settings for redirect.
+    DocumentSummary:
+      type: object
+      properties:
+        documentId:
+          type: string
+          description: Document id
+          format: uuid
+        accountId:
+          type: string
+          description: Account id
+          format: uuid
+        title:
+          type:
+          - string
+          - 'null'
+          description: Document title
+        description:
+          type:
+          - string
+          - 'null'
+          description: Document description
+        lastUpdated:
+          type:
+          - string
+          - 'null'
+          description: When was the document last updated (ISO8601)
+          format: date-time
+        deadline:
+          type:
+          - string
+          - 'null'
+          description: The sign deadline for the document (ISO8601)
+          format: date-time
+        signedDate:
+          type:
+          - string
+          - 'null'
+          description: When was all the signatures processed (ISO8601)
+          format: date-time
+        status:
+          $ref: '#/components/schemas/Status'
+        externalId:
+          type:
+          - string
+          - 'null'
+          description: External document Id (your Id)
+        documentSignatures:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExtendedDocumentSignature'
+          description: All the signatures received on this document
+        requiredSignatures:
+          type: integer
+          description: The number of required signatures on the document
+          format: int32
+        currentSignatures:
+          type: integer
+          description: How many signatures is completed right now
+          format: int32
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Document tags
+        attachments:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: A list of attachment Id's
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: A list of all the signers on the document
+        created:
+          type:
+          - string
+          - 'null'
+          description: When the document was created (ISO 8601)
+          format: date-time
+      additionalProperties: false
+      description: A summary containing core information about a document
+    CreateDocumentRequest:
+      required:
+      - contactDetails
+      - externalId
+      - signers
+      - title
+      type: object
+      properties:
+        title:
+          maxLength: 300
+          minLength: 0
+          type: string
+        signers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignerRequest'
+          description: List of signers for the document.
+        dataToSign:
+          $ref: '#/components/schemas/DataToSign'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        externalId:
+          maxLength: 255
+          minLength: 4
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the document job.
+        notification:
+          $ref: '#/components/schemas/Notification'
+        advanced:
+          $ref: '#/components/schemas/Advanced'
+      additionalProperties: false
+    UpdateDocumentRequest:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        notification:
+          $ref: '#/components/schemas/Notification'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        advanced:
+          $ref: '#/components/schemas/Advanced'
+      additionalProperties: false
+    SignerRequest:
+      required:
+      - externalSignerId
+      - redirectSettings
+      - signatureType
+      type: object
+      properties:
+        externalSignerId:
+          maxLength: 255
+          minLength: 4
+          type: string
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        ui:
+          $ref: '#/components/schemas/UI'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).
+
+            Requires eid with permission to retrieve social security number'
+        verifySocialSecurityNumber:
+          type:
+          - boolean
+          - 'null'
+          description: 'Get and verify social security number for this signer, if there is a mismatch the signature will fail.
+
+            Requirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.
+
+            If the eID does not return a social security number this property will be ignored.'
+      additionalProperties: false
+    RedirectMode:
+      enum:
+      - donot_redirect
+      - redirect
+      - iframe_with_webmessaging
+      - iframe_with_redirect
+      - iframe_with_redirect_and_webmessaging
+      type: string
+    TimeToLive:
+      type: object
+      properties:
+        deadline:
+          type:
+          - string
+          - 'null'
+          description: Time at which the document will expire (ISO 8601). The document can not be signed after this time. Default/maximum 45 days.
+          format: date-time
+        deleteAfterHours:
+          type: integer
+          description: How many hours we will keep the document after it is signed or expired (deadline). The default is 168 hours (7 days), and the maximum is 744 hours (31 days). After this timespan the document and files will be permanently deleted on our side.
+          format: int32
+      additionalProperties: false
+      description: Time-to-live settings for the document.
+    Organization:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        organizationNumber:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 country code.
+      additionalProperties: false
+    Mechanisms:
+      enum:
+      - pkisignature
+      - identification
+      - handwritten
+      - handwritten_with_identification
+      type: string
+    SocialSecurityNumber:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+          description: The social security number.
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: ISO 3166-1 Alfa-2 (2 letters) country code.
+      additionalProperties: false
+      description: The signer's social security number. Will be retrieved only when `getSocialSecurityNumber` is specified when creating the document.
+    PadesSettings:
+      type: object
+      properties:
+        primaryLanguage:
+          $ref: '#/components/schemas/Language'
+        secondaryLanguage:
+          $ref: '#/components/schemas/Language'
+        padesTemplateId:
+          type:
+          - string
+          - 'null'
+          description: The unique ID of PAdES template to use. Can be used if you have previously created your own custom template.
+        includeSsnInPades:
+          type:
+          - boolean
+          - 'null'
+          description: If you set this to true, the signers ssn / national Id will be visible in the pades file, and in the standard_packaging files
+      additionalProperties: false
+      description: PAdES settings that can be defined if the `"pades"` package format is selected.
+    DialogAfter:
+      type: object
+      properties:
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+      description: A dialog that will be presented after the document is signed.
+    SignerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The signer's unique identifier.
+          format: uuid
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL that the signer must use to sign the document.
+        documentSignature:
+          $ref: '#/components/schemas/DocumentSignature'
+        links:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Link'
+          description: HATEOAS extrainfo links retrieved for signer.
+        ui:
+          $ref: '#/components/schemas/UIResponse'
+        externalSignerId:
+          type:
+          - string
+          - 'null'
+          description: Your reference for the signer.
+        redirectSettings:
+          $ref: '#/components/schemas/RedirectSettings'
+        signatureType:
+          $ref: '#/components/schemas/SignatureType'
+        signerInfo:
+          $ref: '#/components/schemas/SignerInfo'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        extraInfo:
+          $ref: '#/components/schemas/ExtraInfoSignerRequest'
+        addons:
+          $ref: '#/components/schemas/AddonSignerRequest'
+        notifications:
+          $ref: '#/components/schemas/Notifications'
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Coming soon.
+        order:
+          type: integer
+          description: Optional order of signing for the signer.
+          format: int32
+        required:
+          type: boolean
+          description: Determines if the signer is required to sign the document before other signers. Any other signers will not be allowed to sign before all required signers have signed the document.
+        signUrlExpires:
+          type:
+          - string
+          - 'null'
+          description: The time at which the signature URL expires (ISO 8601). Specify this if you want a limited time-to-live for the URL. Defaults to the lifetime of the document.
+          format: date-time
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Get social security number for this signer only (The global variable advanced.getSocialSecurityNumber will ovveride this when sat to true).
+
+            Requires eid with permission to retrieve social security number'
+        verifySocialSecurityNumber:
+          type:
+          - boolean
+          - 'null'
+          description: 'Get and verify social security number for this signer, if there is a mismatch the signature will fail.
+
+            Requirements: 1) signerInfo.SocialSecurityNumber must be prefilled, 2) eID with permission to retrieve social security number.
+
+            If the eID does not return a social security number this property will be ignored.'
+      additionalProperties: false
+    FinalReceipt:
+      type: object
+      properties:
+        additionalRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdditionalRecipient'
+          description: The receipt may be sent to persons that are not a signer on this document, by adding a recipient to this list
+        includeSignedFile:
+          type: boolean
+          description: 'Determines if you want to include the signed main document as an attachment to the email notification.
+
+            Not recommended for sensitive documents. If you use the share-addon on a signer this property will be ignored (considered as false).'
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications as a receipt when a document has received all required signatures.
+    SignaturePackageFormat:
+      enum:
+      - pades
+      - native
+      type: string
+    Links:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+        previous:
+          type:
+          - string
+          - 'null'
+        first:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ResourceStatus:
+      enum:
+      - Unknown
+      - NotReady
+      - Success
+      - Error
+      - NotFound
+      - BadInput
+      - ServiceUnavailable
+      - Unauthorized
+      - TimeOut
+      type: string
+    DocumentSignature:
+      type: object
+      properties:
+        signatureMethod:
+          $ref: '#/components/schemas/SignatureMethod'
+        fullName:
+          type:
+          - string
+          - 'null'
+          description: The signer's full name, retrieved from the signature-method provider.
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: The signer's first name.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: The signer's last name.
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: The signer's middle name.
+        signedTime:
+          type:
+          - string
+          - 'null'
+          description: Time at which the signature was registered (ISO 8601).
+          format: date-time
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The signer's date of birth (yyyy-MM-dd).
+        signatureMethodUniqueId:
+          type:
+          - string
+          - 'null'
+          description: The signature method unique ID.
+        socialSecurityNumber:
+          $ref: '#/components/schemas/SocialSecurityNumber'
+        clientIp:
+          type:
+          - string
+          - 'null'
+          description: The IP address of the signer.
+        mechanism:
+          $ref: '#/components/schemas/Mechanisms'
+        personalInfoOrigin:
+          $ref: '#/components/schemas/PersonalInfoOrigin'
+        organization:
+          $ref: '#/components/schemas/Organization'
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: Additional signature attributes
+      additionalProperties: false
+      description: The document signature.
+    ContactDetails:
+      required:
+      - email
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the company.
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the company.
+        email:
+          minLength: 1
+          type: string
+          description: The email address of the company.
+          format: email
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL to the company's website.
+      additionalProperties: false
+      description: The company's contact information.
+    Reminder:
+      required:
+      - chronSchedule
+      type: object
+      properties:
+        chronSchedule:
+          minLength: 1
+          type: string
+          description: 'Defines a cron expression that control the interval of the reminders (Use UTC time). We use Quartz cron expressions, read more about it here: http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html.
+
+            Sorry for the spelling mistake :('
+        firstReminderAfter:
+          type:
+          - string
+          - 'null'
+          description: No reminders will be sent before this date (optional)
+          format: date-time
+        maxReminders:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of reminders to be sent for each signer.
+          format: int32
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications reminding the signers that they have an unsigned document.
+    FileFormat:
+      enum:
+      - unsigned
+      - native
+      - standard_packaging
+      - pades
+      - xades
+      type: string
+    Spinner:
+      enum:
+      - Document
+      - Classic
+      - Cubes
+      - Bounce
+      type: string
+    SignerInfo:
+      type: object
+      properties:
+        firstName:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's first name.
+        lastName:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's last name.
+        email:
+          maxLength: 300
+          type:
+          - string
+          - 'null'
+          description: The signer's email adress. Define this if you are using notifications.
+          format: email
+        socialSecurityNumber:
+          maxLength: 30
+          type:
+          - string
+          - 'null'
+          description: Can be used to verify signer's identity by also setting the signer.VerifySocialSecurityNumber, or to prefill ssn/national Id in some of the eId's.
+        dateOfBirth:
+          maxLength: 10
+          pattern: ^((?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])
+          type:
+          - string
+          - 'null'
+          description: 'Can be used to prefill/autostart some of the eids, must follow this pattern: YYYY-MM-DD'
+        title:
+          maxLength: 200
+          type:
+          - string
+          - 'null'
+          description: Give the signer a title (i.e CTO, Buyer, Customer, Lord..), this title may be merged into the PAdES-frontpage (in PAdES setting set)
+        mobile:
+          $ref: '#/components/schemas/Mobile'
+        organizationInfo:
+          $ref: '#/components/schemas/OrganizationInfo'
+      additionalProperties: false
+      description: Information about the signer.
+    CreateDocumentResponse:
+      type: object
+      properties:
+        documentId:
+          type: string
+          description: The document's unique identifier.
+          format: uuid
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SignerResponse'
+          description: List of signers for the document.
+        status:
+          $ref: '#/components/schemas/Status'
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the document job.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the document job.
+        externalId:
+          type:
+          - string
+          - 'null'
+          description: Your reference to this document.
+        dataToSign:
+          $ref: '#/components/schemas/DataToSign'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        notification:
+          $ref: '#/components/schemas/Notification'
+        advanced:
+          $ref: '#/components/schemas/Advanced'
+      additionalProperties: false
+    Advanced:
+      type: object
+      properties:
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of tags to add to the document. These tags can be used to query for document data and will also be added to all events that are triggered for the document.
+        attachments:
+          type: integer
+          description: 'The number of attachments this document will have. Attachments can be added [here](#operation/Attachment_Create) after the document is created.
+
+            <span style="color: red">If you set this value to 3, you MUST upload 3 attachments before anyone can sign the document.</span>'
+          format: int32
+        requiredSignatures:
+          type: integer
+          description: The number of signatures required before the document can be sealed and marked as completed.
+          format: int32
+        createdByApplication:
+          type:
+          - string
+          - 'null'
+          description: The name of the application that created the document. Used for Idfy statistics.
+        getSocialSecurityNumber:
+          type: boolean
+          description: 'Determines if the social security number of all the signers should be retrieved after a successful signature.
+
+            Requires a certificate with permission to retrieve SSN.'
+        timeToLive:
+          $ref: '#/components/schemas/TimeToLive'
+        departmentId:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The department ID to mark the invoice with.
+      additionalProperties: false
+      description: Optional settings for advanced configuration.
+    DialogBefore:
+      type: object
+      properties:
+        useCheckBox:
+          type: boolean
+          description: Determines if a the user must confirm that the dialog message has been read before they can continue.
+        title:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The title of the dialog.
+        message:
+          maxLength: 2000
+          type:
+          - string
+          - 'null'
+          description: The message body of the dialog.
+      additionalProperties: false
+      description: A dialog that will be presented before the document is signed.
+    UI:
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+        dialogs:
+          $ref: '#/components/schemas/Dialogs'
+        styling:
+          $ref: '#/components/schemas/Styling'
+      additionalProperties: false
+      description: UI settings for the signature process.
+    ThemeMode:
+      enum:
+      - Default
+      - Light
+      - Dark
+      type: string
+    Styling:
+      type: object
+      properties:
+        colorTheme:
+          $ref: '#/components/schemas/Theme'
+        themeMode:
+          $ref: '#/components/schemas/ThemeMode'
+        spinner:
+          $ref: '#/components/schemas/Spinner'
+        topBar:
+          $ref: '#/components/schemas/TopBarMode'
+        backgroundColor:
+          type:
+          - string
+          - 'null'
+          description: Override the application background color (use hexadecimal value)
+      additionalProperties: false
+      description: Customize styling to make the the signature application look perfect in combination with your own application.
+    Theme:
+      enum:
+      - Default
+      - Black
+      - Blue
+      - Cyan
+      - Dark
+      - Lime
+      - Neutral
+      - Pink
+      - Purple
+      - Red
+      - Teal
+      - Indigo
+      - LightBlue
+      - DeepPurple
+      - Green
+      - LightGreen
+      - Yellow
+      - Amber
+      - Orange
+      - DeepOrange
+      - Brown
+      - Gray
+      - BlueGray
+      - OceanGreen
+      - GreenOcean
+      - Idfy
+      - Signicat
+      type: string
+    ExpiredReceipt:
+      type: object
+      properties:
+        email:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Email'
+          description: A list of custom email texts to use for the notification. Default texts will be used if not specified.
+        sms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SMS'
+          description: A list of custom SMS texts to use for the notification. Default texts will be used if not specified.
+      additionalProperties: false
+      description: Email/SMS notifications when a document has expired and can no longer be signed.
+    SMS:
+      required:
+      - language
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+        text:
+          type:
+          - string
+          - 'null'
+          description: The SMS notification text.
+        sender:
+          maxLength: 11
+          type:
+          - string
+          - 'null'
+          description: The name to use as SMS sender.
+      additionalProperties: false
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Bad request
+            status: 400
+            code: bad_request
+            detail: The request was malformed.
+    InternalServerError:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Unexpected error
+            status: 500
+            code: unexpected_error
+            detail: An unexpected error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Not Found
+            status: 404
+            code: not_found
+            detail: Not found
+  securitySchemes:
+    bearerAuth:
+      description: Access token for protecting the API.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- sign-openapi.json
+- signing-express-openapi.json
+- signicat-sign-openapi.yml
+- signicat-signing-express-openapi.yml

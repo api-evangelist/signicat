@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-task-status-info-schema.json",
+  "title": "TaskStatusInfo",
+  "description": "The TaskStatusInfo data type describes the status for a specific task",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/TaskStatusInfo",
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "The unique identifier of the signing order"
+    },
+    "taskId": {
+      "type": "string",
+      "description": "The unique identifier of the task (is omitted if task status is “deleted”)"
+    },
+    "taskStatus": {
+      "type": "string",
+      "description": "The status for this task",
+      "enum": [
+        "CREATED",
+        "COMPLETED",
+        "REJECTED",
+        "EXPIRED",
+        "DELETED"
+      ]
+    },
+    "clientReference": {
+      "type": "string",
+      "description": "The client reference that was registered with this task, if any"
+    },
+    "clientStatus": {
+      "type": "string",
+      "description": "The last client status that was registered on this task, if any"
+    },
+    "documents": {
+      "type": "array",
+      "description": "A list with status info for each of the documents in the task, provided the task status is COMPLETED",
+      "items": {
+        "$ref": "#/$defs/DocumentStatus"
+      }
+    },
+    "rejectReason": {
+      "type": "string",
+      "description": "A reason for rejecting the task, given by the end user"
+    }
+  },
+  "$defs": {
+    "DocumentStatus": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the original document in the signing order"
+        },
+        "originalUri": {
+          "type": "string",
+          "description": "URI for the original document"
+        },
+        "generatedUri": {
+          "type": "string",
+          "description": "URI for the generated document"
+        },
+        "resultUri": {
+          "type": "string",
+          "description": "URI for the result document"
+        },
+        "formOutputParam": {
+          "type": "array",
+          "description": "Form parameters that were either prefilled and/or filled in by the end user",
+          "items": {
+            "$ref": "#/$defs/FormParam"
+          }
+        }
+      },
+      "description": "The DocumentStatus data type describes a document as part of the given task"
+    },
+    "FormParam": {
+      "required": [
+        "name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 0,
+          "type": "string",
+          "description": "The name of the parameter. This must match the name of the parameter in the form template."
+        },
+        "value": {
+          "maxLength": 256,
+          "minLength": 0,
+          "type": "string",
+          "description": "The value of the parameter"
+        }
+      },
+      "description": "The FormParam data type describes a specific parameter in a form"
+    }
+  }
+}

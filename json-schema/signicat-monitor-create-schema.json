@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-monitor-create-schema.json",
+  "title": "MonitorCreate",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-person-openapi.yml#/components/schemas/MonitorCreate",
+  "required": [
+    "name"
+  ],
+  "type": "object",
+  "properties": {
+    "name": {
+      "maxLength": 50,
+      "minLength": 1,
+      "type": "string",
+      "description": "Name of the monitor."
+    },
+    "description": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Description of the monitor."
+    },
+    "sources": {
+      "maxItems": 1,
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "description": "Sources to use for monitoring, defaults to Idfy.Monitor.Person.ApiDtos.Monitor.SourceDto.NationalRegistry"
+    },
+    "allowMock": {
+      "type": "boolean",
+      "deprecated": true
+    },
+    "isMock": {
+      "type": "boolean",
+      "description": "Set the monitor in a mock state, where you generate your own changes.\r\nThis will allow you to add persons for monitoring without having credentials for the targeted population registry.\r\nThis parameter is only meant for testing. You must remove it before switching to production."
+    },
+    "returnBlockDataOnChange": {
+      "type": "boolean",
+      "description": "Person Monitor will send ALL the related data elements together, even if only one of them changes (e.g. first, middle and last names even when last name alone changes) and then send full address element (addressLine, city, zipCode and country, even if only addressLine changes)"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Source": {
+      "enum": [
+        "nationalRegistry",
+        "trapets"
+      ],
+      "type": "string",
+      "description": "What kind of sources to use for monitoring"
+    }
+  }
+}

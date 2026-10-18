@@ -1,0 +1,680 @@
+openapi: 3.2.0
+info:
+  title: Signicat Archive API
+  version: 1.0.0
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Archive across 2 of this provider''s published API definitions: archive-openapi.json, signicat-archive-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /
+  description: ''
+security:
+- JWT: []
+tags:
+- name: Archive
+paths:
+  /archive:
+    get:
+      operationId: api_archive_get
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive.ArchiveObjectsRepresentation'
+        '422':
+          $ref: '#/components/responses/Error422'
+      summary: Retrieves the collection of Archive resources
+      description: Retrieves the collection of Archive resources.
+      parameters:
+      - name: tags
+        in: query
+        description: Comma-separated list of tags
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: createdAtFrom
+        in: query
+        description: "Filter objects created at or after this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: createdAtTo
+        in: query
+        description: "Filter objects created at or before this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: updatedAtFrom
+        in: query
+        description: "Filter objects updated at or after this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: updatedAtTo
+        in: query
+        description: "Filter objects updated at or before this timestamp (inclusive).\n                        Date, for example 2026-01-01\n                        or DateTime ISO 8601, for example 2026-01-01T00:00:00Z."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: fileName
+        in: query
+        description: Archive fileName
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 500
+        style: form
+        explode: false
+        allowReserved: false
+      - name: contentType
+        in: query
+        description: application/pdf
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 255
+        style: form
+        explode: false
+        allowReserved: false
+      - name: state
+        in: query
+        description: Filter by archive object state.
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          enum:
+          - Expired
+          - Deleted
+          - Active
+        style: form
+        explode: false
+        allowReserved: false
+      - name: keywords
+        in: query
+        description: Single keyword
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          maxLength: 500
+        style: form
+        explode: false
+        allowReserved: false
+      - name: sort
+        in: query
+        description: "Sorting expression. Supports multiple fields, comma-separated.\n                        Prefix with '-' for descending order (e.g., -createdAt).\n                        Prefix with '+'('%2B') for ascending order (e.g., %2BcreatedAt)."
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: form
+        explode: false
+        allowReserved: false
+      - name: detailed
+        in: query
+        description: 'Default: false . If true, returns a more detailed representation of each object.'
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: boolean
+        style: form
+        explode: false
+        allowReserved: false
+      - name: page
+        in: query
+        description: Archive page
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: integer
+          minimum: 1
+        style: form
+        explode: false
+        allowReserved: false
+      - name: pageSize
+        in: query
+        description: Archive pageSize
+        required: false
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+        style: form
+        explode: false
+        allowReserved: false
+      deprecated: false
+    post:
+      operationId: api_archive_post
+      tags:
+      - Archive
+      responses:
+        '201':
+          description: Archive resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+          links: {}
+        '400':
+          description: Invalid input
+        '422':
+          description: Unprocessable entity
+      summary: Creates a Archive resource
+      description: Creates a Archive resource.
+      parameters: []
+      requestBody:
+        description: The new Archive resource
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive'
+          application/ld+json:
+            schema:
+              $ref: '#/components/schemas/Archive.jsonld'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Archive'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Archive'
+        required: true
+      deprecated: false
+    servers:
+    - url: /
+      description: ''
+  /archive/{objectId}:
+    get:
+      operationId: api_archive_objectId_get
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '404':
+          description: Resource not found
+      summary: Retrieves a Archive resource
+      description: Retrieves a Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    delete:
+      operationId: api_archive_objectId_delete
+      tags:
+      - Archive
+      responses:
+        '204':
+          description: Archive resource deleted
+        '404':
+          description: Resource not found
+      summary: Removes the Archive resource
+      description: Removes the Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      deprecated: false
+    patch:
+      operationId: api_archive_objectId_patch
+      tags:
+      - Archive
+      responses:
+        '200':
+          description: Archive resource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Archive.jsonld'
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Archive'
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Archive'
+          links: {}
+        '400':
+          description: Invalid input
+        '404':
+          description: Resource not found
+        '422':
+          description: Unprocessable entity
+      summary: Updates the Archive resource
+      description: Updates the Archive resource.
+      parameters:
+      - name: objectId
+        in: path
+        description: Archive identifier
+        required: true
+        deprecated: false
+        allowEmptyValue: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        allowReserved: false
+      requestBody:
+        description: The updated Archive resource
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archive-archive.patch'
+        required: true
+      deprecated: false
+    servers:
+    - url: /
+      description: ''
+components:
+  schemas:
+    Archive.ArchiveObjectsRepresentation:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        totalItems:
+          type: integer
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        items:
+          description: Collection of Archive items
+          type: array
+          items:
+            $ref: '#/components/schemas/Archive'
+    Archive.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+        objectId:
+          readOnly: true
+          example: 93684e36-6f32-4845-9727-840c2d628673
+          type: string
+        status:
+          readOnly: true
+          example: in_progress
+          type: string
+          enum:
+          - created
+          - running_pipeline
+          - in_sync
+          - error
+          - missing_file
+          - processing
+          - failed
+          - expired
+          - deleted
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+        file:
+          $ref: '#/components/schemas/UploadedFileData.jsonld'
+        createdAt:
+          readOnly: true
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          readOnly: true
+          type: string
+          format: date-time
+        expiresAt:
+          readOnly: true
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - retentionPeriod
+    UploadedFileData:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        name:
+          type: string
+        contentType:
+          type: string
+        sha256:
+          type: string
+    Archive.ArchiveObjectsRepresentation.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@id':
+          readOnly: true
+          type: string
+        '@type':
+          readOnly: true
+          type: string
+        totalItems:
+          type: integer
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        items:
+          description: Collection of Archive items
+          type: array
+          items:
+            $ref: '#/components/schemas/Archive'
+    UploadedFileData.jsonld:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        '@context':
+          readOnly: true
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              '@vocab':
+                type: string
+              hydra:
+                type: string
+                enum:
+                - http://www.w3.org/ns/hydra/core#
+            required:
+            - '@vocab'
+            - hydra
+            additionalProperties: true
+        '@type':
+          readOnly: true
+          type: string
+        name:
+          type: string
+        contentType:
+          type: string
+        sha256:
+          type: string
+    Archive:
+      type: object
+      description: ''
+      deprecated: false
+      properties:
+        objectId:
+          readOnly: true
+          example: 93684e36-6f32-4845-9727-840c2d628673
+          type: string
+        status:
+          readOnly: true
+          example: in_progress
+          type: string
+          enum:
+          - created
+          - running_pipeline
+          - in_sync
+          - error
+          - missing_file
+          - processing
+          - failed
+          - expired
+          - deleted
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+        file:
+          $ref: '#/components/schemas/UploadedFileData'
+        createdAt:
+          readOnly: true
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          readOnly: true
+          type: string
+          format: date-time
+        expiresAt:
+          readOnly: true
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - retentionPeriod
+    Archive-archive.patch:
+      type: object
+      description: ''
+      deprecated: false
+      required:
+      - retentionPeriod
+      properties:
+        retentionPeriod:
+          maxLength: 50
+          description: 'The time period the resource should be archived. Format: “duration + unit”'
+          example: 50d
+          type: string
+        tags:
+          maxItems: 50
+          example:
+          - assure
+          - dossier
+          type: array
+          items:
+            type: string
+        keywords:
+          example:
+            key1: value1
+            key2: value2
+          type: object
+          additionalProperties:
+            type: string
+  responses:
+    Error422:
+      description: Unprocessable Entity. Request parameters failed validation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                format: uri
+                example: https://developer.signicat.com/errors#validation_error
+              title:
+                type: string
+                example: An error occurred
+              status:
+                type: integer
+                example: 422
+              detail:
+                type: string
+                example: Error while processing your request
+              code:
+                type: string
+                example: validation_error
+              invalidParams:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: tags
+                    reason:
+                      type: string
+                      example: This value should not be blank.
+                  required:
+                  - name
+                  - reason
+            required:
+            - type
+            - title
+            - status
+            - detail
+            - code
+            - invalidParams
+  securitySchemes:
+    JWT:
+      type: apiKey
+      description: Value for the Authorization header parameter.
+      name: Authorization
+      in: header
+x-refined-from:
+- archive-openapi.json
+- signicat-archive-openapi.yml

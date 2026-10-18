@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-organization-read-schema.json",
+  "title": "OrganizationRead",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-account-management-openapi.yml#/components/schemas/OrganizationRead",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Globally unique ID of organization"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "description": "Timestamp of last organization modification."
+    },
+    "website": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Home page"
+    },
+    "entityId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Organization Entity ID / Org.no"
+    },
+    "entityVatNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "VAT Number"
+    },
+    "entityLegalName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Legal name of the entity / organization"
+    },
+    "country": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country the organization is registered in"
+    },
+    "billingEmail": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Billing email"
+    },
+    "billingAddress": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Address"
+        }
+      ],
+      "description": "Billing address",
+      "nullable": true
+    },
+    "parentOrganization": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/OrganizationChildListItem"
+        }
+      ],
+      "description": "The parent organization",
+      "nullable": true
+    },
+    "childOrganizations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/OrganizationChildListItem"
+      },
+      "description": "The child organizations"
+    },
+    "billingContact": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ContactChildListItem"
+        }
+      ],
+      "description": "Billing contact person",
+      "nullable": true
+    },
+    "accounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AccountChildListItem"
+      },
+      "description": "The organization accounts"
+    },
+    "contacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ContactChildListItem"
+      },
+      "description": "The organization contacts"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "AccountChildListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Globally unique ID of account"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "url": {
+          "type": "string",
+          "description": "API URL to retrieve Account object"
+        },
+        "isSandbox": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the account is a sandbox account"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the account is enabled"
+        },
+        "region": {
+          "type": "string",
+          "description": "Which region the account belongs to"
+        },
+        "cloud": {
+          "type": "string",
+          "description": "Which cloud the account belongs to"
+        },
+        "isSoftDeleted": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "If true, the account has been soft deleted and will soon be permanently deleted."
+        },
+        "softDeletedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Timestamp of when account was soft deleted."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Account of an organization."
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "maxLength": 255,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Street. May be multiline."
+        },
+        "postalCode": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Postal Code / Zip Code"
+        },
+        "city": {
+          "maxLength": 40,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City"
+        },
+        "region": {
+          "maxLength": 80,
+          "minLength": 0,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Region / State"
+        },
+        "country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContactChildListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Globally unique ID of contact"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Email address"
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Mobile phone number"
+        },
+        "url": {
+          "type": "string",
+          "description": "API URL to retrieve Contact object"
+        },
+        "roles": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/ContactRole"
+          },
+          "description": "Roles of the contact"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Contact of an organization."
+    },
+    "ContactRole": {
+      "enum": [
+        "Other",
+        "CommercialOwner",
+        "MainTechnicalContact",
+        "FinancialContact"
+      ],
+      "type": "string"
+    },
+    "OrganizationChildListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Globally unique ID of organization"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name"
+        },
+        "url": {
+          "type": "string",
+          "description": "API URL to retrieve Organization object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Suborganization of an organization."
+    }
+  }
+}

@@ -1,0 +1,178 @@
+openapi: 3.2.0
+info:
+  title: Signicat Merchant Sign API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged MerchantSign across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: MerchantSign
+paths:
+  /merchant/signature:
+    post:
+      tags:
+      - MerchantSign
+      summary: Create merchant signature
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/MerchantSignRequest'
+            example:
+              dataToSign: RGV0dGUgZXIgZW4gdGVrc3Qgc29tIGthbiBzaWduZXJlcw==
+              dataFormat: txt
+              externalReference: Some reference
+              signingFormat: no_bankid_seid_sdo
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantSignRequest'
+            example:
+              dataToSign: RGV0dGUgZXIgZW4gdGVrc3Qgc29tIGthbiBzaWduZXJlcw==
+              dataFormat: txt
+              externalReference: Some reference
+              signingFormat: no_bankid_seid_sdo
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MerchantSignRequest'
+            example:
+              dataToSign: RGV0dGUgZXIgZW4gdGVrc3Qgc29tIGthbiBzaWduZXJlcw==
+              dataFormat: txt
+              externalReference: Some reference
+              signingFormat: no_bankid_seid_sdo
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/MerchantSignRequest'
+            example:
+              dataToSign: RGV0dGUgZXIgZW4gdGVrc3Qgc29tIGthbiBzaWduZXJlcw==
+              dataFormat: txt
+              externalReference: Some reference
+              signingFormat: no_bankid_seid_sdo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantSignResponse'
+              example:
+                signedData: Base 64 encoded signed data
+                signingFormat: no_bankid_seid_sdo
+                signCertificateBase64String: Base 64 encoded certificate used to sign data
+                transactionId: be6b0d54-0cf2-41a2-a56d-78718aa01bb3
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MerchantSignResponse'
+              example:
+                signedData: Base 64 encoded signed data
+                signingFormat: no_bankid_seid_sdo
+                signCertificateBase64String: Base 64 encoded certificate used to sign data
+                transactionId: be6b0d54-0cf2-41a2-a56d-78718aa01bb3
+      operationId: postMerchantSignature
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    MerchantSigningFormat:
+      enum:
+      - use_provider_setting
+      - no_bankid_seid_sdo
+      type: string
+    MerchantEncodingFormat:
+      enum:
+      - UTF8
+      - ISOLATIN
+      type: string
+    MerchantDataFormat:
+      enum:
+      - xml
+      - txt
+      - pdf
+      type: string
+    MerchantSignResponse:
+      type: object
+      properties:
+        signedData:
+          type:
+          - string
+          - 'null'
+          description: base 64 encoded signed data
+        signingFormat:
+          $ref: '#/components/schemas/MerchantSigningFormat'
+        error:
+          $ref: '#/components/schemas/MerchantSignError'
+        signCertificateBase64String:
+          type:
+          - string
+          - 'null'
+          description: Signed with certificate
+          deprecated: true
+        transactionId:
+          type: string
+          description: Id to look up the transaction at a later time
+          format: uuid
+        signedDocumentId:
+          type:
+          - string
+          - 'null'
+          description: Id to retrieve signed file (pades)
+          format: uuid
+        departmentId:
+          type:
+          - string
+          - 'null'
+        dataEncodingFormat:
+          $ref: '#/components/schemas/MerchantEncodingFormat'
+      additionalProperties: false
+    MerchantSignError:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+        errorDescription:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MerchantSignRequest:
+      required:
+      - dataFormat
+      - dataToSign
+      - externalReference
+      type: object
+      properties:
+        dataToSign:
+          minLength: 1
+          type: string
+          description: Base 64 encoded data
+        xslt:
+          type:
+          - string
+          - 'null'
+          description: Base 64 encoded xslt (optional)
+        dataFormat:
+          $ref: '#/components/schemas/MerchantDataFormat'
+        dataEncodingFormat:
+          $ref: '#/components/schemas/MerchantEncodingFormat'
+        externalReference:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: The service reference for the signing. Will be used for auditlog, and invoicing
+        signingFormat:
+          $ref: '#/components/schemas/MerchantSigningFormat'
+        departmentId:
+          maxLength: 110
+          type:
+          - string
+          - 'null'
+          description: Set this if a specific department should be invoiced
+      additionalProperties: false
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

@@ -1,0 +1,316 @@
+openapi: 3.2.0
+info:
+  title: Signicat Geodata API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Geodata across 2 of this provider''s published API definitions: data-verification-openapi.json, signicat-data-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/lookup
+tags:
+- name: Geodata
+  description: This API returns information about geo data.
+paths:
+  /geodata/countries:
+    get:
+      tags:
+      - Geodata
+      summary: List countries
+      description: Lists all countries in the world with English name and ISO 3166-1 country code
+      operationId: Geodata_ListCountries_GET
+      parameters:
+      - name: lang
+        in: query
+        description: Language for result. Defaults to English
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Geodata.CountryListItemDto'
+              example:
+              - self_url: https://api.signicat.com/info/lookup/geodata/countries/AD?lang=en
+                countryCode: AD
+                countryName: Andorra
+                isoAlpha3: AND
+                isoNumeric: '020'
+              - self_url: https://api.signicat.com/info/lookup/geodata/countries/BG?lang=en
+                countryCode: BG
+                countryName: Bulgaria
+                isoAlpha3: BGR
+                isoNumeric: '100'
+              - self_url: https://api.signicat.com/info/lookup/geodata/countries/CH?lang=en
+                countryCode: CH
+                countryName: Switzerland
+                isoAlpha3: CHE
+                isoNumeric: '756'
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /geodata/countries/{countryCode}:
+    get:
+      tags:
+      - Geodata
+      summary: Retrieve country info
+      description: Retrieves basic geographical information about a country
+      operationId: Geodata_GetCountryInfo_GET
+      parameters:
+      - name: countryCode
+        in: path
+        description: ISO 3166-1 alpha-2 country code to look up
+        required: true
+        schema:
+          type: string
+      - name: lang
+        in: query
+        description: Language for result. Defaults to English
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Geodata.CountryInfoDto'
+              example:
+                self_url: https://api.signicat.com/info/lookup/geodata/countries/AD?lang=en
+                subdivisions_url: https://api.signicat.com/info/lookup/geodata/countries/AD/subdivisions?lang=en
+                continent: EU
+                capital: Andorra la Vella
+                languages:
+                - ca
+                population: '77006'
+                countryCode: AD
+                isoAlpha3: AND
+                countryName: Andorra
+                continentName: Europe
+                currencyCode: EUR
+                isoNumeric: '020'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /geodata/countries/{countryCode}/subdivisions:
+    get:
+      tags:
+      - Geodata
+      summary: List country subdivisions
+      description: Retrieves a list over top level administrative subdivisions for a country with name and ISO 3166-2 region code
+      operationId: Geodata_ListCountrySubdivisions_GET
+      parameters:
+      - name: countryCode
+        in: path
+        description: ISO 3166-1 alpha-2 country code to look up
+        required: true
+        schema:
+          type: string
+      - name: lang
+        in: query
+        description: Language for result. Defaults to English
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Geo.DivisionListItem'
+              example:
+              - name: Andorra la Vella
+                isoCode: '07'
+              - name: La Massana
+                isoCode: '04'
+              - name: Ordino
+                isoCode: '05'
+              - name: Sant Julià de Loria
+                isoCode: '06'
+              - name: Canillo
+                isoCode: '02'
+              - name: Escaldes-Engordany
+                isoCode: 08
+              - name: Encamp
+                isoCode: '03'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+components:
+  schemas:
+    ProblemDto:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: A code that identifies the type of error that occured
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code
+          format: int32
+        invalidParams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvalidParamDto'
+          description: A list of parameters that are invalid
+      additionalProperties: false
+    Geodata.CountryInfoDto:
+      type: object
+      properties:
+        self_url:
+          type:
+          - string
+          - 'null'
+        subdivisions_url:
+          type:
+          - string
+          - 'null'
+        continent:
+          type:
+          - string
+          - 'null'
+        capital:
+          type:
+          - string
+          - 'null'
+        languages:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        population:
+          type:
+          - string
+          - 'null'
+        countryCode:
+          type:
+          - string
+          - 'null'
+        isoAlpha3:
+          type:
+          - string
+          - 'null'
+        countryName:
+          type:
+          - string
+          - 'null'
+        continentName:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        isoNumeric:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    InvalidParamDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of attribute that was invalid
+        reason:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this field
+      additionalProperties: false
+    Geo.DivisionListItem:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        isoCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Geodata.CountryListItemDto:
+      type: object
+      properties:
+        self_url:
+          type:
+          - string
+          - 'null'
+        countryCode:
+          type:
+          - string
+          - 'null'
+        countryName:
+          type:
+          - string
+          - 'null'
+        isoAlpha3:
+          type:
+          - string
+          - 'null'
+        isoNumeric:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+x-refined-from:
+- data-verification-openapi.json
+- signicat-data-verification-openapi.yml

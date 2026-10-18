@@ -1,0 +1,257 @@
+openapi: 3.2.0
+info:
+  title: Signicat Journey notes API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Journey notes across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Journey notes
+paths:
+  /journeys/{journeyId}/notes:
+    post:
+      tags:
+      - Journey notes
+      summary: Create journey note
+      description: Create journey note.
+      operationId: CreateJourneyNote
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJourneyNoteRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyNote'
+    get:
+      tags:
+      - Journey notes
+      summary: List journey notes
+      description: Returns a list of your journey notes.
+      operationId: ListJourneyNotes
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: 'Supported fields: `createdAt`, `updatedAt`'
+        schema:
+          maxLength: 50
+          minLength: 0
+          type: string
+      - name: createdAfter
+        in: query
+        description: Filter journey notes that were created after this date.
+        schema:
+          format: date-time
+      - name: createdBefore
+        in: query
+        description: Filter journey notes that were created before this date.
+        schema:
+          format: date-time
+      - name: search
+        in: query
+        description: Search term that filters journeys by matching against `content` and `createdBy`.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: offset
+        in: query
+        description: The offset of the first item to return.
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: limit
+        in: query
+        description: The maximum number of items to return per page. Defaults to 10.
+        schema:
+          maximum: 100
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfJourneyNote'
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/notes/{noteId}:
+    patch:
+      tags:
+      - Journey notes
+      summary: Update journey note
+      description: Update journey note content.
+      operationId: UpdateJourneyNote
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      - name: noteId
+        in: path
+        description: The note ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateJourneyNoteRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyNote'
+    delete:
+      tags:
+      - Journey notes
+      summary: Delete journey note
+      description: Deletes a journey note.
+      operationId: DeleteJourneyNote
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      - name: noteId
+        in: path
+        description: The note ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    PaginatedResponseOfJourneyNote:
+      required:
+      - data
+      - offset
+      - limit
+      - totalCount
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneyNote'
+          description: List of items returned for the current page.
+        offset:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The offset of the first item returned.
+          format: int32
+        limit:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The maximum number of items requested per page.
+          format: int32
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The total number of items available across all pages.
+          format: int32
+    JourneyNote:
+      required:
+      - id
+      - content
+      - createdAt
+      - createdBy
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the note.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: ID of the step this note belongs to.
+        content:
+          type: string
+          description: Text content of the note.
+        createdAt:
+          description: Time at which the note was created.
+          format: date-time
+        createdBy:
+          type: string
+          description: ID of the subject that created the note.
+        updatedAt:
+          description: Time at which the note was last updated.
+          format: date-time
+    CreateJourneyNoteRequest:
+      required:
+      - content
+      type: object
+      properties:
+        stepId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: ID of the step this note belongs to.
+        content:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: Text content of the note.
+    UpdateJourneyNoteRequest:
+      required:
+      - content
+      type: object
+      properties:
+        content:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: Text content of the note.
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

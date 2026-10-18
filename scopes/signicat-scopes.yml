@@ -1,0 +1,55 @@
+generated: '2026-10-18'
+method: searched
+source: openapi/signicat-oidc-config-openapi.yml, openapi/signicat-reuseid-onboarding-openapi.yml,
+  openapi/signicat-signing-enterprise-openapi.yml, https://developer.signicat.com/docs/dashboard/access-management/managing-roles-and-permissions.md
+schemes:
+- name: Signicat-OIDC
+  source: openapi/signicat-oidc-config-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: http://api.signicat.com/auth/open/connect/token
+  - flow: authorizationCode
+    authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+    tokenUrl: http://api.signicat.com/auth/open/connect/token
+- name: Token
+  source: openapi/signicat-reuseid-onboarding-openapi.yml
+  flows:
+  - flow: clientCredentials
+- name: signrestOauth2Security
+  source: openapi/signicat-signing-enterprise-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oidc/token
+  description: Signicat Oauth security with clientCredentials
+scopes:
+- scope: openid
+  description: OpenID User id
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/signicat-oidc-config-openapi.yml
+- scope: signicat-api
+  description: Signicat API
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - openapi/signicat-oidc-config-openapi.yml
+  - openapi/signicat-signing-enterprise-openapi.yml
+
+docs: https://developer.signicat.com/docs/dashboard/access-management/managing-roles-and-permissions.md
+permissions_model:
+  description: Role-based access control with four basic role types (Viewer, Writer, Editor, Admin) that group permissions
+  roles:
+  - name: Organisation Admin
+    description: Has all permissions for the organisation and all accounts belonging to that organisation
+    scope: organisation
+  - name: Account Admin
+    description: Has all permissions for a given account but not for the overlying organisation
+    scope: account
+  - name: Usage Viewer
+    description: Access to view usage and invoices
+    scope: organisation
+  - name: Support Editor
+    description: Access to create, update and view support tickets and comments, including sensitive data
+    scope: organisation

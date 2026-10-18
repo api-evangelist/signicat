@@ -1,0 +1,1626 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Person Monitoring (Deprecated)",
+    "description": "**This API is deprecated. Existing integrations will be supported until summer 2027. For new integrations, please use our [unified Ongoing Monitoring API](/apis/ongoing-monitoring/).**\n\n- **Base URL**: `https://api.signicat.com/info/monitor/person/`\n- **Documentation**: See the [Ongoing Monitoring](/docs/ongoing-monitoring/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Person Monitoring API enables monitoring of person name and address changes through multiple national person registries.\n\nThis API is part of the Signicat Ongoing Monitoring service that enables continuous tracking of entities (persons or organisations) for any changes in their demographic, financial or screening profiles.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n\n# Get started\n\nBefore you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).\n\nRequired API client permissions:\n\n- **Info Monitor Person Editor**\n- **Info Monitor Person Viewer**\n\n## Audit logs\n\nUse the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.\n\n- Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)\n- For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.\n\n## Errors\n\nWhen you make an API call to Signicat and an error occurs, you will receive a response message with an error code.\n\n- For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.\n- For errors specific to this service, see the Ongoing Monitoring [Error codes](/docs/ongoing-monitoring/error-codes/) documentation.\n\n## Events (callback)\n\nUse the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.\n\n- Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)\n- For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.\n\n> **Note**: This is often referred to as callback.\n",
+    "contact": "",
+    "version": "",
+    "x-meta": "Custom metadata",
+    "license": "",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "https://api.signicat.com/info/monitor/person"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Changes",
+      "description": "\nEndpoint for retrieving person changes for a specific monitor.\n"
+    },
+    {
+      "name": "Monitors",
+      "description": "\nEndpoints for performing CRUD operations on a monitor.\n\nA monitor is a collection of persons to monitor for changes.\n"
+    },
+    {
+      "name": "Persons",
+      "description": "\nEndpoints for managing the persons for a specific monitor.\n\nEach person must have a reference key which uniquely identifies the person within the monitor. The reference key should also allow you to identify the person within your own systems.\n"
+    }
+  ],
+  "paths": {
+    "/monitors/{monitorId}/changes": {
+      "get": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Retrieve changes",
+        "description": "Returns a paginated result containing all changes since the last change marked as read.\r\nIf the `next` response property is missing, there is no more data to retrieve.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Optional cursor for pagination, which allows for paging without marking changes as read.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Optional parameter to set how many results you want per page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedCollection`1"
+                },
+                "example": {
+                  "offset": 0,
+                  "limit": 3,
+                  "size": 6,
+                  "links": {
+                    "next": "https://api.signicat.io/person-monitoring/monitors/4039/changes?limit=3&offset=3",
+                    "first": "https://api.signicat.io/person-monitoring/monitors/4039/changes"
+                  },
+                  "data": [
+                    {
+                      "changeId": 1,
+                      "status": "ok",
+                      "source": "nationalRegistry",
+                      "changeDetected": "2019-08-01T12:00:00.0Z",
+                      "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2"
+                    },
+                    {
+                      "changeId": 15,
+                      "status": "invalid",
+                      "source": "nationalRegistry",
+                      "changeDetected": "2019-08-01T12:00:00.0Z",
+                      "referenceKey": "b25229e4f6024e35931e4edbe4a29009"
+                    },
+                    {
+                      "changeId": 16,
+                      "status": "ok",
+                      "source": "nationalRegistry",
+                      "changeDetected": "2019-10-01T12:00:00.0Z",
+                      "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                      "changes": {
+                        "firstName": "Hedda Hansen",
+                        "lastName": "Tjolstad",
+                        "address": {
+                          "address": "Åstadbakken 78",
+                          "zipCode": "1341",
+                          "city": "SLEPENDEN"
+                        },
+                        "screening": {
+                          "riskLevel": 100,
+                          "listType": "SANCTION",
+                          "source": "EU_GLOBAL"
+                        }
+                      }
+                    },
+                    {
+                      "changeId": 17,
+                      "status": "ok",
+                      "source": "nationalRegistry",
+                      "changeDetected": "2019-10-01T12:00:00.0Z",
+                      "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                      "changes": {
+                        "firstName": "Hedda Hansen",
+                        "lastName": "Tjolstad",
+                        "isAddressProtected": true
+                      }
+                    },
+                    {
+                      "changeId": 18,
+                      "status": "ok",
+                      "source": "nationalRegistry",
+                      "changeDetected": "2019-10-01T12:00:00.0Z",
+                      "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                      "changes": {
+                        "isProtected": true
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/changes/mark": {
+      "post": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Mark changes as read until the specified changeId",
+        "description": "Calling \"Get Changes will retrieve all changes not marked as read",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "changeId",
+            "in": "query",
+            "description": "Set a cursor on the monitor so that only changes after the changeId are returned when querying for changes.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/changes/mock": {
+      "post": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Mock changes",
+        "description": "Manually add changes to a monitor that that was created with the `isMock` property set to true.\r\nThe monitor will process and create changes for the persons as if they came from a population registry.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Changes that will be mocked.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorMockChange"
+              },
+              "example": {
+                "persons": [
+                  {
+                    "status": "ok",
+                    "changeDetected": "2026-10-11T14:12:58.58Z",
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29009",
+                    "firstName": "Hedda-Olai",
+                    "address": {
+                      "address": "Kirkegata 176"
+                    },
+                    "isAddressProtected": false,
+                    "isProtected": false
+                  },
+                  {
+                    "status": "ok",
+                    "changeDetected": "2026-10-11T14:12:58.58Z",
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29019",
+                    "firstName": "Hedda-Olai",
+                    "isAddressProtected": true,
+                    "isProtected": false
+                  },
+                  {
+                    "status": "ok",
+                    "changeDetected": "2026-10-11T14:12:58.58Z",
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29029",
+                    "isAddressProtected": false,
+                    "isProtected": true
+                  },
+                  {
+                    "status": "ok",
+                    "changeDetected": "2026-10-11T14:12:58.58Z",
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29010",
+                    "isAddressProtected": false,
+                    "screening": {
+                      "listType": "PEP",
+                      "source": "PEP_Edge"
+                    },
+                    "isProtected": false
+                  },
+                  {
+                    "status": "invalid",
+                    "changeDetected": "2026-10-04T14:12:58.58Z",
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                    "isAddressProtected": false,
+                    "isProtected": false
+                  }
+                ],
+                "source": "nationalRegistry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Mock data have been added for processing"
+          },
+          "403": {
+            "description": "Monitor doesn't allow mocking"
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/changes/persons/{referenceKey}": {
+      "get": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Retrieve changes for a person",
+        "description": "Retrieves all changes for a single person, ignoring any cursors.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceKey",
+            "in": "path",
+            "description": "The person's reference key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The person was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonChanges"
+                  }
+                },
+                "example": [
+                  {
+                    "changeId": 1,
+                    "status": "ok",
+                    "source": "nationalRegistry",
+                    "changeDetected": "2026-10-16T14:12:58.58Z",
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29009",
+                    "changes": {
+                      "firstName": "Anne",
+                      "lastName": "Olsen",
+                      "middleName": "Lise",
+                      "dateOfBirth": "1997-10-18",
+                      "nationalIdentityNumber": "18109777441",
+                      "address": {
+                        "address": "Kveldstuavegen 32",
+                        "zipCode": "9013",
+                        "city": "Tromsø",
+                        "country": "NO"
+                      },
+                      "screening": {
+                        "riskLevel": 100,
+                        "listType": "SANCTION",
+                        "source": "EU_GLOBAL"
+                      }
+                    }
+                  },
+                  {
+                    "changeId": 2,
+                    "status": "ok",
+                    "source": "nationalRegistry",
+                    "changeDetected": "2026-10-16T14:12:58.58Z",
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                    "changes": {
+                      "firstName": "Anne",
+                      "lastName": "Olsen",
+                      "middleName": "Lise",
+                      "dateOfBirth": "1997-10-18",
+                      "nationalIdentityNumber": "18109777441",
+                      "isAddressProtected": true
+                    }
+                  },
+                  {
+                    "changeId": 3,
+                    "status": "ok",
+                    "source": "nationalRegistry",
+                    "changeDetected": "2026-10-16T14:12:58.58Z",
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                    "changes": {
+                      "isProtected": true
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Monitor or person doesn't exist"
+          }
+        }
+      }
+    },
+    "/monitors": {
+      "post": {
+        "tags": [
+          "Monitors"
+        ],
+        "summary": "Create a monitor.",
+        "description": "Creates a blank monitor. The monitor must be populated with person data before it can be used.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorCreate"
+              },
+              "example": {
+                "name": "Platinum Card Owners",
+                "description": "Keeping our platinum card customer database updated",
+                "sources": [
+                  "nationalRegistry"
+                ],
+                "allowMock": false,
+                "isMock": false,
+                "returnBlockDataOnChange": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Monitor created"
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}": {
+      "delete": {
+        "tags": [
+          "Monitors"
+        ],
+        "summary": "Delete monitor",
+        "description": "Deletes the monitor, removing all stored person data.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Monitor deleted"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Monitors"
+        ],
+        "summary": "Retrieve monitor information",
+        "description": "Returns key information about the monitor.",
+        "operationId": "GetPersonMonitor",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorGet"
+                },
+                "example": {
+                  "name": "Platinum Card Owners",
+                  "enabled": false,
+                  "created": "2018-06-16T15:41:20.20Z",
+                  "details": {
+                    "personCount": 8803,
+                    "unknownCount": 0,
+                    "lastPersonChange": "2019-08-01T12:00:00.0Z",
+                    "lastChangeRequest": "2019-07-29T15:41:20.20Z"
+                  },
+                  "allowMock": false,
+                  "isMock": false,
+                  "returnBlockDataOnChange": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitors/summary": {
+      "get": {
+        "tags": [
+          "Monitors"
+        ],
+        "summary": "Retrieve monitor summaries",
+        "description": "Retrieves a summary of your person monitors.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorsGet"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "3b78ad77b9a34689b52d30b5ca4d2068",
+                      "name": "Platinum Card Owners",
+                      "description": "Keeping our platinum card customer database updated",
+                      "enabled": true,
+                      "changeTypes": [
+                        "address",
+                        "name"
+                      ],
+                      "created": "2018-06-16T15:41:20.20Z",
+                      "returnBlockDataOnChange": false
+                    },
+                    {
+                      "id": "7ed4071f8df34726bcf686e295268ead",
+                      "name": "Gold Card Owners",
+                      "description": "Keeping our gold card customer database updated",
+                      "enabled": true,
+                      "changeTypes": [
+                        "name"
+                      ],
+                      "created": "2018-05-14T12:35:20.20Z",
+                      "returnBlockDataOnChange": false
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/persons/{referenceKey}": {
+      "post": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "Add a person",
+        "description": "Adds the specified person to the monitor.\r\nThe supplied information must be enough to securely identify them. The national identity number must always be included.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceKey",
+            "in": "path",
+            "description": "The person's reference key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Information about the person you want to add.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseMonitorPerson"
+              },
+              "example": {
+                "firstName": "Hedda",
+                "lastName": "Hansen",
+                "middleName": "T.",
+                "dateOfBirth": "1970-02-20",
+                "nationalIdentityNumber": "24107749383",
+                "nationality": "NO",
+                "address": {
+                  "address": "Kirkegata 177",
+                  "zipCode": "3674",
+                  "city": "NOTODDEN",
+                  "country": "NO"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The person has been added"
+          },
+          "400": {
+            "description": "Invalid referenceKey"
+          },
+          "404": {
+            "description": "Monitor doesn't exist"
+          },
+          "409": {
+            "description": "A person with the specified referenceKey already exists"
+          },
+          "422": {
+            "description": "Required fields are missing, or the request contains a person from a population registry that is not configured for your account"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "Get a person",
+        "description": "Get the latest information about the person with the supplied referenceKey.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceKey",
+            "in": "path",
+            "description": "The person's reference key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The person was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorPersonGet"
+                },
+                "example": {
+                  "fullName": "Hedda Hansen",
+                  "isAddressProtected": false,
+                  "firstName": "Hedda",
+                  "lastName": "Hansen",
+                  "dateOfBirth": "1984-08-16",
+                  "nationalIdentityNumber": "24107749383",
+                  "nationality": "NO",
+                  "address": {
+                    "address": "Kirkegata 177",
+                    "zipCode": "3674",
+                    "city": "NOTODDEN",
+                    "country": "NO"
+                  },
+                  "screening": {
+                    "listType": "PEP",
+                    "source": "PEP_Edge"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Monitor or person doesn't exist"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "Remove person",
+        "description": "Remove the specified person from the monitor.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceKey",
+            "in": "path",
+            "description": "The person's reference key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The process to remove the person has started"
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/persons/add": {
+      "post": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "Add a batch of persons",
+        "description": "Adds the provided persons to the register.\r\nExisting persons (persons from the batch whose referenceKey already exists in the system) will be updated.\r\nThe information you supply about each person must be enough to securely identify them.\r\nFor example, a national identity number or the combination of name and date of birth.\r\n            \r\nIf any added persons are detected as invalid, a change message will be available through the changes endpoint.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The list of persons to be added.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorAddPersons"
+              },
+              "example": {
+                "persons": [
+                  {
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29009",
+                    "firstName": "Hedda",
+                    "lastName": "Hansen",
+                    "middleName": "T.",
+                    "dateOfBirth": "1970-02-20",
+                    "nationalIdentityNumber": "24107749383",
+                    "nationality": "NO",
+                    "address": {
+                      "address": "Kirkegata 177",
+                      "zipCode": "3674",
+                      "city": "NOTODDEN",
+                      "country": "NO"
+                    }
+                  },
+                  {
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                    "firstName": "Erik",
+                    "lastName": "Rødal",
+                    "middleName": "D.",
+                    "dateOfBirth": "1980-04-20",
+                    "nationality": "NO",
+                    "address": {
+                      "address": "Bjørndalen 74",
+                      "zipCode": "1708",
+                      "city": "SARPSBORG",
+                      "country": "NO"
+                    }
+                  },
+                  {
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d3",
+                    "firstName": "Erik",
+                    "lastName": "Rødal",
+                    "middleName": "D.",
+                    "dateOfBirth": "1980-04-20",
+                    "nationality": "NO"
+                  }
+                ]
+              }
+            },
+            "text/csv": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorAddPersons"
+              },
+              "example": {
+                "persons": [
+                  {
+                    "referenceKey": "b25229e4f6024e35931e4edbe4a29009",
+                    "firstName": "Hedda",
+                    "lastName": "Hansen",
+                    "middleName": "T.",
+                    "dateOfBirth": "1970-02-20",
+                    "nationalIdentityNumber": "24107749383",
+                    "nationality": "NO",
+                    "address": {
+                      "address": "Kirkegata 177",
+                      "zipCode": "3674",
+                      "city": "NOTODDEN",
+                      "country": "NO"
+                    }
+                  },
+                  {
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d2",
+                    "firstName": "Erik",
+                    "lastName": "Rødal",
+                    "middleName": "D.",
+                    "dateOfBirth": "1980-04-20",
+                    "nationality": "NO",
+                    "address": {
+                      "address": "Bjørndalen 74",
+                      "zipCode": "1708",
+                      "city": "SARPSBORG",
+                      "country": "NO"
+                    }
+                  },
+                  {
+                    "referenceKey": "c2690bae4cbc45b2a84e24de787b22d3",
+                    "firstName": "Erik",
+                    "lastName": "Rødal",
+                    "middleName": "D.",
+                    "dateOfBirth": "1980-04-20",
+                    "nationality": "NO"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Persons have been added for processing"
+          },
+          "404": {
+            "description": "Monitor doesn't exist"
+          },
+          "413": {
+            "description": "Request entity too large"
+          },
+          "422": {
+            "description": "Required fields are missing, or the request contains persons from a population registry that is not configured for your account"
+          }
+        }
+      }
+    },
+    "/monitors/{monitorId}/persons/remove": {
+      "post": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "Remove a batch of persons",
+        "description": "Removes the specified persons from the monitor.",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "description": "The monitor ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Reference IDs of the persons to remove from the monitor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorRemovePersons"
+              },
+              "example": {
+                "personReferenceKeys": [
+                  "b25229e4f6024e35931e4edbe4a29009",
+                  "c2690bae4cbc45b2a84e24de787b22d2"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Process to remove the persons has started"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseMonitorPerson": {
+        "required": [
+          "nationality"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's first name.",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's last name.",
+            "nullable": true
+          },
+          "middleName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's middle name.",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "The person's date of birth, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "nationalIdentityNumber": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's national identity number, if available.",
+            "nullable": true
+          },
+          "nationality": {
+            "maxLength": 3,
+            "minLength": 2,
+            "type": "string",
+            "description": "Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2)."
+          },
+          "address": {
+            "$ref": "#/components/schemas/PersonAddress"
+          },
+          "screening": {
+            "$ref": "#/components/schemas/PersonScreening"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChangeType": {
+        "enum": [
+          "name",
+          "address"
+        ],
+        "type": "string",
+        "description": "A type of change that occurred on a person"
+      },
+      "Links": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "description": "Url of the next page",
+            "nullable": true
+          },
+          "previous": {
+            "type": "string",
+            "description": "Url of the previous page",
+            "nullable": true
+          },
+          "first": {
+            "type": "string",
+            "description": "Url of the first page",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonitorAddPersons": {
+        "required": [
+          "persons"
+        ],
+        "type": "object",
+        "properties": {
+          "persons": {
+            "maxItems": 1000000,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonitorPerson"
+            },
+            "description": "The persons to be added to the monitor. We recommend that you keep this under `100000` persons per request."
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorCreate": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the monitor."
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string",
+            "description": "Description of the monitor.",
+            "nullable": true
+          },
+          "sources": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Source"
+            },
+            "description": "Sources to use for monitoring, defaults to Idfy.Monitor.Person.ApiDtos.Monitor.SourceDto.NationalRegistry",
+            "nullable": true
+          },
+          "allowMock": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "isMock": {
+            "type": "boolean",
+            "description": "Set the monitor in a mock state, where you generate your own changes.\r\nThis will allow you to add persons for monitoring without having credentials for the targeted population registry.\r\nThis parameter is only meant for testing. You must remove it before switching to production."
+          },
+          "returnBlockDataOnChange": {
+            "type": "boolean",
+            "description": "Person Monitor will send ALL the related data elements together, even if only one of them changes (e.g. first, middle and last names even when last name alone changes) and then send full address element (addressLine, city, zipCode and country, even if only addressLine changes)"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorDetails": {
+        "type": "object",
+        "properties": {
+          "personCount": {
+            "type": "integer",
+            "description": "The number of persons currently being monitored.",
+            "format": "int32"
+          },
+          "unknownCount": {
+            "type": "integer",
+            "description": "The number of persons whose status is `Unknown`.",
+            "format": "int32"
+          },
+          "lastPersonChange": {
+            "type": "string",
+            "description": "When a person change was last detected.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastChangeRequest": {
+            "type": "string",
+            "description": "When a change log was last requested.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorGet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the monitor.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the monitor.",
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "If the register is enabled."
+          },
+          "changeTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChangeType"
+            },
+            "description": "Person properties to monitor for changes.",
+            "nullable": true,
+            "deprecated": true
+          },
+          "created": {
+            "type": "string",
+            "description": "When the monitor was created.",
+            "format": "date-time"
+          },
+          "details": {
+            "$ref": "#/components/schemas/MonitorDetails"
+          },
+          "allowMock": {
+            "type": "boolean",
+            "readOnly": true,
+            "deprecated": true
+          },
+          "isMock": {
+            "type": "boolean",
+            "description": "If the monitor is in a mock state."
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Source"
+            },
+            "nullable": true
+          },
+          "returnBlockDataOnChange": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorMockChange": {
+        "required": [
+          "persons"
+        ],
+        "type": "object",
+        "properties": {
+          "persons": {
+            "maxItems": 1000000,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonitorMockPerson"
+            },
+            "description": "List of person changes."
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorMockPerson": {
+        "required": [
+          "referenceKey"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/MonitorPersonStatus"
+          },
+          "changeDetected": {
+            "type": "string",
+            "description": "Date and time when the change was detected.",
+            "format": "date-time"
+          },
+          "referenceKey": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's reference key."
+          },
+          "nationalIdentityNumber": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's national identity number.",
+            "nullable": true
+          },
+          "firstName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's first name.",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's last name.",
+            "nullable": true
+          },
+          "middleName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's middle name.",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/PersonAddress"
+          },
+          "isAddressProtected": {
+            "type": "boolean",
+            "description": "Whether the person's address is protected"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "The person's date of birth.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "dateOfDeath": {
+            "type": "string",
+            "description": "The person's date of death.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "screening": {
+            "$ref": "#/components/schemas/PersonScreening"
+          },
+          "isProtected": {
+            "type": "boolean",
+            "description": "Whether the person's information is protected"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorPerson": {
+        "required": [
+          "nationality",
+          "referenceKey"
+        ],
+        "type": "object",
+        "properties": {
+          "referenceKey": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Reference key"
+          },
+          "firstName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's first name.",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's last name.",
+            "nullable": true
+          },
+          "middleName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's middle name.",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "The person's date of birth, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "nationalIdentityNumber": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's national identity number, if available.",
+            "nullable": true
+          },
+          "nationality": {
+            "maxLength": 3,
+            "minLength": 2,
+            "type": "string",
+            "description": "Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2)."
+          },
+          "address": {
+            "$ref": "#/components/schemas/PersonAddress"
+          },
+          "screening": {
+            "$ref": "#/components/schemas/PersonScreening"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorPersonChange": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "The person's new first name.",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The person's new last name.",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "description": "The person's new middle name, if available.",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "The person's new date of birth, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "nationalIdentityNumber": {
+            "type": "string",
+            "description": "The person's new national identity number, if available.",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/PersonAddress"
+          },
+          "isAddressProtected": {
+            "type": "boolean",
+            "description": "Whether the person's address is protected",
+            "nullable": true
+          },
+          "isProtected": {
+            "type": "boolean",
+            "description": "Whether the person's information is protected",
+            "nullable": true
+          },
+          "screening": {
+            "$ref": "#/components/schemas/PersonScreening"
+          },
+          "dateOfDeath": {
+            "type": "string",
+            "description": "The person's new date of death, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Relevant person changes. Only changed fields contain data."
+      },
+      "MonitorPersonGet": {
+        "required": [
+          "nationality"
+        ],
+        "type": "object",
+        "properties": {
+          "dateOfDeath": {
+            "type": "string",
+            "description": "The persons date of death, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The person's full name.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "isAddressProtected": {
+            "type": "boolean",
+            "description": "Whether the person's address is protected",
+            "nullable": true
+          },
+          "isProtected": {
+            "type": "boolean",
+            "description": "Whether the person's information is protected",
+            "nullable": true
+          },
+          "firstName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's first name.",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's last name.",
+            "nullable": true
+          },
+          "middleName": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's middle name.",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "The person's date of birth, if available.",
+            "format": "yyyy-MM-dd",
+            "nullable": true,
+            "example": "2003-04-01"
+          },
+          "nationalIdentityNumber": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The person's national identity number, if available.",
+            "nullable": true
+          },
+          "nationality": {
+            "maxLength": 3,
+            "minLength": 2,
+            "type": "string",
+            "description": "Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2)."
+          },
+          "address": {
+            "$ref": "#/components/schemas/PersonAddress"
+          },
+          "screening": {
+            "$ref": "#/components/schemas/PersonScreening"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonitorPersonStatus": {
+        "enum": [
+          "unknown",
+          "ok",
+          "invalid"
+        ],
+        "type": "string",
+        "description": "Status of the person"
+      },
+      "MonitorRemovePersons": {
+        "required": [
+          "personReferenceKeys"
+        ],
+        "type": "object",
+        "properties": {
+          "personReferenceKeys": {
+            "maxItems": 1000000,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Reference keys of persons to be removed from monitor."
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorsGet": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonitorsSummary"
+            },
+            "description": "A list of monitors for the current account.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "MonitorsSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of the monitor.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the monitor.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the monitor.",
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the register is enabled."
+          },
+          "changeTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChangeType"
+            },
+            "description": "Person properties to monitor for changes.",
+            "nullable": true,
+            "deprecated": true
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Source"
+            },
+            "description": "Sources monitored",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "description": "When the monitor was created.",
+            "format": "date-time"
+          },
+          "returnBlockDataOnChange": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "PagedCollection`1": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "The offset of the current page.",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The limit of the current paging options.",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "description": "The total size of the collection (irrespective of any paging options).",
+            "format": "int64"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonChanges"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PersonAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "maxLength": 400,
+            "minLength": 1,
+            "type": "string",
+            "description": "Address line.",
+            "nullable": true
+          },
+          "zipCode": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string",
+            "description": "Zip code / Postal code.",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string",
+            "description": "City.",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 3,
+            "minLength": 2,
+            "type": "string",
+            "description": "Country (ISO 3166-1 alpha-2).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The person's address"
+      },
+      "PersonChanges": {
+        "type": "object",
+        "properties": {
+          "changeId": {
+            "type": "integer",
+            "description": "Sequential ID of the change.",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MonitorPersonStatus"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "changeDetected": {
+            "type": "string",
+            "description": "Date and time when the change was detected.",
+            "format": "date-time"
+          },
+          "referenceKey": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Person's reference key.",
+            "nullable": true
+          },
+          "changes": {
+            "$ref": "#/components/schemas/MonitorPersonChange"
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "PersonScreening": {
+        "type": "object",
+        "properties": {
+          "riskLevel": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "listType": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Attribute providing information about the Screening status of the person"
+      },
+      "Source": {
+        "enum": [
+          "nationalRegistry",
+          "trapets"
+        ],
+        "type": "string",
+        "description": "What kind of sources to use for monitoring"
+      }
+    }
+  }
+}

@@ -1,0 +1,427 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-person-basic-info-dto-schema.json",
+  "title": "Person.BasicInfoDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-data-verification-openapi.yml#/components/schemas/Person.BasicInfoDto",
+  "type": "object",
+  "properties": {
+    "names": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Person.PersonNameDto"
+      },
+      "description": "Names"
+    },
+    "birth": {
+      "$ref": "#/$defs/Person.PersonBirthDto"
+    },
+    "death": {
+      "$ref": "#/$defs/Person.PersonDeathDto"
+    },
+    "nationalities": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/NationalityDto"
+      },
+      "description": "Nationalities"
+    },
+    "citizenships": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CitizenshipDto"
+      },
+      "description": "Citizenship's"
+    },
+    "permanentAddresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Person.PersonAddressDto"
+      },
+      "description": "Permanent addresses"
+    },
+    "postalAddresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Person.PersonAddressDto"
+      },
+      "description": "Postal address"
+    },
+    "foreignAddresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Person.PersonAddressDto"
+      },
+      "description": "Foreign address"
+    },
+    "sourceSpecific": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Source Specific fields"
+    },
+    "metadata": {
+      "$ref": "#/$defs/MetadataDto"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CitizenshipDto": {
+      "type": "object",
+      "properties": {
+        "isActive": {
+          "type": "boolean",
+          "description": "Is active"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start Date",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End Date",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Iso3166Dto": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Country name"
+        },
+        "alpha2": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Two digit country code"
+        },
+        "alpha3": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Three digit country code"
+        },
+        "numeric": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Numeric country code"
+        }
+      },
+      "additionalProperties": false,
+      "description": "ISO 3166-1 country codes"
+    },
+    "MetadataDto": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of sources for the data"
+        },
+        "urls": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Public urls to the sources"
+        },
+        "lastChanged": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date the data was last changed",
+          "format": "date-time"
+        },
+        "rawJson": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The raw JSON if it was requested and supported by the source"
+        },
+        "isCache": {
+          "type": "boolean",
+          "description": "Return boolean whether data is retrieved from cache."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Metadata about the response"
+    },
+    "NameStatus": {
+      "enum": [
+        "partial",
+        "all"
+      ],
+      "type": "string",
+      "description": "A hint to which attributes are set.\n`partial` : only full name,\n`all` : all attributes."
+    },
+    "NationalityDto": {
+      "type": "object",
+      "properties": {
+        "isActive": {
+          "type": "boolean",
+          "description": "Is active"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Nationality of an entity"
+    },
+    "Person.PersonAddressDto": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Street address or PO box"
+        },
+        "postalCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Zip code / Postal code"
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "City or place"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "If the address is active"
+        },
+        "isConfidential": {
+          "type": "boolean",
+          "description": "If the address is confidential"
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start date of the address",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End date of the address",
+          "format": "date-time"
+        },
+        "addressLines": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Address lines if the source contains unstructured data"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Address information"
+    },
+    "Person.PersonBirthDto": {
+      "type": "object",
+      "properties": {
+        "monthOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Month of birth"
+        },
+        "yearOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Year of birth"
+        },
+        "dateOfBirth": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "yyyy-MM-dd"
+        },
+        "country": {
+          "$ref": "#/$defs/Iso3166Dto"
+        },
+        "location": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Birth location"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Person.PersonDeathDto": {
+      "type": "object",
+      "properties": {
+        "monthOfDeath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Month of death"
+        },
+        "yearOfDeath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Year of death"
+        },
+        "dateOfDeath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "yyyy-MM-dd"
+        },
+        "isDead": {
+          "type": "boolean",
+          "description": "If the person is dead or not"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Person.PersonNameDto": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/NameStatus"
+        },
+        "full": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Full name of the entity"
+        },
+        "first": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "First/given name of the entity"
+        },
+        "last": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Last/surname of the entity"
+        },
+        "middle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Middle name of the entity"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "If the name is active"
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Start date of the name",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "End date of the name",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,316 @@
+openapi: 3.2.0
+info:
+  title: Signicat Sources API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Sources across 2 of this provider''s published API definitions: data-verification-openapi.json, signicat-data-verification-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/lookup
+tags:
+- name: Sources
+  description: 'Contains information about the different sources used by the API.
+
+
+    It is possible to instruct the API to use a preferred source across profiles by including a JWT of the following model in the request headers.
+
+    {
+
+    "ver": 1,
+
+    "rules": [
+
+    {
+
+    "scope": [
+
+    "basic",
+
+    ],
+
+    "sources": [
+
+    "nameOfSource"
+
+    ]
+
+    }
+
+    ],
+
+    "strict": true
+
+    }
+
+
+    If the source is specified by query parameter for a request, this will be used instead of any header.'
+paths:
+  /sources/organization:
+    get:
+      tags:
+      - Sources
+      summary: Organization
+      description: Returns the data sources available for organizations.
+      operationId: Source_GetOrganizationAvailability_GET
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgLookupProvidersDto'
+              example:
+                providers:
+                  global:
+                  - id: 3b69a782-2c28-4fb2-b27e-5b3c14743b3d
+                    profiles:
+                    - screening
+                    name: trapets
+                    officialName: Trapets
+                    description: PEP and Sanction screening against Trapets InstantWatch KYC
+                  'no':
+                  - id: 221a4e31-11fb-417b-a9dc-ee49bd630f6c
+                    profiles:
+                    - ownership
+                    - ubo
+                    - roles
+                    name: no-bisnode
+                    officialName: Bisnode Norway
+                    description: Provides data from bisnode
+                  - id: 97dd9017-cdc5-4f32-b937-1ce57815ba6d
+                    profiles:
+                    - basic
+                    - authorization
+                    name: no-brreg
+                    officialName: Brønnøysundregistrene (BRREG) Norway
+                    description: Provides data from brreg
+                  fi:
+                  - id: 17066a39-74af-4c61-a6c9-d2f490ad2dd9
+                    profiles:
+                    - basic
+                    name: fi-prh
+                    officialName: PRH Finland
+                    description: Prh organization lookup
+                  - id: 32747ec3-aee2-44d8-b6c0-ffeec3430d50
+                    profiles:
+                    - ubo
+                    - roles
+                    - authorization
+                    name: fi-bisnode
+                    officialName: Bisnode Finland
+                    description: Bisnode Finland companies API
+                  - id: 2e657179-83f9-4ea8-9306-4744a5c50257
+                    profiles:
+                    - ownership
+                    - roles
+                    name: fi-asiakastieto
+                    officialName: Asiakastieto Finland
+                    description: Asiakastieto organization lookup
+                  se:
+                  - id: 995934e9-766c-48b0-ac8f-3a870f7cb54c
+                    profiles:
+                    - basic
+                    - ubo
+                    - roles
+                    - authorization
+                    name: se-bolagsverket
+                    officialName: Bolagsverket Sweden
+                    description: Provides data from Bolagsverket
+                  be:
+                  - id: c355866a-67c5-4c38-bfd3-9b5303d9c9e8
+                    profiles:
+                    - basic
+                    - roles
+                    name: be-databe
+                    officialName: Data.be/KBO Belgium
+                    description: Databe organization lookup
+                  - id: a1b7fc00-7fbe-4427-b7ee-9b98ff458690
+                    profiles:
+                    - basic
+                    name: dk-cvr
+                    officialName: CVR (Det Centrale Virksomhedsregister)
+                    description: Provides data from CVR - det Centrale Virk
+                profiles:
+                - authorization
+                - basic
+                - finance
+                - ownership
+                - roles
+                - screening
+                - ubo
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /sources/person:
+    get:
+      tags:
+      - Sources
+      summary: Natural person
+      description: Returns the data sources available for natural persons.
+      operationId: Source_GetPersonAvailability_GET
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonLookupProvidersDto'
+              example:
+                providers:
+                  'no':
+                  - id: a76fc04c-0c7c-488b-b138-07c1ccb7ad2e
+                    profiles:
+                    - address
+                    name: no-freg
+                    officialName: Folkeregisteret Norway
+                    description: Norwegian population registry lookup
+                  - id: e09bf673-15b3-4c5c-b713-8145e8a418dc
+                    profiles:
+                    - address
+                    name: no-infotorg-dsf
+                    officialName: Infotorg DSF
+                    description: Norwegian population registry lookup through Infotorg
+                  fi:
+                  - id: 815cfd0b-f587-40cb-9782-60ec2dd4323d
+                    profiles:
+                    - address
+                    name: fi-dvv
+                    officialName: DVV Finland
+                    description: Dvv person lookup
+                  se:
+                  - id: 56103e78-0da1-41bd-a8a9-f776d44a213e
+                    profiles:
+                    - address
+                    name: se-spar
+                    officialName: SPAR (Statens Personadressregister)
+                    description: Statens Personadressregister lookup
+                  dk:
+                  - id: 5ea4c5f6-740d-4621-8c31-be4a1858580c
+                    profiles:
+                    - address
+                    name: dk-cpr
+                    officialName: CPR Denmark
+                    description: Provides data from CPR - Det Centrale Personregister
+                profiles:
+                - address
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /sources/accountsandattributes:
+    get:
+      tags:
+      - Sources
+      summary: Accounts and Attributes
+      description: Returns the data sources available for Accounts and Attributes.
+      operationId: Source_GetAccountsAndAttributesAvailability_GET
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsAndAttributesLookupProvidersDto'
+    servers:
+    - url: https://api.signicat.com/info/lookup
+components:
+  schemas:
+    SourceInfoDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The id of the source
+        profiles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The profiles supported by the source
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the source
+        officialName:
+          type:
+          - string
+          - 'null'
+          description: Official name of the source
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the source
+      additionalProperties: false
+      description: Contains information about a source
+    AccountsAndAttributesLookupProvidersDto:
+      type: object
+      properties:
+        providers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/SourceInfoDto'
+          description: Contains information about providers that provide AccountsAndAttributes data sources
+        profiles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Contains the different profiles for AccountsAndAttributes data sources
+      additionalProperties: false
+    PersonLookupProvidersDto:
+      type: object
+      properties:
+        providers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/SourceInfoDto'
+          description: Contains information about providers that provide person data sources
+        profiles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Contains the different profiles for person data sources
+      additionalProperties: false
+    OrgLookupProvidersDto:
+      type: object
+      properties:
+        providers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/SourceInfoDto'
+          description: Contains information about providers that provide organizational data sources
+        profiles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Contains the different profiles for organizational data sources
+      additionalProperties: false
+x-refined-from:
+- data-verification-openapi.json
+- signicat-data-verification-openapi.yml

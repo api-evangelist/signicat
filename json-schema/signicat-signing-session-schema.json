@@ -1,0 +1,745 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-signing-session-schema.json",
+  "title": "SigningSession",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-sign-openapi.yml#/components/schemas/SigningSession",
+  "type": "object",
+  "required": [
+    "title",
+    "documents",
+    "signingSetup"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "signatureUrl": {
+      "type": "string",
+      "readOnly": true
+    },
+    "signatureUrlTTL": {
+      "type": "integer",
+      "deprecated": true,
+      "description": "Deprecated! Use signatureUrlTimeToLive instead. Time-to-live for the signature URL in minutes",
+      "minimum": 5,
+      "maximum": 525600
+    },
+    "signatureUrlTimeToLive": {
+      "type": "string",
+      "description": "Time-to-live for the signature URL. Must be an ISO 8601 duration and a maximum of 45 days."
+    },
+    "signatureUrlExpiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "A title for the signing session."
+    },
+    "signText": {
+      "type": "string",
+      "maxLength": 2048,
+      "description": "Text displayed when starting the signing process. The signer must explicitly consent to this text before signing."
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The deadline for signing the document(s). Optional; if omitted, defaults to 30 days after session creation. You can explicitly set a deadline up to 45 days into the future."
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "nullable": false,
+      "items": {
+        "$ref": "#/$defs/SessionDocument"
+      }
+    },
+    "lifecycle": {
+      "$ref": "#/$defs/SessionLifecycle",
+      "readOnly": true
+    },
+    "output": {
+      "$ref": "#/$defs/SessionOutput"
+    },
+    "externalReference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1024,
+      "description": "Custom identifier for linking the signing session to your internal process. Passed back in redirect URLs."
+    },
+    "signingSetup": {
+      "description": "The user interaction setups for this signing session describing which IDPs are available for the end-user.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SigningSetup"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "nullable": false
+    },
+    "subsequentTo": {
+      "description": "IDs of signing sessions that must be signed before this one.",
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "packageTo": {
+      "description": "A list of formats the signing session should be packaged to when signed.",
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/PackageType"
+      }
+    },
+    "sealTo": {
+      "description": "A list of formats the signing session should be sealed to when signed.",
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/SealPackageType"
+      }
+    },
+    "signer": {
+      "description": "The intended signer of the signing Session.",
+      "$ref": "#/$defs/Signer"
+    },
+    "archive": {
+      "description": "Defines what objects should be added to archive. To use this functionality you must contact <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://dashboard.signicat.com/contact-us/tickets/new\">Signicat Support</a>.",
+      "$ref": "#/$defs/ArchiveSettings"
+    },
+    "preAuthentication": {
+      "description": "Sets up authentication of the signer before presenting documents.",
+      "$ref": "#/$defs/PreAuthentication"
+    },
+    "ui": {
+      "description": "Defines UI settings for the signing session.",
+      "$ref": "#/$defs/Ui"
+    },
+    "intentionText": {
+      "description": "A text indicating the end-user's intention when signing a document. Applicable when using flow PKISIGNING",
+      "$ref": "#/$defs/IntentionText"
+    },
+    "redirectSettings": {
+      "description": "Defines URLs for redirects.",
+      "$ref": "#/$defs/RedirectSettings"
+    },
+    "notifications": {
+      "type": "array",
+      "items": {
+        "description": "Defines SMS and EMAIL notifications.",
+        "$ref": "#/$defs/NotificationMessage"
+      }
+    },
+    "usageTags": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "string",
+        "maxLength": 50
+      },
+      "description": "A list of tags to emit with events for the sign sessions"
+    },
+    "forwarding": {
+      "$ref": "#/$defs/Forwarding"
+    }
+  },
+  "$defs": {
+    "ArchiveSettings": {
+      "type": "object",
+      "required": [
+        "retentionPeriod"
+      ],
+      "properties": {
+        "sendSignatureResultsToArchive": {
+          "type": "boolean"
+        },
+        "sendPackagingResultToArchive": {
+          "type": "boolean"
+        },
+        "sendSealingResultToArchive": {
+          "type": "boolean",
+          "description": "Whether generated sealing results should be sent to Archive."
+        },
+        "retentionPeriod": {
+          "type": "string",
+          "description": "How long the archived documents should be stored, in ISO 8601 duration format. Maximum 50 years."
+        },
+        "archiveTags": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "description": "A list of tags to associate with the archived document."
+        }
+      }
+    },
+    "ArtifactType": {
+      "type": "string",
+      "enum": [
+        "XADES",
+        "PADES"
+      ]
+    },
+    "CommunicationMethod": {
+      "type": "string",
+      "enum": [
+        "SMS",
+        "EMAIL"
+      ]
+    },
+    "Forwarding": {
+      "type": "object",
+      "properties": {
+        "flow": {
+          "$ref": "#/$defs/ForwardingFlow"
+        },
+        "parentSessionId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid",
+          "readOnly": true,
+          "description": "The ID of the session that was forwarded to create this session"
+        },
+        "childSessionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "readOnly": true,
+          "description": "List of child session IDs created by forwarding this session"
+        },
+        "senderAddress": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "The email address that the person forwarded to receives email notifications from."
+        }
+      }
+    },
+    "ForwardingFlow": {
+      "type": "string",
+      "enum": [
+        "FORWARD_AND_CONTINUE",
+        "NONE"
+      ]
+    },
+    "IdentityProvider": {
+      "type": "object",
+      "properties": {
+        "idpName": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "idpName"
+      ]
+    },
+    "IntentionText": {
+      "type": "object",
+      "required": [
+        "value",
+        "format"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "Intention text value to display in the UI"
+        },
+        "format": {
+          "description": "Format of the intention text to display in the UI",
+          "$ref": "#/$defs/IntentionTextFormat"
+        }
+      }
+    },
+    "IntentionTextFormat": {
+      "type": "string",
+      "enum": [
+        "TEXT",
+        "MARKDOWN"
+      ]
+    },
+    "LanguageEnum": {
+      "type": "string",
+      "enum": [
+        "da",
+        "de",
+        "en",
+        "fi",
+        "nb",
+        "nn",
+        "sv"
+      ]
+    },
+    "NotificationCategory": {
+      "type": "string",
+      "enum": [
+        "SIGNING_NOTIFICATION",
+        "FORWARDING_NOTIFICATION"
+      ]
+    },
+    "NotificationMessage": {
+      "type": "object",
+      "required": [
+        "communicationMethod",
+        "category"
+      ],
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/NotificationCategory"
+        },
+        "communicationMethod": {
+          "$ref": "#/$defs/CommunicationMethod"
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          }
+        },
+        "message": {
+          "description": "Message settings for the notification",
+          "$ref": "#/$defs/NotificationMessageContent"
+        }
+      }
+    },
+    "NotificationMessageContent": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "language": {
+          "description": "Specifies the language to be used in the notification",
+          "$ref": "#/$defs/LanguageEnum"
+        },
+        "header": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "senderAddress": {
+          "type": "string"
+        },
+        "senderName": {
+          "type": "string"
+        },
+        "includeFile": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PackageType": {
+      "type": "string",
+      "enum": [
+        "PADES_CONTAINER"
+      ]
+    },
+    "PreAuthentication": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "identityProviders": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/IdentityProvider"
+          },
+          "description": "The identity providers offered to the signer during pre-authentication."
+        }
+      }
+    },
+    "RedirectSettings": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "format": "url",
+          "maxLength": 2048
+        },
+        "cancel": {
+          "type": "string",
+          "format": "url",
+          "maxLength": 2048
+        },
+        "success": {
+          "type": "string",
+          "format": "url",
+          "maxLength": 2048
+        },
+        "reject": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "url",
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "error",
+        "cancel",
+        "success"
+      ]
+    },
+    "SealPackageType": {
+      "type": "string",
+      "enum": [
+        "XADES_CONTAINER"
+      ]
+    },
+    "SessionDocument": {
+      "type": "object",
+      "required": [
+        "documentCollectionId",
+        "action",
+        "documentId"
+      ],
+      "properties": {
+        "documentCollectionId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the document collection this document belongs to."
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "VIEW",
+            "SIGN"
+          ],
+          "description": "The action the signer is meant to perform on this document."
+        },
+        "documentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique ID of the uploaded document."
+        }
+      }
+    },
+    "SessionLifecycle": {
+      "type": "object",
+      "description": "Contains session lifecycle metadata.",
+      "readOnly": true,
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/SessionState"
+        },
+        "stateIsFinal": {
+          "type": "boolean"
+        },
+        "rejectReason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 1024
+        }
+      }
+    },
+    "SessionOutput": {
+      "type": "object",
+      "readOnly": true,
+      "properties": {
+        "signatures": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/SessionSignature"
+          }
+        },
+        "packages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/SessionPackage"
+          }
+        },
+        "userInfo": {
+          "$ref": "#/$defs/UserInfo",
+          "nullable": true
+        },
+        "seals": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/SessionSeal"
+          }
+        }
+      }
+    },
+    "SessionPackage": {
+      "type": "object",
+      "description": "Contains session package metadata",
+      "properties": {
+        "packageId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultArchiveId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "packageType": {
+          "$ref": "#/$defs/PackageType"
+        }
+      }
+    },
+    "SessionSeal": {
+      "type": "object",
+      "description": "Contains session seal metadata",
+      "properties": {
+        "sealId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultArchiveId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "packageType": {
+          "$ref": "#/$defs/SealPackageType"
+        },
+        "originalDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "SessionSignature": {
+      "type": "object",
+      "required": [
+        "resultDocumentId",
+        "signatureType"
+      ],
+      "properties": {
+        "documentCollectionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "originalDocumentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultArchiveId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "signatureType": {
+          "$ref": "#/$defs/ArtifactType"
+        }
+      }
+    },
+    "SessionState": {
+      "type": "string",
+      "enum": [
+        "BLOCKED",
+        "READY",
+        "SIGNED",
+        "REJECTED"
+      ]
+    },
+    "Signer": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 6,
+          "maxLength": 127
+        },
+        "mobile": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "nationalIdentificationNumber": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "username": {
+          "type": "string"
+        },
+        "prefill": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SignerPrefillEnum"
+          }
+        },
+        "validations": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/SignerValidationEnum"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "SignerPrefillEnum": {
+      "type": "string",
+      "enum": [
+        "NATIONAL_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "SignerValidationEnum": {
+      "type": "string",
+      "enum": [
+        "NATIONAL_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "SigningFlow": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATION_BASED",
+        "PKISIGNING"
+      ]
+    },
+    "SigningSetup": {
+      "type": "object",
+      "description": "What IdPs are available to the end-user and what type of signing flow should take place.",
+      "properties": {
+        "vendor": {
+          "$ref": "#/$defs/VendorEnum"
+        },
+        "identityProviders": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/IdentityProvider"
+          },
+          "description": "The list of identity providers (IdPs) available for the end-user to choose from. If not specified, all configured IdPs on the account will be shown as options."
+        },
+        "signingFlow": {
+          "$ref": "#/$defs/SigningFlow",
+          "description": "The type of signing flow to be  performed. `AUTHENTICATION_BASED` is a simple flow which  uses authentication evidence as input for displaying information in the PAdES/XAdES.\n"
+        },
+        "additionalParameters": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "description": "Additional parameters that modify the authentication flow. Depends on selected IdP. See <a href=\"https://developer.signicat.com/identity-methods/\">developer documentation</a> for details.\n"
+        },
+        "requestedAttributes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Requested Attributes from IDP (name and idp attributes are default)"
+        }
+      },
+      "required": [
+        "signingFlow",
+        "identityProviders"
+      ]
+    },
+    "Ui": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "description": "Specifies the language to be used in the signing UI.",
+          "$ref": "#/$defs/LanguageEnum"
+        },
+        "hideWelcomeScreen": {
+          "type": "boolean",
+          "description": "Hides the welcome dialog in the signing UI"
+        },
+        "minimalTextMode": {
+          "type": "boolean",
+          "description": "Enables a minimal UI mode for a single and short text/plain document"
+        }
+      }
+    },
+    "UserInfo": {
+      "type": "object",
+      "description": "The subject attributes of the signer, as described by the IdP.",
+      "properties": {
+        "signingTime": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string"
+        },
+        "nin": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "extra": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "VendorEnum": {
+      "type": "string",
+      "enum": [
+        "NBID"
+      ]
+    }
+  }
+}

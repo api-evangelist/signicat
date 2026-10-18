@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-query-schema.json",
+  "title": "Query",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-audit-logs-openapi.yml#/components/schemas/Query",
+  "type": "object",
+  "properties": {
+    "and": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/QueryCondition"
+      },
+      "description": "Query for audit logs that match all the given conditions"
+    },
+    "from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Earliest possible audit log to retrieve",
+      "format": "date-time"
+    },
+    "to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Latest possible audit log to retrieve (not inclusive)",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "JsonNode": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "$ref": "#/$defs/JsonNodeOptions"
+        },
+        "parent": {
+          "$ref": "#/$defs/JsonNode"
+        },
+        "root": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "JsonNodeOptions": {
+      "type": "object",
+      "properties": {
+        "propertyNameCaseInsensitive": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "QueryCondition": {
+      "required": [
+        "field",
+        "operator",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "field": {
+          "minLength": 1,
+          "type": "string",
+          "description": "The audit log field to filter by"
+        },
+        "operator": {
+          "minLength": 1,
+          "type": "string",
+          "description": "The filter operation to filter by"
+        },
+        "value": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

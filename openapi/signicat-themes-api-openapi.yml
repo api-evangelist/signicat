@@ -1,0 +1,103 @@
+openapi: 3.2.0
+info:
+  title: Signicat Themes API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Themes across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Themes
+paths:
+  /themes/list/themes:
+    get:
+      tags:
+      - Themes
+      summary: List themes
+      description: This endpoint lists all the color themes you can use in our sign application
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+      operationId: getThemesListThemes
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /themes/list/spinners:
+    get:
+      tags:
+      - Themes
+      summary: List spinners
+      description: This endpoint lists all the spinners you can use in our sign application
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spinner'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spinner'
+      operationId: getThemesListSpinners
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    Theme:
+      enum:
+      - Default
+      - Black
+      - Blue
+      - Cyan
+      - Dark
+      - Lime
+      - Neutral
+      - Pink
+      - Purple
+      - Red
+      - Teal
+      - Indigo
+      - LightBlue
+      - DeepPurple
+      - Green
+      - LightGreen
+      - Yellow
+      - Amber
+      - Orange
+      - DeepOrange
+      - Brown
+      - Gray
+      - BlueGray
+      - OceanGreen
+      - GreenOcean
+      - Idfy
+      - Signicat
+      type: string
+    Spinner:
+      enum:
+      - Document
+      - Classic
+      - Cubes
+      - Bounce
+      type: string
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

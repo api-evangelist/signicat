@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-update-recipient-dto-schema.json",
+  "title": "UpdateRecipientDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-secure-share-openapi.yml#/components/schemas/UpdateRecipientDto",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "firstName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient first name"
+    },
+    "lastName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient last name"
+    },
+    "email": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient email",
+      "format": "email",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "mobile": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Recipient mobile"
+    },
+    "externalReference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Create a reference to your own system"
+    },
+    "fileRestrictions": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "A list of file ids that this recipient has access to, if empty, this recipient will have access to all the file from the share",
+      "items": {
+        "type": "string",
+        "format": "guid"
+      }
+    },
+    "authentication": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "List of authentication methods for a recipient",
+      "items": {
+        "$ref": "#/$defs/AuthenticationDto"
+      }
+    },
+    "notification": {
+      "description": "Recipient notification setup",
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/$defs/UpdateNotificationDto"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "AuthenticationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityProvider": {
+          "type": "string"
+        },
+        "idpId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "UpdateNotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sensSms": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

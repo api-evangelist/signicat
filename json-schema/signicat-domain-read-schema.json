@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-domain-read-schema.json",
+  "title": "DomainRead",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-domain-management-openapi.yml#/components/schemas/DomainRead",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique ID of this domain."
+    },
+    "accountId": {
+      "type": "string",
+      "description": "The Account this domain is connected to."
+    },
+    "domain": {
+      "type": "string",
+      "description": "FQDN of the domain you want to add."
+    },
+    "domainKind": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DomainKind"
+        }
+      ],
+      "description": "Domain kind. See docs for further descriptions."
+    },
+    "requireMutualTls": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Whether this domain should only be accessible through mTLS."
+    },
+    "customerManagedParameters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CustomerManagedParametersRead"
+        }
+      ],
+      "description": "Additional parameters for when `DomainKind=CustomerManaged`.",
+      "nullable": true
+    },
+    "tlsState": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TlsState"
+        }
+      ],
+      "description": "Current state of the TLS certificate."
+    },
+    "dnsState": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DnsState"
+        }
+      ],
+      "description": "Current state of the DNS records."
+    },
+    "isDefaultDomain": {
+      "type": "boolean",
+      "description": "Whether this domain is the default domain for the account it belongs to."
+    },
+    "createdAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the domain was created.",
+      "format": "date-time"
+    },
+    "deletedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the domain was deleted.",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CustomDomainCertificateKind": {
+      "enum": [
+        "LetsEncrypt",
+        "Csr",
+        "Custom",
+        "AcmeEab"
+      ],
+      "type": "string"
+    },
+    "CustomerManagedParametersRead": {
+      "type": "object",
+      "properties": {
+        "certificateKind": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CustomDomainCertificateKind"
+            }
+          ],
+          "description": "Certificate kind. See docs for further descriptions.",
+          "nullable": true
+        },
+        "certificateId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of certificate to use. Required when `CertificateKind=Custom`."
+        },
+        "validTo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date at which the certificate will expire. This field is read-only. Only set when `CertificateKind=Custom`."
+        },
+        "acmeEabServerUrl": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`."
+        },
+        "acmeEabKeyId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`."
+        }
+      },
+      "additionalProperties": false
+    },
+    "DnsState": {
+      "enum": [
+        "NotReady",
+        "WaitingDnsSetup",
+        "WaitingCustomerDnsSetup",
+        "Ready"
+      ],
+      "type": "string"
+    },
+    "DomainKind": {
+      "enum": [
+        "SignicatManaged",
+        "CustomerManaged"
+      ],
+      "type": "string"
+    },
+    "TlsState": {
+      "enum": [
+        "NotReady",
+        "WaitingTlsSetup",
+        "WaitingCustomerUploadCertificate",
+        "Ready",
+        "WaitingForCustomerDns",
+        "Deleted",
+        "TlsError",
+        "WaitingCustomerAcmeEabParameters"
+      ],
+      "type": "string"
+    }
+  }
+}

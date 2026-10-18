@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-page-subscription-list-item-schema.json",
+  "title": "Page_SubscriptionListItem",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-events-openapi.yml#/components/schemas/Page_SubscriptionListItem",
+  "required": [
+    "data",
+    "next"
+  ],
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SubscriptionListItem"
+      },
+      "description": "The contents of the current page."
+    },
+    "next": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "URL to the next page, if more data may be available."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "SubscriptionListItem": {
+      "required": [
+        "active",
+        "eventNameFilter",
+        "id",
+        "name",
+        "ownerId",
+        "tagFilter",
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "eventNameFilter": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "tagFilter": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "enum": [
+            "GooglePubSub",
+            "Mint",
+            "Webhook",
+            "AzureServiceBus"
+          ],
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

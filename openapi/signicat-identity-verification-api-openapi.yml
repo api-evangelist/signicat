@@ -1,0 +1,343 @@
+openapi: 3.2.0
+info:
+  title: Signicat Identity verification API
+  version: '1.0'
+  description: 'Operations tagged Identity verification across 2 of this provider''s published API definitions: mobileid-openapi.json, signicat-mobileid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/core
+tags:
+- name: Identity Verification
+  description: 'The MobileID identity verification API provides you with operations related to managing the results of identity verification processes,
+
+    and allows you to link them to the MobileID users that perform them.
+
+
+    The identity verification processes are performed in the Signicat ID Document and Biometric Verification product.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----
+
+
+    ## Useful information
+
+    Some operations in this API require the proofing ID (`proofingId`) of the identity verification, which is created when the identity verification is added.'
+paths:
+  /id-verifications:
+    post:
+      tags:
+      - Identity Verification
+      summary: Add identity verification
+      description: 'The Add identity verification operation adds an entry to the list of an end-user''s identity verifications.
+
+
+        Once the identity verification is successfully added, a unique proofing ID (proofingId) is generated.
+
+        This proofingId is then used to identify the identity verification for subsequent operations.'
+      operationId: addIDVerification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IDVerificationAddRequest'
+              additionalProperties: false
+            example:
+              userId: 49ded4a2-1617-45a7-991d-785c2ad77fa5
+              provider: eid
+              dossierId: 66666666-1617-45a7-991d-785c2ad77111
+              processId: 88888888-1617-45a7-991d-785c2ad77222
+              orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        required: true
+      responses:
+        '201':
+          description: Successfully added an identity verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDVerification'
+                additionalProperties: false
+              example:
+                proofingId: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+                userId: 49ded4a2-1617-45a7-991d-785c2ad77fa5
+                proofingType: ID_VERIFICATION
+                provider: eid
+                dossierId: 66666666-1617-45a7-991d-785c2ad77111
+                processId: 88888888-1617-45a7-991d-785c2ad77222
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+  /id-verifications/{proofingId}:
+    get:
+      tags:
+      - Identity Verification
+      summary: Get identity verification
+      description: The Get identity verification operation returns the identity verification specified by the proofing ID (proofingId).
+      operationId: getIDVerification
+      parameters:
+      - name: proofingId
+        in: path
+        description: 'The ID of the identity verification, in a valid UUID format.
+
+
+          <b>Note</b>:This is created when the identity verification is added.
+
+          '
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'The ID of the identity verification, in a valid UUID format.
+
+
+            <b>Note</b>:This is created when the identity verification is added.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the identity verification for the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDVerification'
+                additionalProperties: false
+              example:
+                proofingId: b477c7fc-93d0-4e9d-bc58-7444bc33ef12
+                userId: 49ded4a2-1617-45a7-991d-785c2ad77fa5
+                proofingType: ID_VERIFICATION
+                provider: eid
+                dossierId: 66666666-1617-45a7-991d-785c2ad77111
+                processId: 88888888-1617-45a7-991d-785c2ad77222
+                created: '2023-01-03T07:55:05.233Z'
+                orchestrationId: 7777777-1617-45a7-991d-785c2ad77111
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: The user proofing does not exist
+                code: user_proofing_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching proofing with proofing ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and user ID : a-sdge-Abcdefghijk123456789. '
+    delete:
+      tags:
+      - Identity Verification
+      summary: Delete identity verification
+      description: The Delete identity verification deletes the identity verification specified by the proofing ID (proofingId).
+      operationId: deleteIDVerification
+      parameters:
+      - name: proofingId
+        in: path
+        description: 'The ID of the identity verification, in a valid UUID format.
+
+
+          <b>Note</b>:This is created when the identity verification is added.
+
+          '
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: 'The ID of the identity verification, in a valid UUID format.
+
+
+            <b>Note</b>:This is created when the identity verification is added.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '204':
+          description: Successfully deleted the identity verification.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: The user proofing does not exist
+                code: user_proofing_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching proofing with proofing ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and user ID : a-sdge-Abcdefghijk123456789. '
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+components:
+  schemas:
+    IDVerification:
+      type: object
+      additionalProperties: false
+      properties:
+        proofingId:
+          type: string
+          additionalProperties: false
+          description: The ID of the identity verification.
+          example: f42ac67e-7eb6-40fb-b72e-c48fd9bbd013
+        userId:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>).
+          example: 801d7c7f-5d1e-46dc-827a-460e9c622cd4
+        proofingType:
+          type: string
+          additionalProperties: false
+          description: The type of identity verification used. For this API it will always be ID_VERIFICATION
+          example: ID_VERIFICATION
+        provider:
+          type: string
+          additionalProperties: false
+          description: The name of the provider that performs the identity verification.
+          example: eid
+        dossierId:
+          type: string
+          additionalProperties: false
+          description: The ID of the identity verification dossier.
+          example: 12ced477-7ba2-41a6-9f38-4b9f0172bc11
+        processId:
+          type: string
+          additionalProperties: false
+          description: The ID of the identity verification process.
+          example: 7bc36291-b096-4d25-bccc-56680c38c515
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the identity verification was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-22T21:47:27.233Z'
+        orchestrationId:
+          type: string
+          additionalProperties: false
+          description: The ID, in a valid UUID format, used for workflow synchronization..
+          example: 8bc36291-b096-4d25-bccc-56680c38c515
+    IDVerificationAddRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        userId:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 801d7c7f-5d1e-46dc-827a-460e9c622cd4
+          minLength: 1
+        provider:
+          type: string
+          additionalProperties: false
+          description: 'The name of the provider that performs the identity verification.
+
+
+            This should be the same as the provider used in the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) request.
+
+            '
+          example: eid
+          minLength: 1
+        dossierId:
+          type: string
+          additionalProperties: false
+          description: 'The ID of the identity verification dossier, in a valid UUID format.
+
+
+            You can obtain this from the [Create dossier](/apis/id-document-and-biometric-verification/#tag/Dossiers/operation/createDossier) response body.
+
+            '
+          example: 12ced477-7ba2-41a6-9f38-4b9f0172bc11
+          minLength: 1
+        processId:
+          type: string
+          additionalProperties: false
+          description: 'The ID of the identity verification process, in a valid UUID format.
+
+
+            You can obtain this from the [Create process](/apis/id-document-and-biometric-verification/#tag/Processes/operation/createProcess) response body.
+
+            '
+          example: 7bc36291-b096-4d25-bccc-56680c38c515
+          minLength: 1
+        orchestrationId:
+          type: string
+          additionalProperties: false
+          description: 'The ID, in a valid UUID format, used for workflow synchronization.
+
+            '
+          example: 8cc36291-b096-4d25-bccc-66680c38c516
+          minLength: 1
+      required:
+      - dossierId
+      - orchestrationId
+      - processId
+      - provider
+      - userId
+x-refined-from:
+- mobileid-openapi.json
+- signicat-mobileid-openapi.yml

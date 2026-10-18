@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-workflow-schema.json",
+  "title": "Workflow",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mint-openapi.yml#/components/schemas/Workflow",
+  "required": [
+    "id"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the workflow."
+    },
+    "name": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "The name of the workflow."
+    },
+    "description": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "The description of the workflow."
+    },
+    "version": {
+      "pattern": "^-?(?:0|[1-9]\\d*)$",
+      "type": [
+        "integer",
+        "string"
+      ],
+      "description": "The version number of the workflow.",
+      "format": "int32"
+    },
+    "isLatest": {
+      "type": "boolean",
+      "description": "Whether this is the latest version of the workflow."
+    },
+    "isPublished": {
+      "type": "boolean",
+      "description": "Whether this version is the published version of the workflow."
+    },
+    "isLocked": {
+      "type": "boolean",
+      "description": "Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted."
+    },
+    "createdAt": {
+      "description": "Time at which the workflow was created.",
+      "format": "date-time"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/WorkflowStep"
+      },
+      "description": "List of steps that define the workflow."
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/WorkflowStepConnection"
+      },
+      "description": "List of connections between workflow steps."
+    },
+    "variables": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "description": "Workflow variables."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of workflow tags."
+    },
+    "domain": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "The workflow domain."
+    },
+    "workflowUrl": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "description": "The workflow URL."
+    },
+    "inputParameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/WorkflowInputParameter"
+      },
+      "description": "List of allowed input parameters for the workflow."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FileDetails"
+      },
+      "description": "List of files associated with the workflow."
+    }
+  },
+  "$defs": {
+    "FileDetails": {
+      "required": [
+        "id",
+        "filename",
+        "contentType",
+        "size"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the file."
+        },
+        "filename": {
+          "type": "string",
+          "description": "The filename."
+        },
+        "contentType": {
+          "type": "string",
+          "description": "Content type of the file."
+        },
+        "size": {
+          "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "type": [
+            "null",
+            "integer",
+            "string"
+          ],
+          "description": "The size of the file in bytes.",
+          "format": "int64"
+        }
+      }
+    },
+    "WorkflowInputParameter": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the input parameter."
+        }
+      }
+    },
+    "WorkflowStep": {
+      "required": [
+        "id",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 50,
+          "minLength": 0,
+          "pattern": "^[0-9a-zA-Z-_]+$",
+          "type": "string",
+          "description": "Unique identifier for the step."
+        },
+        "type": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string",
+          "description": "The step type."
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The step name."
+        },
+        "displayName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The display name of the step."
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The description of the step."
+        },
+        "properties": {
+          "type": [
+            "null",
+            "object"
+          ],
+          "description": "Input properties of the step."
+        }
+      }
+    },
+    "WorkflowStepConnection": {
+      "required": [
+        "sourceStepId",
+        "targetStepId",
+        "outcome"
+      ],
+      "type": "object",
+      "properties": {
+        "sourceStepId": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The source step ID."
+        },
+        "targetStepId": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The target step ID."
+        },
+        "outcome": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "The step outcome."
+        }
+      }
+    }
+  }
+}

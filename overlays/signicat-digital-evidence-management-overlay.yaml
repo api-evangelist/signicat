@@ -1,0 +1,33 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Digital Evidence Management API
+  version: 1.0.0
+extends: ../openapi/_original/signicat-digital-evidence-management-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-digital-evidence-management-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/digital-evidence-management/
+- target: $.components
+  description: Add the OAuth 2.0 client-credentials scheme Signicat documents for all its APIs (token URL https://api.signicat.com/auth/open/connect/token,
+    scope signicat-api; source https://developer.signicat.com/llms-full.txt "Connecting to Signicat APIs").
+  update:
+    securitySchemes:
+      signicatOAuth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            tokenUrl: https://api.signicat.com/auth/open/connect/token
+            scopes:
+              signicat-api: Access Signicat APIs
+- target: $
+  description: Root security requirement for the added scheme.
+  update:
+    security:
+    - signicatOAuth2:
+      - signicat-api

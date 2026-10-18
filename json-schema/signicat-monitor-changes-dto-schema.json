@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-monitor-changes-dto-schema.json",
+  "title": "MonitorChangesDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-openapi.yml#/components/schemas/MonitorChangesDto",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Unique identifier for the monitor changes.",
+      "format": "int32"
+    },
+    "referenceKey": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reference key associated with the entity."
+    },
+    "monitorId": {
+      "type": "string",
+      "description": "Unique identifier associated with a monitor.",
+      "format": "uuid"
+    },
+    "detected": {
+      "type": "string",
+      "description": "Date and time when the changes were detected at the source.",
+      "format": "date-time"
+    },
+    "created": {
+      "type": "string",
+      "description": "Timestamp indicating when the monitor changes were created in our system.",
+      "format": "date-time"
+    },
+    "changes": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/ChangesDto"
+      },
+      "description": "List of changes associated with the monitor."
+    },
+    "source": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name of the source that produced this batch of changes."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ChangesDto": {
+      "required": [
+        "action",
+        "attribute",
+        "profile"
+      ],
+      "type": "object",
+      "properties": {
+        "profile": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Represents the profile associated with a specific change entry."
+        },
+        "attribute": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Represents the specific attribute of a change entry."
+        },
+        "action": {
+          "minLength": 1,
+          "type": "string",
+          "description": "This property is used to describe the operation associated with the change, such as addition,\nupdate, or deletion of specific data."
+        },
+        "new": {
+          "enum": [
+            null
+          ],
+          "description": "This property provides information about the updated or newly assigned value after a change has occurred.",
+          "nullable": true
+        },
+        "old": {
+          "enum": [
+            null
+          ],
+          "description": "This property captures the information prior to the modification, providing\na means to track and compare historical data.",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

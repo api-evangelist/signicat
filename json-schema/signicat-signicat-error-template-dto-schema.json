@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-signicat-error-template-dto-schema.json",
+  "title": "SignicatErrorTemplateDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-oidc-config-openapi.yml#/components/schemas/SignicatErrorTemplateDto",
+  "type": "object",
+  "properties": {
+    "errorCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The Signicat Error Code of the error type"
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Short summary of the error type"
+    },
+    "httpStatus": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "The HTTP status code associated with the error type",
+      "format": "int32"
+    },
+    "detailsTemplate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Template of the details provided in the error message"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Extensive markdown description of the error"
+    }
+  },
+  "additionalProperties": false
+}

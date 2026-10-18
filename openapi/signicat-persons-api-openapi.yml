@@ -1,0 +1,3131 @@
+openapi: 3.2.0
+info:
+  title: Signicat Persons API
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-refined-note:
+  - x-meta differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Persons across 4 of this provider''s published API definitions: data-verification-openapi.json, ongoing-monitoring-person-openapi.json, signicat-data-verification-openapi.yml, signicat-ongoing-monitoring-person-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/lookup
+- url: https://api.signicat.com/info/monitor/person
+tags:
+- name: Persons
+  description: 'This API returns information about a person.
+
+
+    Learn more about the different data sources in the developer documentation.
+
+    Also, refer to Sources section (below) to learn how to configure the data sources which you would like to use.'
+paths:
+  /countries/{country}/persons:
+    get:
+      tags:
+      - Persons
+      summary: Basic
+      description: Retrieve basic info about a person
+      operationId: Person_GetBasic_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.BasicInfoDto'
+              example:
+                names:
+                - isActive: true
+                  startDate: '1997-03-04T12:30:00.000Z'
+                  endDate: null
+                  status: all
+                  full: Esther Kristin Hall
+                  first: Esther
+                  last: Hall
+                  middle: Kristin
+                birth:
+                  location: TØNSBERG
+                  monthOfBirth: March
+                  yearOfBirth: '1997'
+                  dateOfBirth: '1997-03-02'
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                death:
+                  isDead: true
+                  monthOfDeath: '04'
+                  yearOfDeath: '2017'
+                  dateOfDeath: '2017-04-09'
+                nationalities:
+                - isActive: true
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                  startDate: '1997-03-04T12:30:00.000Z'
+                  endDate: null
+                citizenships: null
+                permanentAddresses:
+                - isActive: true
+                  isConfidential: true
+                  startDate: '2018-08-02T12:30:00.000Z'
+                  endDate: null
+                  addressLines: null
+                  street: Tistelvegen 207
+                  postalCode: '7033'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                postalAddresses:
+                - isActive: true
+                  isConfidential: true
+                  startDate: '2018-08-02T12:30:00.000Z'
+                  endDate: null
+                  addressLines: null
+                  street: Tistelvegen 207
+                  postalCode: '7033'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                foreignAddresses: []
+                sourceSpecific: null
+                metadata:
+                  sources:
+                  - no-infotorg-dsf
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/persons/address:
+    get:
+      tags:
+      - Persons
+      summary: Address
+      description: Retrieve address info for a person. This endpoint is deprecated, use Basic instead.
+      operationId: Person_GetAddress_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.AddressInfoDto'
+              example:
+                permanent:
+                  street: Tors veg 30 C
+                  postalCode: '7035'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                postal:
+                  street: Mjølnervegen 6
+                  postalCode: '7035'
+                  city: TRONDHEIM
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                foreign:
+                  street: Berlin
+                  postalCode: '1234'
+                  city: Berlin
+                  country:
+                    name: Germany
+                    alpha2: DE
+                    alpha3: DEU
+                    numeric: '276'
+                metadata:
+                  sources:
+                  - no-freg
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+      deprecated: true
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/persons/finance:
+    get:
+      tags:
+      - Persons
+      summary: Finance
+      description: Retrieve finance info for a person
+      operationId: Person_GetFinance_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.FinanceDto'
+              example:
+                creditScore:
+                  score: '4'
+                  scoringSystem: Bisnode AAA
+                  link: null
+                  year: null
+                numberOfPaymentRemarks: 1
+                incomeAndWealth:
+                - year: 2019
+                  currency: NOK
+                  grossIncome: 302461
+                  netIncome: 164092
+                  wealth: 102002
+                - year: 2018
+                  currency: NOK
+                  grossIncome: null
+                  netIncome: 131897
+                  wealth: 90675
+                metadata:
+                  sources:
+                  - bisnode
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/persons/contacts:
+    get:
+      tags:
+      - Persons
+      summary: Contacts
+      description: Retrieve contacts for a person
+      operationId: Person_GetContacts_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.ContactsDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/persons/identity/verify:
+    get:
+      tags:
+      - Persons
+      summary: Identity Verification
+      description: Verification of a person identity
+      operationId: Person_VerifyAddress_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.AddressVerificationDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /countries/{country}/persons/accountnumber/{accountNumber}/verify:
+    get:
+      tags:
+      - Persons
+      summary: Account Holder Verification
+      description: Retrieve account details if a bank account is found (using an IBAN) and it matches the name provided.
+      operationId: Person_VerifyAccountNumber_GET
+      parameters:
+      - name: country
+        in: path
+        description: ISO 3166-1 country code
+        required: true
+        schema:
+          type: string
+      - name: accountNumber
+        in: path
+        description: Account number of the person
+        required: true
+        schema:
+          type: string
+      - name: idType
+        in: query
+        description: 'Optional hint to what kind of id being used.
+
+          Allowed values are `PersonalId`, `Passport`, `IdentityCard`, `DriversLicense`, `TravelDocument`, `ResidentPermit`, `TaxNumber` and `VoterId`, defaults to `PersonalId` and is only used by a limited number of sources.'
+        schema:
+          type: string
+      - name: identityNumber
+        in: query
+        description: The national identity number used to identify the person
+        schema:
+          type: string
+      - name: givenName
+        in: query
+        description: The persons given name
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: The persons surname
+        schema:
+          type: string
+      - name: dateOfBirth
+        in: query
+        description: The persons date of birth
+        schema:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+      - name: caseRef
+        in: query
+        description: Case reference if required by the source
+        schema:
+          type: string
+      - name: street
+        in: query
+        description: The persons street address
+        schema:
+          type: string
+      - name: streetNumber
+        in: query
+        description: The persons street address number
+        schema:
+          type: string
+      - name: postalCode
+        in: query
+        description: The persons postal code
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: The persons city place
+        schema:
+          type: string
+      - name: gender
+        in: query
+        description: 'The person''s gender. Optional parameter.
+
+          Allowed values are `Male`, `Female`, `Other`, `Unknown`. Defaults to `Unknown` and only applies to a limited number of data sources.'
+        schema:
+          type: string
+      - name: phoneNumber
+        in: query
+        description: PhoneNumber for the Identity verification
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNumberVerificationResultDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /persons/search:
+    get:
+      tags:
+      - Persons
+      summary: Search - Beta
+      description: 'Search for an person.
+
+        Functionality is subject to change without prior notice.'
+      operationId: PersonGlobal_Search_GET
+      parameters:
+      - name: dateOfBirth
+        in: query
+        description: 'Date of birth of the entity to search for, accepted formats: `yyyy-MM-dd`, `yyyy-MM` or `yyyy`'
+        schema:
+          maxLength: 10
+          type: string
+      - name: postalCode
+        in: query
+        description: Search person through postal code
+        schema:
+          type: string
+      - name: countries
+        in: query
+        description: Comma-separated list of countries to include in the search - ISO 3166-1 format
+        schema:
+          maxLength: 50
+          type: string
+      - name: id
+        in: query
+        description: Id of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: name
+        in: query
+        description: Name of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      - name: offset
+        in: query
+        description: Used for paging
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Set how many results you want per page (max/default 100)
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person.SearchResultDto'
+              example:
+                offset: 0
+                limit: 100
+                size: 1
+                links:
+                  next: null
+                  previous: null
+                  first: null
+                  self: null
+                data:
+                - id: null
+                  name:
+                    status: partial
+                    full: Example Full Name
+                    first: null
+                    last: null
+                    middle: null
+                  country:
+                    name: null
+                    alpha2: 'NO'
+                    alpha3: NOR
+                    numeric: '578'
+                metadata:
+                  sources:
+                  - no-freg
+                  - fi-dvv
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /persons/screening:
+    get:
+      tags:
+      - Persons
+      summary: Screening
+      description: AML/CFT screening against lists with politically exposed persons (PEP), sanctions and adverse media.
+      operationId: PersonGlobal_Screening_GET
+      parameters:
+      - name: dateOfBirth
+        in: query
+        description: 'Date of birth of the entity to search for, accepted formats: `yyyy-MM-dd`, `yyyy-MM` or `yyyy`'
+        schema:
+          maxLength: 10
+          type: string
+      - name: postalCode
+        in: query
+        description: Search person through postal code
+        schema:
+          type: string
+      - name: countries
+        in: query
+        description: Comma-separated list of countries to include in the search - ISO 3166-1 format
+        schema:
+          maxLength: 50
+          type: string
+      - name: id
+        in: query
+        description: Id of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: name
+        in: query
+        description: Name of the entity to search for
+        schema:
+          maxLength: 100
+          type: string
+      - name: source
+        in: query
+        description: Optional name of the source to use
+        schema:
+          maxLength: 50
+          type: string
+      - name: rawJson
+        in: query
+        description: Optionally include the raw data received from the upstream if supported by the source
+        schema:
+          type: boolean
+      - name: listType
+        in: query
+        description: Comma-separated string of list types to screen against, defaults to all lists. Allowed values are `pep`, `sanction` and `adverseMedia`.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Used for paging
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Set how many results you want per page (max/default 100)
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening.ScreeningResultDto'
+              example:
+                offset: 0
+                limit: 100
+                size: 1
+                links:
+                  next: null
+                  previous: null
+                  first: http://api.signicat.com/information/organizations/screening?listType=pep%2csanction&name=OrgName&limit=100
+                  self: null
+                data:
+                - entityType: organization
+                  listType: sanction
+                  matchStrength:
+                    score: 20
+                    certainty: low
+                  sourceName: SCREENING_SOURCE
+                  name:
+                    status: partial
+                    full: OrgName AB
+                    first: null
+                    last: null
+                    middle: null
+                  gender: unknown
+                  aliases:
+                  - status: partial
+                    full: OrgName AB
+                    first: null
+                    last: null
+                    middle: null
+                  associates: []
+                  datesOfBirth: []
+                  addresses:
+                  - street: Hålebäcksvägen 7
+                    postalCode: '79026'
+                    city: ENVIKEN
+                    country:
+                      name: null
+                      alpha2: SE
+                      alpha3: SWE
+                      numeric: '752'
+                  comments: []
+                  functions: []
+                  media:
+                  - title: null
+                    excerpt: null
+                    url: https://google.com
+                    date: null
+                  roles:
+                  - roleType: Type of role
+                    organization: Organization Name
+                    description: Role description
+                    startDate: null
+                    endDate: null
+                metadata:
+                  sources:
+                  - trapets
+                  urls: []
+                  lastChanged: null
+                  rawJson: null
+                  isCache: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDto'
+              example:
+                code: PL-1900
+                type: https://developer.signicat.com/docs/data-verification/error-codes/#PL-1900
+                title: Error message
+                detail: This error is often an example
+                status: null
+                invalidParams: null
+    servers:
+    - url: https://api.signicat.com/info/lookup
+  /monitors/{monitorId}/persons/{referenceKey}:
+    post:
+      tags:
+      - Persons
+      summary: Add a person
+      description: 'Adds the specified person to the monitor.
+
+        The supplied information must be enough to securely identify them. The national identity number must always be included.'
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: referenceKey
+        in: path
+        description: The person's reference key.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Information about the person you want to add.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseMonitorPerson'
+            example:
+              firstName: Hedda
+              lastName: Hansen
+              middleName: T.
+              dateOfBirth: '1970-02-20'
+              nationalIdentityNumber: '24107749383'
+              nationality: 'NO'
+              address:
+                address: Kirkegata 177
+                zipCode: '3674'
+                city: NOTODDEN
+                country: 'NO'
+      responses:
+        '201':
+          description: The person has been added
+        '400':
+          description: Invalid referenceKey
+        '404':
+          description: Monitor doesn't exist
+        '409':
+          description: A person with the specified referenceKey already exists
+        '422':
+          description: Required fields are missing, or the request contains a person from a population registry that is not configured for your account
+      operationId: postMonitorsByMonitorIdPersonsByReferenceKey
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Persons
+      summary: Get a person
+      description: Get the latest information about the person with the supplied referenceKey.
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: referenceKey
+        in: path
+        description: The person's reference key.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The person was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorPersonGet'
+              example:
+                fullName: Hedda Hansen
+                isAddressProtected: false
+                firstName: Hedda
+                lastName: Hansen
+                dateOfBirth: '1984-08-16'
+                nationalIdentityNumber: '24107749383'
+                nationality: 'NO'
+                address:
+                  address: Kirkegata 177
+                  zipCode: '3674'
+                  city: NOTODDEN
+                  country: 'NO'
+                screening:
+                  listType: PEP
+                  source: PEP_Edge
+        '404':
+          description: Monitor or person doesn't exist
+      operationId: getMonitorsByMonitorIdPersonsByReferenceKey
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Persons
+      summary: Remove person
+      description: Remove the specified person from the monitor.
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: referenceKey
+        in: path
+        description: The person's reference key.
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: The process to remove the person has started
+      operationId: deleteMonitorsByMonitorIdPersonsByReferenceKey
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}/persons/add:
+    post:
+      tags:
+      - Persons
+      summary: Add a batch of persons
+      description: 'Adds the provided persons to the register.
+
+        Existing persons (persons from the batch whose referenceKey already exists in the system) will be updated.
+
+        The information you supply about each person must be enough to securely identify them.
+
+        For example, a national identity number or the combination of name and date of birth.
+
+
+        If any added persons are detected as invalid, a change message will be available through the changes endpoint.'
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The list of persons to be added.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorAddPersons'
+            example:
+              persons:
+              - referenceKey: b25229e4f6024e35931e4edbe4a29009
+                firstName: Hedda
+                lastName: Hansen
+                middleName: T.
+                dateOfBirth: '1970-02-20'
+                nationalIdentityNumber: '24107749383'
+                nationality: 'NO'
+                address:
+                  address: Kirkegata 177
+                  zipCode: '3674'
+                  city: NOTODDEN
+                  country: 'NO'
+              - referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                firstName: Erik
+                lastName: Rødal
+                middleName: D.
+                dateOfBirth: '1980-04-20'
+                nationality: 'NO'
+                address:
+                  address: Bjørndalen 74
+                  zipCode: '1708'
+                  city: SARPSBORG
+                  country: 'NO'
+              - referenceKey: c2690bae4cbc45b2a84e24de787b22d3
+                firstName: Erik
+                lastName: Rødal
+                middleName: D.
+                dateOfBirth: '1980-04-20'
+                nationality: 'NO'
+          text/csv:
+            schema:
+              $ref: '#/components/schemas/MonitorAddPersons'
+            example:
+              persons:
+              - referenceKey: b25229e4f6024e35931e4edbe4a29009
+                firstName: Hedda
+                lastName: Hansen
+                middleName: T.
+                dateOfBirth: '1970-02-20'
+                nationalIdentityNumber: '24107749383'
+                nationality: 'NO'
+                address:
+                  address: Kirkegata 177
+                  zipCode: '3674'
+                  city: NOTODDEN
+                  country: 'NO'
+              - referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                firstName: Erik
+                lastName: Rødal
+                middleName: D.
+                dateOfBirth: '1980-04-20'
+                nationality: 'NO'
+                address:
+                  address: Bjørndalen 74
+                  zipCode: '1708'
+                  city: SARPSBORG
+                  country: 'NO'
+              - referenceKey: c2690bae4cbc45b2a84e24de787b22d3
+                firstName: Erik
+                lastName: Rødal
+                middleName: D.
+                dateOfBirth: '1980-04-20'
+                nationality: 'NO'
+      responses:
+        '202':
+          description: Persons have been added for processing
+        '404':
+          description: Monitor doesn't exist
+        '413':
+          description: Request entity too large
+        '422':
+          description: Required fields are missing, or the request contains persons from a population registry that is not configured for your account
+      operationId: postMonitorsByMonitorIdPersonsAdd
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}/persons/remove:
+    post:
+      tags:
+      - Persons
+      summary: Remove a batch of persons
+      description: Removes the specified persons from the monitor.
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Reference IDs of the persons to remove from the monitor
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorRemovePersons'
+            example:
+              personReferenceKeys:
+              - b25229e4f6024e35931e4edbe4a29009
+              - c2690bae4cbc45b2a84e24de787b22d2
+      responses:
+        '202':
+          description: Process to remove the persons has started
+      operationId: postMonitorsByMonitorIdPersonsRemove
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+components:
+  schemas:
+    Person.ContactDto:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        preferredLanguage:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    NamedValueDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Person.AddressInfoDto:
+      type: object
+      properties:
+        permanent:
+          $ref: '#/components/schemas/AddressDto'
+        postal:
+          $ref: '#/components/schemas/AddressDto'
+        foreign:
+          $ref: '#/components/schemas/AddressDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    EntityTypeDto:
+      enum:
+      - unknown
+      - organization
+      - person
+      type: string
+    Person.AddressVerificationDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/IdentityStatusDto'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Identity description
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    ValidationDetailsDto:
+      type: object
+      properties:
+        isMatching:
+          type:
+          - boolean
+          - 'null'
+          description: If matches
+        matchType:
+          $ref: '#/components/schemas/MatchType'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Validation description
+      additionalProperties: false
+      description: Validation details
+    AccountNumberVerificationResultDto:
+      type: object
+      properties:
+        accountNumber:
+          type:
+          - string
+          - 'null'
+          description: Account Number
+        isValidAccountNumber:
+          type:
+          - boolean
+          - 'null'
+          description: If the Account Number is valid
+        validationDetails:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationDetailsDto'
+          description: Client details
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        accountDetails:
+          $ref: '#/components/schemas/AccountDetailsDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+      description: Iban validation
+    AccountDetailsDto:
+      type: object
+      properties:
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        accountStatus:
+          $ref: '#/components/schemas/AccountStatus'
+        isJoinedAccount:
+          type:
+          - boolean
+          - 'null'
+          description: If the account is shared
+        numberOfHolders:
+          type:
+          - integer
+          - 'null'
+          description: The number of account holders
+          format: int32
+        foreign:
+          type:
+          - boolean
+          - 'null'
+          description: If the account is foreign
+        countryOfAccount:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Account Type
+    InvalidParamDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of attribute that was invalid
+        reason:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this field
+      additionalProperties: false
+    AddressDto:
+      type: object
+      properties:
+        street:
+          type:
+          - string
+          - 'null'
+          description: Street address or PO box
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code
+        city:
+          type:
+          - string
+          - 'null'
+          description: City or place
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+      description: Address of the entity
+    AccountStatus:
+      enum:
+      - unknown
+      - active
+      - inactive
+      - renumbered
+      type: string
+    Screening.ScreeningRolesDto:
+      type: object
+      properties:
+        roleType:
+          type:
+          - string
+          - 'null'
+          description: Screening type of role
+        organization:
+          type:
+          - string
+          - 'null'
+          description: Screening organization
+        description:
+          type:
+          - string
+          - 'null'
+          description: Screening description
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Screening role start date
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: Screening role end date
+          format: date-time
+      additionalProperties: false
+    Person.PersonNameDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/NameStatus'
+        full:
+          type:
+          - string
+          - 'null'
+          description: Full name of the entity
+        first:
+          type:
+          - string
+          - 'null'
+          description: First/given name of the entity
+        last:
+          type:
+          - string
+          - 'null'
+          description: Last/surname of the entity
+        middle:
+          type:
+          - string
+          - 'null'
+          description: Middle name of the entity
+        isActive:
+          type: boolean
+          description: If the name is active
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date of the name
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date of the name
+          format: date-time
+      additionalProperties: false
+    Screening.ScreeningResultDto:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type: integer
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/PageLinks'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Screening.ScreenedItemDto'
+          description: The result data
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    Screening.ScreenedItemDto:
+      type: object
+      properties:
+        entityType:
+          $ref: '#/components/schemas/EntityTypeDto'
+        listType:
+          $ref: '#/components/schemas/ListTypeDto'
+        matchStrength:
+          $ref: '#/components/schemas/MatchStrengthDto'
+        sourceName:
+          type:
+          - string
+          - 'null'
+          description: Name of the source the item was found in
+        name:
+          $ref: '#/components/schemas/NameDto'
+        gender:
+          $ref: '#/components/schemas/GenderDto'
+        aliases:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NameDto'
+          description: Aliases for the item
+        associates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AssociateDto'
+          description: Associates of the item (Only for entityType "person")
+        datesOfBirth:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApproximateBirthDto'
+          description: Possible dates of birth (Only for entityType "person")
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressDto'
+          description: Addresses of the entity
+        comments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NamedValueDto'
+          description: Comments
+        functions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FunctionDto'
+          description: Functions
+        media:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaLinkDto'
+          description: Online content related to the item (Only for entityType "person")
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Screening.ScreeningRolesDto'
+          description: Person screening roles associated
+      additionalProperties: false
+    MatchStrengthDto:
+      type: object
+      properties:
+        score:
+          type:
+          - integer
+          - 'null'
+          description: A score from 0 - 100 where higher values are more relevant
+          format: int32
+        certainty:
+          $ref: '#/components/schemas/MatchCertaintyDto'
+      additionalProperties: false
+      description: An indication of how relevant the result is
+    MatchType:
+      enum:
+      - unknown
+      - name
+      - id
+      type: string
+    Person.FinanceDto:
+      type: object
+      properties:
+        creditScore:
+          $ref: '#/components/schemas/Person.CreditScoreDto'
+        numberOfPaymentRemarks:
+          type:
+          - integer
+          - 'null'
+          description: Number of payment remarks registered on the individual
+          format: int32
+        incomeAndWealth:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.FinanceInfoDto'
+          description: Financial information
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    Person.SearchItemDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Id of the entity
+        name:
+          $ref: '#/components/schemas/NameDto'
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+      additionalProperties: false
+    Iso3166Dto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Country name
+        alpha2:
+          type:
+          - string
+          - 'null'
+          description: Two digit country code
+        alpha3:
+          type:
+          - string
+          - 'null'
+          description: Three digit country code
+        numeric:
+          type:
+          - string
+          - 'null'
+          description: Numeric country code
+      additionalProperties: false
+      description: ISO 3166-1 country codes
+    Person.PersonAddressDto:
+      type: object
+      properties:
+        street:
+          type:
+          - string
+          - 'null'
+          description: Street address or PO box
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code
+        city:
+          type:
+          - string
+          - 'null'
+          description: City or place
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        isActive:
+          type: boolean
+          description: If the address is active
+        isConfidential:
+          type: boolean
+          description: If the address is confidential
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date of the address
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date of the address
+          format: date-time
+        addressLines:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Address lines if the source contains unstructured data
+      additionalProperties: false
+      description: Address information
+    MetadataDto:
+      type: object
+      properties:
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of sources for the data
+        urls:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Public urls to the sources
+        lastChanged:
+          type:
+          - string
+          - 'null'
+          description: The date the data was last changed
+          format: date-time
+        rawJson:
+          type:
+          - string
+          - 'null'
+          description: The raw JSON if it was requested and supported by the source
+        isCache:
+          type: boolean
+          description: Return boolean whether data is retrieved from cache.
+      additionalProperties: false
+      description: Metadata about the response
+    Person.ContactsDto:
+      type: object
+      properties:
+        contacts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.ContactDto'
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    NameStatus:
+      enum:
+      - partial
+      - all
+      type: string
+      description: 'A hint to which attributes are set.
+
+        `partial` : only full name,
+
+        `all` : all attributes.'
+    Person.FinanceInfoDto:
+      type: object
+      properties:
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Year the info is from
+          format: int32
+        currency:
+          type:
+          - string
+          - 'null'
+          description: ISO 4217 currency code
+        grossIncome:
+          type:
+          - integer
+          - 'null'
+          description: Income before deductions
+          format: int64
+        netIncome:
+          type:
+          - integer
+          - 'null'
+          description: Income after deductions
+          format: int64
+        wealth:
+          type:
+          - integer
+          - 'null'
+          description: Value of everything owned by the individual
+          format: int64
+      additionalProperties: false
+    MediaLinkDto:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the content
+        excerpt:
+          type:
+          - string
+          - 'null'
+          description: An excerpt of the content
+        url:
+          type:
+          - string
+          - 'null'
+          description: Url to the content
+        date:
+          type:
+          - string
+          - 'null'
+          description: Date of the content
+          format: date-time
+      additionalProperties: false
+    ApproximateBirthDto:
+      type: object
+      properties:
+        monthOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Month of birth
+        yearOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Year of birth
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        isApproximate:
+          type: boolean
+      additionalProperties: false
+    Person.PersonDeathDto:
+      type: object
+      properties:
+        monthOfDeath:
+          type:
+          - string
+          - 'null'
+          description: Month of death
+        yearOfDeath:
+          type:
+          - string
+          - 'null'
+          description: Year of death
+        dateOfDeath:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        isDead:
+          type: boolean
+          description: If the person is dead or not
+      additionalProperties: false
+    Person.PersonBirthDto:
+      type: object
+      properties:
+        monthOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Month of birth
+        yearOfBirth:
+          type:
+          - string
+          - 'null'
+          description: Year of birth
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          format: yyyy-MM-dd
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        location:
+          type:
+          - string
+          - 'null'
+          description: Birth location
+      additionalProperties: false
+    IdentityStatusDto:
+      enum:
+      - notIdentified
+      - identified
+      - partiallyIdentified
+      type: string
+    MatchCertaintyDto:
+      enum:
+      - unknown
+      - high
+      - medium
+      - low
+      type: string
+    AccountType:
+      enum:
+      - unknown
+      - person
+      - organization
+      type: string
+    ProblemDto:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: A code that identifies the type of error that occured
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code
+          format: int32
+        invalidParams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvalidParamDto'
+          description: A list of parameters that are invalid
+      additionalProperties: false
+    AssociateDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the associate
+        association:
+          type:
+          - string
+          - 'null'
+          description: Type of association
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Additional information / Detailed description
+      additionalProperties: false
+    GenderDto:
+      enum:
+      - unknown
+      - female
+      - male
+      - other
+      type: string
+      description: Gender of the person (Only for entityType "person")
+    NameDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/NameStatus'
+        full:
+          type:
+          - string
+          - 'null'
+          description: Full name of the entity
+        first:
+          type:
+          - string
+          - 'null'
+          description: First/given name of the entity
+        last:
+          type:
+          - string
+          - 'null'
+          description: Last/surname of the entity
+        middle:
+          type:
+          - string
+          - 'null'
+          description: Middle name of the entity
+      additionalProperties: false
+      description: Name of the entity
+    FunctionDto:
+      type: object
+      properties:
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start date
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End date
+          format: date-time
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name
+        function:
+          type:
+          - string
+          - 'null'
+          description: Type of function
+      additionalProperties: false
+    Person.SearchResultDto:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type: integer
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/PageLinks'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.SearchItemDto'
+          description: The result data
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    NationalityDto:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          description: Is active
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+      description: Nationality of an entity
+    ListTypeDto:
+      enum:
+      - unknown
+      - pep
+      - sanction
+      - adverseMedia
+      type: string
+    Person.BasicInfoDto:
+      type: object
+      properties:
+        names:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.PersonNameDto'
+          description: Names
+        birth:
+          $ref: '#/components/schemas/Person.PersonBirthDto'
+        death:
+          $ref: '#/components/schemas/Person.PersonDeathDto'
+        nationalities:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NationalityDto'
+          description: Nationalities
+        citizenships:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CitizenshipDto'
+          description: Citizenship's
+        permanentAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.PersonAddressDto'
+          description: Permanent addresses
+        postalAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.PersonAddressDto'
+          description: Postal address
+        foreignAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Person.PersonAddressDto'
+          description: Foreign address
+        sourceSpecific:
+          type:
+          - object
+          - 'null'
+          description: Source Specific fields
+        metadata:
+          $ref: '#/components/schemas/MetadataDto'
+      additionalProperties: false
+    PageLinks:
+      type: object
+      properties:
+        self:
+          type:
+          - string
+          - 'null'
+        next:
+          type:
+          - string
+          - 'null'
+          description: Url of the next page
+        previous:
+          type:
+          - string
+          - 'null'
+          description: Url of the previous page
+        first:
+          type:
+          - string
+          - 'null'
+          description: Url of the first page
+      additionalProperties: false
+      description: Links for paging
+    CitizenshipDto:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          description: Is active
+        country:
+          $ref: '#/components/schemas/Iso3166Dto'
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: Start Date
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: End Date
+          format: date-time
+      additionalProperties: false
+    Person.CreditScoreDto:
+      type: object
+      properties:
+        score:
+          type:
+          - string
+          - 'null'
+          description: Credit score value
+        scoringSystem:
+          type:
+          - string
+          - 'null'
+          description: Name of the scoring system used
+        link:
+          type:
+          - string
+          - 'null'
+          description: Link to the scoring used if available
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Year of the score
+          format: int32
+      additionalProperties: false
+      description: Credit score information
+    PersonScreening:
+      type: object
+      properties:
+        riskLevel:
+          maximum: 5
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          format: int32
+        listType:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+        source:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Attribute providing information about the Screening status of the person
+    MonitorPersonGet:
+      required:
+      - nationality
+      type: object
+      properties:
+        dateOfDeath:
+          type:
+          - string
+          - 'null'
+          description: The persons date of death, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        fullName:
+          type:
+          - string
+          - 'null'
+          description: The person's full name.
+          readOnly: true
+        isAddressProtected:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the person's address is protected
+        isProtected:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the person's information is protected
+        firstName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's first name.
+        lastName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's last name.
+        middleName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's middle name.
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The person's date of birth, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        nationalIdentityNumber:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's national identity number, if available.
+        nationality:
+          maxLength: 3
+          minLength: 2
+          type: string
+          description: Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2).
+        address:
+          $ref: '#/components/schemas/PersonAddress'
+        screening:
+          $ref: '#/components/schemas/PersonScreening'
+      additionalProperties: false
+    BaseMonitorPerson:
+      required:
+      - nationality
+      type: object
+      properties:
+        firstName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's first name.
+        lastName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's last name.
+        middleName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's middle name.
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The person's date of birth, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        nationalIdentityNumber:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's national identity number, if available.
+        nationality:
+          maxLength: 3
+          minLength: 2
+          type: string
+          description: Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2).
+        address:
+          $ref: '#/components/schemas/PersonAddress'
+        screening:
+          $ref: '#/components/schemas/PersonScreening'
+      additionalProperties: false
+    MonitorRemovePersons:
+      required:
+      - personReferenceKeys
+      type: object
+      properties:
+        personReferenceKeys:
+          maxItems: 1000000
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: Reference keys of persons to be removed from monitor.
+      additionalProperties: false
+      description: ''
+    MonitorAddPersons:
+      required:
+      - persons
+      type: object
+      properties:
+        persons:
+          maxItems: 1000000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitorPerson'
+          description: The persons to be added to the monitor. We recommend that you keep this under `100000` persons per request.
+      additionalProperties: false
+      description: ''
+    PersonAddress:
+      type: object
+      properties:
+        address:
+          maxLength: 400
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Address line.
+        zipCode:
+          maxLength: 20
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code.
+        city:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: City.
+        country:
+          maxLength: 3
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country (ISO 3166-1 alpha-2).
+      additionalProperties: false
+      description: The person's address
+    MonitorPerson:
+      required:
+      - nationality
+      - referenceKey
+      type: object
+      properties:
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Reference key
+        firstName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's first name.
+        lastName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's last name.
+        middleName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's middle name.
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The person's date of birth, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        nationalIdentityNumber:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's national identity number, if available.
+        nationality:
+          maxLength: 3
+          minLength: 2
+          type: string
+          description: Determines which population registry to use when looking up the person (ISO 3166-1 alpha-2).
+        address:
+          $ref: '#/components/schemas/PersonAddress'
+        screening:
+          $ref: '#/components/schemas/PersonScreening'
+      additionalProperties: false
+      description: ''
+x-refined-from:
+- data-verification-openapi.json
+- ongoing-monitoring-person-openapi.json
+- signicat-data-verification-openapi.yml
+- signicat-ongoing-monitoring-person-openapi.yml

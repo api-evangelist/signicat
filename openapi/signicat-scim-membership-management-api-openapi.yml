@@ -1,0 +1,969 @@
+openapi: 3.2.0
+info:
+  title: Signicat SCIM - Membership management API
+  version: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged SCIM - Membership management across 2 of this provider''s published API definitions: siam-openapi.json, signicat-siam-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/ownidp
+  description: Generated server url
+security:
+- bearerAuth: []
+tags:
+- name: SCIM - Membership management
+paths:
+  /api/scim/v2/Memberships:
+    get:
+      tags:
+      - SCIM - Membership management
+      summary: Retrieve memberships
+      description: 'This request retrieves a list of memberships, with support for filtering by providing the following optional parameters:
+
+        - `filter`: A SCIM filter expression. Comparisons may be combined with `and`. The supported standard
+
+        properties are `id`, `externalId`, `userId`, `organizationId`, and `roleId`. Membership filters support
+
+        `eq` for an exact, case-sensitive match and `co` for a case-insensitive literal substring match. Examples:
+
+        - `userId eq "" and roleId eq ""`
+
+        - `userId co "" and roleId co ""`
+
+        - `id co "" and externalId co "" and organizationId co ""`
+
+        One custom membership attribute may also be filtered directly by its attribute definition name:
+
+        - ` eq ""` (for example, `asd eq "102"`)
+
+        - ` co ""` (for example, `asd co "102"`)
+
+        Supported custom attribute
+
+        types are `STRING`, `INTEGER`, `BOOLEAN`, and `DATE`; `STRING_LIST` is not supported. Supply the value
+
+        as a quoted SCIM string in its stored form (for example, `"42"`, `"true"`, or the stored ISO date).
+
+        The attribute must exist in the tenant. It can be combined with the properties above using `and`, but
+
+        only one membership attribute may appear per request. Attribute definition names that collide with the
+
+        standard filter names above are treated as standard membership filters.
+
+        - `searchQuery`: A string to filter results. The query is applied to fields: name and external identifier
+
+        - `startIndex`: The 1-based index of the first result to return (for pagination)
+
+        - `count`: The maximum number of results to return
+
+        - `sortDirection`: The direction to sort the results (`ASC` or `DESC`).
+
+
+        **Authentication and Authorization:**
+
+        - The results will be scoped to the memberships the authenticated user is permitted to see.'
+      operationId: getMemberships
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: searchQuery
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ''
+      - name: startIndex
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: count
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: sortOrder
+        in: query
+        required: false
+        schema:
+          type: string
+          default: DESC
+          enum:
+          - ASC
+          - DESC
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Memberships retrieved
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/MembershipListResponse'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - SCIM - Membership management
+      summary: Create membership
+      description: 'This endpoint creates a new membership, linking a subject (user) to a group.
+
+
+        **Authentication and Authorization:**
+
+        - A valid JWT Bearer token must be provided in the `Authorization` header.
+
+        - The token must grant the `signicat:ownidp:memberships:create` permission on the group specified in the `organization` field of the request body.'
+      operationId: createMembership
+      parameters:
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipDto'
+        required: true
+      responses:
+        '201':
+          description: Membership created
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/MembershipResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+  /api/scim/v2/Memberships/{membershipId}:
+    get:
+      tags:
+      - SCIM - Membership management
+      summary: Retrieve single membership
+      description: 'This request retrieves a single membership by its unique identifier.
+
+
+        **Authentication and Authorization:**
+
+        - A valid JWT Bearer token must be provided in the `Authorization` header.
+
+        - The token must grant the `signicat:ownidp:memberships:read` permission on the group associated with the membership.'
+      operationId: getMembership
+      parameters:
+      - name: membershipId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Membership retrieved
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/MembershipResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Did not find the membership based on the id provided
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - SCIM - Membership management
+      summary: Delete membership
+      description: 'This endpoint deletes an existing membership by its unique identifier.
+
+
+        **Authentication and Authorization:**
+
+        - A valid JWT Bearer token must be provided in the `Authorization` header.
+
+        - The token must grant the `signicat:ownidp:memberships:delete` permission on the group associated with the membership.'
+      operationId: deleteMembership
+      parameters:
+      - name: membershipId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Membership removed
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Did not find the membership
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - SCIM - Membership management
+      summary: Patch membership
+      description: 'This endpoint partially updates an existing membership using the SCIM Patch standard (RFC 7644).
+
+        This allows for atomic operations like adding, replacing, or removing attributes of the membership.
+
+
+        **Authentication and Authorization:**
+
+        - A valid JWT Bearer token must be provided in the `Authorization` header.
+
+        - The token must grant the `signicat:ownidp:memberships:update` permission on the group associated with the membership.
+
+
+        **Example Patch Operations:**
+
+        The request body must be a `PatchRequest` resource. Here is an example to replace the roles of a membership.
+
+
+        **Example Request Body for replace operation:**
+
+        ```json
+
+        {
+
+        "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+
+        "Operations": [
+
+        {
+
+        "op": "replace",
+
+        "path": "roles",
+
+        "value": [
+
+        { "value": "new-role-id-1" },
+
+        { "value": "new-role-id-2" }
+
+        ]
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        **Example Request Body for add/remove operation:**
+
+        ```json
+
+        {
+
+        "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+
+        "Operations": [
+
+        {
+
+        "op": "add/remove",
+
+        "path": "roles",
+
+        "value": [
+
+        { "value": "new-role-id-1" },
+
+        { "value": "new-role-id-2" }
+
+        ]
+
+        }
+
+        ]
+
+        }
+
+        ```'
+      operationId: patchMembership
+      parameters:
+      - name: membershipId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Signicat-AccountId
+        in: header
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'Identifies the DTP account for the request.
+
+
+          One of the following must be provided:
+
+          - `Signicat-AccountId` header
+
+          - `signicat-accountid` query parameter
+
+
+          If neither is provided, the system will attempt to resolve the account from the token claims.
+
+          If both are provided, the values must be identical.
+
+          '
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRequest'
+        required: true
+      responses:
+        '200':
+          description: Membership patched
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/MembershipResource'
+        '400':
+          description: Bad request, some of the data provided might be invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized call, token is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden call, you need a specific permission to access this endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Did not find the membership
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResource'
+        '500':
+          description: An internal error occurred, please let us know
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://api.signicat.com/ownidp
+      description: Generated server url
+components:
+  schemas:
+    MembershipResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        active:
+          type:
+          - boolean
+          - 'null'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScimRole'
+        organization:
+          $ref: '#/components/schemas/ScimOrganization'
+        user:
+          $ref: '#/components/schemas/ScimSubject'
+        customAttributes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScimInboundCustomAttribute'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    ErrorResponse:
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        code:
+          type: string
+        timestamp:
+          type: string
+        traceId:
+          type: string
+        spanId:
+          type: string
+        detail:
+          type: string
+        type:
+          type: string
+        requestUri:
+          type: string
+    ScimInboundCustomAttribute:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+        id:
+          type:
+          - string
+          - 'null'
+    ScimOrganization:
+      type: 'null'
+      properties:
+        value:
+          type: string
+        display:
+          type: string
+        ref:
+          type: string
+        type:
+          type: string
+          enum:
+          - GROUP
+          - ORGANIZATION
+          - ACCOUNT
+    AddOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+    Meta:
+      type: 'null'
+      properties:
+        resourceType:
+          type:
+          - string
+          - 'null'
+        created:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          format: uri
+        version:
+          type:
+          - string
+          - 'null'
+        createdMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+        lastModifiedMillis:
+          $ref: '#/components/schemas/Meta'
+          writeOnly: true
+    MembershipListResponse:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        totalResults:
+          type: integer
+          format: int32
+        itemsPerPage:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        startIndex:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        previousCursor:
+          type:
+          - string
+          - 'null'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MembershipResource'
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - Resources
+    ScimSubject:
+      type: 'null'
+      properties:
+        value:
+          type: string
+        display:
+          type: string
+        ref:
+          type: string
+        type:
+          type: string
+          enum:
+          - MACHINE
+          - USER
+          - EXTERNAL_USER
+        createdAt:
+          type: string
+          format: date-time
+    PatchOperation:
+      type: object
+      discriminator:
+        propertyName: op
+      properties:
+        path:
+          type:
+          - string
+          - 'null'
+        removeOpValue:
+          oneOf:
+          - $ref: '#/components/schemas/AddOperation'
+          - $ref: '#/components/schemas/RemoveOperation'
+          - $ref: '#/components/schemas/ReplaceOperation'
+          writeOnly: true
+        op:
+          type: string
+      required:
+      - op
+    PatchRequest:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        id:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        Operations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AddOperation'
+            - $ref: '#/components/schemas/RemoveOperation'
+            - $ref: '#/components/schemas/ReplaceOperation'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - Operations
+    RemoveOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+          removeOpValue:
+            $ref: '#/components/schemas/PatchOperation'
+      required:
+      - path
+    ReplaceOperation:
+      allOf:
+      - $ref: '#/components/schemas/PatchOperation'
+      - type: object
+        properties:
+          value:
+            $ref: '#/components/schemas/JsonNode'
+          removeOpValue:
+            $ref: '#/components/schemas/PatchOperation'
+    JsonNode:
+      type: 'null'
+    MembershipDto:
+      type: object
+      properties:
+        id:
+          type: string
+        externalId:
+          type: string
+        organization:
+          type: string
+          minLength: 1
+        user:
+          type: string
+          minLength: 1
+        roles:
+          type: array
+          items:
+            type: string
+        customAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScimInboundCustomAttribute'
+      required:
+      - organization
+      - user
+    ErrorResource:
+      type: object
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        detail:
+          type:
+          - string
+          - 'null'
+        status:
+          type: integer
+          format: int32
+        traceId:
+          type: string
+        spanId:
+          type: string
+        requestUri:
+          type: string
+        title:
+          type: string
+        code:
+          type: string
+        timestamp:
+          type: string
+        type:
+          type: string
+    ScimRole:
+      type: object
+      properties:
+        value:
+          type: string
+        display:
+          type: string
+        ref:
+          type: string
+        type:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- siam-openapi.json
+- signicat-siam-openapi.yml

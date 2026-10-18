@@ -1,0 +1,182 @@
+openapi: 3.2.0
+info:
+  title: Signicat Document API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged document across 2 of this provider''s published API definitions: signing-enterprise-openapi.json, signicat-signing-enterprise-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/enterprise/sign
+tags:
+- name: Document
+  description: Documents are stored short-term in Signicat's Session Data Storage. Documents are referenced by a *documentID*.
+paths:
+  /documents/{documentId}:
+    get:
+      tags:
+      - Document
+      summary: Get document
+      description: Get a document from Signicat's document storage backend
+      operationId: getSdsDocument
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/x-ltv-sdo:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The documentID is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    delete:
+      tags:
+      - Document
+      summary: Delete document
+      description: Delete a document from Signicat's document storage backend
+      operationId: deleteFileOnSds
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: The document was successfully deleted
+        '400':
+          description: The documentID is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/enterprise/sign
+  /documents:
+    post:
+      tags:
+      - Document
+      summary: Upload session document
+      description: Upload a document to Signicat's session data storage
+      operationId: uploadFileToSds
+      requestBody:
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+          text/plain:
+            schema:
+              type: string
+              format: binary
+          text/bidxml:
+            schema:
+              type: string
+              format: binary
+          application/x-ltv-sdo:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: The session document was succesfully uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentRefId'
+        '400':
+          description: Cannot open or read supplied PDF
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '411':
+          description: The uploaded document cannot be empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '415':
+          description: The uploaded document cannot be password protected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/enterprise/sign
+components:
+  schemas:
+    DocumentRefId:
+      type: object
+      properties:
+        documentId:
+          type: string
+          example: 0807201949xfrupvbzx7o07uihsihsx3xllslasvk8qtaojow3792xjucp
+    ClientProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        type:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+  securitySchemes:
+    signrestOauth2Security:
+      type: oauth2
+      description: Signicat Oauth security with clientCredentials
+      in: header
+      flows:
+        clientCredentials:
+          tokenUrl: /oidc/token
+          scopes:
+            signicat-api: Manage signing orders
+      openIdConnectUrl: /oidc
+externalDocs:
+  description: Getting started with electronic signatures
+  url: https://developer.signicat.com/docs/electronic-signing/
+x-refined-from:
+- signing-enterprise-openapi.json
+- signicat-signing-enterprise-openapi.yml

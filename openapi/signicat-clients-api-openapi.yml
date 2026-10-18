@@ -1,0 +1,1946 @@
+openapi: 3.2.0
+info:
+  title: Signicat Clients API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Clients across 2 of this provider''s published API definitions: oidc-config-openapi.json, signicat-oidc-config-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /auth/open/config
+security:
+- Signicat-OIDC: []
+tags:
+- name: Clients
+paths:
+  /clients:
+    get:
+      tags:
+      - Clients
+      summary: List clients
+      description: Use this endpoints to view a list of all the clients you have configured
+      parameters:
+      - name: primaryGrantType
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - ClientCredentials
+            - AuthorizationCode
+            - Hybrid
+            - Ciba
+            - DeviceFlow
+            type: string
+      - name: id
+        in: query
+        schema:
+          type: string
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: account
+        in: query
+        schema:
+          type: string
+      - name: searchText
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClients
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Clients
+      summary: Create configuration
+      description: Use this endpoint to create a new client configuration
+      requestBody:
+        description: The client specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: postClients
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}:
+    get:
+      tags:
+      - Clients
+      summary: Retrieve client configuration
+      description: Use this endpoint to retrieve a specific client configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Clients
+      summary: Update configuration
+      description: Use this endpoint to update an existing client's configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The updated client specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: putClientsByClientId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Clients
+      summary: Patch configuration
+      description: Use this endpoint to update an existing client's configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The partially updated client specification.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/PatchClientDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchClientDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PatchClientDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PatchClientDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: patchClientsByClientId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Clients
+      summary: Delete configuration
+      description: Use this endpoint to delete a client configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: deleteClientsByClientId
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/lookup:
+    get:
+      tags:
+      - Clients
+      summary: Retrieve the org/account id for client configuration
+      description: Use this endpoint to retrieve a specific client configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientIdLookupDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientIdLookupDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdLookup
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/clone:
+    post:
+      tags:
+      - Clients
+      summary: Clone client configuration
+      description: Use this endpoint to clone an existing client's configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: postClientsByClientIdClone
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/history:
+    get:
+      tags:
+      - Clients
+      summary: List client revisions
+      description: 'Use this endpoint to view a list of the client revisions, or changes, that have been made to a specific client configuration
+
+
+        To enumerate all revisions of the resource, start by setting `untilVersion` to the version of the
+
+        resource. If `count` results are returned, repeat the request with `untilVersion` set to
+
+        `data.Version` of the last revision returned. This allows you to page through all the revisions.'
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: untilVersion
+        in: query
+        description: The version of the revision before which history should be returned
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The maximum number of revisions
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientRevisionDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientRevisionDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdHistory
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/history/{version}:
+    get:
+      tags:
+      - Clients
+      summary: Retrieve client revision configuration
+      description: Use this endpoint to retrieve a specific client revision configuration
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: path
+        description: The version of the revision
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientRevisionDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientRevisionDto'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      operationId: getClientsByClientIdHistoryByVersion
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+  /clients/{clientId}/health:
+    get:
+      tags:
+      - Clients
+      summary: Client Health Checks results
+      description: Use this endpoint to get Resource Health Check results
+      parameters:
+      - name: clientId
+        in: path
+        description: The ID of the client
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientHealth'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ClientHealth'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      operationId: getClientsByClientIdHealth
+      x-operation-id-source: derived
+    servers:
+    - url: /auth/open/config
+components:
+  schemas:
+    PatchClientDto:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Client name.
+          example: Stupefied animals portal.
+        acr:
+          $ref: '#/components/schemas/Acr'
+        pairWiseSubjectSalt:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Salt value used in pair-wise subjectId generation for users of this client.
+          example: qfwhqw7832gqhw.
+        uri:
+          type:
+          - string
+          - 'null'
+          description: URI to further information about client (used on consent screen).
+          format: uri
+          example: https://lost-monkey-client/info.
+        logoUri:
+          type:
+          - string
+          - 'null'
+          description: 'URI to client logo (used on consent screen).
+
+
+            Must be an absolute URI and Https.'
+          format: uri
+          example: https://lost-monkey-client/photo1.jpg.
+        encryptIdTokens:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enable/Disable IDTokens encryption.
+
+
+            If enabled requires public keys allowed to encrypt.'
+        requireSecret:
+          type:
+          - boolean
+          - 'null'
+          description: 'Specifies whether this client needs a secret to request tokens from the token endpoint.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''true''.'
+        requirePkce:
+          type:
+          - boolean
+          - 'null'
+          description: 'Specifies whether clients using an authorization code based grant type must send a proof key.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).'
+        requireRequestObject:
+          type:
+          - boolean
+          - 'null'
+          description: 'Specifies whether this client needs to wrap the authorize request parameters in a JWT.
+
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''false''.'
+        useReferenceAccessTokens:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies whether should use reference tokens or not.
+        redirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: 'Specifies the allowed URIs to return tokens or authorization codes to.
+
+
+            Must have at least one redirect URI in case of PrimaryGrantType attribute is DeviceFlow.
+
+            Must be an absolute URI and Https.
+
+            Http URIs are only allowed if pointing at localhost.'
+        allowedScopes:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specifies the allowed resources that client as access.
+        allowOfflineAccess:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies whether this client can request refresh tokens.
+        allowAccessTokensViaBrowser:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies whether this client is allowed to receive access tokens via the browser. This is useful to harden flows that allow multiple response types (e.g. by disallowing a hybrid flow client that is supposed to use code id_token to add the token response type and thus leaking the token to the browser).
+        postLogoutRedirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: Specifies allowed URIs to redirect to after logout. See the OIDC Connect Session Management spec (https://openid.net/specs/openid-connect-session-1_0.html) for more details.
+        frontChannelLogoutUri:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies logout URI at client for HTTP based front-channel logout. See the OIDC Front-Channel spec (https://openid.net/specs/openid-connect-frontchannel-1_0.html) for more details.
+
+
+            The URIs must be an absolute URI and Https.
+
+            Http uris are only allowed if pointing at localhost.'
+          format: uri
+          example: https://lovelly-monkey-stuff/redirect-uri.html.
+        frontChannelLogoutSessionRequired:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies if the user’s session id should be sent to the FrontChannelLogoutUri.
+        identityProviderRestrictions:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Specifies which external IdPs can be used with this client (if list is empty all IdPs are allowed).
+
+
+            Defaults to empty.'
+        userSsoLifetime:
+          maximum: 10800
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'The maximum duration (in seconds) since the last time the user authenticated.
+
+
+            You can adjust the lifetime of a session token to control when and how often a user is required to reenter credentials instead of being silently authenticated, when using a web application.
+
+            The default value is 3600 seconds.'
+          format: int32
+        identityTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Lifetime to identity token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+        accessTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Lifetime of access token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+        authorizationCodeLifetime:
+          maximum: 60
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Lifetime of authorization code in seconds.
+
+
+            The default value is 15 seconds.'
+          format: int32
+        absoluteRefreshTokenLifetime:
+          maximum: 2592000
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Maximum lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry is off and AllowOfflineAccess is on.'
+          format: int32
+        slidingRefreshTokenLifetime:
+          maximum: 1296000
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Sliding lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry and AllowOfflineAccess is on.'
+          format: int32
+        allowRefreshTokenReuse:
+          type:
+          - boolean
+          - 'null'
+          description: 'Allow reuse refresh token. The refresh token handle will stay the same when refreshing tokens.
+
+
+            If set to false (default value) then the refresh token handle will be updated when refreshing tokens.'
+        slidingRefreshTokenExpiry:
+          type:
+          - boolean
+          - 'null'
+          description: 'Specifies whether refresh token should expire or not.
+
+
+            Currently don´t have any default value and fail if not set.
+
+            When set to ''true'' and AllowOfflineAccess is on then SlidingRefreshTokenLifetime attribute must be greater then 0.
+
+            When set to ''false'' and AllowOfflineAccess is on then AbsoluteRefreshTokenLifetime attribute must be greater then 0.'
+        deviceCodeLifetime:
+          maximum: 600
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Lifetime to device code in seconds.
+
+
+            The default value is 300 seconds.
+
+            Must be greater then 0 when PrimaryGrantType attribute is DeviceFlow grant type.'
+          format: int32
+        allowedCorsOrigins:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specifies the allowed CORS origins that will be used by the default CORS policy service implementations (In-Memory and EF) to build a CORS policy for JavaScript clients.
+        primaryGrantType:
+          enum:
+          - ClientCredentials
+          - AuthorizationCode
+          - Hybrid
+          - Ciba
+          - DeviceFlow
+          type:
+          - string
+          - 'null'
+          description: Specifies the primary grant type the client is allowed to use.
+          example: ClientCredentials.
+        contentEncryptionAlgorithm:
+          enum:
+          - A128CBC-HS256
+          - A192CBC-HS384
+          - A256CBC-HS512
+          type:
+          - string
+          - 'null'
+          description: 'Content encryption algorithm for ID tokens and the UserInfo response.
+
+
+            Defaults to A256CBC-HS512.'
+          example: A128CBC-HS256.
+        idTokenUserData:
+          enum:
+          - Minimal
+          - StandardScopes
+          - All
+          type:
+          - string
+          - 'null'
+          description: Defines the IdToken user data level.
+          example: StandardScopes.
+        userInfoResponseType:
+          enum:
+          - Json
+          - Signed
+          - Encrypted
+          - SignedAndEncrypted
+          type:
+          - string
+          - 'null'
+          description: 'User info response type.
+
+
+            Defaults to ''Json''.'
+          example: SignedAndEncrypted.
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Internal version of the client (Read only).
+          example: 00000000_2a43947f32e7820a2b567c3351a37046.
+        requireConsent:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies whether a consent screen is required.
+        lastUpdatedDate:
+          type: string
+          description: Defines the last change on the client (Read only).
+          format: date-time
+          example: 2022-05-17T16:13:47.3524453+00:00.
+        automaticRedirectAfterSignOut:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates if after a logout, the client should be redirected automatically.
+
+
+            Depends on the existence of at least one Uri in the PostLogoutRedirectUris property to operate as designed.'
+        usageExternalReference:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'External reference for transaction provided by the customer.
+
+
+            Used to group transactions together for the customer.<example>orderid:121232</example>'
+        subjectLookupsEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Enterprise Subject Lookup migration feature.
+
+
+            Note: You need admin permissions to enable this feature.'
+        useCookieless:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Client to not use cookies.
+
+
+            Note: You need admin permissions to enable this feature.'
+        requirePushedAuthorization:
+          type:
+          - boolean
+          - 'null'
+          description: Enables the Client to require pushed authorization requests.
+        embeddedParentDomains:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking.
+      additionalProperties: false
+    ClientHealth:
+      type: object
+      properties:
+        checks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ClientHealthDetails'
+        status:
+          enum:
+          - Unhealthy
+          - Healthy
+          - Warning
+          - Skip
+          type: string
+      additionalProperties: false
+    ClientIdLookupDto:
+      type: object
+      properties:
+        account:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    FullClientDto:
+      required:
+      - account
+      - allowedScopes
+      - name
+      - primaryGrantType
+      type: object
+      properties:
+        secrets:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SecretDto'
+        publicKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PublicKeyDto'
+        customClaims:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomClaimDto'
+        id:
+          maxLength: 100
+          minLength: 8
+          type:
+          - string
+          - 'null'
+          description: 'Client identifier (Globally unique).
+
+
+            If not provided a new ID will be generated.'
+          example: chimney-sweep-monkey
+        name:
+          maxLength: 255
+          minLength: 8
+          type: string
+          description: Client name.
+          example: Stupefied animals portal
+        account:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Client account id.
+          example: a-pdge-kl2234afhrq34422j
+        acr:
+          $ref: '#/components/schemas/Acr'
+        pairWiseSubjectSalt:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Salt value used in pair-wise subjectId generation for users of this client.
+          example: qfwhqw7832gqhw
+        uri:
+          type:
+          - string
+          - 'null'
+          description: URI to further information about client (used on consent screen).
+          format: uri
+          example: https://lost-monkey-client/info
+        logoUri:
+          type:
+          - string
+          - 'null'
+          description: 'URI to client logo (used on consent screen).
+
+
+            Must be an absolute URI and Https.'
+          format: uri
+          example: https://lost-monkey-client/photo1.jpg
+        encryptIdTokens:
+          type: boolean
+          description: 'Enable/Disable IDTokens encryption.
+
+
+            If enabled requires public keys allowed to encrypt.'
+          default: false
+          example: false
+        requireSecret:
+          type: boolean
+          description: 'Specifies whether this client needs a secret to request tokens from the token endpoint.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''true''.'
+          default: true
+          example: false
+        requirePkce:
+          type: boolean
+          description: 'Specifies whether clients using an authorization code based grant type must send a proof key.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).'
+          default: false
+          example: true
+        requireRequestObject:
+          type: boolean
+          description: 'Specifies whether this client needs to wrap the authorize request parameters in a JWT.
+
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''false''.'
+          default: false
+          example: false
+        useReferenceAccessTokens:
+          type: boolean
+          description: Specifies whether should use reference tokens or not.
+          default: false
+          example: false
+        redirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: 'Specifies the allowed URIs to return tokens or authorization codes to.
+
+
+            Must have at least one redirect URI in case of PrimaryGrantType attribute is DeviceFlow.
+
+            Must be an absolute URI and Https.
+
+            Http URIs are only allowed if pointing at localhost.'
+          example:
+          - https://lovelly-monkey-stuff/redirect.html
+          - https://final-zoo/
+        allowedScopes:
+          maxItems: 200
+          type: array
+          items:
+            type: string
+          description: Specifies the allowed resources that client as access.
+          example:
+          - internal-stuff
+          - healthy-food
+        allowOfflineAccess:
+          type: boolean
+          description: Specifies whether this client can request refresh tokens.
+          default: true
+          example: true
+        allowAccessTokensViaBrowser:
+          type: boolean
+          description: Specifies whether this client is allowed to receive access tokens via the browser. This is useful to harden flows that allow multiple response types (e.g. by disallowing a hybrid flow client that is supposed to use code id_token to add the token response type and thus leaking the token to the browser).
+          default: false
+          example: true
+        postLogoutRedirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: Specifies allowed URIs to redirect to after logout. See the OIDC Connect Session Management spec (https://openid.net/specs/openid-connect-session-1_0.html) for more details.
+          example:
+          - https://lovelly-monkey-stuff/logout.html
+          - https://final-zoo/bye
+        frontChannelLogoutUri:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies logout URI at client for HTTP based front-channel logout. See the OIDC Front-Channel spec (https://openid.net/specs/openid-connect-frontchannel-1_0.html) for more details.
+
+
+            The URIs must be an absolute URI and Https.
+
+            Http uris are only allowed if pointing at localhost.'
+          format: uri
+          example: https://lovelly-monkey-stuff/redirect-uri.html
+        frontChannelLogoutSessionRequired:
+          type: boolean
+          description: Specifies if the user’s session id should be sent to the FrontChannelLogoutUri.
+          default: false
+          example: true
+        identityProviderRestrictions:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Specifies which external IdPs can be used with this client (if list is empty all IdPs are allowed).
+
+
+            Defaults to empty.'
+          example:
+          - some-idp
+          - another-one
+        userSsoLifetime:
+          maximum: 10800
+          minimum: 1
+          type: integer
+          description: 'The maximum duration (in seconds) since the last time the user authenticated.
+
+
+            You can adjust the lifetime of a session token to control when and how often a user is required to reenter credentials instead of being silently authenticated, when using a web application.
+
+            The default value is 3600 seconds.'
+          format: int32
+          default: 3600
+          example: 1200
+        identityTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type: integer
+          description: 'Lifetime to identity token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+          default: 600
+          example: 500
+        accessTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type: integer
+          description: 'Lifetime of access token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+          default: 600
+          example: 600
+        authorizationCodeLifetime:
+          maximum: 60
+          minimum: 1
+          type: integer
+          description: 'Lifetime of authorization code in seconds.
+
+
+            The default value is 15 seconds.'
+          format: int32
+          default: 15
+          example: 15
+        absoluteRefreshTokenLifetime:
+          maximum: 2592000
+          minimum: 1
+          type: integer
+          description: 'Maximum lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry is off and AllowOfflineAccess is on.'
+          format: int32
+          default: 86400
+          example: 50000
+        slidingRefreshTokenLifetime:
+          maximum: 1296000
+          minimum: 1
+          type: integer
+          description: 'Sliding lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry and AllowOfflineAccess is on.'
+          format: int32
+          default: 86400
+          example: 60000
+        allowRefreshTokenReuse:
+          type: boolean
+          description: 'Allow reuse refresh token. The refresh token handle will stay the same when refreshing tokens.
+
+
+            If set to false (default value) then the refresh token handle will be updated when refreshing tokens.'
+          default: false
+          example: true
+        slidingRefreshTokenExpiry:
+          type: boolean
+          description: 'Specifies whether refresh token should expire or not.
+
+
+            Currently don´t have any default value and fail if not set.
+
+            When set to ''true'' and AllowOfflineAccess is on then SlidingRefreshTokenLifetime attribute must be greater then 0.
+
+            When set to ''false'' and AllowOfflineAccess is on then AbsoluteRefreshTokenLifetime attribute must be greater then 0.'
+          default: false
+          example: false
+        deviceCodeLifetime:
+          maximum: 600
+          minimum: 1
+          type: integer
+          description: 'Lifetime to device code in seconds.
+
+
+            The default value is 300 seconds.
+
+            Must be greater then 0 when PrimaryGrantType attribute is DeviceFlow grant type.'
+          format: int32
+          default: 300
+          example: 100
+        allowedCorsOrigins:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specifies the allowed CORS origins that will be used by the default CORS policy service implementations (In-Memory and EF) to build a CORS policy for JavaScript clients.
+          example:
+          - https://funny-animal.org
+          - https://zoo-world.org
+        primaryGrantType:
+          enum:
+          - ClientCredentials
+          - AuthorizationCode
+          - Hybrid
+          - Ciba
+          - DeviceFlow
+          type: string
+          description: Specifies the primary grant type the client is allowed to use.
+          example: ClientCredentials
+        contentEncryptionAlgorithm:
+          enum:
+          - A128CBC-HS256
+          - A192CBC-HS384
+          - A256CBC-HS512
+          type:
+          - string
+          - 'null'
+          description: 'Content encryption algorithm for ID tokens and the UserInfo response.
+
+
+            Defaults to A256CBC-HS512.'
+          example: A128CBC-HS256
+        idTokenUserData:
+          enum:
+          - Minimal
+          - StandardScopes
+          - All
+          type: string
+          description: Defines the IdToken user data level.
+          example: StandardScopes
+        userInfoResponseType:
+          enum:
+          - Json
+          - Signed
+          - Encrypted
+          - SignedAndEncrypted
+          type:
+          - string
+          - 'null'
+          description: 'User info response type.
+
+
+            Defaults to ''Json''.'
+          example: SignedAndEncrypted
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Internal version of the client (Read only).
+          example: 00000000_2a43947f32e7820a2b567c3351a37046
+        requireConsent:
+          type: boolean
+          description: Specifies whether a consent screen is required.
+          default: false
+          example: false
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Defines when the client was created (Read only).
+          format: date-time
+          example: '"2022-05-17T16:13:47.3524211+00:00'
+        lastUpdatedDate:
+          type:
+          - string
+          - 'null'
+          description: Defines the last change on the client (Read only).
+          format: date-time
+          example: '2022-05-17T16:13:47.3524453+00:00'
+        automaticRedirectAfterSignOut:
+          type: boolean
+          description: 'Indicates if after a logout, the client should be redirected automatically.
+
+
+            Depends on the existence of at least one Uri in the PostLogoutRedirectUris property to operate as designed.'
+          default: false
+          example: false
+        usageExternalReference:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'External reference for transaction provided by the customer.
+
+
+            Used to group transactions together for the customer.<example>orderid:121232</example>'
+        subjectLookupsEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Enterprise Subject Lookup migration feature.
+
+
+            Note: You need admin permissions to enable this feature.'
+          default: false
+          example: false
+        useCookieless:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Client to not use cookies.
+
+
+            Note: You need admin permissions to enable this feature.'
+          default: false
+          example: false
+        requirePushedAuthorization:
+          type: boolean
+          description: Enables the Client to require pushed authorization requests.
+          default: false
+          example: false
+        isInternalWorkloadClient:
+          type: boolean
+          description: Specifies whether the client is a workload client.
+        forceLogin:
+          type: boolean
+          description: Disables SSO for the client.
+        embeddedParentDomains:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking.
+          example:
+          - signicat.com
+          - example.com
+      additionalProperties: false
+    Acr:
+      type: object
+      properties:
+        values:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Gets or Sets the ACR values (space separated).
+          example: idp:dummy
+        forced:
+          type: boolean
+          description: Gets or sets a value indicating whether gets or Sets if the ACR value should be always used.
+          example: true
+      additionalProperties: false
+    PublicKeyDto:
+      type: object
+      properties:
+        id:
+          maxLength: 100
+          minLength: 8
+          type:
+          - string
+          - 'null'
+          description: Public key identifier
+          example: smart-lemon-tree
+        type:
+          enum:
+          - X509Certificate
+          - JWK
+          type:
+          - string
+          - 'null'
+          description: Public key type
+          example: X509Certificate
+        usage:
+          enum:
+          - Signing
+          - Encryption
+          type:
+          - string
+          - 'null'
+          description: The valid cryptographic uses of the certificate's public key
+          example: Signing
+        data:
+          maxLength: 2048
+          type:
+          - string
+          - 'null'
+          description: Public key data
+          example: T29vb3BwcHNzcyAuLi4geW91IGZvdW5kIG15IGxlbW9ucyEhIEknbSB0aGUgc21hcnRlc3QgdHJlZSBpbiB0aGUgd29ybGQhISEgQUhBSEEgOi0p
+        name:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Public key name
+          example: The Smart Lemon Tree
+        notBefore:
+          type:
+          - string
+          - 'null'
+          description: The earliest time and date on which the certificate is valid
+          format: date-time
+          example: '"2026-05-17T16:13:47.3524211+00:00'
+        notAfter:
+          type:
+          - string
+          - 'null'
+          description: The time and date past which the certificate is no longer valid
+          format: date-time
+          example: '"2022-05-17T16:13:47.3524211+00:00'
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Version of Public key
+          example: 00000005_1de79344221ef5014703401fe2526aa1
+      additionalProperties: false
+    ClientDto:
+      required:
+      - account
+      - allowedScopes
+      - name
+      - primaryGrantType
+      type: object
+      properties:
+        id:
+          maxLength: 100
+          minLength: 8
+          type:
+          - string
+          - 'null'
+          description: 'Client identifier (Globally unique).
+
+
+            If not provided a new ID will be generated.'
+          example: chimney-sweep-monkey
+        name:
+          maxLength: 255
+          minLength: 8
+          type: string
+          description: Client name.
+          example: Stupefied animals portal
+        account:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Client account id.
+          example: a-pdge-kl2234afhrq34422j
+        acr:
+          $ref: '#/components/schemas/Acr'
+        pairWiseSubjectSalt:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Salt value used in pair-wise subjectId generation for users of this client.
+          example: qfwhqw7832gqhw
+        uri:
+          type:
+          - string
+          - 'null'
+          description: URI to further information about client (used on consent screen).
+          format: uri
+          example: https://lost-monkey-client/info
+        logoUri:
+          type:
+          - string
+          - 'null'
+          description: 'URI to client logo (used on consent screen).
+
+
+            Must be an absolute URI and Https.'
+          format: uri
+          example: https://lost-monkey-client/photo1.jpg
+        encryptIdTokens:
+          type: boolean
+          description: 'Enable/Disable IDTokens encryption.
+
+
+            If enabled requires public keys allowed to encrypt.'
+          default: false
+          example: false
+        requireSecret:
+          type: boolean
+          description: 'Specifies whether this client needs a secret to request tokens from the token endpoint.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''true''.'
+          default: true
+          example: false
+        requirePkce:
+          type: boolean
+          description: 'Specifies whether clients using an authorization code based grant type must send a proof key.
+
+
+            At least one of these attributes must be ''true'' (RequireSecret or RequirePkce).'
+          default: false
+          example: true
+        requireRequestObject:
+          type: boolean
+          description: 'Specifies whether this client needs to wrap the authorize request parameters in a JWT.
+
+
+            When ''PrimaryGrantType'' is set to ''ClientCredentials'' or ''DeviceFlow'' it must be ''false''.'
+          default: false
+          example: false
+        useReferenceAccessTokens:
+          type: boolean
+          description: Specifies whether should use reference tokens or not.
+          default: false
+          example: false
+        redirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: 'Specifies the allowed URIs to return tokens or authorization codes to.
+
+
+            Must have at least one redirect URI in case of PrimaryGrantType attribute is DeviceFlow.
+
+            Must be an absolute URI and Https.
+
+            Http URIs are only allowed if pointing at localhost.'
+          example:
+          - https://lovelly-monkey-stuff/redirect.html
+          - https://final-zoo/
+        allowedScopes:
+          maxItems: 200
+          type: array
+          items:
+            type: string
+          description: Specifies the allowed resources that client as access.
+          example:
+          - internal-stuff
+          - healthy-food
+        allowOfflineAccess:
+          type: boolean
+          description: Specifies whether this client can request refresh tokens.
+          default: true
+          example: true
+        allowAccessTokensViaBrowser:
+          type: boolean
+          description: Specifies whether this client is allowed to receive access tokens via the browser. This is useful to harden flows that allow multiple response types (e.g. by disallowing a hybrid flow client that is supposed to use code id_token to add the token response type and thus leaking the token to the browser).
+          default: false
+          example: true
+        postLogoutRedirectUris:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: Specifies allowed URIs to redirect to after logout. See the OIDC Connect Session Management spec (https://openid.net/specs/openid-connect-session-1_0.html) for more details.
+          example:
+          - https://lovelly-monkey-stuff/logout.html
+          - https://final-zoo/bye
+        frontChannelLogoutUri:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies logout URI at client for HTTP based front-channel logout. See the OIDC Front-Channel spec (https://openid.net/specs/openid-connect-frontchannel-1_0.html) for more details.
+
+
+            The URIs must be an absolute URI and Https.
+
+            Http uris are only allowed if pointing at localhost.'
+          format: uri
+          example: https://lovelly-monkey-stuff/redirect-uri.html
+        frontChannelLogoutSessionRequired:
+          type: boolean
+          description: Specifies if the user’s session id should be sent to the FrontChannelLogoutUri.
+          default: false
+          example: true
+        identityProviderRestrictions:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Specifies which external IdPs can be used with this client (if list is empty all IdPs are allowed).
+
+
+            Defaults to empty.'
+          example:
+          - some-idp
+          - another-one
+        userSsoLifetime:
+          maximum: 10800
+          minimum: 1
+          type: integer
+          description: 'The maximum duration (in seconds) since the last time the user authenticated.
+
+
+            You can adjust the lifetime of a session token to control when and how often a user is required to reenter credentials instead of being silently authenticated, when using a web application.
+
+            The default value is 3600 seconds.'
+          format: int32
+          default: 3600
+          example: 1200
+        identityTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type: integer
+          description: 'Lifetime to identity token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+          default: 600
+          example: 500
+        accessTokenLifetime:
+          maximum: 3600
+          minimum: 1
+          type: integer
+          description: 'Lifetime of access token in seconds.
+
+
+            The default value is 600 seconds.'
+          format: int32
+          default: 600
+          example: 600
+        authorizationCodeLifetime:
+          maximum: 60
+          minimum: 1
+          type: integer
+          description: 'Lifetime of authorization code in seconds.
+
+
+            The default value is 15 seconds.'
+          format: int32
+          default: 15
+          example: 15
+        absoluteRefreshTokenLifetime:
+          maximum: 2592000
+          minimum: 1
+          type: integer
+          description: 'Maximum lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry is off and AllowOfflineAccess is on.'
+          format: int32
+          default: 86400
+          example: 50000
+        slidingRefreshTokenLifetime:
+          maximum: 1296000
+          minimum: 1
+          type: integer
+          description: 'Sliding lifetime of a refresh token in seconds.
+
+
+            The default value is 86400 seconds.
+
+            Must be greater then 1 when attribute SlidingRefreshTokenExpiry and AllowOfflineAccess is on.'
+          format: int32
+          default: 86400
+          example: 60000
+        allowRefreshTokenReuse:
+          type: boolean
+          description: 'Allow reuse refresh token. The refresh token handle will stay the same when refreshing tokens.
+
+
+            If set to false (default value) then the refresh token handle will be updated when refreshing tokens.'
+          default: false
+          example: true
+        slidingRefreshTokenExpiry:
+          type: boolean
+          description: 'Specifies whether refresh token should expire or not.
+
+
+            Currently don´t have any default value and fail if not set.
+
+            When set to ''true'' and AllowOfflineAccess is on then SlidingRefreshTokenLifetime attribute must be greater then 0.
+
+            When set to ''false'' and AllowOfflineAccess is on then AbsoluteRefreshTokenLifetime attribute must be greater then 0.'
+          default: false
+          example: false
+        deviceCodeLifetime:
+          maximum: 600
+          minimum: 1
+          type: integer
+          description: 'Lifetime to device code in seconds.
+
+
+            The default value is 300 seconds.
+
+            Must be greater then 0 when PrimaryGrantType attribute is DeviceFlow grant type.'
+          format: int32
+          default: 300
+          example: 100
+        allowedCorsOrigins:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specifies the allowed CORS origins that will be used by the default CORS policy service implementations (In-Memory and EF) to build a CORS policy for JavaScript clients.
+          example:
+          - https://funny-animal.org
+          - https://zoo-world.org
+        primaryGrantType:
+          enum:
+          - ClientCredentials
+          - AuthorizationCode
+          - Hybrid
+          - Ciba
+          - DeviceFlow
+          type: string
+          description: Specifies the primary grant type the client is allowed to use.
+          example: ClientCredentials
+        contentEncryptionAlgorithm:
+          enum:
+          - A128CBC-HS256
+          - A192CBC-HS384
+          - A256CBC-HS512
+          type:
+          - string
+          - 'null'
+          description: 'Content encryption algorithm for ID tokens and the UserInfo response.
+
+
+            Defaults to A256CBC-HS512.'
+          example: A128CBC-HS256
+        idTokenUserData:
+          enum:
+          - Minimal
+          - StandardScopes
+          - All
+          type: string
+          description: Defines the IdToken user data level.
+          example: StandardScopes
+        userInfoResponseType:
+          enum:
+          - Json
+          - Signed
+          - Encrypted
+          - SignedAndEncrypted
+          type:
+          - string
+          - 'null'
+          description: 'User info response type.
+
+
+            Defaults to ''Json''.'
+          example: SignedAndEncrypted
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Internal version of the client (Read only).
+          example: 00000000_2a43947f32e7820a2b567c3351a37046
+        requireConsent:
+          type: boolean
+          description: Specifies whether a consent screen is required.
+          default: false
+          example: false
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Defines when the client was created (Read only).
+          format: date-time
+          example: '"2022-05-17T16:13:47.3524211+00:00'
+        lastUpdatedDate:
+          type:
+          - string
+          - 'null'
+          description: Defines the last change on the client (Read only).
+          format: date-time
+          example: '2022-05-17T16:13:47.3524453+00:00'
+        automaticRedirectAfterSignOut:
+          type: boolean
+          description: 'Indicates if after a logout, the client should be redirected automatically.
+
+
+            Depends on the existence of at least one Uri in the PostLogoutRedirectUris property to operate as designed.'
+          default: false
+          example: false
+        usageExternalReference:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'External reference for transaction provided by the customer.
+
+
+            Used to group transactions together for the customer.<example>orderid:121232</example>'
+        subjectLookupsEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Enterprise Subject Lookup migration feature.
+
+
+            Note: You need admin permissions to enable this feature.'
+          default: false
+          example: false
+        useCookieless:
+          type:
+          - boolean
+          - 'null'
+          description: 'Enables the Client to not use cookies.
+
+
+            Note: You need admin permissions to enable this feature.'
+          default: false
+          example: false
+        requirePushedAuthorization:
+          type: boolean
+          description: Enables the Client to require pushed authorization requests.
+          default: false
+          example: false
+        isInternalWorkloadClient:
+          type: boolean
+          description: Specifies whether the client is a workload client.
+        forceLogin:
+          type: boolean
+          description: Disables SSO for the client.
+        embeddedParentDomains:
+          maxItems: 200
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Specify the parent domains that will embed the authentication. This will be used for content security frame ancestor header if set, as an extra security mechanism to protect against clickjacking.
+          example:
+          - signicat.com
+          - example.com
+      additionalProperties: false
+    ClientHealthDetails:
+      type: object
+      properties:
+        status:
+          enum:
+          - Unhealthy
+          - Healthy
+          - Warning
+          - Skip
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        remediation:
+          type:
+          - string
+          - 'null'
+        data:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+      additionalProperties: false
+    ClientRevisionDto:
+      type: object
+      properties:
+        replacedBy:
+          type:
+          - string
+          - 'null'
+          description: Version of Api resource that has been replaced by the current version
+          example: 00000001_1de79344221ef5014703401fe2526aa1
+        data:
+          $ref: '#/components/schemas/FullClientDto'
+      additionalProperties: false
+    SecretDto:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 8
+          type:
+          - string
+          - 'null'
+          description: Secret identifier
+          example: rare-beauty-secret
+        name:
+          minLength: 8
+          type: string
+          description: Secret name
+          example: The most rare beauty secret
+        version:
+          type:
+          - string
+          - 'null'
+          description: Secret version
+          example: 00000003_2a43947f32e7820a2b567c3351a37046
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Defines when the client was created (Read only).
+          format: date-time
+          example: '"2022-05-17T16:13:47.3524211+00:00'
+        userCreator:
+          type:
+          - string
+          - 'null'
+          description: User that created the secret identified by the idp id
+          example: '1234'
+      additionalProperties: false
+    CustomClaimDto:
+      required:
+      - alias
+      - claim
+      type: object
+      properties:
+        id:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: The custom claim identifier
+          example: 7a482587238ec54198c34e8a0fbdbfbf
+        claim:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The claim to set an alias to
+          example: personal.name
+        alias:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The alias to the claim
+          example: name
+        version:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Internal version of the custom claim (Read only).
+          example: 00000000_34f4634dd4a3680002a345ef4d89b33
+      additionalProperties: false
+      description: Represents a custom claim.
+  securitySchemes:
+    Signicat-OIDC:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: http://api.signicat.com/auth/open/connect/authorize
+          tokenUrl: http://api.signicat.com/auth/open/connect/token
+          scopes:
+            openid: OpenID User id
+            signicat-api: Signicat API
+x-refined-from:
+- oidc-config-openapi.json
+- signicat-oidc-config-openapi.yml

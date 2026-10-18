@@ -1,0 +1,472 @@
+openapi: 3.2.0
+info:
+  title: Signicat Attachments API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Attachments across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Attachments
+paths:
+  /documents/{documentId}/attachments:
+    post:
+      tags:
+      - Attachments
+      summary: Create attachment
+      description: 'Adds an attachments to the specified document. You can choose between different ways to make the user accept the attachment.
+
+        The attachment will be deleted together with the main document when the signature job is completed or has expired'
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/AttachmentRequest'
+            example:
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+              type: show_accept
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentRequest'
+            example:
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+              type: show_accept
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentRequest'
+            example:
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+              type: show_accept
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AttachmentRequest'
+            example:
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+              type: show_accept
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: c0dac803-fb03-4307-ba98-0951839966a0
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: c0dac803-fb03-4307-ba98-0951839966a0
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+        '201':
+          description: ''
+      operationId: postDocumentsByDocumentIdAttachments
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Attachments
+      summary: List attachments
+      description: Returns a list of all attachments for the specified document.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttachmentListItem'
+              example:
+              - id: b9bf8b02-8e5a-4dc0-8b02-a87d565d2cc1
+                title: Attachment 1 - Type description
+                description: This attachment describes bla bla bla...
+                type: show_accept
+                fileName: Attachment1.pdf
+              - id: 68a5c9de-2be5-4fc7-bae8-4f5e90310c48
+                title: Attachment 2 - Building sketches
+                description: This attachment includes sketches of the build at...
+                type: show_accept
+                fileName: Attachment2.pdf
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttachmentListItem'
+              example:
+              - id: b9bf8b02-8e5a-4dc0-8b02-a87d565d2cc1
+                title: Attachment 1 - Type description
+                description: This attachment describes bla bla bla...
+                type: show_accept
+                fileName: Attachment1.pdf
+              - id: 68a5c9de-2be5-4fc7-bae8-4f5e90310c48
+                title: Attachment 2 - Building sketches
+                description: This attachment includes sketches of the build at...
+                type: show_accept
+                fileName: Attachment2.pdf
+      operationId: getDocumentsByDocumentIdAttachments
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/attachments/{attachmentId}:
+    get:
+      tags:
+      - Attachments
+      summary: Retrieve attachment
+      description: Retrieves the details of a single attachment.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachmentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: 9443bf34-3d14-420c-a982-26dfee00e996
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: 9443bf34-3d14-420c-a982-26dfee00e996
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+      operationId: getDocumentsByDocumentIdAttachmentsByAttachmentId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Attachments
+      summary: Update attachment
+      description: Updates the specified attachment (Will only take affect if no one has signed the document yet)
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachmentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttachmentRequest'
+            example:
+              type: show_accept
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttachmentRequest'
+            example:
+              type: show_accept
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttachmentRequest'
+            example:
+              type: show_accept
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttachmentRequest'
+            example:
+              type: show_accept
+              fileName: Attachment1.pdf
+              title: Attachment 1 - Type description
+              data: Base 64 encoded pdf
+              convertToPdf: false
+              description: This attachment describes bla bla bla...
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: f773d437-6f71-4849-9982-43eebe07f68f
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentResponse'
+              example:
+                id: f773d437-6f71-4849-9982-43eebe07f68f
+                fileName: Attachment1.pdf
+                title: Attachment 1 - Type description
+                convertToPdf: false
+                description: This attachment describes bla bla bla...
+                type: show_accept
+      operationId: patchDocumentsByDocumentIdAttachmentsByAttachmentId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Attachments
+      summary: Delete attachment
+      description: Deletes the specified attachment (Will only take affect if no one has signed the document yet)
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachmentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+      operationId: deleteDocumentsByDocumentIdAttachmentsByAttachmentId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    AttachmentListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The attachment's unique identifier.
+          format: uuid
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the attachment which will be presented to the user.
+        description:
+          type:
+          - string
+          - 'null'
+          description: An optional description of the attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+        fileName:
+          type:
+          - string
+          - 'null'
+          description: Filename with file extension. <span style="color:red;">We only support PDF for attachments, set `convertToPdf` to `true` if you have a convertible file type.</span>
+      additionalProperties: false
+    AttachmentResponse:
+      required:
+      - fileName
+      - title
+      type: object
+      properties:
+        id:
+          type: string
+          description: The attachment's unique identifier.
+          format: uuid
+        fileName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Filename with file extension. <span style="color:red;">We only support PDF for attachments, set `convertToPdf` to `true` if you have a convertible file type.</span>
+        title:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The title of the attachment which will be presented to the user.
+        convertToPdf:
+          type: boolean
+          description: Determines if the attachment should be converted to PDF. See our documentation for supported file types.
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: An optional list of signers that should be able to see / sign the attachment.
+        description:
+          type:
+          - string
+          - 'null'
+          description: An optional description of the attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+      additionalProperties: false
+    AttachmentType:
+      enum:
+      - show_accept
+      - read_accept
+      - sign
+      type: string
+    UpdateAttachmentRequest:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+        fileName:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Filename with file extension. <span style="color:red;">We only support PDF for attachments, set `convertToPdf` to `true` if you have a convertible file type.</span>
+        title:
+          maxLength: 300
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The title of the attachment which will be presented to the user.
+        data:
+          type:
+          - string
+          - 'null'
+          description: Base64-encoded attachment (UTF-8-encoded)
+        convertToPdf:
+          type: boolean
+          description: Determines if the attachment should be converted to PDF. See our documentation for supported file types.
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: An optional list of signers that should be able to see / sign the attachment.
+        description:
+          type:
+          - string
+          - 'null'
+          description: An optional description of the attachment.
+      additionalProperties: false
+    AttachmentRequest:
+      required:
+      - data
+      - fileName
+      - title
+      type: object
+      properties:
+        fileName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Filename with file extension. <span style="color:red;">We only support PDF for attachments, set `convertToPdf` to `true` if you have a convertible file type.</span>
+        title:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The title of the attachment which will be presented to the user.
+        data:
+          minLength: 1
+          type: string
+          description: Base64-encoded attachment (UTF-8-encoded)
+        convertToPdf:
+          type: boolean
+          description: Determines if the attachment should be converted to PDF. See our documentation for supported file types.
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: An optional list of signers that should be able to see / sign the attachment.
+        description:
+          type:
+          - string
+          - 'null'
+          description: An optional description of the attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+      additionalProperties: false
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

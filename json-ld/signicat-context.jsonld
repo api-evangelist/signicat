@@ -1,0 +1,1217 @@
+{
+  "@context": {
+    "@vocab": "https://signicat.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "signicat": "https://signicat.com/schema#",
+    "AccountChildListItem": "signicat:AccountChildListItem",
+    "id": {
+      "@id": "signicat:id",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "signicat:name",
+      "@type": "xsd:string"
+    },
+    "url": {
+      "@id": "signicat:url",
+      "@type": "xsd:string"
+    },
+    "isSandbox": {
+      "@id": "signicat:isSandbox",
+      "@type": "xsd:boolean"
+    },
+    "enabled": {
+      "@id": "signicat:enabled",
+      "@type": "xsd:boolean"
+    },
+    "region": {
+      "@id": "signicat:region",
+      "@type": "xsd:string"
+    },
+    "cloud": {
+      "@id": "signicat:cloud",
+      "@type": "xsd:string"
+    },
+    "isSoftDeleted": {
+      "@id": "signicat:isSoftDeleted",
+      "@type": "xsd:boolean"
+    },
+    "softDeletedAt": {
+      "@id": "signicat:softDeletedAt",
+      "@type": "xsd:string"
+    },
+    "AccountCreate": "signicat:AccountCreate",
+    "organizationId": {
+      "@id": "signicat:organizationId",
+      "@type": "xsd:string"
+    },
+    "AccountListItem": "signicat:AccountListItem",
+    "createdDate": {
+      "@id": "signicat:createdDate",
+      "@type": "xsd:string"
+    },
+    "lastModifiedDate": {
+      "@id": "signicat:lastModifiedDate",
+      "@type": "xsd:string"
+    },
+    "isDeleteProtected": {
+      "@id": "signicat:isDeleteProtected",
+      "@type": "xsd:boolean"
+    },
+    "organization": {
+      "@id": "signicat:organization"
+    },
+    "AccountRead": "signicat:AccountRead",
+    "products": {
+      "@id": "signicat:products",
+      "@container": "@list"
+    },
+    "AccountSelectorV2": "signicat:AccountSelectorV2",
+    "organizations": {
+      "@id": "signicat:organizations",
+      "@container": "@list"
+    },
+    "AccountSelectorV2Account": "signicat:AccountSelectorV2Account",
+    "stack": {
+      "@id": "signicat:stack",
+      "@type": "xsd:string"
+    },
+    "isInternal": {
+      "@id": "signicat:isInternal",
+      "@type": "xsd:boolean"
+    },
+    "AccountSelectorV2Organization": "signicat:AccountSelectorV2Organization",
+    "displayName": {
+      "@id": "signicat:displayName",
+      "@type": "xsd:string"
+    },
+    "customerType": {
+      "@id": "signicat:customerType",
+      "@type": "xsd:string"
+    },
+    "customerStatus": {
+      "@id": "signicat:customerStatus",
+      "@type": "xsd:string"
+    },
+    "parentId": {
+      "@id": "signicat:parentId",
+      "@type": "xsd:string"
+    },
+    "accounts": {
+      "@id": "signicat:accounts",
+      "@container": "@list"
+    },
+    "churnDate": {
+      "@id": "signicat:churnDate",
+      "@type": "xsd:dateTime"
+    },
+    "AccountSetDeleteProtection": "signicat:AccountSetDeleteProtection",
+    "AccountTransfer": "signicat:AccountTransfer",
+    "sourceOrganization": {
+      "@id": "signicat:sourceOrganization",
+      "@type": "xsd:string"
+    },
+    "targetOrganization": {
+      "@id": "signicat:targetOrganization",
+      "@type": "xsd:string"
+    },
+    "reason": {
+      "@id": "signicat:reason",
+      "@type": "xsd:string"
+    },
+    "AccountWrite": "signicat:AccountWrite",
+    "ActivityTrackerAccount": "signicat:ActivityTrackerAccount",
+    "disabled": {
+      "@id": "signicat:disabled",
+      "@type": "xsd:boolean"
+    },
+    "deletedTimestamp": {
+      "@id": "signicat:deletedTimestamp",
+      "@type": "xsd:dateTime"
+    },
+    "deleteMeThreshold": {
+      "@id": "signicat:deleteMeThreshold",
+      "@type": "xsd:dateTime"
+    },
+    "lastDbUpdate": {
+      "@id": "signicat:lastDbUpdate",
+      "@type": "xsd:dateTime"
+    },
+    "ActivityTrackerOrganization": "signicat:ActivityTrackerOrganization",
+    "parentCrmId": {
+      "@id": "signicat:parentCrmId",
+      "@type": "xsd:string"
+    },
+    "salesforceBillingAccount": {
+      "@id": "signicat:salesforceBillingAccount",
+      "@type": "xsd:string"
+    },
+    "ActivityTrackerSalesforceAccount": "signicat:ActivityTrackerSalesforceAccount",
+    "type": {
+      "@id": "signicat:type",
+      "@type": "xsd:string"
+    },
+    "invoiceAccountId": {
+      "@id": "signicat:invoiceAccountId",
+      "@type": "xsd:string"
+    },
+    "Address": "signicat:Address",
+    "street": {
+      "@id": "signicat:street",
+      "@type": "xsd:string"
+    },
+    "postalCode": {
+      "@id": "signicat:postalCode",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "signicat:city",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "signicat:country",
+      "@type": "xsd:string"
+    },
+    "ContactChildListItem": "signicat:ContactChildListItem",
+    "email": {
+      "@id": "signicat:email",
+      "@type": "xsd:string"
+    },
+    "mobile": {
+      "@id": "signicat:mobile",
+      "@type": "xsd:string"
+    },
+    "roles": {
+      "@id": "signicat:roles",
+      "@container": "@list"
+    },
+    "ContactCreate": "signicat:ContactCreate",
+    "firstName": {
+      "@id": "signicat:firstName",
+      "@type": "xsd:string"
+    },
+    "middleName": {
+      "@id": "signicat:middleName",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "signicat:lastName",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "signicat:phone",
+      "@type": "xsd:string"
+    },
+    "ContactListItem": "signicat:ContactListItem",
+    "ContactRead": "signicat:ContactRead",
+    "ContactRole": "signicat:ContactRole",
+    "ContactWrite": "signicat:ContactWrite",
+    "CountriesResponse": "signicat:CountriesResponse",
+    "data": {
+      "@id": "signicat:data",
+      "@container": "@list"
+    },
+    "Country": "signicat:Country",
+    "countryCode": {
+      "@id": "signicat:countryCode",
+      "@type": "xsd:string"
+    },
+    "supportedOrganizationCountry": {
+      "@id": "signicat:supportedOrganizationCountry",
+      "@type": "xsd:boolean"
+    },
+    "InternalOrg": "signicat:InternalOrg",
+    "salesforceName": {
+      "@id": "signicat:salesforceName",
+      "@type": "xsd:string"
+    },
+    "salesforceBillingAccountId": {
+      "@id": "signicat:salesforceBillingAccountId",
+      "@type": "xsd:string"
+    },
+    "crmId": {
+      "@id": "signicat:crmId",
+      "@type": "xsd:string"
+    },
+    "crmLink": {
+      "@id": "signicat:crmLink",
+      "@type": "xsd:string"
+    },
+    "technicalDeliveries": {
+      "@id": "signicat:technicalDeliveries",
+      "@container": "@list"
+    },
+    "productCodes": {
+      "@id": "signicat:productCodes",
+      "@container": "@list"
+    },
+    "salesforceEndpointNames": {
+      "@id": "signicat:salesforceEndpointNames",
+      "@type": "xsd:string"
+    },
+    "salesforceStatus": {
+      "@id": "signicat:salesforceStatus",
+      "@type": "xsd:string"
+    },
+    "salesforceType": {
+      "@id": "signicat:salesforceType",
+      "@type": "xsd:string"
+    },
+    "salesforceAccountNumber": {
+      "@id": "signicat:salesforceAccountNumber",
+      "@type": "xsd:string"
+    },
+    "salesforceTerminationDate": {
+      "@id": "signicat:salesforceTerminationDate",
+      "@type": "xsd:dateTime"
+    },
+    "salesforceBillingCompanyId": {
+      "@id": "signicat:salesforceBillingCompanyId",
+      "@type": "xsd:string"
+    },
+    "salesforceBillingDepartmentId": {
+      "@id": "signicat:salesforceBillingDepartmentId",
+      "@type": "xsd:string"
+    },
+    "salesforceIndustry": {
+      "@id": "signicat:salesforceIndustry",
+      "@type": "xsd:string"
+    },
+    "dynamicsCalculatedDataAreaId": {
+      "@id": "signicat:dynamicsCalculatedDataAreaId",
+      "@type": "xsd:string"
+    },
+    "dynamicsCalculatedCustomerAccountNumber": {
+      "@id": "signicat:dynamicsCalculatedCustomerAccountNumber",
+      "@type": "xsd:string"
+    },
+    "InvoiceItem": "signicat:InvoiceItem",
+    "organizationName": {
+      "@id": "signicat:organizationName",
+      "@type": "xsd:string"
+    },
+    "usageOrganizationId": {
+      "@id": "signicat:usageOrganizationId",
+      "@type": "xsd:string"
+    },
+    "usageOrganizationName": {
+      "@id": "signicat:usageOrganizationName",
+      "@type": "xsd:string"
+    },
+    "invoiceNumber": {
+      "@id": "signicat:invoiceNumber",
+      "@type": "xsd:string"
+    },
+    "invoiceDate": {
+      "@id": "signicat:invoiceDate",
+      "@type": "xsd:dateTime"
+    },
+    "invoiceAddressCountryRegionISOCode": {
+      "@id": "signicat:invoiceAddressCountryRegionISOCode",
+      "@type": "xsd:string"
+    },
+    "invoiceAddressZipCode": {
+      "@id": "signicat:invoiceAddressZipCode",
+      "@type": "xsd:string"
+    },
+    "totalTaxAmount": {
+      "@id": "signicat:totalTaxAmount",
+      "@type": "xsd:decimal"
+    },
+    "invoiceAddressStreetNumber": {
+      "@id": "signicat:invoiceAddressStreetNumber",
+      "@type": "xsd:string"
+    },
+    "invoiceAddressStreet": {
+      "@id": "signicat:invoiceAddressStreet",
+      "@type": "xsd:string"
+    },
+    "totalChargeAmount": {
+      "@id": "signicat:totalChargeAmount",
+      "@type": "xsd:decimal"
+    },
+    "totalDiscountAmount": {
+      "@id": "signicat:totalDiscountAmount",
+      "@type": "xsd:decimal"
+    },
+    "currencyCode": {
+      "@id": "signicat:currencyCode",
+      "@type": "xsd:string"
+    },
+    "salesOrderNumber": {
+      "@id": "signicat:salesOrderNumber",
+      "@type": "xsd:string"
+    },
+    "invoiceAddressCity": {
+      "@id": "signicat:invoiceAddressCity",
+      "@type": "xsd:string"
+    },
+    "invoiceHeaderTaxAmount": {
+      "@id": "signicat:invoiceHeaderTaxAmount",
+      "@type": "xsd:decimal"
+    },
+    "invoiceAddressState": {
+      "@id": "signicat:invoiceAddressState",
+      "@type": "xsd:string"
+    },
+    "invoiceAddressCountryRegionId": {
+      "@id": "signicat:invoiceAddressCountryRegionId",
+      "@type": "xsd:string"
+    },
+    "customersOrderReference": {
+      "@id": "signicat:customersOrderReference",
+      "@type": "xsd:string"
+    },
+    "totalInvoiceAmount": {
+      "@id": "signicat:totalInvoiceAmount",
+      "@type": "xsd:decimal"
+    },
+    "paymentId": {
+      "@id": "signicat:paymentId",
+      "@type": "xsd:string"
+    },
+    "invoiceCustomerAccountNumber": {
+      "@id": "signicat:invoiceCustomerAccountNumber",
+      "@type": "xsd:string"
+    },
+    "sigContractRef": {
+      "@id": "signicat:sigContractRef",
+      "@type": "xsd:string"
+    },
+    "sigDocumentRef": {
+      "@id": "signicat:sigDocumentRef",
+      "@type": "xsd:string"
+    },
+    "settled": {
+      "@id": "signicat:settled",
+      "@type": "xsd:boolean"
+    },
+    "lines": {
+      "@id": "signicat:lines",
+      "@container": "@list"
+    },
+    "InvoiceLineItem": "signicat:InvoiceLineItem",
+    "lineTotalDiscountAmount": {
+      "@id": "signicat:lineTotalDiscountAmount",
+      "@type": "xsd:decimal"
+    },
+    "lineTotalTaxAmount": {
+      "@id": "signicat:lineTotalTaxAmount",
+      "@type": "xsd:decimal"
+    },
+    "salesPrice": {
+      "@id": "signicat:salesPrice",
+      "@type": "xsd:decimal"
+    },
+    "salesUnitSymbol": {
+      "@id": "signicat:salesUnitSymbol",
+      "@type": "xsd:string"
+    },
+    "lineTotalChargeAmount": {
+      "@id": "signicat:lineTotalChargeAmount",
+      "@type": "xsd:decimal"
+    },
+    "invoicedQuantity": {
+      "@id": "signicat:invoicedQuantity",
+      "@type": "xsd:decimal"
+    },
+    "lineAmount": {
+      "@id": "signicat:lineAmount",
+      "@type": "xsd:decimal"
+    },
+    "productName": {
+      "@id": "signicat:productName",
+      "@type": "xsd:string"
+    },
+    "revRecContractStartDate": {
+      "@id": "signicat:revRecContractStartDate",
+      "@type": "xsd:dateTime"
+    },
+    "revRecContractEndDate": {
+      "@id": "signicat:revRecContractEndDate",
+      "@type": "xsd:dateTime"
+    },
+    "sigContractStart": {
+      "@id": "signicat:sigContractStart",
+      "@type": "xsd:dateTime"
+    },
+    "sigContractEnd": {
+      "@id": "signicat:sigContractEnd",
+      "@type": "xsd:dateTime"
+    },
+    "itemNumber": {
+      "@id": "signicat:itemNumber",
+      "@type": "xsd:string"
+    },
+    "InvoiceListItem": "signicat:InvoiceListItem",
+    "InvoiceTransferStartResponse": "signicat:InvoiceTransferStartResponse",
+    "complete": {
+      "@id": "signicat:complete",
+      "@type": "xsd:boolean"
+    },
+    "error": {
+      "@id": "signicat:error",
+      "@type": "xsd:boolean"
+    },
+    "LookupResult": "signicat:LookupResult",
+    "accountId": {
+      "@id": "signicat:accountId",
+      "@type": "xsd:string"
+    },
+    "vanillaAccountId": {
+      "@id": "signicat:vanillaAccountId",
+      "@type": "xsd:string"
+    },
+    "yellowTenantId": {
+      "@id": "signicat:yellowTenantId",
+      "@type": "xsd:string"
+    },
+    "yellowTenantEnvironment": {
+      "@id": "signicat:yellowTenantEnvironment",
+      "@type": "xsd:string"
+    },
+    "MarketplaceOrgDetails": "signicat:MarketplaceOrgDetails",
+    "industry": {
+      "@id": "signicat:industry",
+      "@type": "xsd:string"
+    },
+    "operatesInCountries": {
+      "@id": "signicat:operatesInCountries",
+      "@container": "@list"
+    },
+    "NameValidityResult": "signicat:NameValidityResult",
+    "OpaAccount": "signicat:OpaAccount",
+    "parentName": {
+      "@id": "signicat:parentName",
+      "@type": "xsd:string"
+    },
+    "deleted": {
+      "@id": "signicat:deleted",
+      "@type": "xsd:boolean"
+    },
+    "quotaProducts": {
+      "@id": "signicat:quotaProducts",
+      "@container": "@list"
+    },
+    "ancestors": {
+      "@id": "signicat:ancestors",
+      "@container": "@list"
+    },
+    "OpaOrganization": "signicat:OpaOrganization",
+    "OrganizationChildListItem": "signicat:OrganizationChildListItem",
+    "OrganizationCreate": "signicat:OrganizationCreate",
+    "website": {
+      "@id": "signicat:website",
+      "@type": "xsd:string"
+    },
+    "entityId": {
+      "@id": "signicat:entityId",
+      "@type": "xsd:string"
+    },
+    "entityVatNumber": {
+      "@id": "signicat:entityVatNumber",
+      "@type": "xsd:string"
+    },
+    "entityLegalName": {
+      "@id": "signicat:entityLegalName",
+      "@type": "xsd:string"
+    },
+    "billingEmail": {
+      "@id": "signicat:billingEmail",
+      "@type": "xsd:string"
+    },
+    "billingAddress": {
+      "@id": "signicat:billingAddress"
+    },
+    "parentOrganizationId": {
+      "@id": "signicat:parentOrganizationId",
+      "@type": "xsd:string"
+    },
+    "OrganizationListItem": "signicat:OrganizationListItem",
+    "parentOrganization": {
+      "@id": "signicat:parentOrganization"
+    },
+    "OrganizationRead": "signicat:OrganizationRead",
+    "childOrganizations": {
+      "@id": "signicat:childOrganizations",
+      "@container": "@list"
+    },
+    "billingContact": {
+      "@id": "signicat:billingContact"
+    },
+    "contacts": {
+      "@id": "signicat:contacts",
+      "@container": "@list"
+    },
+    "OrganizationWrite": "signicat:OrganizationWrite",
+    "billingContactId": {
+      "@id": "signicat:billingContactId",
+      "@type": "xsd:string"
+    },
+    "Page_AccountListItem": "signicat:Page_AccountListItem",
+    "next": {
+      "@id": "signicat:next",
+      "@type": "xsd:string"
+    },
+    "Page_ContactListItem": "signicat:Page_ContactListItem",
+    "Page_InvoiceItem": "signicat:Page_InvoiceItem",
+    "Page_OrganizationListItem": "signicat:Page_OrganizationListItem",
+    "ProblemDetails": "signicat:ProblemDetails",
+    "title": {
+      "@id": "signicat:title",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "signicat:status",
+      "@type": "xsd:integer"
+    },
+    "detail": {
+      "@id": "signicat:detail",
+      "@type": "xsd:string"
+    },
+    "instance": {
+      "@id": "signicat:instance",
+      "@type": "xsd:string"
+    },
+    "ProductCodeSource": "signicat:ProductCodeSource",
+    "sourceType": {
+      "@id": "signicat:sourceType",
+      "@type": "xsd:string"
+    },
+    "sourceId": {
+      "@id": "signicat:sourceId",
+      "@type": "xsd:string"
+    },
+    "sourceCreatedAt": {
+      "@id": "signicat:sourceCreatedAt",
+      "@type": "xsd:dateTime"
+    },
+    "ProductInfo": "signicat:ProductInfo",
+    "code": {
+      "@id": "signicat:code",
+      "@type": "xsd:string"
+    },
+    "productCodeSource": {
+      "@id": "signicat:productCodeSource"
+    },
+    "metadata": {
+      "@id": "signicat:metadata"
+    },
+    "ProductMetadata": "signicat:ProductMetadata",
+    "ignoreReasons": {
+      "@id": "signicat:ignoreReasons",
+      "@container": "@list"
+    },
+    "ySubStatus": {
+      "@id": "signicat:ySubStatus",
+      "@type": "xsd:string"
+    },
+    "ySubStartDate": {
+      "@id": "signicat:ySubStartDate",
+      "@type": "xsd:string"
+    },
+    "ySubEndDate": {
+      "@id": "signicat:ySubEndDate",
+      "@type": "xsd:string"
+    },
+    "yProductName": {
+      "@id": "signicat:yProductName",
+      "@type": "xsd:string"
+    },
+    "yProductCategory": {
+      "@id": "signicat:yProductCategory",
+      "@type": "xsd:string"
+    },
+    "yProductNumber": {
+      "@id": "signicat:yProductNumber",
+      "@type": "xsd:string"
+    },
+    "yChargePlanNumber": {
+      "@id": "signicat:yChargePlanNumber",
+      "@type": "xsd:string"
+    },
+    "yChargePlanName": {
+      "@id": "signicat:yChargePlanName",
+      "@type": "xsd:string"
+    },
+    "yChargeNumber": {
+      "@id": "signicat:yChargeNumber",
+      "@type": "xsd:string"
+    },
+    "yChargeName": {
+      "@id": "signicat:yChargeName",
+      "@type": "xsd:string"
+    },
+    "yChargeUnitCode": {
+      "@id": "signicat:yChargeUnitCode",
+      "@type": "xsd:string"
+    },
+    "yChargeSKU": {
+      "@id": "signicat:yChargeSKU",
+      "@type": "xsd:string"
+    },
+    "sfProduct2Id": {
+      "@id": "signicat:sfProduct2Id",
+      "@type": "xsd:string"
+    },
+    "sfProduct2Code": {
+      "@id": "signicat:sfProduct2Code",
+      "@type": "xsd:string"
+    },
+    "sfProduct2Name": {
+      "@id": "signicat:sfProduct2Name",
+      "@type": "xsd:string"
+    },
+    "sfSubStartDate": {
+      "@id": "signicat:sfSubStartDate",
+      "@type": "xsd:string"
+    },
+    "sfSubEndDate": {
+      "@id": "signicat:sfSubEndDate",
+      "@type": "xsd:string"
+    },
+    "ProductOverrideItem": "signicat:ProductOverrideItem",
+    "entries": {
+      "@id": "signicat:entries",
+      "@container": "@list"
+    },
+    "ProductOverrideItemEntry": "signicat:ProductOverrideItemEntry",
+    "product": {
+      "@id": "signicat:product",
+      "@type": "xsd:string"
+    },
+    "enabledForSandbox": {
+      "@id": "signicat:enabledForSandbox",
+      "@type": "xsd:boolean"
+    },
+    "enabledForProduction": {
+      "@id": "signicat:enabledForProduction",
+      "@type": "xsd:boolean"
+    },
+    "SasAccountListItem": "signicat:SasAccountListItem",
+    "lastModified": {
+      "@id": "signicat:lastModified",
+      "@type": "xsd:dateTime"
+    },
+    "SasOrgProductCacheItem": "signicat:SasOrgProductCacheItem",
+    "codesWithIgnoreReasons": {
+      "@id": "signicat:codesWithIgnoreReasons"
+    },
+    "SasOrganizationListItem": "signicat:SasOrganizationListItem",
+    "SasProductOverrideItem": "signicat:SasProductOverrideItem",
+    "SasProductOverrideItemEntry": "signicat:SasProductOverrideItemEntry",
+    "production": {
+      "@id": "signicat:production",
+      "@type": "xsd:boolean"
+    },
+    "sandbox": {
+      "@id": "signicat:sandbox",
+      "@type": "xsd:boolean"
+    },
+    "StackConfig": "signicat:StackConfig",
+    "YellowTenantCreateRequest": "signicat:YellowTenantCreateRequest",
+    "company": {
+      "@id": "signicat:company"
+    },
+    "user": {
+      "@id": "signicat:user"
+    },
+    "YellowTenantCreateRequestCompany": "signicat:YellowTenantCreateRequestCompany",
+    "dtpAccountId": {
+      "@id": "signicat:dtpAccountId",
+      "@type": "xsd:string"
+    },
+    "YellowTenantCreateRequestUser": "signicat:YellowTenantCreateRequestUser",
+    "phoneNumber": {
+      "@id": "signicat:phoneNumber",
+      "@type": "xsd:string"
+    },
+    "role": {
+      "@id": "signicat:role",
+      "@type": "xsd:string"
+    },
+    "password": {
+      "@id": "signicat:password",
+      "@type": "xsd:string"
+    },
+    "Archive": "signicat:Archive",
+    "objectId": {
+      "@id": "signicat:objectId",
+      "@type": "xsd:string"
+    },
+    "retentionPeriod": {
+      "@id": "signicat:retentionPeriod",
+      "@type": "xsd:string"
+    },
+    "tags": {
+      "@id": "signicat:tags",
+      "@container": "@list"
+    },
+    "keywords": {
+      "@id": "signicat:keywords"
+    },
+    "file": {
+      "@id": "signicat:file",
+      "@type": "@id"
+    },
+    "createdAt": {
+      "@id": "signicat:createdAt",
+      "@type": "xsd:dateTime"
+    },
+    "lastUpdatedAt": {
+      "@id": "signicat:lastUpdatedAt",
+      "@type": "xsd:dateTime"
+    },
+    "expiresAt": {
+      "@id": "signicat:expiresAt",
+      "@type": "xsd:dateTime"
+    },
+    "Archive-archive.patch": "signicat:Archive-archive.patch",
+    "Archive.ArchiveObjectsRepresentation": "signicat:Archive.ArchiveObjectsRepresentation",
+    "totalItems": {
+      "@id": "signicat:totalItems",
+      "@type": "xsd:integer"
+    },
+    "pageSize": {
+      "@id": "signicat:pageSize",
+      "@type": "xsd:integer"
+    },
+    "currentPage": {
+      "@id": "signicat:currentPage",
+      "@type": "xsd:integer"
+    },
+    "items": {
+      "@id": "signicat:items",
+      "@container": "@list"
+    },
+    "Archive.ArchiveObjectsRepresentation.jsonld": "signicat:Archive.ArchiveObjectsRepresentation.jsonld",
+    "Archive.Direct.jsonld": "signicat:Archive.Direct.jsonld",
+    "Archive.jsonld": "signicat:Archive.jsonld",
+    "AuditLog": "signicat:AuditLog",
+    "clientId": {
+      "@id": "signicat:clientId",
+      "@type": "xsd:string"
+    },
+    "userId": {
+      "@id": "signicat:userId",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "signicat:message",
+      "@type": "xsd:string"
+    },
+    "messageId": {
+      "@id": "signicat:messageId",
+      "@type": "xsd:string"
+    },
+    "eventType": {
+      "@id": "signicat:eventType",
+      "@type": "xsd:string"
+    },
+    "AuditLog.jsonld": "signicat:AuditLog.jsonld",
+    "File.jsonld": "signicat:File.jsonld",
+    "Report.jsonld": "signicat:Report.jsonld",
+    "UploadedFileData": "signicat:UploadedFileData",
+    "contentType": {
+      "@id": "signicat:contentType",
+      "@type": "xsd:string"
+    },
+    "sha256": {
+      "@id": "signicat:sha256",
+      "@type": "xsd:string"
+    },
+    "UploadedFileData.jsonld": "signicat:UploadedFileData.jsonld",
+    "AuditQueryResult_AuditLog": "signicat:AuditQueryResult_AuditLog",
+    "from": {
+      "@id": "signicat:from",
+      "@type": "xsd:dateTime"
+    },
+    "to": {
+      "@id": "signicat:to",
+      "@type": "xsd:dateTime"
+    },
+    "AuditQueryResult_Object": "signicat:AuditQueryResult_Object",
+    "JsonNode": "signicat:JsonNode",
+    "options": {
+      "@id": "signicat:options",
+      "@type": "@id"
+    },
+    "parent": {
+      "@id": "signicat:parent",
+      "@type": "@id"
+    },
+    "root": {
+      "@id": "signicat:root",
+      "@type": "@id"
+    },
+    "JsonNodeOptions": "signicat:JsonNodeOptions",
+    "propertyNameCaseInsensitive": {
+      "@id": "signicat:propertyNameCaseInsensitive",
+      "@type": "xsd:boolean"
+    },
+    "Query": "signicat:Query",
+    "and": {
+      "@id": "signicat:and",
+      "@container": "@list"
+    },
+    "QueryCondition": "signicat:QueryCondition",
+    "field": {
+      "@id": "signicat:field",
+      "@type": "xsd:string"
+    },
+    "operator": {
+      "@id": "signicat:operator",
+      "@type": "xsd:string"
+    },
+    "value": {
+      "@id": "signicat:value",
+      "@type": "@id"
+    },
+    "QueryInternal": "signicat:QueryInternal",
+    "tenantId": {
+      "@id": "signicat:tenantId",
+      "@type": "xsd:string"
+    },
+    "QueryMetadataResponse": "signicat:QueryMetadataResponse",
+    "extended": {
+      "@id": "signicat:extended",
+      "@type": "xsd:boolean"
+    },
+    "targets": {
+      "@id": "signicat:targets",
+      "@container": "@list"
+    },
+    "QueryMetadataResponseEventTypeProperties": "signicat:QueryMetadataResponseEventTypeProperties",
+    "properties": {
+      "@id": "signicat:properties",
+      "@container": "@list"
+    },
+    "QueryMetadataResponseServiceMetadata": "signicat:QueryMetadataResponseServiceMetadata",
+    "serviceName": {
+      "@id": "signicat:serviceName",
+      "@type": "xsd:string"
+    },
+    "eventTypes": {
+      "@id": "signicat:eventTypes",
+      "@container": "@list"
+    },
+    "QueryMetadataResponseTargetMetadata": "signicat:QueryMetadataResponseTargetMetadata",
+    "target": {
+      "@id": "signicat:target",
+      "@type": "xsd:string"
+    },
+    "services": {
+      "@id": "signicat:services",
+      "@container": "@list"
+    },
+    "AccountDetailsDto": "signicat:AccountDetailsDto",
+    "accountType": {
+      "@id": "signicat:accountType",
+      "@type": "@id"
+    },
+    "accountStatus": {
+      "@id": "signicat:accountStatus",
+      "@type": "@id"
+    },
+    "isJoinedAccount": {
+      "@id": "signicat:isJoinedAccount",
+      "@type": "xsd:boolean"
+    },
+    "numberOfHolders": {
+      "@id": "signicat:numberOfHolders",
+      "@type": "xsd:integer"
+    },
+    "foreign": {
+      "@id": "signicat:foreign",
+      "@type": "xsd:boolean"
+    },
+    "countryOfAccount": {
+      "@id": "signicat:countryOfAccount",
+      "@type": "@id"
+    },
+    "AccountNumberVerificationResultDto": "signicat:AccountNumberVerificationResultDto",
+    "accountNumber": {
+      "@id": "signicat:accountNumber",
+      "@type": "xsd:string"
+    },
+    "isValidAccountNumber": {
+      "@id": "signicat:isValidAccountNumber",
+      "@type": "xsd:boolean"
+    },
+    "validationDetails": {
+      "@id": "signicat:validationDetails",
+      "@container": "@list"
+    },
+    "accountDetails": {
+      "@id": "signicat:accountDetails",
+      "@type": "@id"
+    },
+    "AccountStatus": "signicat:AccountStatus",
+    "AccountType": "signicat:AccountType",
+    "AccountsAndAttributes.DomainInfo": "signicat:AccountsAndAttributes.DomainInfo",
+    "isDisposable": {
+      "@id": "signicat:isDisposable",
+      "@type": "xsd:boolean"
+    },
+    "AccountsAndAttributes.EmailInfo": "signicat:AccountsAndAttributes.EmailInfo",
+    "valid": {
+      "@id": "signicat:valid",
+      "@type": "xsd:boolean"
+    },
+    "riskScore": {
+      "@id": "signicat:riskScore",
+      "@type": "xsd:decimal"
+    },
+    "isDeliverable": {
+      "@id": "signicat:isDeliverable",
+      "@type": "xsd:boolean"
+    },
+    "age": {
+      "@id": "signicat:age",
+      "@type": "xsd:decimal"
+    },
+    "domain": {
+      "@id": "signicat:domain",
+      "@type": "@id"
+    },
+    "remarks": {
+      "@id": "signicat:remarks",
+      "@container": "@list"
+    },
+    "AccountsAndAttributes.FraudRiskDto": "signicat:AccountsAndAttributes.FraudRiskDto",
+    "ipAddress": {
+      "@id": "signicat:ipAddress",
+      "@type": "@id"
+    },
+    "AccountsAndAttributes.GeoLocation": "signicat:AccountsAndAttributes.GeoLocation",
+    "AccountsAndAttributes.IpAddressInfo": "signicat:AccountsAndAttributes.IpAddressInfo",
+    "isRisky": {
+      "@id": "signicat:isRisky",
+      "@type": "xsd:boolean"
+    },
+    "lastSeenDays": {
+      "@id": "signicat:lastSeenDays",
+      "@type": "xsd:integer"
+    },
+    "vpn": {
+      "@id": "signicat:vpn",
+      "@type": "xsd:boolean"
+    },
+    "geoLocation": {
+      "@id": "signicat:geoLocation",
+      "@type": "@id"
+    },
+    "AccountsAndAttributes.PhoneNumberInfo": "signicat:AccountsAndAttributes.PhoneNumberInfo",
+    "carrier": {
+      "@id": "signicat:carrier",
+      "@type": "xsd:string"
+    },
+    "AccountsAndAttributes.PhoneNumberType": "signicat:AccountsAndAttributes.PhoneNumberType",
+    "AccountsAndAttributesLookupProvidersDto": "signicat:AccountsAndAttributesLookupProvidersDto",
+    "providers": {
+      "@id": "signicat:providers"
+    },
+    "profiles": {
+      "@id": "signicat:profiles",
+      "@container": "@list"
+    },
+    "AddressDto": "signicat:AddressDto",
+    "AddressTypeDto": "signicat:AddressTypeDto",
+    "ApproximateBirthDto": "signicat:ApproximateBirthDto",
+    "monthOfBirth": {
+      "@id": "signicat:monthOfBirth",
+      "@type": "xsd:string"
+    },
+    "yearOfBirth": {
+      "@id": "signicat:yearOfBirth",
+      "@type": "xsd:string"
+    },
+    "dateOfBirth": {
+      "@id": "signicat:dateOfBirth",
+      "@type": "xsd:string"
+    },
+    "isApproximate": {
+      "@id": "signicat:isApproximate",
+      "@type": "xsd:boolean"
+    },
+    "AssociateDto": "signicat:AssociateDto",
+    "association": {
+      "@id": "signicat:association",
+      "@type": "xsd:string"
+    },
+    "comments": {
+      "@id": "signicat:comments",
+      "@type": "xsd:string"
+    },
+    "BirthDto": "signicat:BirthDto",
+    "BusinessRegistry.RegistrationAuthorityDto": "signicat:BusinessRegistry.RegistrationAuthorityDto",
+    "authorityCode": {
+      "@id": "signicat:authorityCode",
+      "@type": "xsd:string"
+    },
+    "localizedName": {
+      "@id": "signicat:localizedName",
+      "@type": "xsd:string"
+    },
+    "internationalName": {
+      "@id": "signicat:internationalName",
+      "@type": "xsd:string"
+    },
+    "jurisdiction": {
+      "@id": "signicat:jurisdiction",
+      "@type": "xsd:string"
+    },
+    "responsibleOrgLocalizedName": {
+      "@id": "signicat:responsibleOrgLocalizedName",
+      "@type": "xsd:string"
+    },
+    "responsibleOrgInternationalName": {
+      "@id": "signicat:responsibleOrgInternationalName",
+      "@type": "xsd:string"
+    },
+    "BusinessRegistry.RegistrationAuthorityItemDto": "signicat:BusinessRegistry.RegistrationAuthorityItemDto",
+    "self_url": {
+      "@id": "signicat:self_url",
+      "@type": "xsd:string"
+    },
+    "CitizenshipDto": "signicat:CitizenshipDto",
+    "isActive": {
+      "@id": "signicat:isActive",
+      "@type": "xsd:boolean"
+    },
+    "startDate": {
+      "@id": "signicat:startDate",
+      "@type": "xsd:dateTime"
+    },
+    "endDate": {
+      "@id": "signicat:endDate",
+      "@type": "xsd:dateTime"
+    },
+    "DeliveryDto": "signicat:DeliveryDto",
+    "method": {
+      "@id": "signicat:method",
+      "@type": "xsd:string"
+    },
+    "content": {
+      "@id": "signicat:content",
+      "@type": "xsd:string"
+    },
+    "DeliveryMethod": "signicat:DeliveryMethod",
+    "DocumentDto": "signicat:DocumentDto",
+    "fileName": {
+      "@id": "signicat:fileName",
+      "@type": "xsd:string"
+    },
+    "delivery": {
+      "@id": "signicat:delivery",
+      "@type": "@id"
+    },
+    "DocumentResultDto": "signicat:DocumentResultDto",
+    "document": {
+      "@id": "signicat:document",
+      "@type": "@id"
+    },
+    "DocumentType": "signicat:DocumentType",
+    "EntityTypeDto": "signicat:EntityTypeDto",
+    "ExtendedAddressDto": "signicat:ExtendedAddressDto",
+    "FunctionDto": "signicat:FunctionDto",
+    "function": {
+      "@id": "signicat:function",
+      "@type": "xsd:string"
+    },
+    "GenderDto": "signicat:GenderDto",
+    "Geo.DivisionListItem": "signicat:Geo.DivisionListItem",
+    "isoCode": {
+      "@id": "signicat:isoCode",
+      "@type": "xsd:string"
+    },
+    "Geodata.CountryInfoDto": "signicat:Geodata.CountryInfoDto",
+    "subdivisions_url": {
+      "@id": "signicat:subdivisions_url",
+      "@type": "xsd:string"
+    },
+    "continent": {
+      "@id": "signicat:continent",
+      "@type": "xsd:string"
+    },
+    "capital": {
+      "@id": "signicat:capital",
+      "@type": "xsd:string"
+    },
+    "languages": {
+      "@id": "signicat:languages",
+      "@container": "@list"
+    },
+    "population": {
+      "@id": "signicat:population",
+      "@type": "xsd:string"
+    },
+    "isoAlpha3": {
+      "@id": "signicat:isoAlpha3",
+      "@type": "xsd:string"
+    },
+    "countryName": {
+      "@id": "signicat:countryName",
+      "@type": "xsd:string"
+    },
+    "continentName": {
+      "@id": "signicat:continentName",
+      "@type": "xsd:string"
+    },
+    "isoNumeric": {
+      "@id": "signicat:isoNumeric",
+      "@type": "xsd:string"
+    },
+    "Geodata.CountryListItemDto": "signicat:Geodata.CountryListItemDto",
+    "IdNumberDto": "signicat:IdNumberDto",
+    "idNumber": {
+      "@id": "signicat:idNumber",
+      "@type": "xsd:string"
+    },
+    "IdNumberTypeDto": "signicat:IdNumberTypeDto",
+    "IdentityStatusDto": "signicat:IdentityStatusDto",
+    "InvalidParamDto": "signicat:InvalidParamDto",
+    "Iso3166Dto": "signicat:Iso3166Dto",
+    "alpha2": {
+      "@id": "signicat:alpha2",
+      "@type": "xsd:string"
+    },
+    "alpha3": {
+      "@id": "signicat:alpha3",
+      "@type": "xsd:string"
+    },
+    "numeric": {
+      "@id": "signicat:numeric",
+      "@type": "xsd:string"
+    },
+    "LinkDto": "signicat:LinkDto",
+    "self": {
+      "@id": "signicat:self",
+      "@type": "xsd:string"
+    },
+    "ListTypeDto": "signicat:ListTypeDto",
+    "MatchCertaintyDto": "signicat:MatchCertaintyDto",
+    "MatchStrengthDto": "signicat:MatchStrengthDto",
+    "score": {
+      "@id": "signicat:score",
+      "@type": "xsd:integer"
+    },
+    "certainty": {
+      "@id": "signicat:certainty",
+      "@type": "@id"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Signicat API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Signicat's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-18) from openapi/signicat-account-management-openapi.yml, openapi/signicat-archive-openapi.yml, openapi/signicat-audit-logs-openapi.yml.",
+  "dcterms:created": "2026-10-18",
+  "dcterms:source": [
+    "openapi/signicat-account-management-openapi.yml",
+    "openapi/signicat-archive-openapi.yml",
+    "openapi/signicat-audit-logs-openapi.yml",
+    "openapi/signicat-data-verification-openapi.yml",
+    "openapi/signicat-digital-evidence-management-openapi.yml"
+  ]
+}

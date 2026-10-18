@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-application-config-update-request-schema.json",
+  "title": "ApplicationConfigUpdateRequest",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-admin-openapi.yml#/components/schemas/ApplicationConfigUpdateRequest",
+  "type": "object",
+  "properties": {
+    "amountFailuresAllowed": {
+      "type": "string",
+      "description": "The grace amount of failed authentications for any client before they are locked out.\n\n**Allowed values**:\nFrom `0` to `MAXINT`\n"
+    },
+    "activationCodeType": {
+      "type": "string",
+      "description": "The type of characters that can be used during the generation of the activation code.\n\n**Allowed values**:\n`ALPHA`, `ALPHANUMERIC`, `ANY` or `numeric`\n"
+    },
+    "activationCodeLength": {
+      "type": "string",
+      "description": "The length in characters of the activation code that should be\n\n**Allowed values**:\nFrom `4` to `MAXINT`.\n"
+    },
+    "allowedAuthMethods": {
+      "type": "array",
+      "description": "Comma-separated list of allowed authentication methods.\n\nDetermines which authentication methods can be activated and used for authentication.\n",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apnConfig": {
+      "type": "string",
+      "description": "The APN server configuration that defines where to reach the APNs.\n\n**Allowed values**:\n`PRODUCTION` or `SANDBOX`\n"
+    },
+    "enabledRiskData": {
+      "type": "array",
+      "description": "The risk attributes to collect for the device.\n\n**Note**: To learn how to configure which risk attributes are collected, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#risk-data\" target=\"_blank\">Risk data</a> in our **Application configuration** feature documentation.\n",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maxPinCodeLength": {
+      "type": "string",
+      "description": "The maximum length in characters of the PIN.\n\n**Allowed values**:\nFrom `1` to `MAXINT`.\n"
+    },
+    "pinCodeLength": {
+      "type": "string",
+      "description": "The length in characters of the PIN. Set `0` to disable PIN code.\n\n**Note**: This is a hint to the client and not enforced by the server (but enforced in the client SDK).\n\n**Allowed values**:\nFrom `1` to `MAXINT`.\n"
+    },
+    "pinCodeType": {
+      "type": "string",
+      "description": "The type of characters that can be used in the PIN.\n\n**Note**: This is a hint to the client and not enforced by the server.\n\n**Allowed values**:\n`ANY`, `NUMERIC`, `ALPHA`, `ALPHANUMERIC`\n"
+    },
+    "sessionExpiry": {
+      "type": "string",
+      "description": "The amount of time (in milliseconds) that a new client session remains valid for. After this time has elapsed, the session can no longer be used for any operations.\n\n**Allowed values**:\nFrom `1` to `MAXINT`.\n"
+    },
+    "minimumRequiredEncapApiVersionAndroid": {
+      "type": "string",
+      "description": "What Android client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.\n\n**Allowed values**:\nSemantic version, such as `3.7.0`.\n\n**Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.\n"
+    },
+    "minimumRequiredEncapApiVersionIos": {
+      "type": "string",
+      "description": "What iOS client SDK version should be allowed. This can be used to narrow (not extend) the SDK version.\n\n**Allowed values**:\nSemantic version, such as `3.7.0`.\n\n**Example**: If the server minimum is `3.5.0`, and you only want to allow `3.6.0` clients, then this can be achieved. However, there is no effect if you set `3.3.0`.\n"
+    },
+    "hwKeyValidationStrategy": {
+      "type": "string",
+      "description": " Defines the enforcement policy for hardware supported key validation\n\n - `REQUIRED_IF_SUPPORTED` Enforces hardware key validation if the device supports hardware keys. If a hardware key is registered, this strategy rejects Activations and Authentications if the provided signature is invalid. Devices lacking hardware support are permitted to proceed with the operation.\n - `REQUIRED` Hardware key validation is mandatory for all devices. Activation will fail if the client reports it cannot generate a hardware-supported key or any technical failure occurred during key generation. Authentication will fail if the client does not provide a valid signature from its hardware-supported key.\n\n **Allowed values**:\n `REQUIRED` or `REQUIRED_IF_SUPPORTED`\n"
+    },
+    "apnExpiry": {
+      "type": "string",
+      "description": "The amount of time (in milliseconds) that APNs will try to deliver the message for.\nIf not delivered within this time, then the message is discarded.\n\n**Allowed values**:\nFrom `1`to `MAXINT`.\n\n**Note**: APNS will attempt to deliver the message at least once, regardless of the set expiration time.\n"
+    },
+    "encapApiBlacklistAndroid": {
+      "type": "string",
+      "description": "Android SDK API versions to blacklist (and reject). See the android configuration chapter in the server manual for smart device for details.\n\n**Allowed values**:\nComma-separated semantic version such as: `3.5.3, 3.6.8`.\n"
+    },
+    "encapApiBlacklistIos": {
+      "type": "string",
+      "description": "IOS SDK API versions to blacklist (and reject). See the ios configuration chapter in the server manual for smart device for details.\n\n**Allowed values**:\nComma-separated semantic version such as: `3.5.3, 3.6.8`.\n"
+    },
+    "nativePushEnabled": {
+      "type": "string",
+      "description": "Enable the server to send push messages with Fire Cloud Messaging or Apple APNs.\n\n**Allowed values**:\n`true` or `false`\n"
+    },
+    "firebaseTimeToLive": {
+      "type": "string",
+      "description": "Firebase Cloud Messaging. Maximum lifespan of the message in milliseconds. This means deliver _now or never_.\n\nFCM guarantees best effort for messages with this lifespan.\n\n**Allowed values**:\nFrom `0` to `MAXINT`.\n\n**Default value**: `0`\n"
+    },
+    "firebaseServiceAccount": {
+      "type": "string",
+      "description": "Firebase Cloud Messaging. The contents of the serviceAccount.json (credentials file) for your Firebase Cloud Messaging project.\";\n**Note**: The field has to be Base64 encoded.\n"
+    },
+    "attestationAndroidPackageName": {
+      "type": "string",
+      "description": "Play Integrity Attestation, the APK package name.\n\n**Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.\n"
+    },
+    "apnsBundleId": {
+      "type": "string",
+      "description": "Apples bundle ID for the application. Used as topic on the push message sent to APNs, required when using `APNS_TOKEN`.\n"
+    },
+    "allowedAuthMethodsForAuthAndActivate": {
+      "type": "array",
+      "description": "Comma-separated list of allowed authentication methods for activation of a new authentication method.\n\nDetermines which authentication methods can be used to authenticate during activation of a new authentication method.\n\n**Note**:\nThe value(s) here must be present in the `ALLOWED_AUTH_METHODS` parameter. Offline authentication methods cannot be used here.\n",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recoveryEnabled": {
+      "type": "string",
+      "description": "Enable users to set up recovery with an alternative set of user credentials.\n\n**Allowed values**:\n`true` or `false`\n"
+    },
+    "recoveryCodeMinLength": {
+      "type": "string",
+      "description": "The minimum number of characters for the recovery PIN.\n\n**Note**: This is a hint to the client and not enforced by the server.\n\n**Allowed values**:\nFrom `0` to `MAXINT`.\n"
+    },
+    "recoveryCodeMaxLength": {
+      "type": "string",
+      "description": "The maximum number of characters for the recovery PIN.\n\n**Note**: This is a hint to the client and not enforced by the server.\n\n**Allowed values**:\nFrom `0` to `MAXINT`.\n"
+    },
+    "recoveryCodeFormat": {
+      "type": "string",
+      "description": "The type of characters that can be used in the recovery PIN.\n\n**Note**: This is a hint to the client and not enforced by the server.\n\n**Allowed values**: `ALPHA`, `ALPHANUMERIC`, `ANY`, `NUMERIC`\n"
+    },
+    "recoveryCodeAmountFailuresAllowed": {
+      "type": "string",
+      "description": "The grace amount of failed recovery code attempts for any client before the recovery for the client is locked.\n\n**Allowed values**:\nFrom `0` to `MAXINT`.\n"
+    },
+    "apnsNotificationSoundEnabled": {
+      "type": "string",
+      "description": "Enable notification sound for push messages to iOS devices.\n\n**Allowed values**: `true`, `false`\n"
+    },
+    "geofencingActivationMode": {
+      "type": "string",
+      "description": "The geofencing mode to use for the registration.\n\n**Allowed values**:\n`REQUIRED`, `OPTIONAL`, or `OFF`.\n\n**Note**: To learn more, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing\" target=\"_blank\">Geofencing</a> in our **Application configuration** feature documentation.\n"
+    },
+    "geofencingActivationAllowedContinents": {
+      "type": "string",
+      "description": "Comma-separated list of continents where registration **is allowed**, in a  two-letter continent code format.\n\n**Allowed values**:\n`AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.\n"
+    },
+    "geofencingActivationAllowedCountries": {
+      "type": "string",
+      "description": "Comma-separated list of countries where registration **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.\n\nThese countries are in addition to those covered by the allowed continents parameter.\n\nYou can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).\n"
+    },
+    "geofencingActivationDeniedCountries": {
+      "type": "string",
+      "description": "Comma-separated list of countries where registration **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.\n\nThese countries will be excluded from those covered by the allowed continents parameter.\n\nYou can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).\n"
+    },
+    "geofencingAuthenticationMode": {
+      "type": "string",
+      "description": "The geofencing mode to use for the authentication.\n\n**Allowed values**:\n`REQUIRED`, `OPTIONAL`, or `OFF`.\n\n**Note**: To learn more, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#geofencing\" target=\"_blank\">Geofencing</a> in our **Application configuration** feature documentation.\n"
+    },
+    "geofencingAuthenticationAllowedContinents": {
+      "type": "string",
+      "description": "Comma-separated list of continents where authentication **is allowed**, in a  two-letter continent code format.\n\n**Allowed values**:\n`AF`, `NA`, `OC`, `AN`, `AS`, `EU`, or `SA`.\n"
+    },
+    "geofencingAuthenticationAllowedCountries": {
+      "type": "string",
+      "description": "Comma-separated list of countries where authentication **is allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.\n\nThese countries are in addition to those covered by the allowed continents parameter.\n\nYou can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).\n"
+    },
+    "geofencingAuthenticationDeniedCountries": {
+      "type": "string",
+      "description": "Comma-separated list of countries where authentication **is not allowed**, in an ISO 3166-1 alpha-2 two-letter country code format.\n\nThese countries will be excluded from those covered by the allowed continents parameter.\n\nYou can find a list of countries and corresponding codes at [GeoNames](https://www.geonames.org/countries/).\n"
+    },
+    "geofencingTimeout": {
+      "type": "string",
+      "description": "The maximum time (given in milliseconds) to wait for the location lookup and reverse geocoding to complete on the SDK.\n\nThe timing starts when the SDK calls the finish operation.\n\nIf the timeout is exceeded, then the SDK will continue without a country.\n\n**Allowed values**:\nFrom `0` to `MAXINT`.\n"
+    },
+    "attestationIosAppAttestMode": {
+      "type": "string",
+      "description": "The iOS App Attest attestation mode to use for the operation.\n\n**Allowed values**:\n`REQUIRED`, `OPTIONAL` or `OFF`.\n\n**Note**: To learn more, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation\" target=\"_blank\">App attestation</a> in our **Application configuration** feature documentation.\n"
+    },
+    "attestationIosAppAttestEnvironment": {
+      "type": "string",
+      "description": "The environment for an app that uses the App Attest service to validate itself.\n\n**Allowed values**:\n`DEVELOPMENT`, `PRODUCTION`\n"
+    },
+    "attestationIosAppAttestTimeout": {
+      "type": "string",
+      "description": "iOS app attestation timeout, after this time, in milliseconds, the attestation request will time out.\n**Allowed values**:\nFrom `1` to `MAXINT`\n"
+    },
+    "attestationIosAppAttestAppId": {
+      "type": "string",
+      "description": "Application ID which is a concatenation of a 10-digit team identifier, a period, and the app's `CFBundleIdentifier` value.\n\n**Note**: This is required when using Apple App Attest service.\n"
+    },
+    "apnsTimeSensitiveInterruptionLevelEnabled": {
+      "type": "string",
+      "description": "Sets the interruption level for push messages to iOS devices to **time-sensitive**.\n\nWhen enabled, push notifications can notify the end-users, even when the device is in **Focus** mode.\n"
+    },
+    "attestationAndroidPlayIntegrityMode": {
+      "type": "string",
+      "description": "The Android Play Integrity attestation mode to use for the operation.\n\n**Allowed values**:\n`REQUIRED`, `OPTIONAL` or `OFF`.\n\n**Important**: Play Integrity attestation was introduced in version 3.17 and is only applicable for clients 3.17 or newer.\n\n**Note**: To learn more, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#app-attestation\" target=\"_blank\">App attestation</a> in our **Application configuration** feature documentation.\n"
+    },
+    "attestationAndroidPlayIntegrityTimeout": {
+      "type": "string",
+      "description": "Play Integrity attestation timeout, in milliseconds, the timeout for a request made to Play Integrity.\n\n**Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.\n"
+    },
+    "attestationAndroidPlayIntegrityDecryptionKey": {
+      "type": "string",
+      "description": "Play Integrity attestation decryption key, used to decrypt the integrity token.\n\n**Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.\n"
+    },
+    "attestationAndroidPlayIntegrityVerificationKey": {
+      "type": "string",
+      "description": "Play Integrity attestation verification key, used to validate the integrity token.\n\n**Note**: This is required if `attestationAndroidPlayIntegrityMode` is `REQUIRED` or `OPTIONAL`.\n"
+    },
+    "lockScope": {
+      "type": "string",
+      "description": "This setting determines the lock behavior following failed authentication attempts.\n\n**Allowed values**:\n`AUTH_METHOD` or `DEVICE`\n\n**Note**: To learn more, see <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration/#application-behaviour\" target=\"_blank\">Application behaviour</a> in our **Application configuration** feature documentation.\n"
+    }
+  }
+}

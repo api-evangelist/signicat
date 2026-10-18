@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-account-response-schema.json",
+  "title": "AccountResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-admin-openapi.yml#/components/schemas/AccountResponse",
+  "type": "object",
+  "properties": {
+    "created": {
+      "type": "string",
+      "description": "The timestamp when the MobileID account was created.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "modified": {
+      "type": "string",
+      "description": "The timestamp when the MobileID account was updated.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "organisationId": {
+      "type": "string",
+      "description": "The ID of the account's organisation."
+    },
+    "id": {
+      "type": "string",
+      "description": "The ID of the account."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the account."
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of account.\n\nThis is returned as an enum, and can be either `SANDBOX` or `PRODUCTION`.\n",
+      "enum": [
+        "SANDBOX",
+        "PRODUCTION"
+      ]
+    },
+    "state": {
+      "type": "string",
+      "description": "The state of the account.\n\nThis is returned as an enum, and can be either `ENABLED`, `DISABLED` or `DEACTIVATED`.\n",
+      "enum": [
+        "ENABLED",
+        "DISABLED",
+        "DEACTIVATED"
+      ]
+    },
+    "sandboxProperties": {
+      "$ref": "#/$defs/SandboxAccountProperties",
+      "description": "An object that is returned if the fetched account type is `SANDBOX`, which contains properties of the sandbox account."
+    },
+    "statistics": {
+      "$ref": "#/$defs/AccountStatistics",
+      "description": "An object that contains account statistics for the last 180 days."
+    },
+    "configurations": {
+      "type": "array",
+      "description": "A list containing account configurations.",
+      "items": {
+        "$ref": "#/$defs/AccountConfig"
+      }
+    },
+    "productTimeTrials": {
+      "$ref": "#/$defs/ProductTimeTrials",
+      "description": "An object that contains existing product time-trials."
+    },
+    "onboardedForMobileId": {
+      "type": "boolean",
+      "description": "Flag indicating that this account is onboarded for mobileid"
+    },
+    "onboardedForPasskeys": {
+      "type": "boolean",
+      "description": "Flag indicating that this account is onboarded for passkeys"
+    }
+  },
+  "$defs": {
+    "AccountConfig": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the configuration."
+        },
+        "default": {
+          "type": "boolean"
+        },
+        "accountId": {
+          "type": "string",
+          "description": "The ID of the account which the configuration belongs to."
+        },
+        "id": {
+          "type": "string",
+          "description": "The ID of the configuration."
+        },
+        "properties": {
+          "$ref": "#/$defs/AccountConfigProperties",
+          "description": "An object that contains all of the properties for the account."
+        },
+        "additionalFeatures": {
+          "$ref": "#/$defs/AccountConfigFeatures",
+          "description": "An object that contains the features of the account configuration."
+        }
+      }
+    },
+    "AccountConfigFeatures": {
+      "type": "object",
+      "properties": {
+        "passportScanEnabled": {
+          "type": "boolean",
+          "description": "Value indicating if passport scan feature is enabled for this account configuration"
+        }
+      }
+    },
+    "AccountConfigProperties": {
+      "type": "object",
+      "properties": {
+        "applicationId": {
+          "type": "string",
+          "description": "The ID of the application configuration."
+        },
+        "inactiveDeviceDeleteRetentionTime": {
+          "type": "string",
+          "description": "The number of days that a device can be inactive before it is deleted. The inactive period starts from the time when the device was last used.\nIf not provided, the default value of 365 will be used"
+        }
+      },
+      "required": [
+        "inactiveDeviceDeleteRetentionTime"
+      ]
+    },
+    "AccountStatistics": {
+      "type": "object",
+      "properties": {
+        "numberOfActiveDevices": {
+          "type": "string",
+          "description": "The number of active devices over the last 180 days."
+        },
+        "numberOfActiveUsers": {
+          "type": "string",
+          "description": "The number of active users over the last 180 days."
+        }
+      }
+    },
+    "ProductTimeTrials": {
+      "type": "object",
+      "properties": {
+        "riskIndicatorsRuleBased": {
+          "$ref": "#/$defs/RiskIndicatorsRuleBasedTimeTrial",
+          "description": "The time trial object for rule based risk indicators."
+        }
+      }
+    },
+    "RiskIndicatorsRuleBasedTimeTrial": {
+      "type": "object",
+      "properties": {
+        "validTo": {
+          "type": "string",
+          "description": "The date when the time trial expires.\n\n**Format**: `YYYY-MM-DD`.\n"
+        },
+        "state": {
+          "type": "string",
+          "description": "The state of the time trial.\n\n**Possible values**: This is returned as an enum, and can be either `ACTIVE` or `EXPIRED`.\n",
+          "enum": [
+            "ACTIVE",
+            "EXPIRED"
+          ]
+        }
+      }
+    },
+    "SandboxAccountProperties": {
+      "type": "object",
+      "properties": {
+        "sandboxDeviceLimit": {
+          "type": "string",
+          "description": "The maximum number of mobile devices allowed for the sandbox account."
+        },
+        "numberOfDevices": {
+          "type": "string",
+          "description": "The number of mobile device currently registered for the sandbox account."
+        }
+      }
+    }
+  }
+}

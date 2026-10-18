@@ -1,0 +1,478 @@
+openapi: 3.2.0
+info:
+  title: Signicat Workflow templates API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Workflow templates across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Workflow templates
+paths:
+  /workflow-templates:
+    get:
+      tags:
+      - Workflow templates
+      summary: List workflow templates
+      description: Returns a list of workflow templates.
+      operationId: ListWorkflowTemplates
+      parameters:
+      - name: sort
+        in: query
+        description: 'Supported fields: `name`, `createdAt`'
+        schema:
+          maxLength: 50
+          minLength: 0
+          type: string
+      - name: search
+        in: query
+        description: Search term that filters workflow templates by matching against `name`, `description` and `tags`.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: offset
+        in: query
+        description: The offset of the first item to return.
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: limit
+        in: query
+        description: The maximum number of items to return per page. Defaults to 10.
+        schema:
+          maximum: 100
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfWorkflowTemplateSummary'
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflow-templates/{templateId}:
+    get:
+      tags:
+      - Workflow templates
+      summary: Retrieve workflow template
+      description: Retrieves a workflow template.
+      operationId: GetWorkflowTemplate
+      parameters:
+      - name: templateId
+        in: path
+        description: The workflow template ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowTemplate'
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflow-templates/{templateId}/files/{fileId}:
+    get:
+      tags:
+      - Workflow templates
+      summary: Download workflow template file
+      description: Downloads a file from a workflow template.
+      operationId: DownloadWorkflowTemplateFile
+      parameters:
+      - name: templateId
+        in: path
+        description: The workflow template ID.
+        required: true
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: The file ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflow-templates/{templateId}/import:
+    post:
+      tags:
+      - Workflow templates
+      summary: Import workflow template
+      description: Creates a new workflow from a workflow template.
+      operationId: ImportWorkflowTemplate
+      parameters:
+      - name: templateId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportWorkflowTemplateRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    ImportWorkflowTemplateRequest:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 1
+          type:
+          - 'null'
+          - string
+          description: Optional name for the new workflow. Defaults to the template's name when omitted.
+        description:
+          maxLength: 5000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Optional description for the new workflow.
+    FileDetails:
+      required:
+      - id
+      - filename
+      - contentType
+      - size
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        filename:
+          type: string
+          description: The filename.
+        contentType:
+          type: string
+          description: Content type of the file.
+        size:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The size of the file in bytes.
+          format: int64
+    WorkflowInputParameter:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the input parameter.
+    WorkflowTemplateSummary:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the template.
+        name:
+          type: string
+          description: The name of the template.
+        summary:
+          type:
+          - 'null'
+          - string
+          description: Short summary of the template.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Long-form description of the template.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the template.
+          format: int32
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of template tags.
+        createdAt:
+          description: Time at which the template was created.
+          format: date-time
+    Workflow:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the workflow.
+        name:
+          type:
+          - 'null'
+          - string
+          description: The name of the workflow.
+        description:
+          type:
+          - 'null'
+          - string
+          description: The description of the workflow.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the workflow.
+          format: int32
+        isLatest:
+          type: boolean
+          description: Whether this is the latest version of the workflow.
+        isPublished:
+          type: boolean
+          description: Whether this version is the published version of the workflow.
+        isLocked:
+          type: boolean
+          description: Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted.
+        createdAt:
+          description: Time at which the workflow was created.
+          format: date-time
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          description: List of steps that define the workflow.
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStepConnection'
+          description: List of connections between workflow steps.
+        variables:
+          type:
+          - 'null'
+          - object
+          description: Workflow variables.
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of workflow tags.
+        domain:
+          type:
+          - 'null'
+          - string
+          description: The workflow domain.
+        workflowUrl:
+          type:
+          - 'null'
+          - string
+          description: The workflow URL.
+        inputParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowInputParameter'
+          description: List of allowed input parameters for the workflow.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileDetails'
+          description: List of files associated with the workflow.
+    WorkflowTemplate:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the template.
+        name:
+          type: string
+          description: The name of the template.
+        summary:
+          type:
+          - 'null'
+          - string
+          description: Short summary of the template.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Long-form description of the template.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the template.
+          format: int32
+        createdAt:
+          description: Time at which the template was created.
+          format: date-time
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          description: List of steps that define the workflow.
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStepConnection'
+          description: List of connections between workflow steps.
+        variables:
+          type:
+          - 'null'
+          - object
+          description: Workflow variables.
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of template tags.
+        inputParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowInputParameter'
+          description: List of allowed input parameters for the workflow.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileDetails'
+          description: List of files associated with the template.
+    PaginatedResponseOfWorkflowTemplateSummary:
+      required:
+      - data
+      - offset
+      - limit
+      - totalCount
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowTemplateSummary'
+          description: List of items returned for the current page.
+        offset:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The offset of the first item returned.
+          format: int32
+        limit:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The maximum number of items requested per page.
+          format: int32
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The total number of items available across all pages.
+          format: int32
+    WorkflowStepConnection:
+      required:
+      - sourceStepId
+      - targetStepId
+      - outcome
+      type: object
+      properties:
+        sourceStepId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The source step ID.
+        targetStepId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The target step ID.
+        outcome:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The step outcome.
+    WorkflowStep:
+      required:
+      - id
+      - type
+      type: object
+      properties:
+        id:
+          maxLength: 50
+          minLength: 0
+          pattern: ^[0-9a-zA-Z-_]+$
+          type: string
+          description: Unique identifier for the step.
+        type:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The step type.
+        name:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The step name.
+        displayName:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The display name of the step.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The description of the step.
+        properties:
+          type:
+          - 'null'
+          - object
+          description: Input properties of the step.
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

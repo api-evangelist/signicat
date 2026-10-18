@@ -1,0 +1,31 @@
+# Signicat developer documentation
+
+> Welcome to the Signicat developer documentation, your gateway to unlocking the future of digital identity solutions.
+
+## Available Documentation Sections
+- [APIs Index](/llms-apis.txt)
+- [Identity Methods Index](/llms-identity-methods.txt)
+- [Signicat Dashboard](/llms-dashboard.txt)
+- [Data Verification](/llms-data-verification.txt)
+- [Digital Evidence Management](/llms-digital-evidence-management.txt)
+- [eID and Wallet Hub](/llms-eid-hub.txt)
+- [Electronic Signing](/llms-electronic-signing.txt)
+- [ID Document & Biometric Verification](/llms-id-document-and-biometric-verification.txt)
+- [Signicat Mint](/llms-mint.txt)
+- [Mobile Identity](/llms-mobile-identity.txt)
+- [Ongoing Monitoring](/llms-ongoing-monitoring.txt)
+- [Passkeys](/llms-passkeys.txt)
+- [QTSA](/llms-qtsa.txt)
+- [ReuseID](/llms-reuseid.txt)
+- [Secure Share](/llms-secure-share.txt)
+- [Signicat IAM](/llms-siam.txt)
+- [Sign API v2](/llms-sign-api-v2.txt)
+- [Signicat Archive](/llms-signicat-archive.txt)
+
+### Full Documentation
+- [Full documentation (concatenated)](/llms-full.txt)
+
+## Table of Contents
+
+- [Get started with Signicat](https://developer.signicat.com/docs/docs/index.md): Signicat's identity platform enables you to build your digital identity vision.
+- [Signicat products](https://developer.signicat.com/docs/docs/products.md): Browse products designed for your business needs.

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-usage-set-schema.json",
+  "title": "UsageSet",
+  "description": "One page of usage data",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-usage-openapi.yml#/components/schemas/UsageSet",
+  "type": "object",
+  "properties": {
+    "previous": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "next": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/UsageData"
+      },
+      "description": "Array of usage for this page"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Period": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "First date",
+          "format": "date"
+        },
+        "end": {
+          "type": "string",
+          "description": "Last date",
+          "format": "date"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Period of aggregated usage"
+    },
+    "UsageData": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "number",
+          "description": "Total value for this usage",
+          "format": "double"
+        },
+        "state": {
+          "$ref": "#/$defs/UsageState"
+        },
+        "period": {
+          "$ref": "#/$defs/Period"
+        },
+        "usageType": {
+          "type": "string",
+          "description": "Name of emitted event"
+        },
+        "unitOfMeasure": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The unit for the Count field"
+        },
+        "invoiced": {
+          "type": "boolean",
+          "description": "Set to true if this usage is invoiced. Typically Failed usage is reported but not invoiced"
+        },
+        "productName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of product shown on invoice where usage is potentially invoiced"
+        },
+        "organizationId": {
+          "type": "string",
+          "description": "Id of organisation owning the account where usage is produced"
+        },
+        "accountId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Id of account where usage is produced. Will be null if aggregation level is organisation"
+        },
+        "externalReference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "External reference, if supplied. Will be null unless explicitly requested"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Usage for requested period, grouped by State, UsageType, OrganizationId, AccountId and ExternalReference"
+    },
+    "UsageState": {
+      "enum": [
+        "completed",
+        "started",
+        "loaded",
+        "userAborted",
+        "failed"
+      ],
+      "type": "string",
+      "description": "Final state of usage"
+    }
+  }
+}

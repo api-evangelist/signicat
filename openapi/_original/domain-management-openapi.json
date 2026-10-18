@@ -1,0 +1,983 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Domain API",
+    "version": "v1",
+    "description": "\n- **Base URL**: `https://api.signicat.com/domain-management/`\n- **Documentation**: See the [Domains](/docs/dashboard/organisation-management/domains/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Domain Management API enables you to manage the domains of your Signicat accounts.\n\nThis API is part of our management APIs, which allow you to programmatically manage configurations that are typically handled in the Signicat Dashboard.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.\n",
+    "contact": "",
+    "license": "",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "/domain-management"
+    },
+    {
+      "url": "https://api.signicat.com/domain-management",
+      "description": "Signicat API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Domains",
+      "description": "Endpoints for managing your domains.\n            \nSee [our documentation](https://developer.signicat.com/docs/dashboard/organisation-management/domains/) in order to become familiar with what domains are used for and what features we support."
+    },
+    {
+      "name": "Utilities"
+    }
+  ],
+  "paths": {
+    "/domains": {
+      "get": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "List domains",
+        "description": "Returns all domains associated with your account.",
+        "operationId": "list_domains",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainPage"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainPage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Add domain",
+        "description": "Adds a domain to your account.\n            \nFor production accounts, domains with property `DomainKind=CustomerManaged` are a paid product.",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DomainCreate"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{domainId}": {
+      "get": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Retrieve domain",
+        "description": "Retrieves information about a domain on your account.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Update domain configuration",
+        "description": "Only some configuration may be changed.\n            \nNull and undefined values in the request body will be ignored.\n            \nChanging the domain FQDN, the domain kind or the certificate kind is not possible. For this, a new domain must be created.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DomainPatch"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Delete domain",
+        "description": "Removes the domain from your account.\n            \nIf this is a Signicat-managed domain the domain will be immediately available for re-use by another account.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{domainId}/check-dns-setup": {
+      "get": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Check DNS status",
+        "description": "Performs DNS validation for the domain and returns each DNS record and its status.\n            \nThis is only relevant for customer-managed domains.\n            \nAll DNS records must be valid before the domain can be used.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDnsSetupResponse"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDnsSetupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{domainId}/certificate": {
+      "put": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Change certificate",
+        "description": "Only available for customer-managed domains using customer-managed certificates.\n            \nThe certificate must be uploaded to Certificate Management System under the same account as the domain.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ChangeCertificate"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/domains/{domainId}/set-default-domain": {
+      "post": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Set default domain",
+        "description": "Changes the default domain of the account. Various products using domains may handle this differently.",
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SetDefaultDomain"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/check-domain-availability": {
+      "post": {
+        "tags": [
+          "Utilities"
+        ],
+        "summary": "Check domain availability",
+        "description": "Validates that a domain name is valid.\n            \nFor Signicat-managed domains it additionally validates that a domain is not already taken.\nFor customer-managed domains it's possible to add a domain that is already in use.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CheckDomainAvailability"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDomainAvailabilityResponse"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDomainAvailabilityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/utilities/metadata": {
+      "get": {
+        "tags": [
+          "Utilities"
+        ],
+        "summary": "Fetch metadata",
+        "description": "This is a helper endpoint to get useful parameters for creating a domain.\n            \nThe domain suffix will vary depending on whether the account is a sandbox or production account,\nand whether the domain requires mTLS or not.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMetadataResponse"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChangeCertificate": {
+        "required": [
+          "certificateId"
+        ],
+        "type": "object",
+        "properties": {
+          "certificateId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of the TLS certificate as seen in Certificate Management System."
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckDnsSetupResponse": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckDnsSetupResponseItem"
+            },
+            "description": "Contains the records that must be configured."
+          },
+          "valid": {
+            "type": "boolean",
+            "description": "True if all `records` are valid. If false, see `records` for errors."
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckDnsSetupResponseItem": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain for which the DNS record must be added."
+          },
+          "type": {
+            "type": "string",
+            "description": "What kind of DNS record this is."
+          },
+          "value": {
+            "type": "string",
+            "description": "The required value of the DNS record."
+          },
+          "valid": {
+            "type": "boolean",
+            "description": "Whether the DNS record has been setup correctly."
+          },
+          "dnsCorrect": {
+            "type": "boolean",
+            "description": "True if record is valid on account of the DNS record being correctly configured."
+          },
+          "dnsValidationOverride": {
+            "type": "boolean",
+            "description": "True if record is valid on account of Signicat having configured a special override."
+          },
+          "partnerWildcardDns": {
+            "type": "boolean",
+            "description": "True if record is valid of domain being a verified partner DNS domain."
+          },
+          "pointsToSignicatIdentityBrokerCname": {
+            "type": "boolean",
+            "description": "True if the current DNS record is pointing to Signicat Identity Broker's domain."
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckDomainAvailability": {
+        "required": [
+          "domain",
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "domain": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The domain to check"
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DomainKind"
+              }
+            ],
+            "description": "The kind of domain to check"
+          },
+          "requireMutualTls": {
+            "type": "boolean",
+            "description": "Whether the domain will use mTLS or not. Required when Kind = CustomerManaged",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckDomainAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DomainAvailabilityResult"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomDomainCertificateKind": {
+        "enum": [
+          "LetsEncrypt",
+          "Csr",
+          "Custom",
+          "AcmeEab"
+        ],
+        "type": "string"
+      },
+      "CustomerManagedParametersCreate": {
+        "required": [
+          "certificateKind"
+        ],
+        "type": "object",
+        "properties": {
+          "certificateKind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomDomainCertificateKind"
+              }
+            ],
+            "description": "Certificate kind. See docs for further descriptions."
+          },
+          "certificateId": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of certificate to use. Required when `CertificateKind=Custom`.",
+            "nullable": true
+          },
+          "acmeEabServerUrl": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          },
+          "acmeEabKeyId": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          },
+          "acmeEabHmacKey": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Base64URL encoded HMAC key for ACME EAB. Required when `CertificateKind=AcmeEab`. This field is write-only.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerManagedParametersPatch": {
+        "type": "object",
+        "properties": {
+          "certificateId": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of certificate to use. Required when `CertificateKind=Custom`.",
+            "nullable": true
+          },
+          "acmeEabServerUrl": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          },
+          "acmeEabKeyId": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          },
+          "acmeEabHmacKey": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "Base64URL encoded HMAC key for ACME EAB. Required when `CertificateKind=AcmeEab`. This field is write-only.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerManagedParametersRead": {
+        "type": "object",
+        "properties": {
+          "certificateKind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomDomainCertificateKind"
+              }
+            ],
+            "description": "Certificate kind. See docs for further descriptions.",
+            "nullable": true
+          },
+          "certificateId": {
+            "type": "string",
+            "description": "ID of certificate to use. Required when `CertificateKind=Custom`.",
+            "nullable": true
+          },
+          "validTo": {
+            "type": "string",
+            "description": "The date at which the certificate will expire. This field is read-only. Only set when `CertificateKind=Custom`.",
+            "nullable": true
+          },
+          "acmeEabServerUrl": {
+            "type": "string",
+            "description": "Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          },
+          "acmeEabKeyId": {
+            "type": "string",
+            "description": "Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DnsState": {
+        "enum": [
+          "NotReady",
+          "WaitingDnsSetup",
+          "WaitingCustomerDnsSetup",
+          "Ready"
+        ],
+        "type": "string"
+      },
+      "DnsValidationOverride": {
+        "type": "object",
+        "properties": {
+          "override": {
+            "type": "boolean",
+            "description": "Whether DNS override is enabled."
+          },
+          "overrideLastChangedAt": {
+            "type": "string",
+            "description": "When the DNS override property was last changed, if ever.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DomainAvailabilityResult": {
+        "enum": [
+          "Valid",
+          "NotADomain",
+          "TooLong",
+          "InvalidCharacters",
+          "WrongSubdomain",
+          "AlreadyTaken",
+          "MustBeSubdomain"
+        ],
+        "type": "string"
+      },
+      "DomainCreate": {
+        "required": [
+          "domain",
+          "domainKind"
+        ],
+        "type": "object",
+        "properties": {
+          "domain": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string",
+            "description": "FQDN of the domain you want to add."
+          },
+          "domainKind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DomainKind"
+              }
+            ],
+            "description": "Domain kind. See docs for further descriptions."
+          },
+          "makeDefault": {
+            "type": "boolean",
+            "description": "Whether this domain should be the default domain for the account.",
+            "nullable": true
+          },
+          "requireMutualTls": {
+            "type": "boolean",
+            "description": "Whether this domain should only be accessible through mTLS.",
+            "nullable": true
+          },
+          "customerManagedParameters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomerManagedParametersCreate"
+              }
+            ],
+            "description": "Additional parameters required when `DomainKind=CustomerManaged`.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DomainKind": {
+        "enum": [
+          "SignicatManaged",
+          "CustomerManaged"
+        ],
+        "type": "string"
+      },
+      "DomainPage": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DomainRead"
+            },
+            "description": "The domains"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DomainPatch": {
+        "type": "object",
+        "properties": {
+          "makeDefault": {
+            "type": "boolean",
+            "description": "Whether this domain should be the default domain for the account.",
+            "nullable": true
+          },
+          "customerManagedParameters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomerManagedParametersPatch"
+              }
+            ],
+            "description": "Additional parameters for when `DomainKind=CustomerManaged`.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DomainRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID of this domain."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The Account this domain is connected to."
+          },
+          "domain": {
+            "type": "string",
+            "description": "FQDN of the domain you want to add."
+          },
+          "domainKind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DomainKind"
+              }
+            ],
+            "description": "Domain kind. See docs for further descriptions."
+          },
+          "requireMutualTls": {
+            "type": "boolean",
+            "description": "Whether this domain should only be accessible through mTLS.",
+            "nullable": true
+          },
+          "customerManagedParameters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomerManagedParametersRead"
+              }
+            ],
+            "description": "Additional parameters for when `DomainKind=CustomerManaged`.",
+            "nullable": true
+          },
+          "tlsState": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TlsState"
+              }
+            ],
+            "description": "Current state of the TLS certificate."
+          },
+          "dnsState": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DnsState"
+              }
+            ],
+            "description": "Current state of the DNS records."
+          },
+          "isDefaultDomain": {
+            "type": "boolean",
+            "description": "Whether this domain is the default domain for the account it belongs to."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the domain was created.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "When the domain was deleted.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMetadataResponse": {
+        "required": [
+          "acmeEabProductAvailable",
+          "mitidDomainProductAvailable",
+          "mtlsSuffix",
+          "suffix",
+          "supportedAcmeProviders"
+        ],
+        "type": "object",
+        "properties": {
+          "suffix": {
+            "type": "string",
+            "description": "The domain suffix to use when creating a non-MTLS custom domain."
+          },
+          "mtlsSuffix": {
+            "type": "string",
+            "description": "The domain suffix to use when creating an MTLS custom domain."
+          },
+          "supportedAcmeProviders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetMetadataResponseAcmeEabProvider"
+            },
+            "description": "A list of providers supported for ACME EAB domains."
+          },
+          "acmeEabProductAvailable": {
+            "type": "boolean",
+            "description": "Whether the ACME EAB product is available for this account."
+          },
+          "mitidDomainProductAvailable": {
+            "type": "boolean",
+            "description": "Whether the MitID domain product is available for this account."
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMetadataResponseAcmeEabProvider": {
+        "required": [
+          "label",
+          "serverUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Display name for the provider."
+          },
+          "serverUrl": {
+            "type": "string",
+            "description": "The ACME Server URL"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetSuffixResponse": {
+        "type": "object",
+        "properties": {
+          "suffix": {
+            "type": "string"
+          },
+          "mtlsSuffix": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "SetDefaultDomain": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "TlsState": {
+        "enum": [
+          "NotReady",
+          "WaitingTlsSetup",
+          "WaitingCustomerUploadCertificate",
+          "Ready",
+          "WaitingForCustomerDns",
+          "Deleted",
+          "TlsError",
+          "WaitingCustomerAcmeEabParameters"
+        ],
+        "type": "string"
+      }
+    }
+  }
+}

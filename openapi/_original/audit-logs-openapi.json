@@ -1,0 +1,544 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Signicat Audit API",
+    "version": "v1",
+    "description": "\n- **Base URL**: `https://api.signicat.com/audit/`\n- **Documentation**: See the [Audit logs](/docs/dashboard/settings/audit-logs/) developer documentation.\n- **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.\n\n# Introduction\n\nThe Signicat Audit API allows you to query, view and filter audit log events.\n\nThis API is part of our management APIs, which allow you to programmatically manage configurations that are typically handled in the Signicat Dashboard.\n\nThis REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.",
+    "contact": "",
+    "license": "",
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "/audit"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Query"
+    }
+  ],
+  "paths": {
+    "/query/cursor/{cursor}": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "summary": "Retrieve audit log item",
+        "description": "Retrieves a single audit log item based on a cursor",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditLog"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditLog"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query/metadata": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "summary": "Fetch metadata",
+        "description": "Allows the user to retrieve metadata useful for building queries",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryMetadataResponse"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query/metadata/event": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "summary": "Fetch properties for event",
+        "description": "Allows the user to retrieve metadata useful for building queries",
+        "parameters": [
+          {
+            "name": "target",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "serviceName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryMetadataResponseEventTypeProperties"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryMetadataResponseEventTypeProperties"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query": {
+      "post": {
+        "tags": [
+          "Query"
+        ],
+        "summary": "Query",
+        "description": "Usage:\n * `cursor` query parameter must not be set manually - use `next` URL for pagination\n * `limit` can not be higher than 1000, is 1000 by default\n * Default value of `to` is now\n * Default value of `from` is 30 days before `to`\n * Results are sorted by most recent to least recent\n * As long as the `next` response property is set there may be more results available, even if the current\n   response returned 0 results",
+        "operationId": "query",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1000
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Query"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditQueryResult_AuditLog"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditQueryResult_AuditLog"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuditLog": {
+        "required": [
+          "cursor"
+        ],
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "description": "Globally unique reference to this specific audit log item"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "ID of the target account",
+            "nullable": true
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "ID of the target organization, or the target account's parent organization",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of when the event which triggered the audit log occurred",
+            "format": "date-time"
+          },
+          "serviceName": {
+            "type": "string",
+            "description": "Identifier for the service which triggered the audit log",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Short human-readable description of the event",
+            "nullable": true
+          },
+          "sandbox": {
+            "type": "boolean",
+            "description": "Whether the target account is a sandbox or production account",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user who performed the action",
+            "nullable": true
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Unique ID identifying this audit event",
+            "nullable": true
+          },
+          "referenceId": {
+            "type": "string",
+            "description": "Reference ID used to correlate multiple events happening on the same resource",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "IP address of user",
+            "nullable": true
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Trace ID",
+            "nullable": true
+          },
+          "eventType": {
+            "type": "string",
+            "description": "Identifier for this kind of audit event",
+            "nullable": true
+          },
+          "clientId": {
+            "type": "string",
+            "description": "ID of the client used to perform the action",
+            "nullable": true
+          },
+          "jwtId": {
+            "type": "string",
+            "description": "ID of the JWT used to authenticate the user or client",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Timestamp of when this audit log will be permanently deleted from our systems",
+            "format": "date-time",
+            "nullable": true
+          },
+          "data": {
+            "description": "Additional arbitrary data specific to this audit event",
+            "nullable": true
+          },
+          "indexedData": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Additional arbitrary data specific to this audit event which is queryable",
+            "nullable": true
+          },
+          "mayHaveMoreData": {
+            "type": "boolean",
+            "description": "If true, there may be more data available for this audit log by calling the cursor endpoint."
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuditQueryResult_AuditLog": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLog"
+            },
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuditQueryResult_Object": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {},
+            "description": "The contents of the current page."
+          },
+          "next": {
+            "type": "string",
+            "description": "URL to the next page, if more data may be available.",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonNode": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "$ref": "#/components/schemas/JsonNodeOptions"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/JsonNode"
+          },
+          "root": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonNodeOptions": {
+        "type": "object",
+        "properties": {
+          "propertyNameCaseInsensitive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Query": {
+        "type": "object",
+        "properties": {
+          "and": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryCondition"
+            },
+            "description": "Query for audit logs that match all the given conditions",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "description": "Earliest possible audit log to retrieve",
+            "format": "date-time",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest possible audit log to retrieve (not inclusive)",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryCondition": {
+        "required": [
+          "field",
+          "operator",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The audit log field to filter by"
+          },
+          "operator": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The filter operation to filter by"
+          },
+          "value": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryInternal": {
+        "required": [
+          "tenantId"
+        ],
+        "type": "object",
+        "properties": {
+          "and": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryCondition"
+            },
+            "description": "Query for audit logs that match all the given conditions",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "description": "Earliest possible audit log to retrieve",
+            "format": "date-time",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest possible audit log to retrieve (not inclusive)",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tenantId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Tenant ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryMetadataResponse": {
+        "required": [
+          "extended",
+          "targets"
+        ],
+        "type": "object",
+        "properties": {
+          "extended": {
+            "type": "boolean",
+            "description": "Whether user is allowed to perform extended query operations"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryMetadataResponseTargetMetadata"
+            },
+            "description": "What data the user is allowed to query on"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryMetadataResponseEventTypeProperties": {
+        "required": [
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryMetadataResponseServiceMetadata": {
+        "required": [
+          "eventTypes",
+          "serviceName"
+        ],
+        "type": "object",
+        "properties": {
+          "serviceName": {
+            "type": "string",
+            "description": "The service"
+          },
+          "eventTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The event types available for this service"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryMetadataResponseTargetMetadata": {
+        "required": [
+          "services",
+          "target"
+        ],
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "The audit query target group. Usually `Customer`."
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryMetadataResponseServiceMetadata"
+            },
+            "description": "The services available for this target group"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

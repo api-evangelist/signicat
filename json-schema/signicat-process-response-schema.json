@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-process-response-schema.json",
+  "title": "ProcessResponse",
+  "description": "Process response",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-id-document-and-biometric-verification-openapi.yml#/components/schemas/ProcessResponse",
+  "type": "object",
+  "properties": {
+    "processId": {
+      "type": "string",
+      "description": "<code>processId</code> is obtained from the \"Create process\" response body."
+    },
+    "provider": {
+      "type": "string",
+      "description": "The ID of one of the supported providers.<br>"
+    },
+    "processType": {
+      "type": "string",
+      "description": "The process type created from the provider."
+    },
+    "status": {
+      "type": "string",
+      "description": "The current status of the the identity document verification process. For more information about what each status means, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#status\">Get process</a> page in the integration documentation.",
+      "enum": [
+        "pending",
+        "processing",
+        "accepted",
+        "rejected",
+        "canceled",
+        "failed",
+        "inconclusive"
+      ]
+    },
+    "authorization": {
+      "type": "string",
+      "description": "The authorization token that is necessary for uploading images using the provider's SDK. This is not necessary if the images are uploaded directly through the API, using the Set Images service."
+    },
+    "providerApiUrl": {
+      "type": "string",
+      "description": "This field only applies to the 'signicatvideoid' or 'readid' provider. <br> <br>For <b>signicatvideoid</b>:<br> This is the URL for Signicat Video ID's API. Use this URL to load Signicat Video ID's SDK in your native/web apps.<br>In <b>native</b> apps, just use this URL directly to load the iOS/Android SDK. <br> In <b>web</b> apps you must load the JS SDK by adding the following to the URL:<ul><li>For default \"processType\":\"high\", for \"processType\":\"substantial\" and for \"processType\":\"substantialFullyAuto\", you must append \"/js/videoid.js\". Example: \"https://etrust-sandbox.electronicid.eu/v2/js/videoid.js\"</li></ul><b>For 'readid':</b> <br>This is the URL for ReadID's API. Use this URL in the SDK configuration."
+    },
+    "base64QRCode": {
+      "type": "string",
+      "description": "This field only applies to the 'readid' provider with `processType` set to `ready`.This QR code is presented to the end-user (instead of `universalLink`) when they are on desktop. Scanning this QR code, redirects the end-user to the ReadID Ready app."
+    },
+    "universalLink": {
+      "type": "string",
+      "description": "This field only applies to the 'readid' provider with `processType` set to `ready`. This link is presented to the end-user (instead of `base64QRCode`) when they are using a mobile device. You must append a callback query parameter to the universal link, like in this example: `universallink&callback=//redirectuserhere.com`Selecting this link, redirects the end-user to the ReadID Ready app. After the ReadID Ready identification process is completed, the end-user is redirected to the link provided as the callback parameter."
+    },
+    "facetecDeviceKeyIdentifier": {
+      "type": "string",
+      "description": "This field only applies to the 'facetec' provider.<br>This is the token that the SDKs (Android, iOS, javascript) need to authenticate with the FaceTec server."
+    },
+    "facetecEncryptionPublicKey": {
+      "type": "string",
+      "description": "This field only applies to the 'facetec' provider.<br>This is the public Key of the FaceTec server that the SDKs (Android, iOS, javascript) need."
+    },
+    "facetecMobileSdkProductionKey": {
+      "type": "string",
+      "description": "This field only applies to the 'facetec' provider.<br>Textual key that the apps need to be able to start in production mode."
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "The date and time the process was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ)."
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "The date and time the process was updated (ISO-8601  with UTC: YYYY-MM-DDThh:mm:ssZ)."
+    },
+    "documentPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "This field only applies to the 'signicatpictureid' provider.<br>This returns an integer between 1 or 2. It's intended to know if you need to upload only a front document image or a frontand a back document image, depending on the documentId submitted."
+    }
+  }
+}

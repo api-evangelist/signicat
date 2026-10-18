@@ -1,0 +1,6 @@
+generated: '2026-10-18'
+method: probed
+generator: harvest-llms.py
+source: https://developer.signicat.com/llms.txt
+bytes: 1405
+note: saved verbatim; the provider's own document

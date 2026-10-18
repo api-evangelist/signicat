@@ -1,0 +1,68 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat Events Management
+  version: 1.0.0
+extends: ../openapi/_original/signicat-events-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-events-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/events/
+- target: $.components
+  description: Add the OAuth 2.0 client-credentials scheme Signicat documents for all its APIs (token URL https://api.signicat.com/auth/open/connect/token,
+    scope signicat-api; source https://developer.signicat.com/llms-full.txt "Connecting to Signicat APIs").
+  update:
+    securitySchemes:
+      signicatOAuth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            tokenUrl: https://api.signicat.com/auth/open/connect/token
+            scopes:
+              signicat-api: Access Signicat APIs
+- target: $
+  description: Root security requirement for the added scheme.
+  update:
+    security:
+    - signicatOAuth2:
+      - signicat-api
+- target: $.paths['/subscriptions/{subscriptionId}/delivery-logs/{id}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getSubscriptionsSubscriptionIdDeliveryLogsId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions/{subscriptionId}/delivery-logs/{id}/replay'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postSubscriptionsSubscriptionIdDeliveryLogsIdReplay
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getSubscriptions
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postSubscriptions
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions/{subscriptionId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putSubscriptionsSubscriptionId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions/{subscriptionId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteSubscriptionsSubscriptionId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/subscriptions/{subscriptionId}/send-mock-event'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postSubscriptionsSubscriptionIdSendMockEvent
+    x-apievangelist-derived-operationId: true

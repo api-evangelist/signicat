@@ -1,0 +1,381 @@
+openapi: 3.2.0
+info:
+  title: Signicat Query API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Query across 2 of this provider''s published API definitions: audit-logs-openapi.json, signicat-audit-logs-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /audit
+tags:
+- name: Query
+paths:
+  /query/cursor/{cursor}:
+    get:
+      tags:
+      - Query
+      summary: Retrieve audit log item
+      description: Retrieves a single audit log item based on a cursor
+      parameters:
+      - name: cursor
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+      operationId: getQueryCursorByCursor
+      x-operation-id-source: derived
+    servers:
+    - url: /audit
+  /query/metadata:
+    get:
+      tags:
+      - Query
+      summary: Fetch metadata
+      description: Allows the user to retrieve metadata useful for building queries
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryMetadataResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryMetadataResponse'
+      operationId: getQueryMetadata
+      x-operation-id-source: derived
+    servers:
+    - url: /audit
+  /query/metadata/event:
+    get:
+      tags:
+      - Query
+      summary: Fetch properties for event
+      description: Allows the user to retrieve metadata useful for building queries
+      parameters:
+      - name: target
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: serviceName
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: eventType
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryMetadataResponseEventTypeProperties'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryMetadataResponseEventTypeProperties'
+      operationId: getQueryMetadataEvent
+      x-operation-id-source: derived
+    servers:
+    - url: /audit
+  /query:
+    post:
+      tags:
+      - Query
+      summary: Query
+      description: 'Usage:
+
+        * `cursor` query parameter must not be set manually - use `next` URL for pagination
+
+        * `limit` can not be higher than 1000, is 1000 by default
+
+        * Default value of `to` is now
+
+        * Default value of `from` is 30 days before `to`
+
+        * Results are sorted by most recent to least recent
+
+        * As long as the `next` response property is set there may be more results available, even if the current
+
+        response returned 0 results'
+      operationId: query
+      parameters:
+      - name: cursor
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditQueryResult_AuditLog'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AuditQueryResult_AuditLog'
+    servers:
+    - url: /audit
+components:
+  schemas:
+    AuditQueryResult_AuditLog:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+          description: The contents of the current page.
+        next:
+          type:
+          - string
+          - 'null'
+          description: URL to the next page, if more data may be available.
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+      additionalProperties: false
+    Query:
+      type: object
+      properties:
+        and:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryCondition'
+          description: Query for audit logs that match all the given conditions
+        from:
+          type:
+          - string
+          - 'null'
+          description: Earliest possible audit log to retrieve
+          format: date-time
+        to:
+          type:
+          - string
+          - 'null'
+          description: Latest possible audit log to retrieve (not inclusive)
+          format: date-time
+      additionalProperties: false
+    QueryMetadataResponseTargetMetadata:
+      required:
+      - services
+      - target
+      type: object
+      properties:
+        target:
+          type: string
+          description: The audit query target group. Usually `Customer`.
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryMetadataResponseServiceMetadata'
+          description: The services available for this target group
+      additionalProperties: false
+    QueryCondition:
+      required:
+      - field
+      - operator
+      - value
+      type: object
+      properties:
+        field:
+          minLength: 1
+          type: string
+          description: The audit log field to filter by
+        operator:
+          minLength: 1
+          type: string
+          description: The filter operation to filter by
+        value:
+          $ref: '#/components/schemas/JsonNode'
+      additionalProperties: false
+    QueryMetadataResponseEventTypeProperties:
+      required:
+      - properties
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+    AuditLog:
+      required:
+      - cursor
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: Globally unique reference to this specific audit log item
+        accountId:
+          type:
+          - string
+          - 'null'
+          description: ID of the target account
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: ID of the target organization, or the target account's parent organization
+        timestamp:
+          type: string
+          description: Timestamp of when the event which triggered the audit log occurred
+          format: date-time
+        serviceName:
+          type:
+          - string
+          - 'null'
+          description: Identifier for the service which triggered the audit log
+        message:
+          type:
+          - string
+          - 'null'
+          description: Short human-readable description of the event
+        sandbox:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the target account is a sandbox or production account
+        userId:
+          type:
+          - string
+          - 'null'
+          description: ID of the user who performed the action
+        messageId:
+          type:
+          - string
+          - 'null'
+          description: Unique ID identifying this audit event
+        referenceId:
+          type:
+          - string
+          - 'null'
+          description: Reference ID used to correlate multiple events happening on the same resource
+        ipAddress:
+          type:
+          - string
+          - 'null'
+          description: IP address of user
+        traceId:
+          type:
+          - string
+          - 'null'
+          description: Trace ID
+        eventType:
+          type:
+          - string
+          - 'null'
+          description: Identifier for this kind of audit event
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: ID of the client used to perform the action
+        jwtId:
+          type:
+          - string
+          - 'null'
+          description: ID of the JWT used to authenticate the user or client
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of when this audit log will be permanently deleted from our systems
+          format: date-time
+        data:
+          description: Additional arbitrary data specific to this audit event
+        indexedData:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Additional arbitrary data specific to this audit event which is queryable
+        mayHaveMoreData:
+          type: boolean
+          description: If true, there may be more data available for this audit log by calling the cursor endpoint.
+      additionalProperties: false
+    JsonNodeOptions:
+      type: object
+      properties:
+        propertyNameCaseInsensitive:
+          type: boolean
+      additionalProperties: false
+    QueryMetadataResponse:
+      required:
+      - extended
+      - targets
+      type: object
+      properties:
+        extended:
+          type: boolean
+          description: Whether user is allowed to perform extended query operations
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryMetadataResponseTargetMetadata'
+          description: What data the user is allowed to query on
+      additionalProperties: false
+    JsonNode:
+      type: object
+      properties:
+        options:
+          $ref: '#/components/schemas/JsonNodeOptions'
+        parent:
+          $ref: '#/components/schemas/JsonNode'
+        root:
+          $ref: '#/components/schemas/JsonNode'
+      additionalProperties: false
+    QueryMetadataResponseServiceMetadata:
+      required:
+      - eventTypes
+      - serviceName
+      type: object
+      properties:
+        serviceName:
+          type: string
+          description: The service
+        eventTypes:
+          type: array
+          items:
+            type: string
+          description: The event types available for this service
+      additionalProperties: false
+x-refined-from:
+- audit-logs-openapi.json
+- signicat-audit-logs-openapi.yml

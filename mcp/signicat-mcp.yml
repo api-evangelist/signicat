@@ -1,0 +1,42 @@
+generated: '2026-10-18'
+method: searched
+source: https://developer.signicat.com/docs/dashboard/connect-to-mcp.md
+status: published
+server:
+  name: signicat-docs
+  description: Signicat documentation MCP server (hosted on kapa.ai). Searches and retrieves Signicat developer documentation;
+    it does not invoke Signicat product APIs.
+  transport: http
+  url: https://signicat-documentation.mcp.kapa.ai
+  scope: documentation
+auth:
+  type: oauth
+  protected_resource_metadata: https://signicat-documentation.mcp.kapa.ai/.well-known/oauth-protected-resource
+  authorization_servers:
+  - https://mcp.kapa.ai/auth/public
+  scopes_supported:
+  - openid
+  probe:
+    date: '2026-10-18'
+    initialize: POST https://signicat-documentation.mcp.kapa.ai -> 401 invalid_token "Authentication required" with WWW-Authenticate
+      resource_metadata
+    oauth_protected_resource: 200 JSON
+    oauth_authorization_server_on_mcp_host: '404'
+deployment:
+  mode: remote
+  endpoint: https://signicat-documentation.mcp.kapa.ai
+  auth: oauth
+  verified: probed
+tools_evidence:
+  l3: table
+  evidence_url: https://developer.signicat.com/docs/dashboard/connect-to-mcp.md
+  note: Tool names are as published in the provider docs "Available tools" table; tools/list is OAuth-gated and was not called.
+tools:
+- name: search_signicat_knowledge_sources
+  description: Searches Signicat documentation and other connected knowledge sources.
+  documented: true
+- name: get_signicat_knowledge_documents
+  description: Retrieves the full content of specific documentation pages.
+  documented: true
+notes: No MCP server for the Signicat product APIs (Sign, Authentication, Assure, Data Verification, etc.) was found; the
+  only published server is the documentation server.

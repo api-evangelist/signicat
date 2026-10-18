@@ -1,0 +1,874 @@
+openapi: 3.2.0
+info:
+  title: Signicat Workflows API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Workflows across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Workflows
+paths:
+  /workflows:
+    get:
+      tags:
+      - Workflows
+      summary: List workflows
+      description: Returns a list of your workflows.
+      operationId: ListWorkflows
+      parameters:
+      - name: sort
+        in: query
+        description: 'Supported fields: `name`, `createdAt`, `description`'
+        schema:
+          maxLength: 50
+          minLength: 0
+          type: string
+      - name: search
+        in: query
+        description: Search term that filters workflows by matching against `name`, `description` and `tags`.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: version
+        in: query
+        description: Filter workflows by version type. Defaults to `latest`.
+        schema:
+          enum:
+          - latest
+          - published
+          type: string
+      - name: id
+        in: query
+        description: Filter workflows by a list of IDs.
+        schema:
+          maxItems: 100
+          type: array
+          items:
+            type: string
+      - name: offset
+        in: query
+        description: The offset of the first item to return.
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: limit
+        in: query
+        description: The maximum number of items to return per page. Defaults to 10.
+        schema:
+          maximum: 100
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfWorkflowSummary'
+    post:
+      tags:
+      - Workflows
+      summary: Create workflow
+      description: Creates a new workflow.
+      operationId: CreateWorkflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}:
+    get:
+      tags:
+      - Workflows
+      summary: Retrieve workflow
+      description: Retrieves a workflow.
+      operationId: GetWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: query
+        description: The version number of the workflow. If not specified, the latest version is returned.
+        schema:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    put:
+      tags:
+      - Workflows
+      summary: Update workflow
+      description: Updates a workflow.
+      operationId: UpdateWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkflowRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    delete:
+      tags:
+      - Workflows
+      summary: Delete workflow
+      description: Deletes a workflow and all associated journeys.
+      operationId: DeleteWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/start:
+    post:
+      tags:
+      - Workflows
+      summary: Start journey
+      description: Starts a new journey from the specified workflow.
+      operationId: StartJourney
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartJourneyRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartJourneyResponse'
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/publish:
+    post:
+      tags:
+      - Workflows
+      summary: Publish workflow
+      description: Publishes a workflow.
+      operationId: PublishWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/unpublish:
+    post:
+      tags:
+      - Workflows
+      summary: Unpublish workflow
+      description: Unpublishes a workflow.
+      operationId: UnpublishWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/lock:
+    post:
+      tags:
+      - Workflows
+      summary: Lock workflow
+      description: Locks a workflow, preventing it from being published, unpublished or deleted until it is unlocked.
+      operationId: LockWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/unlock:
+    post:
+      tags:
+      - Workflows
+      summary: Unlock workflow
+      description: Unlocks a workflow, allowing it to be published, unpublished or deleted again.
+      operationId: UnlockWorkflow
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/versions:
+    get:
+      tags:
+      - Workflows
+      summary: List workflow versions
+      description: Returns a list of versions for a workflow.
+      operationId: ListWorkflowVersions
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: The offset of the first item to return.
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: limit
+        in: query
+        description: The maximum number of items to return per page. Defaults to 10.
+        schema:
+          maximum: 100
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfWorkflowVersion'
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/files/{fileId}:
+    get:
+      tags:
+      - Workflows
+      summary: Download workflow file
+      description: Downloads a workflow file.
+      operationId: DownloadWorkflowFile
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID
+        required: true
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: The file ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - Workflows
+      summary: Delete workflow file
+      description: Deletes a workflow file.
+      operationId: DeleteWorkflowFile
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: The file ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /workflows/{workflowId}/files:
+    post:
+      tags:
+      - Workflows
+      summary: Upload workflow file
+      description: Uploads a file to a workflow using multipart/form-data.
+      operationId: UploadWorkflowFile
+      parameters:
+      - name: workflowId
+        in: path
+        description: The workflow ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDetails'
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    CreateWorkflowRequest:
+      required:
+      - name
+      - steps
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: The workflow name.
+        description:
+          maxLength: 5000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The workflow description.
+        steps:
+          maxItems: 250
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          description: List of steps that define the workflow.
+        connections:
+          maxItems: 500
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/WorkflowStepConnection'
+          description: List of connections between workflow steps.
+        variables:
+          type:
+          - 'null'
+          - object
+          description: Custom variables that can be used within a workflow.
+        tags:
+          maxItems: 20
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of workflow tags.
+        inputParameters:
+          maxItems: 50
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/WorkflowInputParameter'
+          description: List of allowed input parameters for the workflow.
+        domain:
+          maxLength: 253
+          minLength: 1
+          type:
+          - 'null'
+          - string
+          description: The domain the workflow runs under. Must be a domain configured on your account.
+    WorkflowVersion:
+      required:
+      - id
+      - workflowId
+      - version
+      - isLatest
+      - isPublished
+      - createdAt
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the workflow version.
+        workflowId:
+          type: string
+          description: Unique identifier for the workflow.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number.
+          format: int32
+        isLatest:
+          type: boolean
+          description: Whether this is the latest version of the workflow.
+        isPublished:
+          type: boolean
+          description: Whether this version is the published version of the workflow.
+        createdAt:
+          description: Time at which the version was created.
+          format: date-time
+    WorkflowInputParameter:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the input parameter.
+    FileDetails:
+      required:
+      - id
+      - filename
+      - contentType
+      - size
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        filename:
+          type: string
+          description: The filename.
+        contentType:
+          type: string
+          description: Content type of the file.
+        size:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The size of the file in bytes.
+          format: int64
+    StartJourneyResponse:
+      required:
+      - journeyId
+      - journeyUrl
+      type: object
+      properties:
+        journeyId:
+          type: string
+          description: The journey ID.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: ID of the starting step.
+        journeyUrl:
+          type: string
+          description: The URL to the journey.
+    StartJourneyRequest:
+      type: object
+      properties:
+        input:
+          type:
+          - 'null'
+          - object
+          description: The journey input.
+        journeyUrlTtl:
+          maximum: 2592000
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The time-to-live for the workflow URL in seconds. Defaults to 60 seconds.
+          format: int32
+    WorkflowSummary:
+      required:
+      - id
+      - createdAt
+      type: object
+      properties:
+        id:
+          type: string
+          description: The workflow's unique identifier.
+        name:
+          type:
+          - 'null'
+          - string
+          description: The name of the workflow.
+        description:
+          type:
+          - 'null'
+          - string
+          description: The description of the workflow.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the workflow.
+          format: int32
+        isLatest:
+          type: boolean
+          description: Whether this is the latest version of the workflow.
+        isPublished:
+          type: boolean
+          description: Whether this version is the published version of the workflow.
+        isLocked:
+          type: boolean
+          description: Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted.
+        createdAt:
+          description: Time at which the workflow was created.
+          format: date-time
+    Workflow:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the workflow.
+        name:
+          type:
+          - 'null'
+          - string
+          description: The name of the workflow.
+        description:
+          type:
+          - 'null'
+          - string
+          description: The description of the workflow.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the workflow.
+          format: int32
+        isLatest:
+          type: boolean
+          description: Whether this is the latest version of the workflow.
+        isPublished:
+          type: boolean
+          description: Whether this version is the published version of the workflow.
+        isLocked:
+          type: boolean
+          description: Whether the workflow is locked. A locked workflow cannot be published, unpublished or deleted.
+        createdAt:
+          description: Time at which the workflow was created.
+          format: date-time
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          description: List of steps that define the workflow.
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStepConnection'
+          description: List of connections between workflow steps.
+        variables:
+          type:
+          - 'null'
+          - object
+          description: Workflow variables.
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of workflow tags.
+        domain:
+          type:
+          - 'null'
+          - string
+          description: The workflow domain.
+        workflowUrl:
+          type:
+          - 'null'
+          - string
+          description: The workflow URL.
+        inputParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowInputParameter'
+          description: List of allowed input parameters for the workflow.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileDetails'
+          description: List of files associated with the workflow.
+    PaginatedResponseOfWorkflowSummary:
+      required:
+      - data
+      - offset
+      - limit
+      - totalCount
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowSummary'
+          description: List of items returned for the current page.
+        offset:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The offset of the first item returned.
+          format: int32
+        limit:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The maximum number of items requested per page.
+          format: int32
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The total number of items available across all pages.
+          format: int32
+    UpdateWorkflowRequest:
+      required:
+      - name
+      - steps
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: The workflow name.
+        description:
+          maxLength: 5000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The workflow description.
+        steps:
+          maxItems: 250
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          description: List of steps that define the workflow.
+        connections:
+          maxItems: 500
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/WorkflowStepConnection'
+          description: List of connections between workflow steps.
+        variables:
+          type:
+          - 'null'
+          - object
+          description: Custom variables that can be used within a workflow.
+        tags:
+          maxItems: 20
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of workflow tags.
+        inputParameters:
+          maxItems: 50
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/WorkflowInputParameter'
+          description: List of allowed input parameters for the workflow.
+        domain:
+          maxLength: 253
+          minLength: 1
+          type:
+          - 'null'
+          - string
+          description: The domain the workflow runs under. Must be a domain configured on your account.
+    WorkflowStepConnection:
+      required:
+      - sourceStepId
+      - targetStepId
+      - outcome
+      type: object
+      properties:
+        sourceStepId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The source step ID.
+        targetStepId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The target step ID.
+        outcome:
+          maxLength: 50
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The step outcome.
+    WorkflowStep:
+      required:
+      - id
+      - type
+      type: object
+      properties:
+        id:
+          maxLength: 50
+          minLength: 0
+          pattern: ^[0-9a-zA-Z-_]+$
+          type: string
+          description: Unique identifier for the step.
+        type:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The step type.
+        name:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The step name.
+        displayName:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The display name of the step.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The description of the step.
+        properties:
+          type:
+          - 'null'
+          - object
+          description: Input properties of the step.
+    PaginatedResponseOfWorkflowVersion:
+      required:
+      - data
+      - offset
+      - limit
+      - totalCount
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowVersion'
+          description: List of items returned for the current page.
+        offset:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The offset of the first item returned.
+          format: int32
+        limit:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The maximum number of items requested per page.
+          format: int32
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The total number of items available across all pages.
+          format: int32
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

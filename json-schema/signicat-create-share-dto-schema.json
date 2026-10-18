@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-create-share-dto-schema.json",
+  "title": "CreateShareDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-secure-share-openapi.yml#/components/schemas/CreateShareDto",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contactDetails"
+  ],
+  "properties": {
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Title of the share"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Description of what this share contains"
+    },
+    "externalReference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Create a reference to your own system, this value is also used for binding billing events"
+    },
+    "usageReference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recipients": {
+      "type": "array",
+      "description": "A list of recipients for this share, we recommend to add them later after you add the files",
+      "items": {
+        "$ref": "#/$defs/CreateShareRecipientDto"
+      }
+    },
+    "contactDetails": {
+      "description": "Sender contact details that the recipients can see after they authenticate",
+      "nullable": false,
+      "$ref": "#/$defs/ContactDetailsDto"
+    },
+    "tags": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Keywords you can use for filtering your shares",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expires": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Expire date for this share, after that you and your recipients can't access the share anymore",
+      "format": "date-time"
+    },
+    "requestDomain": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "This specifies the domain you want to use for this specific session. The domain will be visible in the end-user's browser. This domain needs to be correctly configured on your account!"
+    }
+  },
+  "$defs": {
+    "AuthenticationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityProvider": {
+          "type": "string"
+        },
+        "idpId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "ContactDetailsDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 1,
+          "pattern": "^[^@]+@[^@]+$",
+          "nullable": false
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notificationOptions": {
+          "nullable": true,
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SenderNotificationDto"
+            }
+          ]
+        }
+      }
+    },
+    "CreateShareRecipientDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authentication"
+      ],
+      "properties": {
+        "firstName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lastName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "email",
+          "pattern": "^[^@]+@[^@]+$"
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authentication": {
+          "type": "array",
+          "minLength": 1,
+          "nullable": false,
+          "items": {
+            "$ref": "#/$defs/AuthenticationDto"
+          }
+        },
+        "notification": {
+          "$ref": "#/$defs/NotificationDto"
+        },
+        "externalReference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Language": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ],
+      "enum": [
+        "En",
+        "No",
+        "Fi",
+        "De",
+        "Fr",
+        "Nl",
+        "Da",
+        "Sv"
+      ]
+    },
+    "NotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sendSms": {
+          "type": "boolean"
+        },
+        "language": {
+          "$ref": "#/$defs/Language"
+        }
+      }
+    },
+    "SenderNotificationDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sendEmail": {
+          "type": "boolean"
+        },
+        "sendSms": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

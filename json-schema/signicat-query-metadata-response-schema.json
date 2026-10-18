@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-query-metadata-response-schema.json",
+  "title": "QueryMetadataResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-audit-logs-openapi.yml#/components/schemas/QueryMetadataResponse",
+  "required": [
+    "extended",
+    "targets"
+  ],
+  "type": "object",
+  "properties": {
+    "extended": {
+      "type": "boolean",
+      "description": "Whether user is allowed to perform extended query operations"
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QueryMetadataResponseTargetMetadata"
+      },
+      "description": "What data the user is allowed to query on"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "QueryMetadataResponseServiceMetadata": {
+      "required": [
+        "eventTypes",
+        "serviceName"
+      ],
+      "type": "object",
+      "properties": {
+        "serviceName": {
+          "type": "string",
+          "description": "The service"
+        },
+        "eventTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The event types available for this service"
+        }
+      },
+      "additionalProperties": false
+    },
+    "QueryMetadataResponseTargetMetadata": {
+      "required": [
+        "services",
+        "target"
+      ],
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "The audit query target group. Usually `Customer`."
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/QueryMetadataResponseServiceMetadata"
+          },
+          "description": "The services available for this target group"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

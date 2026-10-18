@@ -1,0 +1,1520 @@
+openapi: 3.2.0
+info:
+  title: Signicat MobileID device management API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged MobileID device management across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: MobileID device management
+  description: 'You can use the **MobileID device management** resource for operations related to managing MobileID devices for your ReuseID users.
+
+
+    ## Useful information
+
+
+    All device management operations require both:
+
+
+    - A ReuseID user, identified by their `userId`.
+
+    - A registered MobileID device, identified by its `deviceId`.'
+paths:
+  /credentials/devices/{deviceId}/recovery-lock:
+    get:
+      tags:
+      - MobileID device management
+      summary: Get recovery lock
+      description: 'This operation returns the lock status of the MobileID account recovery feature for a ReuseID user''s device.
+
+
+        **Note**: If you enable account recovery in your application configuration, then `recoveryLock` is set to `false` by default. This means that the device can use account recovery.'
+      operationId: getRecoveryLockStatus
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the recovery lock status for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryLock'
+              example:
+                recoveryLock: false
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    put:
+      tags:
+      - MobileID device management
+      summary: Update recovery lock
+      description: This operation updates the lock status of the MobileID account recovery feature for a ReuseID user's device.
+      operationId: putRecoveryLockStatus
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryLockRequest'
+            example:
+              recoveryLock: true
+        required: true
+      responses:
+        '202':
+          description: Successfully updated the recovery lock status for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryLock'
+              example:
+                recoveryLock: true
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: You must provide recoveryLock and it must be true|false
+                    traceId: fb619e0f789111d96bea22dacae2cddd
+                The request identifier is invalid.:
+                  description: The request identifier is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    detail: deviceId must start with a letter or digit and contain only digits, lowercase letters (a-f), and the character -
+                    traceId: 05af98dcbe861fee1c0e156fdd5c21e5
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/{deviceId}/geofencing:
+    get:
+      tags:
+      - MobileID device management
+      summary: Get geofencing settings
+      description: This operation returns the geofencing configuration for a ReuseID user's device.
+      operationId: getGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the geofencing settings for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeofenceSettingsResponse'
+              example:
+                mode: OPTIONAL
+                allowedContinents: EU
+                allowedCountries: CT
+                deniedCountries: RU
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    put:
+      tags:
+      - MobileID device management
+      summary: Update geofencing settings
+      description: This operation updates the geofencing configuration for a ReuseID user's device.
+      operationId: putGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeofenceSettings'
+            example:
+              mode: OPTIONAL
+              allowedContinents: EU
+              allowedCountries: CT
+              deniedCountries: RU
+        required: true
+      responses:
+        '202':
+          description: Successfully updated the geofencing settings for the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeofenceSettingsResponse'
+              example:
+                mode: OPTIONAL
+                allowedContinents: EU
+                allowedCountries: CT
+                deniedCountries: RU
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid request parameter
+                    code: invalid_request_parameter
+                    status: 400
+                    detail: You must provide recoveryLock and it must be true|false
+                    traceId: fb619e0f789111d96bea22dacae2cddd
+                The request identifier is invalid.:
+                  description: The request identifier is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid identifier
+                    code: invalid_identifier
+                    status: 400
+                    detail: deviceId must start with a letter or digit and contain only digits, lowercase letters (a-f), and the character -
+                    traceId: 05af98dcbe861fee1c0e156fdd5c21e5
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    delete:
+      tags:
+      - MobileID device management
+      summary: Delete geofencing settings
+      description: This operation deletes the geofencing configuration for a ReuseID user's device.
+      operationId: deleteGeofencingSettings
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '204':
+          description: Successfully deleted the geofencing settings for the device.
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/{deviceId}:
+    get:
+      tags:
+      - MobileID device management
+      summary: Get device
+      description: 'This operation returns information about a ReuseID user''s device.
+
+
+        **Note**: To return a more extensive set of device information, you must set the `detailed` query parameter to `true`.'
+      operationId: getDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: detailed
+        in: query
+        description: 'A parameter that determines whether the `deviceDetails` object is returned in the response.
+
+
+          **Note**: To return this object, you must set this parameter to `true`.
+
+          '
+        required: false
+        schema:
+          type: boolean
+          description: 'A parameter that determines whether the `deviceDetails` object is returned in the response.
+
+
+            **Note**: To return this object, you must set this parameter to `true`.
+
+            '
+          example: true
+        example: true
+      responses:
+        '200':
+          description: Successfully fetched the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+              examples:
+                The default response.:
+                  description: The default response, when detailed is not set to 'true'.
+                  value:
+                    id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                    name: sampleDevice
+                    state: ACTIVE
+                    lastOperationType: AUTHENTICATION
+                    lastUsed: '2021-01-21T22:47:27.123Z'
+                    created: '2021-01-21T22:47:27.123Z'
+                The detailed response.:
+                  description: The detailed response, when detailed is set to 'true'.
+                  value:
+                    id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                    name: sampleDevice
+                    state: ACTIVE
+                    lastOperationType: AUTHENTICATION
+                    lastUsed: '2021-01-21T22:47:27.123Z'
+                    created: '2021-01-21T22:47:27.123Z'
+                    deviceDetails:
+                      applicationId: encap
+                      currentClientApiVersion: 3.15.0
+                      activatedClientApiVersion: 3.15.0
+                      activatedEncapRelease: R_3_3
+                      deviceHash: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+                      pushAddress: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+                      operatingSystemType: iOS
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                      activationTime: '2017-04-05T12:23:00.000Z'
+                      lock:
+                        lockReason:
+                        - LOCKED_BY_ADMIN
+                        - DEVICE_VERIFICATION_FAILED
+                      attestation:
+                        appAttestStatus: VERIFIED
+                        appAttestDate: '2022-06-24T20:56:01.366Z'
+                      recoveries:
+                      - recoveryId: f87ab8a1-6321-4af4-8b9c-f16d8b31b055
+                        recoveryMethod: CLOUD_BACKUP_RECOVERY_CODE
+                        recoveryStatus: RECOVERED
+                        createdDate: '2023-02-28T11:52:17.437Z'
+                        updatedDate: '2023-02-28T11:57:16.372Z'
+                        recoveredDate: '2023-02-28T11:57:16.310Z'
+                      recoveryLock: false
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+    delete:
+      tags:
+      - MobileID device management
+      summary: Delete device
+      description: This operation deletes a ReuseID user's device.
+      operationId: deleteDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: generateEvent
+        in: query
+        description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+          Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+            Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+            '
+          example: false
+        example: false
+      responses:
+        '202':
+          description: Successfully deleted the device.
+        '400':
+          description: The user ID parameter is missing.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Invalid_request
+                code: invalid_request
+                status: 400
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    patch:
+      tags:
+      - MobileID device management
+      summary: Update device
+      description: This operation updates the name and/or state of a ReuseID user's device.
+      operationId: updateDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: generateEvent
+        in: query
+        description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+          Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines whether an event is generated if the device state is changed.
+
+
+            Note: If no value is set, then the default value false is used. This means that no event is generated if the device state is changed.
+
+            '
+          example: false
+        example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdateRequest'
+            example:
+              name: My New iPhone
+              state: LOCKED
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+              example:
+                id: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+                name: My New iPhone
+                state: LOCKED
+                lastOperationType: AUTHENTICATION
+                lastUsed: '2021-01-21T22:47:27.123Z'
+                created: '2021-01-21T22:47:27.123Z'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                The request parameter is invalid.:
+                  description: The request parameter is invalid.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              examples:
+                Not found. The server cannot find the requested resource.:
+                  description: Not found. The server cannot find the requested resource.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: User entity does not exist
+                    code: user_entity_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+                The device does not exist.:
+                  description: The device does not exist.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Device does not exist
+                    code: device_does_not_exist
+                    status: 404
+                    traceId: 4bf239c088089f2bca77d3a413909f1d
+                    detail: 'Failed getting device by ID : ed85c025-4e6c-47e2-86ec-f0e58f739ee6 for user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789.'
+        '409':
+          description: The device is deleted.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Device is deleted
+                code: device_is_deleted
+                status: 409
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot update device with state DELETED
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/devices/{deviceId}/transactions:
+    get:
+      tags:
+      - MobileID device management
+      summary: Get device transactions
+      description: This operation returns a list of the transactions that a ReuseID user's device has carried out.
+      operationId: getDeviceTransactions
+      parameters:
+      - name: deviceId
+        in: path
+        description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+          '
+        required: true
+        schema:
+          type: string
+          description: 'The ID of the ReuseID user''s device, as returned when the device was registered.
+
+            '
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: limit
+        in: query
+        description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+          **Allowed values**:
+
+          - It must be a whole number ranging from `1` to `100`.
+
+          - If no value is set, then the default value `100` is used.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+            **Allowed values**:
+
+            - It must be a whole number ranging from `1` to `100`.
+
+            - If no value is set, then the default value `100` is used.
+
+            '
+          example: 10
+        example: 10
+      - name: offset
+        in: query
+        description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+          **Allowed values**:
+
+          - You must specify this transaction using its `transactionId`.
+
+          - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+            **Allowed values**:
+
+            - You must specify this transaction using its `transactionId`.
+
+            - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched the transactions for the ReuseID user's device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileIDTransaction'
+              example:
+                previous: /devices/d910994d-80b2-4125-a6b1-062b5b2f43ba/transactions?limit=1&offset=39277b72-53c2-4780-ad56-a8c8d8a33542&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+                next: /devices/7fd01f14-151b-48f4-9aa6-7cfa2140989e/transactions?limit=1&offset=a1c66944-e5e3-46e3-ba36-750622205ef3&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+                limit: 1
+                transactions:
+                - transactionId: c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  ref: /authentications/mapped-from-c5c25109-53ab-4f76-9724-93f77a9b4a7d
+                  operationType: AUTHENTICATION
+                  state: SUCCESS
+                  created: '2023-08-11T11:30:05.000Z'
+                  expires: '2023-08-11T11:31:05.000Z'
+                  deviceId: db441aa4-dd01-4bf7-8795-f75a94ec8d61
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              examples:
+                The user ID parameter is missing.:
+                  description: The user ID parameter is missing.
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: userId parameter is missing
+                offset does not exist:
+                  description: offset does not exist
+                  value:
+                    type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                    title: Invalid_request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: Offset 58ccbe4f-5c81-4425-bb7d-f6378f35d402 does not exist
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: User entity does not exist
+                code: user_entity_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching user with user ID : 90e1b3e5-93a7-458e-b42b-d1b57e65e26a and account ID : a-sdge-Abcdefghijk123456789. '
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Internal error
+                code: internal_error
+                status: 500
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: error occurred
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    GeofenceSettings:
+      type: object
+      properties:
+        mode:
+          type: string
+          description: 'The geofencing mode.
+
+
+            **Allowed values**: It can be either `OFF`, `OPTIONAL`, or `REQUIRED`.
+
+            '
+        allowedContinents:
+          type: string
+          description: 'The continents where authentication **is allowed** for a specific device.
+
+
+            **Allowed values**:
+
+            - Must be given in a two-letter continent code format, represented as `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, and `SA`.
+
+            - Must be formatted as a comma-separated list.
+
+            '
+        allowedCountries:
+          type: string
+          description: 'The countries where authentication **is allowed** for a specific device.
+
+
+            **Note**: These countries are in addition to those covered by the allowed continents parameter.
+
+
+            **Allowed values**:
+
+            - Must be given in an ISO 3166-1 alpha-2 two-letter country code format.
+
+            - For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.
+
+            - Must be formatted as a comma-separated list.
+
+            '
+        deniedCountries:
+          type: string
+          description: 'The countries where authentication **is not allowed** for a specific device.
+
+
+            **Note**: These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            **Allowed values**:
+
+            - Must be given in an ISO 3166-1 alpha-2 two-letter country code format.
+
+            - For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.
+
+            - Must be formatted as a comma-separated list.
+
+            '
+    AppAttestation:
+      type: object
+      description: 'An object that describes the properties of the attestation.
+
+
+        **Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#app-attestation).
+
+        '
+      properties:
+        playIntegrityStatus:
+          type: string
+          description: 'The Play Integrity attestation status of the ReuseID user''s device that was used for the operation.
+
+
+            **Possible values**: See the [Play Integrity statuses](/apis/reuseid/#section/Common-concepts/Play-Integrity-statuses) table.
+
+            '
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          description: 'The timestamp when the Play Integrity attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          description: 'The App Attest attestation status of the ReuseID user''s device that was used for the operation
+
+
+            **Possible values**: See the [App Attest statuses](/apis/reuseid/#section/Common-concepts/App-Attest-statuses) table.
+
+            '
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          description: 'The timestamp when the App Attest attestation was performed on the ReuseID user''s device.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2022-06-24T20:55:03.025Z'
+    RecoveryLockRequest:
+      type: object
+      properties:
+        recoveryLock:
+          type: boolean
+          description: 'A parameter that determines whether the recovery lock is activated, which can be used to lock the account recovery feature for a ReuseID user''s device.
+
+
+            **Example**: When `false`, the account recovery feature is not locked for the ReuseID user''s device and recovery operations can be performed.
+
+            '
+          example: true
+          writeOnly: true
+    MobileIDTransaction:
+      type: object
+      properties:
+        previous:
+          type: string
+          description: A URI that can be used to get the previous set of transactions.
+          example: /devices/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=4e5ea8f1-9ee1-409e-8fc0-2dbc5b9b315a&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          description: A URI that can be used to get the next set of transactions.
+          example: /devices/7fd01f14-151b-48f4-9aa6-7cfa2140989e/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          description: 'The number of objects (device transactions) that are shown on each page.
+
+
+            **Possible values**: It must be a whole number ranging from `1` to `100`.
+
+            '
+          example: 10
+        transactions:
+          type: array
+          description: A list of all transactions that the ReuseID user's device has carried out.
+          items:
+            $ref: '#/components/schemas/Transaction'
+    AccountRecovery:
+      type: object
+      properties:
+        recoveryId:
+          type: string
+          description: The ID of the recovery.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        recoveryMethod:
+          type: string
+          description: 'The recovery method that was used for the recovery.
+
+
+            **Possible values**: See the [Recovery methods](/apis/reuseid/#section/Common-concepts/Recovery-methods) table.
+
+            '
+          example: CLOUD_BACKUP_RECOVERY_CODE
+        recoveryStatus:
+          type: string
+          description: 'The status of the recovery.
+
+
+            **Possible values**: See the [Recovery statuses](/apis/reuseid/#section/Common-concepts/Recovery-statuses) table.
+
+            '
+          example: ACTIVATED
+        created:
+          type: string
+          description: 'The timestamp when the recovery was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        modified:
+          type: string
+          description: 'The timestamp when the recovery was updated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        recovered:
+          type: string
+          description: 'The timestamp when the recovery was used.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.373Z'
+    DeviceUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The new name to set for the ReuseID user''s device.
+
+            It cannot exceed the maximum character length of 128   characters.
+
+            '
+          example: My New iPhone
+        state:
+          type: string
+          description: 'The new state to set for the ReuseID user''s device.
+
+
+            **Allowed values**:
+
+            - An enum that must be either `ACTIVE` or `LOCKED`.
+
+            - See the [Device states](/apis/reuseid/#section/Common-concepts/Device-states) table.
+
+            '
+          example: LOCKED
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the ReuseID user's device (`deviceId`).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          description: The name of the ReuseID user's device.
+          example: My iPhone
+        state:
+          type: string
+          description: 'The state of the ReuseID user''s device.
+
+
+            **Possible values**: See the [Device states](/apis/reuseid/#section/Common-concepts/Device-states) table.
+
+            '
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lastOperationType:
+          type: string
+          description: 'The last operation type that the ReuseID user''s device carried out.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device last carried out an operation.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device was originally activated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-21T22:47:27'
+        deviceDetails:
+          $ref: '#/components/schemas/DeviceDetails'
+          description: 'An object that contains a more extensive set of information about the ReuseID user''s device.
+
+
+            **Note**: This is only returned when the `detailed` query parameter is set to `true`.
+
+            '
+    DeviceLock:
+      type: object
+      properties:
+        lockReason:
+          type: array
+          description: 'A list that contains all reasons why the ReuseID user''s device has been locked.
+
+
+            **Possible values**: See the [Lock reason](/apis/reuseid/#section/Common-concepts/Lock-reason) table.
+
+            '
+          example:
+          - LOCKED_BY_ADMIN
+          - DEVICE_VERIFICATION_FAILED
+          items:
+            type: string
+          readOnly: true
+    GeofenceSettingsResponse:
+      type: object
+      properties:
+        mode:
+          type: string
+          description: 'The geofencing mode.
+
+
+            **Possible values**: `OFF`, `OPTIONAL`, or `REQUIRED`.
+
+            '
+        allowedContinents:
+          type: string
+          description: 'The continents where authentication **is allowed** for the given device.
+
+
+            **Possible values**: `AF`, `NA`, `OC`, `AN`, `AS`, `EU`, and `SA`.
+
+            '
+        allowedCountries:
+          type: string
+          description: 'The countries where authentication **is allowed** for the given device.
+
+
+            **Note**: These countries are in addition to those covered by the allowed continents parameter.
+
+
+            **Possible values**: For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.
+
+            '
+        deniedCountries:
+          type: string
+          description: 'The countries where authentication **is not allowed** for a specific device.
+
+
+            **Note**: These countries will be excluded from those covered by the allowed continents parameter.
+
+
+            **Possible values**: For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.
+
+            '
+    RecoveryLock:
+      type: object
+      properties:
+        recoveryLock:
+          type: boolean
+          description: 'A property that informs you whether the recovery lock is activated, which determines if the account recovery feature is locked for a ReuseID user''s device.
+
+
+            **Example**: When `false`, the account recovery feature is not locked for the ReuseID user''s device and recovery operations can be performed.
+
+            '
+          example: false
+    DeviceDetails:
+      type: object
+      properties:
+        lock:
+          $ref: '#/components/schemas/DeviceLock'
+          description: 'An object that contains information about why the device is locked.
+
+
+            **Note**: This object is only returned when the ReuseID user''s device is locked.
+
+            '
+        activationTime:
+          type: string
+          description: 'The timestamp when the ReuseID user''s device was originally activated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`
+
+            '
+          example: '2017-04-05T12:23:00.000Z'
+          readOnly: true
+        deviceHash:
+          type: string
+          description: A SHA256 hash of the unique hardware device ID of the ReuseID user's device.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+          readOnly: true
+        applicationId:
+          type: string
+          description: The application ID being used for the ReuseID user's device.
+          example: encap
+          readOnly: true
+        currentClientApiVersion:
+          type: string
+          description: The Encap client API version that the ReuseID user's device used for its last operation.
+          example: 3.15.0
+        activatedClientApiVersion:
+          type: string
+          description: The Encap client API version that the ReuseID user's device was originally activated on.
+          example: 3.15.0
+        activatedEncapRelease:
+          type: string
+          description: The Encap server release version that the ReuseID user's device was originally activated on.
+          example: R_3_3
+          readOnly: true
+        pushAddress:
+          type: string
+          description: 'The push address for the ReuseID user''s device.
+
+
+            This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS).
+
+            '
+          example: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+          readOnly: true
+        operatingSystemType:
+          type: string
+          description: 'The operating system type of the ReuseID user''s device.
+
+            '
+          example: iOS
+          readOnly: true
+        activatedAuthenticationMethods:
+          type: array
+          description: 'A list of the activated authentication methods for the ReuseID user''s device.
+
+
+            **Possible values**: See the [Authentication methods](/apis/reuseid/#section/Common-concepts/Authentication-methods) table.
+
+            '
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+          readOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+        recoveries:
+          type: array
+          description: 'A list of all recoveries that a ReuseID user''s device has carried out.
+
+            '
+          items:
+            $ref: '#/components/schemas/AccountRecovery'
+        recoveryLock:
+          type: boolean
+          description: 'A property that informs you whether the recovery lock is activated, which determines if the account recovery feature is locked for a ReuseID user''s device.
+
+
+            **Example**: When `false`, the account recovery feature is not locked for the ReuseID user''s device and recovery operations can be performed.
+
+            '
+    Transaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The ID of the device transaction.
+          example: 3c68023d-c524-401c-b632-e495c498e2d0
+        ref:
+          type: string
+          description: A link to the operation object for the device transaction.
+          example: /registrations/3c68023d-c524-401c-b632-e495c498e2d0
+        operationType:
+          type: string
+          description: 'The operation type that was used for the transaction.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: ACTIVATION
+        state:
+          type: string
+          description: The state of the device transaction.
+          example: SUCCESS
+        created:
+          type: string
+          description: 'The timestamp when the device transaction was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        expires:
+          type: string
+          description: 'The timestamp when the device transaction expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        deviceId:
+          type: string
+          description: ' The ID of the ReuseID user''s device that was used for the operation.
+
+            '
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

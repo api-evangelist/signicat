@@ -1,0 +1,336 @@
+openapi: 3.2.0
+info:
+  title: Signicat Document collections API
+  version: 1.5.2
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Document collections across 2 of this provider''s published API definitions: sign-openapi.json, signicat-sign-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/sign
+  description: Sign API
+security:
+- bearerAuth: []
+tags:
+- name: Document collections
+paths:
+  /document-collections:
+    post:
+      operationId: createDocumentCollection
+      tags:
+      - Document collections
+      summary: Create a new document collection
+      description: Creates new document collection. A document collection is a logical grouping of documents that will be signed together.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentCollection'
+      responses:
+        '201':
+          description: The document collection was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentCollection'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+  /document-collections/{documentCollectionId}:
+    get:
+      operationId: getDocumentCollection
+      tags:
+      - Document collections
+      summary: Retrieve a document collection
+      description: Returns the document collection with the given ID.
+      parameters:
+      - name: documentCollectionId
+        description: The unique ID of the document collection.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The document collection was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentCollectionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: The document collection was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document collection not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      operationId: deleteDocumentCollection
+      tags:
+      - Document collections
+      summary: Delete a document collection
+      description: Deletes the document collection with the given ID.
+      parameters:
+      - name: documentCollectionId
+        description: The unique ID of the document collection.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: The document collection was successfully deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: The document collection was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                status: 404
+                type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+                title: Not found
+                code: not_found
+                detail: Document collection not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://api.signicat.com/sign
+      description: Sign API
+components:
+  schemas:
+    DocumentReference:
+      type: object
+      required:
+      - documentId
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          description: The unique ID of the uploaded document.
+          example: 15197b79-6333-4fa5-9e4c-23b9392a838f
+    CollectionOutput:
+      readOnly: true
+      type: object
+      properties:
+        packages:
+          type: array
+          minItems: 1
+          nullable: true
+          items:
+            $ref: '#/components/schemas/SessionPackage'
+        serialSigning:
+          type: array
+          minItems: 1
+          nullable: true
+          items:
+            $ref: '#/components/schemas/SerialSigningOutput'
+    SessionPackage:
+      type: object
+      description: Contains session package metadata
+      properties:
+        packageId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        resultDocumentId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        resultArchiveId:
+          type: string
+          format: uuid
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0863
+        packageType:
+          $ref: '#/components/schemas/PackageType'
+    InvalidParamDetail:
+      type: object
+      description: Contains information about how validation failed for a parameter
+      readOnly: true
+      required:
+      - name
+      - reason
+      properties:
+        name:
+          type: string
+          description: The name of the parameter that failed validation
+          example: SigningSession.title
+        reason:
+          type: string
+          description: The reason why the validation failed
+          example: title cannot exceed 255 characters
+    GetDocumentCollectionResponse:
+      $ref: '#/components/schemas/DocumentCollection'
+    SerialSigningOutput:
+      type: object
+      description: Contains metadata of a completed serial signing.
+      properties:
+        originalDocumentId:
+          type: string
+          format: uuid
+          description: The unique ID of the original document that was signed.
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0851
+        archiveResultId:
+          type: string
+          format: uuid
+          description: The unique ID of the archived result document.
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0852
+        resultDocumentId:
+          type: string
+          format: uuid
+          description: The unique ID of the signed document stored in Docstore.
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0858
+        numberOfSignatures:
+          type: integer
+          description: The number of signatures added to the document.
+          example: 2
+        signatureType:
+          $ref: '#/components/schemas/SerialSigningType'
+    ProblemDetail:
+      title: ProblemDetail
+      description: The common error object. Adheres to RFC7807
+      type: object
+      additionalProperties: true
+      readOnly: true
+      required:
+      - type
+      - title
+      - code
+      - detail
+      properties:
+        status:
+          type: integer
+          description: HTTP Status
+          example: 500
+        type:
+          type: string
+          description: An RFC3986 URI reference to the documentation that identifies the problem
+          example: https://developer.signicat.com/errors?code=internal_server_error
+        title:
+          type: string
+          description: A short, human-readable summary of the problem
+          example: Internal server error
+        code:
+          type: string
+          description: A short machine-readable string indicating the error code
+          example: internal_server_error
+        traceId:
+          type: string
+          description: The request identifier
+          example: ffb75ca1385ecb0a362ff9cd029d23de
+        invalidParams:
+          type: array
+          description: Used when handling validation errors. Can report multiple errors in the same call
+          items:
+            $ref: '#/components/schemas/InvalidParamDetail'
+          example:
+          - name: version
+            reason: must be greater than 0
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: An internal server error happened.
+    PackageType:
+      type: string
+      enum:
+      - PADES_CONTAINER
+    DocumentCollection:
+      type: object
+      required:
+      - documents
+      properties:
+        id:
+          type: string
+          readOnly: true
+          description: The unique ID of the document collection.
+          example: f05d0dce-a7af-432b-b6b8-e455ab7c0858
+        documents:
+          type: array
+          minItems: 1
+          maxItems: 100
+          nullable: false
+          items:
+            $ref: '#/components/schemas/DocumentReference'
+        packageTo:
+          description: A list of formats the collection should be packaged to when all sessions connected to it are signed.
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/PackageType'
+        output:
+          $ref: '#/components/schemas/CollectionOutput'
+        serialSigning:
+          type: boolean
+          description: Whether to enable serial signing for the document collection.
+          example: true
+    SerialSigningType:
+      type: string
+      enum:
+      - PADES
+      description: The serial signing signature format.
+  responses:
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Not Found
+            status: 404
+            code: not_found
+            detail: Not found
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Bad request
+            status: 400
+            code: bad_request
+            detail: The request was malformed.
+    InternalServerError:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: https://developer.signicat.com/docs/error-codes/#generic-error-codes
+            title: Unexpected error
+            status: 500
+            code: unexpected_error
+            detail: An unexpected error occurred.
+  securitySchemes:
+    bearerAuth:
+      description: Access token for protecting the API.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- sign-openapi.json
+- signicat-sign-openapi.yml

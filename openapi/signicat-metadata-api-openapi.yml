@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: Signicat Metadata API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Metadata across 4 of this provider''s published API definitions: account-management-openapi.json, events-openapi.json, signicat-account-management-openapi.yml, signicat-events-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /account-management
+- url: https://api.signicat.com/events-management
+tags:
+- name: Metadata
+paths:
+  /metadata/countries:
+    get:
+      tags:
+      - Metadata
+      summary: List countries
+      description: Returns a list of all countries supported by the API.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountriesResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CountriesResponse'
+      operationId: getMetadataCountries
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /metadata/check-name-validity:
+    get:
+      tags:
+      - Metadata
+      summary: Validate name
+      description: Validates the given account or organization name and returns 200 OK if it can be used to create an organization or account, otherwise 400 Bad Request with the error(s)
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameValidityResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NameValidityResult'
+      operationId: getMetadataCheckNameValidity
+      x-operation-id-source: derived
+    servers:
+    - url: /account-management
+  /metadata/event-definitions:
+    get:
+      tags:
+      - Metadata
+      summary: Retrieve event definitions
+      description: Returns a list of all events that may be subscribed to.
+      operationId: list_event_definitions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Array_EventDefinitionListItem'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Array_EventDefinitionListItem'
+    servers:
+    - url: https://api.signicat.com/events-management
+components:
+  schemas:
+    NameValidityResult:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: false
+    CountriesResponse:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
+      additionalProperties: false
+    Country:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the country, in English
+        countryCode:
+          type: string
+          description: ISO-3166 alpha-2 country code
+        supportedOrganizationCountry:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this country can be specified as a country in Organization CUD opearations
+      additionalProperties: false
+    EventDefinitionListItem:
+      type: object
+      properties:
+        event:
+          type: string
+          description: Event type
+          example: account-api:account.created
+        description:
+          type: string
+          description: Description of event
+        payloadSchema: {}
+        isAccountEvent:
+          type: boolean
+          description: Whether the event can be subscribed to on accounts
+        isOrganizationEvent:
+          type: boolean
+          description: Whether the event can be subscribed to on organizations
+      additionalProperties: false
+    Array_EventDefinitionListItem:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDefinitionListItem'
+          description: The contents of the current page.
+      additionalProperties: false
+x-refined-from:
+- account-management-openapi.json
+- events-openapi.json
+- signicat-account-management-openapi.yml
+- signicat-events-openapi.yml

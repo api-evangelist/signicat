@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-get-metadata-response-schema.json",
+  "title": "GetMetadataResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-domain-management-openapi.yml#/components/schemas/GetMetadataResponse",
+  "required": [
+    "acmeEabProductAvailable",
+    "mitidDomainProductAvailable",
+    "mtlsSuffix",
+    "suffix",
+    "supportedAcmeProviders"
+  ],
+  "type": "object",
+  "properties": {
+    "suffix": {
+      "type": "string",
+      "description": "The domain suffix to use when creating a non-MTLS custom domain."
+    },
+    "mtlsSuffix": {
+      "type": "string",
+      "description": "The domain suffix to use when creating an MTLS custom domain."
+    },
+    "supportedAcmeProviders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/GetMetadataResponseAcmeEabProvider"
+      },
+      "description": "A list of providers supported for ACME EAB domains."
+    },
+    "acmeEabProductAvailable": {
+      "type": "boolean",
+      "description": "Whether the ACME EAB product is available for this account."
+    },
+    "mitidDomainProductAvailable": {
+      "type": "boolean",
+      "description": "Whether the MitID domain product is available for this account."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "GetMetadataResponseAcmeEabProvider": {
+      "required": [
+        "label",
+        "serverUrl"
+      ],
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Display name for the provider."
+        },
+        "serverUrl": {
+          "type": "string",
+          "description": "The ACME Server URL"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

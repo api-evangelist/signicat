@@ -1,0 +1,13 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat Sign API
+  version: 1.0.0
+extends: ../openapi/_original/signicat-signing-enterprise-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-signing-enterprise-openapi.yml
+actions:
+- target: $.info
+  description: No enhancements needed beyond provenance marker.
+  update:
+    x-apievangelist-reviewed: '2026-10-18'

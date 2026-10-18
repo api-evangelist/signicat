@@ -1,0 +1,376 @@
+openapi: 3.2.0
+info:
+  title: Signicat Files API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Files across 4 of this provider''s published API definitions: secure-share-openapi.json, signing-express-openapi.json, signicat-secure-share-openapi.yml, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/secure-share
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Files
+  description: Contains requests related to files
+paths:
+  /shares/{shareId}/files/{fileId}:
+    delete:
+      tags:
+      - Files
+      summary: Delete file
+      description: Remove a file from the storage
+      operationId: DeleteFileEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: 0c1f0a82-1d41-4c0c-8bd0-bd001022fd77
+      - name: fileId
+        in: path
+        required: true
+        description: Unique File identifier
+        schema:
+          type: string
+          format: guid
+        example: ebbbf528-ff21-4c52-b202-5b877e0c3a27
+      responses:
+        '204':
+          description: File deleted successfully
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: File not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+  /shares/{shareId}/files:
+    post:
+      tags:
+      - Files
+      summary: Upload file
+      description: Upload a file(s) using multipart/form-data request body
+      operationId: UploadFileEndpoint
+      parameters:
+      - name: shareId
+        in: path
+        required: true
+        description: Unique Share identifier
+        schema:
+          type: string
+          format: guid
+        example: fbc60918-ed66-4636-bcc4-515d19b79262
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UploadFileDto'
+              example:
+              - id: 205cbf11-74dd-4028-a66f-21ebfb024e2f
+                name: File1
+                status: Success
+                size: 1234
+                message: null
+              - id: 5ef88825-d19e-4a14-a805-c7941e101dc3
+                name: File2
+                status: VirusFound
+                size: 5023412
+                message: This file contains a malicious script
+              - id: bdea50b9-3c8d-483d-b824-0038eab22ab2
+                name: File3
+                status: Failed
+                size: 5678
+                message: Something went wrong uploading the file
+              - id: ad89697b-47b0-45c6-a057-0f7a8c9fbce8
+                name: File4
+                status: Success
+                size: 69420
+                message: null
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+        '404':
+          description: Share not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: null
+                title: null
+                status: null
+                detail: null
+                instance: null
+    servers:
+    - url: https://api.signicat.com/secure-share
+  /documents/{documentId}/files:
+    get:
+      tags:
+      - Files
+      summary: Retrieve file
+      description: Retrieves the signed document file.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: fileFormat
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/FileFormat'
+      - name: originalFileName
+        in: query
+        description: Set this to true if you want us to name the file with the original filename
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+      operationId: getDocumentsByDocumentIdFiles
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/files/signers/{signerId}:
+    get:
+      tags:
+      - Files
+      summary: Retrieve file for signer
+      description: Retrieves the signed document file for the specified signer.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        description: The signers Id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: fileFormat
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/SignerFileFormat'
+      responses:
+        '200':
+          description: OK
+      operationId: getDocumentsByDocumentIdFilesSignersBySignerId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/files/attachments/{attachmentId}:
+    get:
+      tags:
+      - Files
+      summary: Retrieve attachment file
+      description: Retrieves the attachment file.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachmentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: fileFormat
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/FileFormat'
+      - name: originalFileName
+        in: query
+        description: Set this to true if you want us to name the file with the original filename
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+      operationId: getDocumentsByDocumentIdFilesAttachmentsByAttachmentId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/files/attachments/{attachmentId}/signers/{signerId}:
+    get:
+      tags:
+      - Files
+      summary: Retrieve attachment for signer
+      description: Retrieves the attachment file for the specified signer.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachmentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: signerId
+        in: path
+        description: The signers Id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: fileFormat
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/SignerFileFormat'
+      responses:
+        '200':
+          description: OK
+      operationId: getDocumentsByDocumentIdFilesAttachmentsByAttachmentIdSignersBySignerId
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      additionalProperties: {}
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+    FileStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Pending
+      - UploadedToQuarantine
+      - Scanning
+      - Success
+      - Failed
+      - VirusFound
+      - Skipped
+      enum:
+      - Pending
+      - UploadedToQuarantine
+      - Scanning
+      - Success
+      - Failed
+      - VirusFound
+      - Skipped
+    UploadFileDto:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: guid
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/FileStatus'
+        size:
+          type: integer
+          format: int64
+        message:
+          type:
+          - string
+          - 'null'
+    FileFormat:
+      enum:
+      - unsigned
+      - native
+      - standard_packaging
+      - pades
+      - xades
+      type: string
+    SignerFileFormat:
+      enum:
+      - native
+      - packaged
+      type: string
+  securitySchemes:
+    JWTBearerAuth:
+      type: http
+      description: Enter a JWT token to authorize the requests...
+      scheme: Bearer
+      bearerFormat: JWT
+x-refined-from:
+- secure-share-openapi.json
+- signing-express-openapi.json
+- signicat-secure-share-openapi.yml
+- signicat-signing-express-openapi.yml

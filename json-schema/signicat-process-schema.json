@@ -1,0 +1,2068 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-process-schema.json",
+  "title": "Process",
+  "description": "Assure Process",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-id-document-and-biometric-verification-openapi.yml#/components/schemas/Process",
+  "type": "object",
+  "properties": {
+    "processId": {
+      "type": "string",
+      "description": "<code>processId</code> is obtained from the \"Create process\" response body."
+    },
+    "provider": {
+      "type": "string",
+      "description": "The ID of one of the supported providers.<br>"
+    },
+    "processType": {
+      "type": "string",
+      "description": "The process type created from the provider."
+    },
+    "status": {
+      "type": "string",
+      "description": "The current status of the the identity document verification process. For more information about what each status means, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#status\">Get process</a> page in the integration documentation.",
+      "enum": [
+        "pending",
+        "processing",
+        "accepted",
+        "rejected",
+        "canceled",
+        "failed",
+        "inconclusive"
+      ]
+    },
+    "failReason": {
+      "$ref": "#/$defs/Process_failReason"
+    },
+    "depictions": {
+      "type": "array",
+      "description": "This field displays a list of available image types (\"back\", \"front\", \"selfie\", \"portrait\") representing the files stored in a process during its creation. This tells you which images you can get from a process. By knowing this you can avoid unnecessary calls to the <a href=\"https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getImages\">Get image </a> endpoint, trying to get images that do not exist in the process.\nNotes:\n<ul><li>The field will only exist for processes with a <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#final\">final status</a>.</li><li>If the process is <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/process/#final\">finished</a> and contains no images, the field will contain an empty array. Ex: \"depictions\": [].</li><li>All depictions of images that exist in the process will appear in this list, including images that might have been redacted by request (to which you will get an HTTP 403 UNAUTHORIZED if you try to <a href=\"https://developer.signicat.com/apis/id-document-and-biometric-verification/#tag/Processes/operation/getImages\"retrieve them using >Get Image</a>, as usual)</li></ul>",
+      "enum": [
+        "front",
+        "back",
+        "selfie",
+        "portrait"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "finalResult": {
+      "$ref": "#/$defs/FinalResultDetails",
+      "description": "The element in this area is only present if the verification was <b>accepted</b>.<br>The elements in this node depend on the document/provider/processType that was used in the process creation."
+    },
+    "providerSpecific": {
+      "$ref": "#/$defs/ProviderDetails",
+      "description": "Contains information retrieved by the provider. Inner elements will differ depending on the provider"
+    },
+    "redactionRequested": {
+      "type": "boolean",
+      "description": "This field only applies to the 'signicatpaper' provider. The flag is set to true if the redaction was requested."
+    },
+    "statusReasons": {
+      "type": "array",
+      "description": "<b>Warning</b>: This is a beta feature.<br>This field is only available for <b>signicatpictureid</b> provider.<br>It contains a list of reasons of why a process status had an <b>inconclusive</b> or <b>rejected</b> state.",
+      "items": {
+        "$ref": "#/$defs/StatusReason"
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "The date and time the process was created (ISO-8601 with UTC: YYYY-MM-DDThh:mm:ssZ)."
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "The date and time the process was updated (ISO-8601  with UTC: YYYY-MM-DDThh:mm:ssZ)."
+    }
+  },
+  "$defs": {
+    "BBox": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Coordinate from the '<b>x</b>' axis where the bounding box starts."
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Coordinate from the '<b>y</b>' axis where the bounding box starts."
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Width of the bounding box."
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Height of the bounding box."
+        }
+      }
+    },
+    "DataIntegrity": {
+      "description": "Ensures the data integrity of the document is intact by checking the MRZ control digits.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "DocumentVerification": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Provides the first name in the ID document, including any initials and middle names."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name(s)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The person's gender."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "End-user’s nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "End-user’s date of birth (YYYY-MM-DD)."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Document type."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Document identification number."
+        },
+        "taxNumber": {
+          "type": "string",
+          "description": "Tax number."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Document expiry date (YYYY-MM-DD)."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The issuing country (ISO 3166 Alpha 3) of the document. "
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "The date the document was issued (YYYY-MM-DD)."
+        },
+        "issuingState": {
+          "type": "string",
+          "description": "The issuing state of the document"
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Issuing authority of the document"
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The end-user's place of birth."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        },
+        "mrzLine1": {
+          "type": "string",
+          "description": "Document’s mrz line 1."
+        },
+        "mrzLine2": {
+          "type": "string",
+          "description": "Document’s mrz line 2."
+        },
+        "mrzLine3": {
+          "type": "string",
+          "description": "Document’s mrz line 3."
+        },
+        "subResult": {
+          "type": "string",
+          "description": "This field indicates a more detailed result for document reports. The available values are:<ul><li>`clear`: All underlying verifications have passed. </li><li>`rejected`: The report has returned information that stops any further processing (poor quality image or an unsupported document).</li><li>`suspected`: The analysed document is suspected to be fraudulent.</li><li>`caution`: The report has returned information that needs to be evaluated.</li></ul>"
+        },
+        "ageValidation": {
+          "type": "string",
+          "description": "Asserts whether the age calculated from the date of birth, is greater than or equal to the minimum acceptable age set at the account level. The standard threshold is 16 years old but you can get Signicat Support to change this for you. Available values are `clear` and `consider`."
+        },
+        "policeRecord": {
+          "type": "string",
+          "description": "Asserts whether the document has been identified as lost, stolen or otherwise compromised. The available values are `clear` and `consider`."
+        },
+        "dataConsistency": {
+          "type": "string",
+          "description": "Asserts whether data represented in multiple places in the document is consistent, for example, between MRZ and OCR extracted text on passports. Validated elements are date of expiry, document type, gender, date of birth, nationality, issuing country, document numbers, first name and last name.The available values  are `clear` and `consider`."
+        },
+        "dataValidation": {
+          "type": "string",
+          "description": "Asserts whether algorithmic validated elements are correct. For example, MRZ lines, document expiry date  and document numbers. The available values are `clear` and `consider`."
+        },
+        "imageIntegrity": {
+          "type": "string",
+          "description": "Asserts whether the document was of sufficient quality to verify. The available values are `clear` and `consider`."
+        },
+        "dataComparison": {
+          "type": "string",
+          "description": "Asserts whether the elements provided by the end-user match the information in the document, i.e. first name, last name, gender and date of birth. The available values are `clear` and `consider`."
+        },
+        "faceComparison": {
+          "type": "string",
+          "description": "Asserts whether the face in the document matches the face in the selfie/video.<br>The available values are `clear` and `consider`."
+        },
+        "compromisedDocument": {
+          "type": "string",
+          "description": "Asserts whether the image of the document is found in Onfido's internal database of compromised documents. The available values are `clear` and `consider`."
+        },
+        "result": {
+          "type": "string",
+          "description": "This field indicates the overall result of a report. The available values are:<ul><li>`clear`: All underlying verifications have passed. </li><li>`consider`: The report has returned information that needs to be evaluated.</li><li>`unidentified`: This is returned if the applicant fails an identity check.</li></ul>"
+        },
+        "spouseName": {
+          "type": "string",
+          "description": "The spouse name. (will only appear in the response if the field exists and is extracted by the provider)"
+        },
+        "widowName": {
+          "type": "string",
+          "description": "The widow name. (will only appear in the response if the field exists and is extracted by the provider)"
+        },
+        "aliasName": {
+          "type": "string",
+          "description": "The alias name. (will only appear in the response if the field exists and is extracted by the provider)"
+        },
+        "driversLicense": {
+          "type": "boolean",
+          "description": "True when determined to be a non-restricted driving licence (applicant older than 18 years, and no restricted categories detected in the licence title)"
+        },
+        "restrictedLicence": {
+          "type": "boolean",
+          "description": "True for limited/restricted driving licences, including learner's permits"
+        },
+        "rawLicenceCategory": {
+          "type": "string",
+          "description": "Underlying, non-normalised, licence category (e.g. \"Junior operators license\")"
+        },
+        "rawVehicleClasses": {
+          "type": "string",
+          "description": "Comma-separated vehicle classes that the user is qualified for"
+        },
+        "vehicleClassDetails": {
+          "type": "array",
+          "description": "Detailed classes/categories information",
+          "items": {
+            "$ref": "#/$defs/VehicleClass"
+          }
+        },
+        "manualTransmissionRestriction": {
+          "type": "boolean",
+          "description": "True if the user is not qualified to drive a manual transmission"
+        },
+        "passengerVehicle": {
+          "$ref": "#/$defs/PassengerVehicle",
+          "description": "Normalised data for passenger cars"
+        },
+        "breakdowns": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "Contains detailed information on each verification performed by Onfido over the document. For more info, please refer to <a href=\"https://documentation.onfido.com/guide/document-report/#document-report\">https://documentation.onfido.com/guide/document-report/#document-report</a>."
+        },
+        "visualAuthenticity": {
+          "type": "string",
+          "description": "Asserts whether visual (non-textual) elements are correct given the type of document, for example:<ul><li>Is it a photo of a printed photo or of a digital screen (may be configured to map to caution)?</li><li>Has the document been digitally tampered, e.g. is the name altered? </li><li>Does the pictures of the person in the ID document show signs of tampering or alteration. In most cases, this will focus on the primary picture. It may also apply to the secondary and tertiary pictures when documents contain them.</li><li>Are security features expected in the ID document missing or wrong? </li><li>Does the document match the expected template for the document type and country? </li><li>Do the fonts in the document match the expected ones.? </li></ul>The available values are `clear` and `consider`."
+        }
+      }
+    },
+    "EIDSecurityChecks": {
+      "type": "object",
+      "properties": {
+        "nonExpired": {
+          "$ref": "#/$defs/NonExpired"
+        },
+        "notUnderage": {
+          "$ref": "#/$defs/NotUnderage"
+        },
+        "dataIntegrity": {
+          "$ref": "#/$defs/DataIntegrity"
+        },
+        "liveness": {
+          "$ref": "#/$defs/Liveness"
+        },
+        "sidesMatch": {
+          "$ref": "#/$defs/SidesMatch"
+        },
+        "notBWCopy": {
+          "$ref": "#/$defs/NotBWCopy"
+        },
+        "notFaceSpoofing": {
+          "$ref": "#/$defs/NotFaceSpoofing"
+        },
+        "untamperedDocument": {
+          "$ref": "#/$defs/UntamperedDocument"
+        },
+        "untamperedVideo": {
+          "$ref": "#/$defs/untamperedVideo"
+        },
+        "deviceSecurity": {
+          "$ref": "#/$defs/deviceSecurity"
+        },
+        "reflectiveSurface": {
+          "$ref": "#/$defs/reflectiveSurface"
+        },
+        "documentTilt": {
+          "$ref": "#/$defs/documentTilt"
+        }
+      }
+    },
+    "FaceScanSecurityChecks": {
+      "type": "object",
+      "properties": {
+        "auditTrailVerificationCheckSucceeded": {
+          "type": "boolean",
+          "description": "Checks if the audit trail image comes from the same session as the face scan (true or false)."
+        },
+        "replayCheckSucceeded": {
+          "type": "boolean",
+          "description": "Checks that the face scan does not exist in the database."
+        },
+        "faceScanLivenessCheckSucceeded": {
+          "type": "boolean",
+          "description": "Checks if the liveness check succeeded."
+        },
+        "sessionTokenCheckSucceeded": {
+          "type": "boolean",
+          "description": "Checks if the session token is valid, and not expired."
+        }
+      }
+    },
+    "FacetecLivenessResult": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "boolean",
+          "description": "Indicates whether an error occurred during the liveness verification (true) or not (false)."
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Indicates whether the liveness verification ended successfully (true) or not (false)."
+        },
+        "faceScanSecurityChecks": {
+          "$ref": "#/$defs/FaceScanSecurityChecks",
+          "description": "This object presents the results of the different security checks performed during the liveness scan."
+        }
+      }
+    },
+    "FacetecMatchingAttempt": {
+      "type": "object",
+      "properties": {
+        "matchLevel": {
+          "type": "integer",
+          "format": "int32",
+          "description": "This is the match level between the face in the image and the face in the face map. The available values are (FAR = false acceptance rate):<br><ul><li>8 - 1/1,000,000 FAR</li><li>7 - 1/500,000 FAR</li><li>6 - 1/100,000 FAR</li><li>5 - 1/10,000 FAR</li><li>4 - 1/1,000 FAR</li><li>3 - 1/500 FAR</li><li>2 - 1/250 FAR</li><li>1 - 1/100 FAR</li><li>0 - Non-match</li></ul>The possible values depend on the matching algorithm that was used:<br><ul><li><b>facePortrait</b>: 0 to 8</li><li><b>idPhoto</b>:0 to 7</li><li><b>idPhotoLowQuality</b>: 0 to 5</li></ul>"
+        },
+        "imageProcessing": {
+          "type": "string",
+          "description": "This field describes the quality of the image that was used in the matching.<br>The available values are:<br><ul><li>`faceFound`: The face was found.</li><li>`invalidImage`: The image was not valid.</li><li>`faceDetectionIssue`: There was an issue detecting the face in the image.</li><li>`lowQuality`: The image has insufficient quality.</li></ul>",
+          "enum": [
+            "faceFound",
+            "invalidImage",
+            "faceDetectionIssue",
+            "lowQuality"
+          ]
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Indicates whether the matching was successful (true) or not (false)."
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Indicates whether an error occurred during the matching verification (true) or not (false)."
+        }
+      }
+    },
+    "FacetecMatchingResult": {
+      "type": "object",
+      "properties": {
+        "attempts": {
+          "type": "array",
+          "description": "This is a list of all attempts at matching the face/document image with FaceTec's face map. It will contain minimum 1 attempt and maximum 3. Each attempt uses a different matching algorithm in the following order:<br><ul><li>The first attempt uses the '<b>facePortrait</b>' algorithm.</li><li>The second attempt uses the '<b>idPhoto</b>' algorithm.</li><li>The third attempt uses the '<b>idPhotoLowQuality</b>' algorithm.</li></ul>",
+          "items": {
+            "$ref": "#/$defs/FacetecMatchingAttempt"
+          }
+        },
+        "matchLevel": {
+          "type": "integer",
+          "format": "int32",
+          "description": "This is the match level between the face in the image and the face in the face map. The available values are (FAR = false acceptance rate):<br><ul><li>8 - 1/1,000,000 FAR</li><li>7 - 1/500,000 FAR</li><li>6 - 1/100,000 FAR</li><li>5 - 1/10,000 FAR</li><li>4 - 1/1,000 FAR</li><li>3 - 1/500 FAR</li><li>2 - 1/250 FAR</li><li>1 - 1/100 FAR</li><li>0 - Non-match</li></ul>The possible values depend on the matching algorithm that was used:<br><ul><li><b>facePortrait</b>: 0 to 8</li><li><b>idPhoto</b>:0 to 7</li><li><b>idPhotoLowQuality</b>: 0 to 5</li></ul>"
+        },
+        "imageProcessing": {
+          "type": "string",
+          "description": "This field describes the quality of the image that was used in the matching.<br>The available values are:<br><ul><li>`faceFound`: The face was found.</li><li>`invalidImage`: The image was not valid.</li><li>`faceDetectionIssue`: There was an issue detecting the face in the image.</li><li>`lowQuality`: The image has insufficient quality.</li></ul>",
+          "enum": [
+            "faceFound",
+            "invalidImage",
+            "faceDetectionIssue",
+            "lowQuality"
+          ]
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Indicates whether the matching was successful (true) or not (false)."
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Indicates whether an error occurred during the matching verification (true) or not (false)."
+        }
+      }
+    },
+    "FacialSimilarity": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string",
+          "description": "This field indicates the overall result of a report. Possible values can be: <ul><li>`clear`: All underlying verifications have passed. </li><li>`consider`: The report has returned information that needs to be evaluated</li><li>`unidentified`: This is returned if the applicant fails an identity check.</li></ul>",
+          "enum": [
+            "clear",
+            "consider",
+            "unidentified"
+          ]
+        },
+        "imageIntegrity": {
+          "type": "string",
+          "description": "Asserts whether the quality of the uploaded files and the content within are sufficient to do a face comparison, for example: <ul><li>If the image of the picture is in colour (may be configured to be rejected if not).</li><li>If a single face of good enough quality is found in both the document image and the selfie/video.</li><li> If the selfie/video is not trustworthy, i.e. may have been digitally tampered from a fake webcam or from other dubious sources.</li><li>If the document image has good enough quality to perform a fraud inspection (for example, if parts of the  document are not visible).</li></ul>Possible values are `clear` and `consider`."
+        },
+        "faceComparison": {
+          "type": "string",
+          "description": "Asserts whether the face in the document matches the face in the selfie/video.<br>Possible values are `clear` and `consider`."
+        },
+        "visualAuthenticity": {
+          "type": "string",
+          "description": "Asserts whether the person in the selfie or live video is real (not a spoof) and alive (only done for live videos). <br>Possible values are `clear` and `consider`.\" "
+        },
+        "similarityScore": {
+          "type": "string",
+          "description": "This indicates how similar the two faces are. If the face matching algorithm fails to detect a face, the score property will not be present. The score only measures how similar the faces are, and does not assess the nature of the photo or video. If tampering (such as photos of printed photos or photos of digital screens) is detected, the end-user is rejected regardless of the facial similarity score. Possible values are `high`, `medium`, `low` or `veryLow`. Onfido originally returns a floating point number between 0 and 1 that expresses how similar the two faces are, where 1 is a perfect match. Assure normalizes that value into:<ul><li>`high` if the score is > 0.75.</li><li>`medium` if the score is > 0.5  and <= 0.75.</li><li>`low` if the score is > 0.25  and <= 0.5.</li><li>`veryLow` if the score is <= 0.25.</li></ul>"
+        },
+        "breakdowns": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "Contains detailed information on each verification performed by Onfido regarding the facial similarity. For more info, please refer to <a href=\"https://documentation.onfido.com/guide/facial-similarity-reports/#photo-and-photo-fully-auto\">https://documentation.onfido.com/guide/facial-similarity-reports/#photo-and-photo-fully-auto</a>."
+        }
+      }
+    },
+    "Feature": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the visual feature in the document."
+        },
+        "found": {
+          "type": "boolean",
+          "description": "Indicates if the feature was found in the document or not."
+        },
+        "bbox": {
+          "$ref": "#/$defs/BBox",
+          "description": "Bounding box position where the feature was found. In case the feature is not found, the bounding box will not appear."
+        },
+        "side": {
+          "type": "string",
+          "description": "Side of the document where the feature is located."
+        }
+      }
+    },
+    "FinalResultDetails": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "The end-user’s given name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The end-user’s surname."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The document’s date of expiry (YYYY-MM-DD)."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The end-user’s date of birth (YYYY-MM-DD)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end-user’s gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The end-user’s nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "The document’s type.",
+          "enum": [
+            "driversLicense",
+            "passport",
+            "identityCard",
+            "residencePermit",
+            "workPermit",
+            "voterId",
+            "postalIdCard",
+            "professionalQualificationCard",
+            "professionalPermit",
+            "socialSecurity",
+            "panCard",
+            "passportCard",
+            "stateId",
+            "visa",
+            "asylumRegistrationCard",
+            "nationalHealthInsuranceCard",
+            "aadharCard",
+            "immigrationStatusDocument",
+            "indigenousCard",
+            "municipalityIdentityCard",
+            "privateOperatorsCard",
+            "certificateOfSponsorship",
+            "serviceIdCard",
+            "taxId"
+          ]
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "The document’s number."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The document’s issuing country (ISO 3166 Alpha 3)."
+        },
+        "similarityScore": {
+          "type": "string",
+          "description": "The similarity score between the end-user's face and the photo in the ID. The value indicates the probability of the person in the selfie being the same as the person in the document image. Possible values are: <ul><li>`veryLow`: Very unlikely the same person.</li><li>`low`: Probably not the same person.</li><li>`medium`: Probably the same person.</li><li>`high`: Very likely the same person.</li></ul>To know more about what this score means for each provider, see the `providerSpecific` fields for each provider"
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal identification number used by the governments of many countries as a means of tracking their citizens."
+        },
+        "livenessDetected": {
+          "type": "boolean",
+          "description": "Was liveness detected during the process."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The end-user's place of birth."
+        },
+        "lastNameSecondLine": {
+          "type": "string",
+          "description": "Displays an additional surname (e.g. spouse name) in the second line."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "The document’s issuing date (YYYY-MM-DD)."
+        }
+      }
+    },
+    "Liveness": {
+      "description": "Ensures there is a living person in front of the camera through a facial expression (smile).",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "ManualApproval": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "string",
+          "description": "How long the manual approval process took (number of seconds)."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name(s)."
+        },
+        "alternativeFirstName": {
+          "type": "string",
+          "description": "Alternative first name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name(s)."
+        },
+        "alternativeLastName": {
+          "type": "string",
+          "description": "Alternative last name(s)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Document expiry date (YYYY-MM-DD)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Document number."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country (ISO 3166 Alpha 3) that issued the document."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD)."
+        },
+        "birthPlace": {
+          "type": "string",
+          "description": "Place of birth."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Issuing Authority."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The end-user's national identity number."
+        },
+        "rejectionReasons": {
+          "type": "array",
+          "description": "This field only appears when the status of the process is 'rejected'. Contains the reasons given by the agent to have rejected the identification.<br>The available values are:<pre>{\n  \"type\" : \"Environment.CaptchaNotRead\",\n  \"message\" : \"It is not evident that the person has read the captcha **captcha** in the video\",\n},\n{\n  \"type\" : \"Environment.NotAppropriate\",\n  \"message\" : \"There is no evidence of a living person, recognizable in a well-lit environment\",\n},\n{\n  \"type\" : \"Document.Aspect\",\n  \"message\" : \"There is no evidence of a legal identity document\",\n},\n{\n  \"type\" : \"Document.NotSecurityElements\",\n  \"message\" : \"Document security features are not identified\",\n},\n{\n  \"type\" : \"Document.NotLegible\",\n  \"message\" : \"Document data is not legible\",\n},\n{\n  \"type\" : \"Document.DoesNotMatchData\",\n  \"message\" : \"The front side of the document does not match with the back side\",\n},\n{\n  \"type\" : \"Photo.Invalid\",\n  \"message\" : \"The characteristics of the photo are not identified with those determined in the protocol\",\n},\n{\n  \"type\" : \"Photo.DoesNotMatchPerson\",\n  \"message\" : \"The person in the video does not match with the photo in the document\",\n},\n{\n  \"type\" : \"Custom.Question\",\n  \"message\" : \"Custom question to be filled out by the agent\",\n},\n{\n  \"type\" : \"Document.Expired\",\n\t\"message\" : \"Expired Document\",\n},\n{\n  \"type\" : \"Person.Underage\",\n  \"message\" : \"The person is a minor\",\n}\n</pre>",
+          "items": {
+            "$ref": "#/$defs/Reason"
+          }
+        },
+        "videoId": {
+          "type": "string",
+          "description": "The id of the video that was sent for the agent to verify (same as \"externalId\")"
+        },
+        "verificationId": {
+          "type": "string",
+          "description": "Unique id of the agent verification."
+        },
+        "verifierId": {
+          "type": "string",
+          "description": "The id of the agent who did the verification."
+        },
+        "verificationDate": {
+          "type": "string",
+          "description": "The date/time at which the agent finished the verification."
+        },
+        "rauthorityId": {
+          "type": "string"
+        },
+        "rAuthorityId": {
+          "type": "string",
+          "description": "The ID of the Registration Authority Application."
+        }
+      }
+    },
+    "NonExpired": {
+      "description": "Ensures the document isn't expired.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "NotBWCopy": {
+      "description": "Ensures the document is not a black and white copy.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "NotFaceSpoofing": {
+      "description": "Ensures that the person does not try to show a photo instead of their face.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "NotUnderage": {
+      "description": "Ensures the person in the document is not a minor.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "Ocr": {
+      "type": "object",
+      "properties": {
+        "lastName": {
+          "type": "string",
+          "description": "Last name(s)."
+        },
+        "alternativeLastName": {
+          "type": "string",
+          "description": "Alternative last name(s)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Document expiry date (YYYY-MM-DD)."
+        },
+        "healthNumber": {
+          "type": "string",
+          "description": "Health number."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Type of document that was provided (e.g. a passport)."
+        },
+        "idType": {
+          "type": "string",
+          "description": "ID type"
+        },
+        "socialSecurityNumber": {
+          "type": "string",
+          "description": "Social security number."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Document number."
+        },
+        "taxNumber": {
+          "type": "string",
+          "description": "Tax number."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The end-user's national identity number."
+        },
+        "livenessDetected": {
+          "type": "string",
+          "description": "Ensures there is a living person in front of the camera through a facial expression (smile)."
+        },
+        "predictedAge": {
+          "type": "string",
+          "description": "The predicted age"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD)."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "Date of issue (YYYY-MM-DD)."
+        },
+        "birthPlace": {
+          "type": "string",
+          "description": "Place of birth."
+        },
+        "similarityScore": {
+          "type": "string",
+          "description": "This is the biometric match level between the face of the person holding the document and the picture on it. Possible values are `high` (very likely the same person), `medium` (probably the same person), `low`(probably not) and `veryLow` (very unlikely). Default settings require `medium` as a minimum similarity level for the person to be able to complete the video identification. Other users will not be able to finish the process. If you want to change the default settings, please contact <support@signicat.com>."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name(s)."
+        },
+        "alternativeFirstName": {
+          "type": "string",
+          "description": "Alternative first name(s)."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country (ISO 3166 Alpha 3) that issued the document."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Issuing Authority."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address."
+        },
+        "securityChecks": {
+          "$ref": "#/$defs/EIDSecurityChecks",
+          "description": "Series of checks that are made on certain characteristics of the document to ensure its integrity and legality."
+        },
+        "features": {
+          "type": "array",
+          "description": "List of visual features extracted from the document.<br>Features mean the visual elements used in the ID document, like for example header1, header2, texts, bounding boxes, photo etc.<br>The list of features can vary from document to document, meaning that a feature (e.g. '<i>Header 1</i>') may exist in one document but not in another document. This list will contain each feature's name, an indication on whether the feature was found or not and information about its position in the document.",
+          "items": {
+            "$ref": "#/$defs/Feature"
+          }
+        }
+      }
+    },
+    "PaperFeatures": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "The person's first name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The person's last name(s)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The date until which the document is valid (YYYY-MM-DD)."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "The name of the authority that issued the document."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "The document's number."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The person's date of birth (YYYY-MM-DD)."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "The date the document was issued (YYYY-MM-DD)."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The person's place of birth."
+        },
+        "lastNameSecondLine": {
+          "type": "string",
+          "description": "Displays an additional surname (e.g. spouse name) in the second line."
+        },
+        "qrcode.personal_number": {
+          "type": "string",
+          "description": "This is the personal identification number that is present in a QR code in the document. This field is available only for some documents, for example, the Dutch passport from 2021 which has a QR code on the back page."
+        }
+      }
+    },
+    "PaperFeaturesVerification": {
+      "type": "object",
+      "properties": {
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Feature verification result for the date of expiry."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Feature verification result for the last name."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Feature verification result for the issuing authority."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Feature verification result for the first name."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Feature verification result for the document number."
+        },
+        "drivingPermits": {
+          "type": "string",
+          "description": "Feature verification result for the driving permits."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Feature verification result for the date of birth."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "Feature verification result for the personal identification number."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "Feature verification result for the date of issue."
+        }
+      }
+    },
+    "PaperMRZ": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "The person's first name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The person's last name(s)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The date until which the document is valid (YYYY-MM-DD)."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The person's nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "documentType": {
+          "type": "string",
+          "description": "The type of document, e.g. passport, identityCard, driversLicence."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country (ISO 3166 Alpha 3) that issued the document."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "The document's number."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The person's date of birth (YYYY-MM-DD)."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        }
+      }
+    },
+    "PaperMrzCheckSum": {
+      "type": "object",
+      "properties": {
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Evaluation performed on date of expiry (YYYY-MM-DD)."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Evaluation performed on document number."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Evaluation performed on date of birth (YYYY-MM-DD)."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "Evaluation performed on personal number."
+        }
+      }
+    },
+    "PaperMrzFeatureMatching": {
+      "type": "object",
+      "properties": {
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Mrz feature matching result for the date of expiry"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Mrz feature matching result for the last name."
+        },
+        "lastNameSecondLine": {
+          "type": "string",
+          "description": "Displays an additional surname (e.g. spouse name) in the second line."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Mrz feature matching result for the issuing authority"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Mrz feature matching result for the first name."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Mrz feature matching result for the document number."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Mrz feature matching result for the date of birth."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The person's place of birth."
+        },
+        "driving_permits": {
+          "type": "string",
+          "description": "Mrz feature matching result for the driving permits."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "Mrz feature matching result for the personal ID number in the document."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "Mrz feature matching result for the date of issue."
+        }
+      }
+    },
+    "PaperMrzVerification": {
+      "type": "object",
+      "properties": {
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The expiry date of the document (YYYY-MM-DD). `VALID` if the date is in the future, `INVALID` otherwise."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "The type of document (e.g. passport, identity card, driver's license).`VALID` if the type of document is valid, `INVALID` otherwise."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The person's date of birth (YYYY-MM-DD). `VALID` if the date is in the past, `INVALID` otherwise."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country that issued the document. `VALID` if the value is an ISO 3166-1 alpha-3 country code, `INVALID` otherwise."
+        }
+      }
+    },
+    "PaperRedactionResult": {
+      "type": "object",
+      "properties": {
+        "isPartialRedaction": {
+          "type": "boolean",
+          "description": "Possible values are `true`or `false`. <code>true</code>: At least one of the fields that were requested to be redacted were found (thus, were redacted). Check the value of `fullRedaction` to see if they all were redacted or not. <code>false</code>: None of the fields requested to be redacted were found (thus no field could be redacted)."
+        },
+        "isFullRedaction": {
+          "type": "boolean",
+          "description": "Possible values are `true`or `false`. <code>true</code>: All fields that were requested to be redacted were found (thus, were successfully redacted). <code>false</code>: At least one of the fields that were requested to be redacted was not found (thus could not be redacted)."
+        }
+      }
+    },
+    "PaperVerification": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of verification. Possible values are:<ul><li>MRZ_FEATURE_COMPARISON: Retrieved the information from both the `mrz` and the text fields (features) from the document and will analyse and match their values.</li><li>MRZ_ONLY: Retrieved and analysed only the information from the `mrz` area (used with “passport” documents only).</li><li>FEATURES_ONLY: Retrieved and analysed only the information from the text fields (used with documents that do not have `mrz` and only have text fields).</li></ul>"
+        },
+        "status": {
+          "type": "boolean",
+          "description": "The status of the verification. if \"true\", the verification was successful, if \"false\" at least one error was found."
+        }
+      }
+    },
+    "PassengerVehicle": {
+      "type": "object",
+      "properties": {
+        "permissionToDrive": {
+          "type": "string",
+          "description": "Whether they are qualified for a passenger car, such as a “B” class in the UK"
+        },
+        "obtainmentDate": {
+          "type": "string",
+          "description": "Date the class qualification was obtained"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Date the class qualification expires, which may be different to doc expiry"
+        }
+      }
+    },
+    "Process_failReason": {
+      "description": "<b>Warning</b>: This is currently a beta feature that might change in future versions.\n\nThis field is only presented when the process status is `failed`. It contains information about why the process failed. Reasons for failure could be time-out, server errors, expired tokens, validation errors, blocked camera/microphone etc.The reasons vary from provider to provider."
+    },
+    "ProviderDetails": {
+      "type": "object",
+      "properties": {
+        "documentVerification": {
+          "$ref": "#/$defs/DocumentVerification",
+          "description": "This field only applies to the 'onfido' provider.<br>It contains information from Onfido's document verification."
+        },
+        "facialSimilarity": {
+          "$ref": "#/$defs/FacialSimilarity",
+          "description": "This field only applies to the 'onfido' provider.<br>Contains information from Onfido's facial similarity verification."
+        },
+        "identResponse": {
+          "$ref": "#/$defs/WebIDIdentResponse",
+          "description": "WebID user identification response"
+        },
+        "verification": {
+          "$ref": "#/$defs/PaperVerification",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains information about the type of verification that was done by Signicat Paper. Either it verified both the `mrz` area and the textual fields of the document or it was able to only check one of those."
+        },
+        "features": {
+          "$ref": "#/$defs/PaperFeatures",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains values extracted from the textual fields in the document."
+        },
+        "mrz": {
+          "$ref": "#/$defs/PaperMRZ",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains the information that was retrieved from MRZ area in the document."
+        },
+        "mrzChecksum": {
+          "$ref": "#/$defs/PaperMrzCheckSum",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains information about checksum evaluations performed over the checkdigits in the `mrz`. Possible values are:<ul><li>VALID: The checksum evaluation is valid;</li><li>INVALID: The checksum evaluation is not valid.</li></ul>"
+        },
+        "mrzVerification": {
+          "$ref": "#/$defs/PaperMrzVerification",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains information about the validity of some of the `mrz` fields in the document. Possible values are:<ul><li>VALID: The value is a valid date.</li><li>PARSED: The value is not a valid date.</li><li>FOUND: The value was found but it cannot be parsed as a date (meaning it will also not be a valid date).</li><li>MISSING: The value was not found.</li></ul>"
+        },
+        "mrzFeatureMatching": {
+          "$ref": "#/$defs/PaperMrzFeatureMatching",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It provides matching results from comparing the values with the `features` field with the corresponding values in the `mrz` feature fields (for example `lastName`, `firstName`, `dateOfBirth` etc.). Possible values are:<ul><li>FULL_MATCH: Used for both date and text fields. The value in the feature field matches completely the value in `mrz`.</li><li>LEVENSHTEIN1, LEVENSHTEIN2, LEVENSHTEIN3, LEVENSHTEIN4: Used for both date and text fields. The value in the feature field differs from the value in `mrz` from 1 to 4 characters. </li><li>VALID: The difference is greater than LEVENSHTEIN4 but the value in the feature field is still a valid date.</li><li>PARSED: Used for date fields only. The difference is greater than LEVENSHTEIN4 but the value in the field is not a valid date.</li><li>FOUND: For text fields, the value was found in the field but it differs more than 5 degrees from the value in `mrz`. For date fields, the value was found in the field but it cannot be parsed as a date (meaning it will also not be a valid date). </li><li>MISSING: The value was not found in any field.</li></ul>"
+        },
+        "featuresVerification": {
+          "$ref": "#/$defs/PaperFeaturesVerification",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>This is only presented when the document has no MRZ (ex: Danish health card))<br>Provides information if the field was found or not in the document. "
+        },
+        "redactionResult": {
+          "$ref": "#/$defs/PaperRedactionResult",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>It contains the redaction result when redaction is requested for one or more fields in an identity document. The redaction result will contain \"partial\" and \"full\" boolean values. <br><br><b>Notes about redaction:</b><ul><li>This information only exists if `redact` is sent in the request body. </li><li>The redaction results do not have any impact on the process' final status. The process status indicates the success of the verification and redaction is a parallel feature.</li> </ul> For more details, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/services/redaction/\">Redaction</a> section in the integration documentation."
+        },
+        "errors": {
+          "type": "array",
+          "description": "This field only applies to the 'signicatpaper' provider.<br>List of errors found by SignicatPaper during the verification.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ocr": {
+          "$ref": "#/$defs/Ocr",
+          "description": "This field only applies to the 'eid' provider.<br>It contains information obtained from Signicat VideoID's OCR analysis of the document during the video identification."
+        },
+        "manualApproval": {
+          "$ref": "#/$defs/ManualApproval",
+          "description": "This field only applies when the provider is 'signicatvideoid' and `processType` is `high`.<br>It contains the data that was extracted by ElectronicID during the video identification and after it was manually reviewed by an agent. The sub-fields are similar to the ones you find in `ocr` but may have been improved."
+        },
+        "consolidatedIdentityData": {
+          "$ref": "#/$defs/ReadIDConsolidatedIdentityData",
+          "description": "This field only applies to the 'readid' provider. <br>It contains information from the Read ID consolidated data."
+        },
+        "documentContent": {
+          "$ref": "#/$defs/ReadIDDocumentContent",
+          "description": "This field only applies to the 'readid' provider. <br>It contains some more information present in the identity document."
+        },
+        "iproovSession": {
+          "$ref": "#/$defs/ReadIDIproovSession",
+          "description": "This field only applies to the 'readid' provider. <br>It contains information from the iProov liveness session."
+        },
+        "liveness": {
+          "$ref": "#/$defs/FacetecLivenessResult",
+          "description": "This field only applies to the 'facetec' provider.<br>This object contains information from FaceTec's liveness verification."
+        },
+        "matching": {
+          "$ref": "#/$defs/FacetecMatchingResult",
+          "description": "This field only applies to the 'facetec' provider.<br>This object contains information from FaceTec's matching verification."
+        },
+        "document": {
+          "$ref": "#/$defs/SignicatPictureIdDocumentDto",
+          "description": "This field only applies to the 'signicatpictureid' provider.<br>It contains information from Signicat Picture ID document verification."
+        },
+        "selfie": {
+          "$ref": "#/$defs/SignicatPictureIdSelfie",
+          "description": "This field only applies to the 'signicatpictureid' provider.<br>Contains information from Signicat Picture ID facial similarity verification."
+        }
+      }
+    },
+    "ReadIDConsolidatedIdentityData": {
+      "type": "object",
+      "properties": {
+        "chipVerification": {
+          "type": "string",
+          "description": "This is the chip verification status. It verifies that the contents in the chip is authentic. Values can be either `SUCCEEDED` or `FAILED`. Assure API uses the value from this field in combination with ChipCloneDetection to map the final status of the process. For more details about the final status mapping, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/provider-specific-integrations/readid/#readid-results\">ReadID results </a> section in the general documentation. "
+        },
+        "chipCloneDetection": {
+          "type": "string",
+          "description": "This is the chip clone detection status. It verifies if the actual chip is used (and not a clone). Values can be either `SUCCEEDED`, `FAILED` or `NOT_AVAILABLE`. Assure API uses the value from this field in combination with ChipVerification to map the final status  of the process. For more details about the final status mapping, see the <a href=\"https://developer.signicat.com/docs/id-document-and-biometric-verification/provider-specific-integrations/readid/#readid-results\">ReadID results </a> section in the general documentation. "
+        },
+        "documentType": {
+          "type": "string",
+          "description": "The document type (e.g. passport, identityCard, driversLicence)."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Surname(s)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD)."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "The document number."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The document expiry date (YYYY-MM-DD)."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The document issuing country (ISO 3166 Alpha 3)."
+        },
+        "documentCode": {
+          "type": "string",
+          "description": "Document code indicating the document type. ‘P’ for a passport, ‘I’ for an Identity Document, ´D´ for a driver's license."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        }
+      }
+    },
+    "ReadIDDocumentContent": {
+      "type": "object",
+      "properties": {
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "The document expiry date (YYYY-MM-DD)."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "The date the document was issued (YYYY-MM-DD)."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "The document number."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "The name of the authority that issued the document."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country (ISO 3166 Alpha 3) that issued the document."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The person's first name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The person's last name(s)."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "mrzFirstName": {
+          "type": "string",
+          "description": "The person's first name(s), in the MRZ"
+        },
+        "mrzLastName": {
+          "type": "string",
+          "description": "The person's last name(s), in the MRZ."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The person's nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The person's place of birth."
+        },
+        "profession": {
+          "type": "string",
+          "description": "The person's profession."
+        },
+        "telephone": {
+          "type": "string",
+          "description": "The person's telephone number."
+        },
+        "title": {
+          "type": "string",
+          "description": "The person's job title."
+        }
+      }
+    },
+    "ReadIDIproovSession": {
+      "type": "object",
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of times the user tried to run the iProov session."
+        },
+        "enrollmentImageSource": {
+          "type": "string",
+          "description": "The source of the image used to perform matching in the iProov session."
+        },
+        "errorString": {
+          "type": "string",
+          "description": "The error description when the iProov session fails."
+        },
+        "finished": {
+          "type": "boolean",
+          "description": "Indicates if the iProov session was finished."
+        },
+        "hasError": {
+          "type": "boolean",
+          "description": "Indicates if the iProov session had an error."
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "Indicates if the iProov session was successful."
+        },
+        "enrollmentRiskProfile": {
+          "type": "string",
+          "description": "The risk profile that was returned on the enrollment response."
+        },
+        "riskProfile": {
+          "type": "string",
+          "description": "The risk profile that was used for the enrollment."
+        },
+        "iproovAssuranceType": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "getiProovAssuranceType": {
+          "type": "string",
+          "description": "The assurance type used for this iProov session. Allowed types for the account are established by contract with iProov.  Default type, if allowed, is GENUINE_PRESENCE."
+        }
+      }
+    },
+    "Reason": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Reject Type.",
+          "enum": [
+            "Environment.NotAppropriate",
+            "Document.Aspect",
+            "Document.NotSecurityElements",
+            "Photo.Invalid",
+            "Document.NotLegible",
+            "Document.DoesNotMatchData",
+            "Photo.DoesNotMatchPerson",
+            "Custom.Question"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Reject Message"
+        }
+      }
+    },
+    "SelfieAndDocumentMatch": {
+      "description": "Ensures the selfie matches the document.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "SidesMatch": {
+      "description": "Ensures that both sides (of the document presented) belong to the same document.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "SignicatPictureIdDocumentDto": {
+      "type": "object",
+      "properties": {
+        "issuingCountry": {
+          "type": "string",
+          "description": "The issuing country (ISO 3166 Alpha 3) of the document. "
+        },
+        "issuingPlace": {
+          "type": "string",
+          "description": "Issuing Authority."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "The date the document was issued (YYYY-MM-DD)."
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "Document expiry date (YYYY-MM-DD)."
+        },
+        "nonExpiring": {
+          "type": "boolean",
+          "description": "TODO"
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Document identification number."
+        },
+        "subject": {
+          "$ref": "#/$defs/SignicatPictureIdSubjectDto",
+          "description": "The end-user's details."
+        },
+        "securityChecks": {
+          "$ref": "#/$defs/SignicatPictureIdSecurityChecks",
+          "description": "Series of checks that are made on certain characteristics of the document to ensure its integrity and legality."
+        }
+      }
+    },
+    "SignicatPictureIdElement": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        }
+      }
+    },
+    "SignicatPictureIdSecurityChecks": {
+      "type": "object",
+      "properties": {
+        "notTamperedDocument": {
+          "$ref": "#/$defs/UntamperedDocument"
+        },
+        "nonExpired": {
+          "$ref": "#/$defs/NonExpired"
+        },
+        "notUnderage": {
+          "$ref": "#/$defs/NotUnderage"
+        },
+        "notBlackAndWhite": {
+          "$ref": "#/$defs/NotBWCopy"
+        },
+        "dataIntegrity": {
+          "$ref": "#/$defs/DataIntegrity"
+        },
+        "selfieAndDocumentMatch": {
+          "$ref": "#/$defs/SelfieAndDocumentMatch"
+        },
+        "sidesMatch": {
+          "$ref": "#/$defs/SidesMatch"
+        },
+        "notFaceSpoofing": {
+          "$ref": "#/$defs/NotFaceSpoofing"
+        }
+      }
+    },
+    "SignicatPictureIdSelfie": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "TODO",
+          "enum": [
+            "UNDEFINED",
+            "SUCCESS",
+            "NO_FACE_DETECTED",
+            "MULTIPLE_FACES_DETECTED"
+          ]
+        },
+        "x": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TODO"
+        }
+      }
+    },
+    "SignicatPictureIdSubjectDto": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "The end-user's first name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The end-user's last name(s)."
+        },
+        "commonName": {
+          "type": "string",
+          "description": "TODO"
+        },
+        "alternativePrimaryName": {
+          "type": "string",
+          "description": "TODO"
+        },
+        "alternativeSecondaryName": {
+          "type": "string",
+          "description": "TODO"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "End-user’s date of birth (YYYY-MM-DD)."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The end-user's place of birth."
+        },
+        "address": {
+          "type": "string",
+          "description": "The end-user's address."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end-user's gender."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "personalIdentificationNumber": {
+          "type": "string",
+          "description": "The personal ID number in the document."
+        },
+        "photo": {
+          "$ref": "#/$defs/SignicatPictureIdElement",
+          "description": "TODO"
+        },
+        "signature": {
+          "$ref": "#/$defs/SignicatPictureIdElement",
+          "description": "TODO"
+        }
+      }
+    },
+    "StatusReason": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The status reason type."
+        },
+        "category": {
+          "type": "string",
+          "description": "The status reason category."
+        },
+        "subCategory": {
+          "type": "string",
+          "description": "(optional) The status reason sub-category."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message describing the status reason."
+        }
+      }
+    },
+    "UntamperedDocument": {
+      "description": "Ensures the document is not tampered.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "VehicleClass": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Vehicle class/category"
+        },
+        "codes": {
+          "type": "string",
+          "description": "Special conditions driver must meet"
+        },
+        "obtainmentDate": {
+          "type": "string",
+          "description": "Category obtainment date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Category expiry date"
+        }
+      }
+    },
+    "WebIDAddressResponse": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string",
+          "description": "Available only if addressLine1 and addressLine2 are empty."
+        },
+        "streetNo": {
+          "type": "string",
+          "description": "Available only if addressLine1 and addressLine2 are empty."
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "For example, street number and street, or post box or rural route. Available only if street and streetNumber are empty."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Available only if street and streetNumber are empty."
+        },
+        "region": {
+          "type": "string",
+          "description": "For example, state, district, province or any local region."
+        },
+        "zip": {
+          "type": "string",
+          "description": "Zip code."
+        },
+        "city": {
+          "type": "string",
+          "description": "City."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country name component (ISO-3166 Alpha 3)."
+        }
+      }
+    },
+    "WebIDBankAccount": {
+      "type": "object",
+      "properties": {
+        "iban": {
+          "type": "string",
+          "description": "The international bank account number (IBAN) of the bank account that was used."
+        }
+      }
+    },
+    "WebIDContact": {
+      "type": "object",
+      "description": "WebID contact",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The end-user's email address."
+        },
+        "cell": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "mobile": {
+          "type": "string",
+          "description": "The end-user's mobile phone number. Required for `accountid` processes only (not `videoid`)."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The end-user's home phone number"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "WebIDCustomParameters": {
+      "type": "object",
+      "description": "WebID Custom Parameters",
+      "properties": {
+        "signicatEnvironmentPrefix": {
+          "type": "string"
+        },
+        "signicatEnvironmentSuffix": {
+          "type": "string"
+        }
+      }
+    },
+    "WebIDIdDocumentResponse": {
+      "type": "object",
+      "description": "Data about the physical ID document. ",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "description": "ID document's expiry date (YYYY-MM-DD)."
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "description": "Date when the ID document was issued. No time zone. Might be empty."
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Type (or name) of the ID document, for example, passport. Only specified values are supported. Other values will be ignored."
+        },
+        "idNumber": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "mrz": {
+          "type": "string",
+          "description": "Value of the \"Machine Readable Zone\" in the ID document. Cannot include line breaks or special characters for multi-line variants. Might be empty."
+        },
+        "nameAtBirth": {
+          "type": "string",
+          "description": "Maiden name as specified in the ID document."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The end-user's nationality (country code in ISO 3166 Alpha 3 format)."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The end-user's birth place."
+        },
+        "issuingCountry": {
+          "type": "string",
+          "description": "The country (ISO 3166 Alpha 3) that issued the document."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Name of the authority that issued the ID document. Might be empty."
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Document number."
+        }
+      }
+    },
+    "WebIDIdentResponse": {
+      "type": "object",
+      "properties": {
+        "actionId": {
+          "type": "string",
+          "description": "A 9-digit unique identifier of a user-action."
+        },
+        "transactionId": {
+          "type": "string",
+          "description": "Identifier provided by integration partner, e.g. an account number. Included in all further communication."
+        },
+        "actionType": {
+          "type": "string",
+          "description": "Type of WebID action. QES process types return `sig`; other process types return `pass`.",
+          "enum": [
+            "pass",
+            "sig"
+          ]
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Flag to determine if the user-action was finished successfully."
+        },
+        "mismatch": {
+          "type": "boolean",
+          "description": "Whether the user data confirmed during identification differs from the data initially provided. This flag does not determine the Assure process status; status is based on `success`."
+        },
+        "customParameters": {
+          "$ref": "#/$defs/WebIDCustomParameters",
+          "writeOnly": true
+        },
+        "responseType": {
+          "type": "string",
+          "description": "Type of response."
+        },
+        "finishedOn": {
+          "type": "string",
+          "description": "When the success / no-success state was reached."
+        },
+        "identMode": {
+          "type": "string",
+          "description": "Identification mode. `pay_ident` is the AccountID flow and `video_ident` is the VideoID flow. An AccountID process that falls back to VideoID also returns `video_ident`.",
+          "enum": [
+            "pay_ident",
+            "video_ident"
+          ]
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Callcenter agent identifier."
+        },
+        "identifiedOn": {
+          "type": "string",
+          "description": "Actual date/time when identification was completed. This may be earlier than finished-on, if this user-action references a former successful user-action (eCheck). May be null, if identification failed."
+        },
+        "idDocument": {
+          "$ref": "#/$defs/WebIDIdDocumentResponse"
+        },
+        "rejectionReason": {
+          "type": "string",
+          "description": "Optional reason value for unsuccessful identifications."
+        },
+        "user": {
+          "$ref": "#/$defs/WebIDUserResponse",
+          "description": "End-user personal details"
+        },
+        "productInfos": {
+          "$ref": "#/$defs/WebIDProductInfos",
+          "description": "Optional product related information."
+        }
+      }
+    },
+    "WebIDProductInfos": {
+      "type": "object",
+      "properties": {
+        "bankAccount": {
+          "$ref": "#/$defs/WebIDBankAccount",
+          "description": "Additional information about bank account. Only available for bank account related identification."
+        }
+      }
+    },
+    "WebIDUserResponse": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Academic title of user. Will be synchronised with the corresponding field in the ID document."
+        },
+        "sex": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "firstname": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "lastname": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The end-user's date of birth (YYYY-MM-DD)."
+        },
+        "address": {
+          "$ref": "#/$defs/WebIDAddressResponse",
+          "description": "Residence or postal address, according to the ID document. Either street or addressLine1 is required. Street and streetNumber may be used to infer the required part of the address. For international addresses, addressLine1 and addressLine2 may be used to infer the required part of the address."
+        },
+        "contact": {
+          "$ref": "#/$defs/WebIDContact"
+        },
+        "gender": {
+          "type": "string",
+          "description": "The end user's gender.",
+          "enum": [
+            "M",
+            "F"
+          ]
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The end-user's given name(s)."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The end-user's surname(s)."
+        }
+      }
+    },
+    "deviceSecurity": {
+      "description": "Ensures the device is secure.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "documentTilt": {
+      "description": "When enable, it asks the user to tilt the document. ",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "reflectiveSurface": {
+      "description": "When enabled, it activates the flash to detect the reflectiveness of the document.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    },
+    "untamperedVideo": {
+      "description": "Ensures the video is not tampered.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "writeOnly": true
+        },
+        "passed": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "valid": {
+          "type": "boolean",
+          "description": "Returns information on the multiple security checks that were performed."
+        }
+      }
+    }
+  }
+}

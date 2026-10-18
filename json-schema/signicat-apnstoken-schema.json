@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-apnstoken-schema.json",
+  "title": "APNSToken",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-admin-openapi.yml#/components/schemas/APNSToken",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The UUID for the APNs token"
+    },
+    "description": {
+      "type": "string",
+      "description": "The description of the APNs token"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the APNs token"
+    },
+    "created": {
+      "type": "string",
+      "description": "The date on which the APNs token was created"
+    },
+    "sha1Fingerprint": {
+      "type": "string",
+      "description": "The SHA1 hash of the APNs token"
+    },
+    "sha256Fingerprint": {
+      "type": "string",
+      "description": "The SHA256 hash of the APNs token"
+    },
+    "keyId": {
+      "type": "string",
+      "description": "Key ID of the APNs token"
+    },
+    "teamId": {
+      "type": "string",
+      "description": "Team ID of Apple Developer Account"
+    }
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-device-authentication-schema.json",
+  "title": "DeviceAuthentication",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-reuseid-openapi.yml#/components/schemas/DeviceAuthentication",
+  "type": "object",
+  "properties": {
+    "operationProperties": {
+      "$ref": "#/$defs/AuthenticationOperationProperties",
+      "description": "An object that contains the configured properties of the operation, which determined how it was carried out."
+    },
+    "accountId": {
+      "type": "string",
+      "description": "The ID of the account that carried out the operation."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "The ID of the transaction."
+    },
+    "state": {
+      "type": "string",
+      "description": "The state of the operation.\n\n**Possible values**: See the [Operation states](/apis/reuseid/#section/Common-concepts/Operation-states) table.\n"
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "The error code that is given if the operation fails.\n\n**Possible values**: See the [Operation error codes](/apis/reuseid/#section/Common-concepts/Operation-error-codes) table.\n"
+    },
+    "errorDescription": {
+      "type": "string",
+      "description": "The descriptive error message that is given if the operation fails."
+    },
+    "created": {
+      "type": "string",
+      "description": "The timestamp when the initial response was created.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "completed": {
+      "type": "string",
+      "description": "The timestamp when the operation was completed.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "device": {
+      "$ref": "#/$defs/SimpleDevice",
+      "description": "An object that contains information about the ReuseID user's device for the operation."
+    },
+    "user": {
+      "$ref": "#/$defs/SimpleUser",
+      "description": "An object that contains information about the ReuseID user for the operation."
+    },
+    "riskAttributes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "An object that contains the risk attributes collected for the device.\n\n**Possible values**: See the [Risk attributes](/apis/reuseid/#section/Common-concepts/Risk-attributes) table.\n"
+    },
+    "tags": {
+      "type": "array",
+      "description": "The tags that you added so that the callback events can be filtered.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "AppAttestation": {
+      "type": "object",
+      "description": "An object that describes the properties of the attestation.\n\n**Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#app-attestation).\n",
+      "properties": {
+        "playIntegrityStatus": {
+          "type": "string",
+          "description": "The Play Integrity attestation status of the ReuseID user's device that was used for the operation.\n\n**Possible values**: See the [Play Integrity statuses](/apis/reuseid/#section/Common-concepts/Play-Integrity-statuses) table.\n"
+        },
+        "playIntegrityDate": {
+          "type": "string",
+          "description": "The timestamp when the Play Integrity attestation was performed on the ReuseID user's device.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`\n"
+        },
+        "appAttestStatus": {
+          "type": "string",
+          "description": "The App Attest attestation status of the ReuseID user's device that was used for the operation\n\n**Possible values**: See the [App Attest statuses](/apis/reuseid/#section/Common-concepts/App-Attest-statuses) table.\n"
+        },
+        "appAttestDate": {
+          "type": "string",
+          "description": "The timestamp when the App Attest attestation was performed on the ReuseID user's device.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`\n"
+        }
+      }
+    },
+    "AuthenticationOperationProperties": {
+      "type": "object",
+      "properties": {
+        "authMethod": {
+          "type": "string",
+          "description": "The authentication method that was used for the operation.\n\n**Possible values**:\n- See the [Authentication methods](/apis/reuseid/#section/Common-concepts/Authentication-methods) table.\n"
+        },
+        "authLevel": {
+          "type": "string",
+          "description": "The authentication level that was used for the operation.\n\n**Possible values**: See the [Authentication levels](/apis/reuseid/#section/Common-concepts/Authentication-levels) table.\n"
+        },
+        "pushPayload": {
+          "type": "string",
+          "description": "  A custom payload that was sent to the ReuseID user's device in the push notification.\n"
+        },
+        "preOperationContext": {
+          "$ref": "#/$defs/preOperationContext"
+        },
+        "postOperationContext": {
+          "$ref": "#/$defs/postOperationContext"
+        },
+        "sendPush": {
+          "type": "boolean",
+          "description": "A parameter that determined whether to send push.\n\n**Note**: For push notifications to be sent, you need to enable them in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#push-notifications).\n"
+        },
+        "broadcast": {
+          "type": "boolean",
+          "description": "A parameter that determined whether to broadcast the operation to all of the ReuseID user's active devices.\n"
+        },
+        "sessionTimeout": {
+          "type": "string",
+          "description": "The specified timeout for the operation, given in milliseconds.\n"
+        },
+        "metadata": {
+          "type": "string",
+          "description": "The meta data that was set for the operation.\n"
+        },
+        "requestedUserAttributes": {
+          "type": "array",
+          "description": "The user attributes that were requested for the operation.\n\n**Possible values**:\n- If no value was set, then the user object returned after a successful operation will not include any attributes.\n- If a non-existent user attribute was set, then this will be silently ignored.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "clientData": {
+          "type": "string",
+          "description": "The data that the client application optionally passed at the point of the authentication.\n"
+        },
+        "pushSent": {
+          "type": "boolean",
+          "description": "A property that informs you whether a push notification was sent."
+        },
+        "location": {
+          "$ref": "#/$defs/Location",
+          "description": "An object that describes the location of the device that was used for the operation.\n\n**Note**: To be returned in the response, you need to enable it in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#risk-data).\n"
+        },
+        "attestation": {
+          "$ref": "#/$defs/AppAttestation"
+        },
+        "geofencing": {
+          "$ref": "#/$defs/Geofencing"
+        },
+        "sessionExpiryTime": {
+          "type": "string",
+          "description": "The timestamp when the operation expires.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+        }
+      }
+    },
+    "Geofencing": {
+      "type": "object",
+      "description": "An object that contains information about the geofencing validation.\n\n**Note**: In order for this object to be returned in the response, it must be enabled in your [application configuration](/docs/mobile-identity/mobileid/features/application-configuration#geofencing).\n",
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "description": "The country code in an ISO 3166-1 Alpha-2 format, as reported by the SDK.\n\n**Possible values**: For a list of countries and corresponding codes, see the [GeoNames](https://www.geonames.org/countries/) website.\n"
+        },
+        "clientStatus": {
+          "type": "string",
+          "description": "The status of the geofencing operation, as reported by the SDK.\n\n**Possible values**: See the [Geofencing client statuses](/apis/reuseid/#section/Common-concepts/Geofencing-client-statuses) table.\n"
+        },
+        "serverBoundaryValidation": {
+          "type": "string",
+          "description": "The status of the geofencing server validation, after evaluating the country against the allowed region.\n\n**Possible values**: See the [Geofencing server boundary validation statuses](/apis/reuseid/#section/Common-concepts/Geofencing-server-boundary-validation-statuses) table.\n"
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "accuracy": {
+          "type": "string",
+          "description": "The location accuracy of the ReuseID user's device that was used for the operation."
+        },
+        "altitude": {
+          "type": "string",
+          "description": "The location altitude of the ReuseID user's device that was used for the operation."
+        },
+        "latitude": {
+          "type": "string",
+          "description": "The location latitude of the ReuseID user's device that was used for the operation."
+        },
+        "longitude": {
+          "type": "string",
+          "description": "The location longitude of the ReuseID user's device that was used for the operation."
+        }
+      }
+    },
+    "SimpleDevice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The ID of the ReuseID user's device (`deviceId`)."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the ReuseID user's device."
+        }
+      }
+    },
+    "SimpleUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The ID (`userId`) of the ReuseID user, in a valid UUID format."
+        },
+        "segment": {
+          "type": "string",
+          "description": "The segment that was assigned to the ReuseID user and their corresponding transactions.\n"
+        },
+        "externalRef": {
+          "type": "string",
+          "description": "The identifier generated by you, that points to the `userId` generated by ReuseID.\n"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "An object that contains the user attributes that were added to the ReuseID user, given as key-value pairs.\n"
+        }
+      }
+    },
+    "postOperationContext": {
+      "description": "The context of the operation which is sent to your app, through a secure end-to-end encrypted channel, **after** the operation is successfully completed.<br /><br /> **Note**: To learn more, see our [Operation context](/docs/mobile-identity/mobileid/features/operation-context) feature documentation.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the operation context.\n",
+          "default": null
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the operation context.\n\n**Allowed values**:\n- It must be something that your application is able to process, for example a string.\n- It cannot exceed the maximum character length in the [Operation context maximum character lengths](#section/Common-concepts/Operation-context-maximum-character-lengths) table.\n\n**Note**: ReuseID handles this as a binary blob.\n",
+          "default": null
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "The MIME type of the operation context `content`.\n\n**Note**: This must be a valid MIME type, such as `text/plain`.\n",
+          "default": null
+        }
+      },
+      "required": [
+        "content",
+        "mimeType",
+        "title"
+      ],
+      "default": null
+    },
+    "preOperationContext": {
+      "description": "The context of the operation which is sent to your app, through a secure end-to-end encrypted channel, **before** the operation is completed.<br /><br /> **Note**: To learn more, see our [Operation context](/docs/mobile-identity/mobileid/features/operation-context) feature documentation.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the operation context.\n",
+          "default": null
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the operation context.\n\n**Allowed values**:\n- It must be something that your application is able to process, for example a string.\n- It cannot exceed the maximum character length in the [Operation context maximum character lengths](#section/Common-concepts/Operation-context-maximum-character-lengths) table.\n\n**Note**: ReuseID handles this as a binary blob.\n",
+          "default": null
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "The MIME type of the operation context `content`.\n\n**Note**: This must be a valid MIME type, such as `text/plain`.\n",
+          "default": null
+        }
+      },
+      "required": [
+        "content",
+        "mimeType",
+        "title"
+      ],
+      "default": null
+    }
+  }
+}

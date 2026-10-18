@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-forwarding-info-schema.json",
+  "title": "ForwardingInfo",
+  "description": "The ForwardingInfo data type describes the status and information related to forwarding of a task",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/ForwardingInfo",
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "The unique identifier of the signing order"
+    },
+    "taskId": {
+      "type": "string",
+      "description": "The unique identifier of the task created by forwarding the original task"
+    },
+    "originalTaskId": {
+      "type": "string",
+      "description": "The unique identifier of the original task that was forwarded"
+    },
+    "forwarderName": {
+      "type": "string",
+      "description": "The name of the person forwarding this task"
+    },
+    "forwarderEmail": {
+      "type": "string",
+      "description": "The email of the person forwarding this task"
+    },
+    "recipientName": {
+      "type": "string",
+      "description": "The name of the person receiving this task"
+    },
+    "recipientEmail": {
+      "type": "string",
+      "description": "The email of the person receiving this task"
+    },
+    "recipientMobile": {
+      "type": "string",
+      "description": "The mobile number of the person receiving this task"
+    }
+  }
+}

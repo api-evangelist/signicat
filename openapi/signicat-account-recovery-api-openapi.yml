@@ -1,0 +1,521 @@
+openapi: 3.2.0
+info:
+  title: Signicat Account recovery API
+  version: '1.0'
+  description: 'Operations tagged Account recovery across 2 of this provider''s published API definitions: mobileid-openapi.json, signicat-mobileid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/core
+tags:
+- name: Account recovery
+  description: 'The MobileID account recovery API provides you with operations for our MobileID account recovery feature.
+
+
+    -----
+
+
+    Note: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----
+
+
+    ## Useful information
+
+    The operations in this API require the transaction ID (`transactionId`) of the recovery.
+
+
+    To find the `transactionId`, you need to:
+
+    1. Use the Get device transactions endpoint to see all device transactions for a specified device.
+
+    2. Look for transactions with operation type (`operationType`) as `RECOVERY`.
+
+    3. Locate the `transactionId` in this response. This is what you should use for operations in this API.'
+paths:
+  /recoveries/{transactionId}:
+    get:
+      tags:
+      - Account recovery
+      summary: Get details of account recovery
+      description: 'The **Get details of account recovery** operation returns the details of the recovery that is carried out for a specific device.
+
+
+        These recovery details give you:
+
+        - The state of the recovery.
+
+        - Access to risk data and all other attributes created as part of the recovery process, if the operation is finished.
+
+
+        To use this endpoint, you need the transaction ID (transactionId) of the recovery. You can find out how to obtain this in the Useful information section for this API.'
+      operationId: getAccountRecovery
+      parameters:
+      - name: transactionId
+        in: path
+        description: The ID of the transaction.
+        required: true
+        schema:
+          type: string
+          additionalProperties: false
+          description: The ID of the transaction.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      responses:
+        '200':
+          description: Successfully fetched the details of the account recovery.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRecoveryDetails'
+                additionalProperties: false
+              examples:
+                Account recovery fetch COMPLETED.:
+                  description: Sample response when account recovery has been completed successfully.
+                  value:
+                    transactionId: a75064fe-c528-478d-81d3-0a7b404b84b9
+                    accountId: a-ppge-abcd1234ABCDxxxxxxx
+                    state: COMPLETED
+                    device:
+                      id: b6759679-f956-4691-aebf-6ff5e6f924ec
+                      name: ''
+                      state: ACTIVE
+                      lastOperationType: REGISTRATION
+                      lastUsed: '2024-06-25T06:18:13.002Z'
+                      created: '2024-06-25T06:18:12.969Z'
+                    user:
+                      externalRef: '1234567890'
+                      id: 23ae6e6c-242d-4834-bbed-a9308218e5c4
+                      created: '2024-06-20T09:46:14.133Z'
+                      lastUsed: '2024-06-25T06:18:12.937Z'
+                      state: ACTIVE
+                    created: 2024-06-25T06:18:23.000UTC
+                    operationProperties:
+                      sessionExpiryTime: 2024-06-25T06:23:23.000UTC
+                      activatedAuthenticationMethods:
+                      - DEVICE
+                      - DEVICE:PIN
+                    riskAttributes:
+                    - name: is_debuggable
+                      value: 'true'
+                    - name: is_power_connected
+                      value: 'false'
+                    - name: is_debugger_connected
+                      value: 'false'
+                    - name: is_secure_screen_lock_enabled
+                      value: 'false'
+                    - name: is_debug_enabled
+                      value: 'true'
+                    - name: is_emulator
+                      value: 'true'
+                    - name: is_root_available
+                      value: 'false'
+                    recoveryMethod: CLOUD_BACKUP_SERVER_SIDE_FACE
+                    recoveryStatus: RECOVERED
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: false
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Transaction ID does not exist
+                code: transaction_id_does_not_exist
+                status: 404
+                detail: 'Getting account recovery details failed. Transaction ID: 8eea29b2-8de6-4db5-8725-941905d7a792'
+                traceId: '00000000000000000000000000000000'
+    servers:
+    - url: https://api.signicat.com/mobileid/core
+components:
+  schemas:
+    AppAttestation:
+      type: object
+      additionalProperties: false
+      description: "An object that describes the properties of the attestation. \n\n In order for this object to be returned in response, it has to be enabled in the <a href=\"https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation\" target=\"_blank\">application configuration</a>."
+      properties:
+        playIntegrityStatus:
+          type: string
+          additionalProperties: false
+          description: "The Play Integrity attestation status for the user's device. \n\n See [Play Integrity statuses](/apis/mobileid/#section/Common-concepts/Play-Integrity-statuses) for possible values."
+          example: VERIFIED
+        playIntegrityDate:
+          type: string
+          additionalProperties: false
+          description: The date when the Play Integrity attestation was performed on the user's device.
+          example: '2022-06-24T20:56:03.025Z'
+        appAttestStatus:
+          type: string
+          additionalProperties: false
+          description: "The App Attest attestation status for the user's device. \n\n See [App Attest statuses](/apis/mobileid/#section/Common-concepts/App-Attest-statuses) for possible values."
+          example: VERIFIED
+        appAttestDate:
+          type: string
+          additionalProperties: false
+          description: The date when the App Attest attestation was performed on the user's device.
+          example: '2022-06-24T20:55:03.025Z'
+    BaseUser:
+      type: object
+      additionalProperties: false
+      properties:
+        externalRef:
+          type: string
+          additionalProperties: false
+          description: 'An identifier generated by you (the customer), that points to the user ID (<code>userId</code>) generated by MobileID when a new user is created.
+
+            '
+          example: Empl10300469
+        segment:
+          type: string
+          additionalProperties: false
+          description: 'A parameter used for segmentation of end-users and their corresponding transactions.
+
+            '
+          example: 'NO'
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user (<code>userId</code>), in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user last executed any <code>REGISTRATION</code>, <code>AUTHENTICATION</code> or <code>SIGNATURE</code> operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>. \n\n"
+          example: '2021-01-21T22:47:27.123Z'
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user. \n\n This is returned as an enum, and can be either <code>ACTIVE</code> or <code>LOCKED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          example: ACTIVE
+    Location:
+      type: object
+      additionalProperties: false
+      properties:
+        accuracy:
+          type: string
+          additionalProperties: false
+          description: The location accuracy of the device used for the operation.
+          example: '0.564'
+        altitude:
+          type: string
+          additionalProperties: false
+          description: The location altitude of the device used for the operation.
+          example: 76.2352.3563
+        latitude:
+          type: string
+          additionalProperties: false
+          description: The location latitude of the device used for the operation.
+          example: 12.34234.143
+        longitude:
+          type: string
+          additionalProperties: false
+          description: The location longitude of the device used for the operation.
+          example: 32.24314.1431
+    AccountRecoveryDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        transactionId:
+          type: string
+          additionalProperties: false
+          description: The transaction ID of the recovery session.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        accountId:
+          type: string
+          additionalProperties: false
+          description: The ID of the account that the device belongs to.
+          example: a-ppge-abcd1234ABCDxxxxxxx
+        state:
+          type: string
+          additionalProperties: false
+          description: The state of the recovery operation.
+        device:
+          $ref: '#/components/schemas/Device'
+          additionalProperties: false
+          description: The device performing the recovery.
+        user:
+          $ref: '#/components/schemas/BaseUser'
+          additionalProperties: false
+          description: The user performing the recovery.
+        created:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the recovery session was created.
+
+
+            Returned in pattern `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T20:56:01.405Z'
+        operationProperties:
+          $ref: '#/components/schemas/OperationProperties'
+          additionalProperties: false
+          description: An object that describes the properties used to carry out the operation.
+        riskAttributes:
+          type: object
+          additionalProperties: false
+          description: 'The risk attributes collected for the device.
+
+
+            See [risk attributes](/apis/mobileid/#section/Common-concepts/Risk-attributes) for possible values.
+
+
+            You can find out how to configure which attributes are collected in the <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#risk-data" target="_blank">application configuration</a> feature documentation.
+
+            '
+        location:
+          $ref: '#/components/schemas/Location'
+          additionalProperties: false
+          description: 'An object that describes the location of the device used for the operation.
+
+
+            In order to be returned in the response, it has to be enabled in the <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#location-risk-data" target="_blank">application configuration</a>.
+
+            '
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          additionalProperties: false
+          description: 'An object that describes the properties of the attestation.
+
+
+            In order for this object to be returned in response, it has to be enabled in the <a href="https://developer.signicat.com/docs/mobile-identity/mobileid/features/application-configuration#app-attestation" target="_blank">application configuration</a>.
+
+            '
+        recoveryMethod:
+          type: string
+          additionalProperties: false
+          description: 'The recovery method used for the recovery.
+
+
+            See [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values.
+
+
+            '
+        recoveryStatus:
+          type: string
+          additionalProperties: false
+          description: 'The status of the recovery.
+
+
+            See [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values.
+
+
+            '
+    AccountRecovery:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryId:
+          type: string
+          additionalProperties: false
+          description: The ID of the recovery.
+          example: 11a107d7-42ac-4171-92b4-1fdb23c6e1f2
+        recoveryMethod:
+          type: string
+          additionalProperties: false
+          description: "The recovery method used for the recovery. \n\n See [recovery methods](/apis/mobileid/#section/Common-concepts/Recovery-methods) for possible values."
+          example: CLOUD_BACKUP_RECOVERY_CODE
+        recoveryStatus:
+          type: string
+          additionalProperties: false
+          description: "The status of the recovery. \n\n See [recovery statuses](/apis/mobileid/#section/Common-concepts/Recovery-statuses) for possible values."
+          example: ACTIVATED
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was created. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        modified:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was updated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.405Z'
+        recovered:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the recovery was used. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2022-06-24T20:56:01.373Z'
+    Device:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          additionalProperties: false
+          description: The ID of the user's device (<code>deviceId</code>).
+          example: 20874199-f4d1-4e9d-86ee-dd4a46030acb
+        name:
+          type: string
+          additionalProperties: false
+          description: The name of the user's device.
+          example: my iPhone
+        state:
+          type: string
+          additionalProperties: false
+          description: "The state of the user's device. \n\n This is returned as an enum, and can be either <code>ACTIVE</code>, <code>LOCKED</code> or <code>DELETED</code>."
+          enum:
+          - ACTIVE
+          - LOCKED
+          - DELETED
+          example: ACTIVE
+        lastOperationType:
+          type: string
+          additionalProperties: false
+          description: "The last operation type that the user's device executed. \n\n See [operation type](/apis/mobileid/#section/Common-concepts/Operation-types) for possible values."
+          example: AUTHENTICATION
+        lastUsed:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device last executed an operation. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        created:
+          type: string
+          additionalProperties: false
+          description: "The timestamp when the user's device was originally activated. \n\n Returned in pattern <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>."
+          example: '2021-01-21T22:47:27'
+        deviceDetails:
+          $ref: '#/components/schemas/DeviceDetails'
+          additionalProperties: false
+          description: The device details object.
+    DeviceLock:
+      type: object
+      additionalProperties: false
+      properties:
+        lockReason:
+          type: array
+          additionalProperties: false
+          description: "A list that contains all reasons why the user's device has been locked. \n\n See [Lock reason](/apis/mobileid/#section/Common-concepts/Lock-reason) for possible values."
+          example:
+          - LOCKED_BY_ADMIN
+          - DEVICE_VERIFICATION_FAILED
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+    DeviceDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        lock:
+          $ref: '#/components/schemas/DeviceLock'
+          additionalProperties: false
+          description: "An object that contains details about the device lock. \n\n This object is only supplied when the user's device is locked."
+        activationTime:
+          type: string
+          additionalProperties: false
+          description: The timestamp when the user's device was originally activated.
+          example: '2017-04-05T12:23:00.000Z'
+          readOnly: true
+        deviceHash:
+          type: string
+          additionalProperties: false
+          description: A SHA256 hash of the unique hardware device ID of the user's device.
+          example: Xsx6d7bmhh9ovUvhqp5KLOs480%2FWCq3bq9%2FC0apC4TU%3D
+          readOnly: true
+        applicationId:
+          type: string
+          additionalProperties: false
+          description: The application ID being used for the device.
+          example: encap
+          readOnly: true
+        currentClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device used for its last operation.
+          example: 3.15.0
+        activatedClientApiVersion:
+          type: string
+          additionalProperties: false
+          description: The Encap client API version that the user's device was originally activated on.
+          example: 3.15.0
+        activatedEncapRelease:
+          type: string
+          additionalProperties: false
+          description: The Encap server release version that the user's device was originally activated on.
+          example: R_3_3
+          readOnly: true
+        pushAddress:
+          type: string
+          additionalProperties: false
+          description: "The push address for the user's device. \n\n This address is used when sending a push to the device using Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS)."
+          example: ap7cmrQQTc0zb5aCPgXV0JxvrFeOO6CguQklentLMsc
+          readOnly: true
+        operatingSystemType:
+          type: string
+          additionalProperties: false
+          description: The operating system type of the user's device.
+          example: iOS
+          readOnly: true
+        activatedAuthenticationMethods:
+          type: array
+          additionalProperties: false
+          description: "A list of the activated authentication methods for the user's device. \n\n See [authentication methods](/apis/mobileid/#section/Common-concepts/Authentication-methods) for possible values."
+          example:
+          - DEVICE
+          - DEVICE:PIN
+          items:
+            type: string
+            additionalProperties: false
+          readOnly: true
+        attestation:
+          $ref: '#/components/schemas/AppAttestation'
+          additionalProperties: false
+        recoveries:
+          type: array
+          additionalProperties: false
+          description: A list that contains all of the recoveries for a user's device.
+          items:
+            $ref: '#/components/schemas/AccountRecovery'
+            additionalProperties: false
+        recoveryLock:
+          type: boolean
+          additionalProperties: false
+          description: A setting for a user's device which indicates whether the account recovery feature is enabled or not.<ul><li>When <code>false</code>, the account recovery feature is enabled and recovery operations can be performed.</li><li>When <code>true</code>, the account recovery feature is disabled and recovery operations cannot be performed.</li></ul>
+    OperationProperties:
+      type: object
+      additionalProperties: false
+      properties:
+        sessionExpiryTime:
+          type: string
+          additionalProperties: false
+          description: 'The timestamp when the recovery session expires.
+
+
+            Returned in pattern `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2022-06-24T21:56:01.405Z'
+        activatedAuthenticationMethods:
+          type: array
+          additionalProperties: false
+          description: A list of the activated authentication methods.
+          items:
+            type: string
+            additionalProperties: false
+x-refined-from:
+- mobileid-openapi.json
+- signicat-mobileid-openapi.yml

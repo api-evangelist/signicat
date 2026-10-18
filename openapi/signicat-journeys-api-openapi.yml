@@ -1,0 +1,822 @@
+openapi: 3.2.0
+info:
+  title: Signicat Journeys API
+  version: v2
+  x-meta: Custom metadata
+  description: 'Operations tagged Journeys across 2 of this provider''s published API definitions: mint-openapi.json, signicat-mint-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mint
+tags:
+- name: Journeys
+paths:
+  /journeys:
+    get:
+      tags:
+      - Journeys
+      summary: List journeys
+      description: Returns a list of your journeys.
+      operationId: ListJourneys
+      parameters:
+      - name: sort
+        in: query
+        description: 'Supported fields: `createdAt`, `lastExecutedAt`, `finishedAt`'
+        schema:
+          maxLength: 50
+          minLength: 0
+          type: string
+      - name: status
+        in: query
+        description: Filter journeys by status.
+        schema:
+          enum:
+          - idle
+          - running
+          - finished
+          - active
+          - faulted
+          - cancelled
+          type: string
+      - name: workflowId
+        in: query
+        description: Filter journeys by workflow ID.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: parentJourneyId
+        in: query
+        description: Filter journeys by parent journey ID.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: lastExecutedAfter
+        in: query
+        description: Filter journeys that were last executed after this date.
+        schema:
+          format: date-time
+      - name: lastExecutedBefore
+        in: query
+        description: Filter journeys that were last executed before this date.
+        schema:
+          format: date-time
+      - name: search
+        in: query
+        description: Search term that filters journeys by matching against `name` and `id`.
+        schema:
+          maxLength: 100
+          minLength: 0
+          type: string
+      - name: offset
+        in: query
+        description: The offset of the first item to return.
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: limit
+        in: query
+        description: The maximum number of items to return per page. Defaults to 10.
+        schema:
+          maximum: 100
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfJourneySummary'
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}:
+    get:
+      tags:
+      - Journeys
+      summary: Retrieve journey
+      description: Retrieves a journey.
+      operationId: GetJourney
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Journey'
+    delete:
+      tags:
+      - Journeys
+      summary: Delete journey
+      description: Deletes a journey.
+      operationId: DeleteJourney
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/cancel:
+    post:
+      tags:
+      - Journeys
+      summary: Cancel journey
+      description: Cancels a journey.
+      operationId: CancelJourney
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/resume:
+    post:
+      tags:
+      - Journeys
+      summary: Resume journey
+      description: Resumes an active journey from a step requiring manual continuation.
+      operationId: ResumeJourney
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeJourneyRequest'
+        required: true
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/approve:
+    post:
+      tags:
+      - Journeys
+      summary: Approve or reject journey
+      description: Approves or rejects a journey pending approval.
+      operationId: ApproveJourney
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveJourneyRequest'
+        required: true
+      responses:
+        '204':
+          description: No Content
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/url:
+    post:
+      tags:
+      - Journeys
+      summary: Create journey URL
+      description: Creates a time-limited URL that provides access to a journey.
+      operationId: CreateJourneyUrl
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJourneyUrlRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateJourneyUrlResponse'
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/execution-log:
+    get:
+      tags:
+      - Journeys
+      summary: Retrieve journey execution log
+      description: Retrieves the execution log for a journey.
+      operationId: GetJourneyExecutionLog
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyExecutionLog'
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/files/{fileId}:
+    get:
+      tags:
+      - Journeys
+      summary: Download journey file
+      description: Downloads a journey file.
+      operationId: DownloadJourneyFile
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: The file ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/files:
+    get:
+      tags:
+      - Journeys
+      summary: Download all journey files
+      description: Downloads all journey files as a zip file.
+      operationId: DownloadJourneyFiles
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - Journeys
+      summary: Upload journey file
+      description: Uploads a file to a journey using multipart/form-data.
+      operationId: UploadJourneyFile
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDetails'
+    servers:
+    - url: https://api.signicat.com/mint
+  /journeys/{journeyId}/steps/{stepId}:
+    get:
+      tags:
+      - Journeys
+      summary: Retrieve journey step data
+      description: Retrieves the data for a single step in a journey.
+      operationId: GetJourneyStep
+      parameters:
+      - name: journeyId
+        in: path
+        description: The journey ID.
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        description: The step ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+    servers:
+    - url: https://api.signicat.com/mint
+components:
+  schemas:
+    FileDetails:
+      required:
+      - id
+      - filename
+      - contentType
+      - size
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        filename:
+          type: string
+          description: The filename.
+        contentType:
+          type: string
+          description: Content type of the file.
+        size:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The size of the file in bytes.
+          format: int64
+    JourneyFileDetails:
+      required:
+      - id
+      - filename
+      - contentType
+      - size
+      type: object
+      properties:
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: ID of the step that created this file.
+        id:
+          type: string
+          description: Unique identifier for the file.
+        filename:
+          type: string
+          description: The filename.
+        contentType:
+          type: string
+          description: Content type of the file.
+        size:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The size of the file in bytes.
+          format: int64
+    JourneyStepStatus:
+      enum:
+      - active
+      - faulted
+      - finished
+      - null
+    JourneyExecutionLog:
+      type: object
+      properties:
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneyStepExecutionLog'
+          description: List of steps executed during the journey.
+        stepsFinished:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The number of finished steps.
+          format: int32
+        stepsFaulted:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The number of faulted steps.
+          format: int32
+    IterationStepData:
+      required:
+      - index
+      - stepData
+      type: object
+      properties:
+        index:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The index of the loop iteration.
+          format: int32
+        stepData:
+          type: object
+          description: Data for all steps in the loop iteration.
+    Journey:
+      required:
+      - id
+      - workflowId
+      - version
+      - stepData
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the journey.
+        workflowId:
+          type: string
+          description: ID of the workflow this journey belongs to.
+        parentJourneyId:
+          type:
+          - 'null'
+          - string
+          description: ID of the parent journey that started this journey.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the workflow.
+          format: int32
+        status:
+          description: The current status of the journey.
+          $ref: '#/components/schemas/JourneyStatus'
+        name:
+          type:
+          - 'null'
+          - string
+          description: The name of the journey.
+        createdAt:
+          description: Time at which the journey was created.
+          format: date-time
+        lastExecutedAt:
+          description: Time at which the journey was last executed.
+          format: date-time
+        finishedAt:
+          description: Time at which the journey finished.
+          format: date-time
+        faultedAt:
+          description: Time at which the journey faulted.
+          format: date-time
+        cancelledAt:
+          description: Time at which the journey was cancelled.
+          format: date-time
+        stepData:
+          type: object
+          description: Data for all steps in the journey.
+        loops:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/IterationStepData'
+          description: Step data for any loops in the journey.
+        activeSteps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveStep'
+          description: List of steps that are currently active.
+        pendingSteps:
+          type: boolean
+          description: Whether the journey has pending steps requiring manual continuation.
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/StepAlert'
+          description: List of alerts triggered during the journey.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneyFileDetails'
+          description: List of files associated with the journey.
+        faults:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneyFault'
+          description: List of faults that occurred during the journey.
+    CreateJourneyUrlRequest:
+      type: object
+      properties:
+        timeToLive:
+          maximum: 2592000
+          minimum: 1
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: Number of seconds until the journey URL expires. Defaults to 60 seconds.
+          format: int32
+          default: 60
+    ApproveJourneyRequestInput:
+      required:
+      - approved
+      type: object
+      properties:
+        approved:
+          type: boolean
+          description: Whether the journey should be approved.
+        message:
+          maxLength: 500
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Optional message to include with the approval or rejection of the journey.
+    StepAlert:
+      required:
+      - stepId
+      - severity
+      - message
+      - timestamp
+      type: object
+      properties:
+        stepId:
+          type: string
+          description: ID of the step this alert belongs to.
+        severity:
+          description: The alert severity.
+          $ref: '#/components/schemas/StepAlertSeverity'
+        message:
+          type: string
+          description: The alert message.
+        timestamp:
+          description: Time at which the alert was triggered.
+          format: date-time
+    JourneyExecutionLogEvent:
+      required:
+      - id
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the execution event.
+        timestamp:
+          description: Time at which the event occurred.
+          format: date-time
+        eventName:
+          type:
+          - 'null'
+          - string
+          description: The name of the event.
+        message:
+          type:
+          - 'null'
+          - string
+          description: The event message.
+        outcomes:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of outcomes of the event.
+    JourneySummary:
+      required:
+      - id
+      - workflowId
+      - version
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the journey.
+        workflowId:
+          type: string
+          description: ID of the workflow this journey belongs to.
+        parentJourneyId:
+          type:
+          - 'null'
+          - string
+          description: ID of the parent journey that started this journey.
+        version:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The version number of the workflow.
+          format: int32
+        status:
+          description: The current status of the journey.
+          $ref: '#/components/schemas/JourneyStatus'
+        name:
+          type:
+          - 'null'
+          - string
+          description: The name of the journey.
+        workflowName:
+          type:
+          - 'null'
+          - string
+          description: The name of the workflow.
+        createdAt:
+          description: Time at which the journey was created.
+          format: date-time
+        lastExecutedAt:
+          description: Time at which the journey was last executed.
+          format: date-time
+        finishedAt:
+          description: Time at which the journey finished.
+          format: date-time
+        faultedAt:
+          description: Time at which the journey faulted.
+          format: date-time
+        cancelledAt:
+          description: Time at which the journey was cancelled.
+          format: date-time
+        pendingSteps:
+          type: boolean
+          description: Whether the journey has pending steps requiring manual continuation.
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/StepAlert'
+          description: List of alerts triggered during the journey.
+    PaginatedResponseOfJourneySummary:
+      required:
+      - data
+      - offset
+      - limit
+      - totalCount
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneySummary'
+          description: List of items returned for the current page.
+        offset:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The offset of the first item returned.
+          format: int32
+        limit:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The maximum number of items requested per page.
+          format: int32
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The total number of items available across all pages.
+          format: int32
+    ResumeJourneyRequest:
+      required:
+      - stepId
+      type: object
+      properties:
+        input:
+          type:
+          - 'null'
+          - object
+          description: The journey input.
+        stepId:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The target step ID.
+    ApproveJourneyRequest:
+      required:
+      - input
+      - stepId
+      type: object
+      properties:
+        input:
+          description: The journey input.
+          $ref: '#/components/schemas/ApproveJourneyRequestInput'
+        stepId:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The target step ID.
+    ActiveStep:
+      required:
+      - stepId
+      - stepType
+      type: object
+      properties:
+        stepId:
+          type: string
+          description: ID of the active step.
+        stepType:
+          type: string
+          description: The step type.
+    JourneyStatus:
+      enum:
+      - idle
+      - running
+      - finished
+      - active
+      - faulted
+      - cancelled
+    JourneyStepExecutionLog:
+      required:
+      - stepId
+      - stepType
+      - startedAt
+      type: object
+      properties:
+        stepId:
+          type: string
+          description: ID of the executed step.
+        stepType:
+          type: string
+          description: The step type.
+        startedAt:
+          description: Time at which the step execution started.
+          format: date-time
+        endedAt:
+          description: Time at which the step execution ended.
+          format: date-time
+        status:
+          oneOf:
+          - type: 'null'
+          - description: The status of the executed step.
+            $ref: '#/components/schemas/JourneyStepStatus'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/JourneyExecutionLogEvent'
+          description: List of execution events.
+    JourneyFault:
+      required:
+      - errorCode
+      - message
+      type: object
+      properties:
+        stepId:
+          type:
+          - 'null'
+          - string
+        errorCode:
+          type: string
+        message:
+          type: string
+        details:
+          type:
+          - 'null'
+          - object
+          additionalProperties:
+            type: string
+    CreateJourneyUrlResponse:
+      required:
+      - journeyUrl
+      type: object
+      properties:
+        journeyUrl:
+          type: string
+          description: The URL to the journey.
+    StepAlertSeverity:
+      enum:
+      - info
+      - warning
+      - critical
+x-refined-from:
+- mint-openapi.json
+- signicat-mint-openapi.yml

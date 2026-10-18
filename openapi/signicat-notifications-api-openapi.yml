@@ -1,0 +1,239 @@
+openapi: 3.2.0
+info:
+  title: Signicat Notifications API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Notifications across 2 of this provider''s published API definitions: signing-express-openapi.json, signicat-signing-express-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/express/sign
+tags:
+- name: Notifications
+paths:
+  /documents/{documentId}/notifications:
+    get:
+      tags:
+      - Notifications
+      summary: List notifications
+      description: Returns a list of all notifications that has been sent / attempted sent for a document
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationLogItem'
+              example:
+              - sentTimeStamp: 1/8/2018 10:58 AM
+                title: Sample email
+                text: email text
+                messageType: EMAIL
+                status: DELIVERED
+                receiver: test@test.com
+              - sentTimeStamp: 1/8/2018 10:58 AM
+                title: Sample sms
+                text: sms text
+                messageType: SMS
+                status: DELIVERED
+                receiver: test@test.com
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationLogItem'
+              example:
+              - sentTimeStamp: 1/8/2018 10:58 AM
+                title: Sample email
+                text: email text
+                messageType: EMAIL
+                status: DELIVERED
+                receiver: test@test.com
+              - sentTimeStamp: 1/8/2018 10:58 AM
+                title: Sample sms
+                text: sms text
+                messageType: SMS
+                status: DELIVERED
+                receiver: test@test.com
+      operationId: getDocumentsByDocumentIdNotifications
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+  /documents/{documentId}/notifications/reminder:
+    post:
+      tags:
+      - Notifications
+      summary: Send reminders
+      description: If you want to send out reminders to all/some of the signers manually you can do it here.
+      parameters:
+      - name: documentId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ManualReminder'
+            example:
+              notificationSetting: sendEmail
+              signers:
+                a5127c2e-45dc-4d94-a767-400e924bb15f: null
+                0d723e7c-b46b-4890-87fb-c2300937de8f:
+                  emailOverride: overrideemail@test.com
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualReminder'
+            example:
+              notificationSetting: sendEmail
+              signers:
+                a5127c2e-45dc-4d94-a767-400e924bb15f: null
+                0d723e7c-b46b-4890-87fb-c2300937de8f:
+                  emailOverride: overrideemail@test.com
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ManualReminder'
+            example:
+              notificationSetting: sendEmail
+              signers:
+                a5127c2e-45dc-4d94-a767-400e924bb15f: null
+                0d723e7c-b46b-4890-87fb-c2300937de8f:
+                  emailOverride: overrideemail@test.com
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ManualReminder'
+            example:
+              notificationSetting: sendEmail
+              signers:
+                a5127c2e-45dc-4d94-a767-400e924bb15f: null
+                0d723e7c-b46b-4890-87fb-c2300937de8f:
+                  emailOverride: overrideemail@test.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManualReminder'
+              example:
+                notificationSetting: sendEmail
+                signers:
+                  112ec717-9dc5-43d9-85f4-dd855d942a21: null
+                  195bc0a0-7a7d-4ec6-9f7a-1811c4eac23d:
+                    emailOverride: overrideemail@test.com
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ManualReminder'
+              example:
+                notificationSetting: sendEmail
+                signers:
+                  112ec717-9dc5-43d9-85f4-dd855d942a21: null
+                  195bc0a0-7a7d-4ec6-9f7a-1811c4eac23d:
+                    emailOverride: overrideemail@test.com
+      operationId: postDocumentsByDocumentIdNotificationsReminder
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/express/sign
+components:
+  schemas:
+    NotificationLogItem:
+      type: object
+      properties:
+        sentTimeStamp:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        text:
+          type:
+          - string
+          - 'null'
+        messageType:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        fromAddress:
+          type:
+          - string
+          - 'null'
+        receiver:
+          type:
+          - string
+          - 'null'
+        senderName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Mobile:
+      type: object
+      properties:
+        countryCode:
+          type:
+          - string
+          - 'null'
+          description: The country calling code, e.g. `+47` for a norwegian number. <a href="https://en.wikipedia.org/wiki/List_of_country_calling_codes" target="_blank">Country calling codes on Wikipedia</a>
+        number:
+          type:
+          - string
+          - 'null'
+          description: The mobile number.
+      additionalProperties: false
+      description: The signer's mobile number. Define this if you are using notifications.
+    SignerOverrides:
+      type: object
+      properties:
+        emailOverride:
+          type:
+          - string
+          - 'null'
+          description: Set a new email address on the signer (all fututre notifications to this specific signer will be sent to this email)
+        mobileOverride:
+          $ref: '#/components/schemas/Mobile'
+      additionalProperties: false
+    NotificationSetting:
+      enum:
+      - 'off'
+      - sendSms
+      - sendEmail
+      - sendBoth
+      type: string
+    ManualReminder:
+      required:
+      - notificationSetting
+      type: object
+      properties:
+        notificationSetting:
+          $ref: '#/components/schemas/NotificationSetting'
+        signers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            $ref: '#/components/schemas/SignerOverrides'
+          description: 'Optional: Define the signers that should receive this reminder (if not signed). Dictionary with signer id as key, you can ovveride the signer email/phone as value'
+      additionalProperties: false
+x-refined-from:
+- signing-express-openapi.json
+- signicat-signing-express-openapi.yml

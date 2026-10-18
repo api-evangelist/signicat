@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-business-registry-registration-authority-item-dto-schema.json",
+  "title": "BusinessRegistry.RegistrationAuthorityItemDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-data-verification-openapi.yml#/components/schemas/BusinessRegistry.RegistrationAuthorityItemDto",
+  "type": "object",
+  "properties": {
+    "authorityCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Authority code"
+    },
+    "countryCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ISO 3166-1 country codes"
+    },
+    "country": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country name"
+    },
+    "localizedName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Localized name"
+    },
+    "internationalName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "International name"
+    },
+    "jurisdiction": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Jurisdiction"
+    },
+    "self_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Link to more information"
+    }
+  },
+  "additionalProperties": false
+}

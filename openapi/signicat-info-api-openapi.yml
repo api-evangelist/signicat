@@ -1,0 +1,261 @@
+openapi: 3.2.0
+info:
+  title: Signicat Info API
+  version: 1.0.0-SNAPSHOT
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged info across 2 of this provider''s published API definitions: digital-evidence-management-openapi.json, signicat-digital-evidence-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/dem
+  description: Generated server url
+tags:
+- name: Info
+paths:
+  /info:
+    get:
+      tags:
+      - Info
+      summary: Get statistics for records
+      description: Retrieves statistics on records stored in DEM.
+      operationId: getCollectionStats
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+    servers:
+    - url: https://api.signicat.com/dem
+      description: Generated server url
+  /info/custom-fields/{type}:
+    get:
+      tags:
+      - Info
+      summary: Get all fields from customerMeta from all records
+      description: Aggregates all of the customer's records to return a list of all unique keys from the customerMeta field.
+      operationId: getCustomMetaFields
+      parameters:
+      - name: type
+        in: path
+        description: Optional parameter that narrows the result down based on the type of record.
+        required: true
+        schema:
+          type: string
+          default: '##default'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+    servers:
+    - url: https://api.signicat.com/dem
+      description: Generated server url
+  /info/custom-fields:
+    get:
+      tags:
+      - Info
+      summary: Get all fields from customerMeta from all records
+      description: Aggregates all of the customer's records to return a list of all unique keys from the customerMeta field.
+      operationId: getCustomMetaFields_1
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input. The response should inform you of which parameters are invalid.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '401':
+          description: Unauthorized. Valid authentication not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                additionalProperties:
+                  default: '##default'
+                contains:
+                  default: '##default'
+                default: '##default'
+                items:
+                  default: '##default'
+                unevaluatedItems:
+                  default: '##default'
+    servers:
+    - url: https://api.signicat.com/dem
+      description: Generated server url
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      default: '##default'
+      description: Return object detailing an error that has occurred.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        code:
+          type: string
+        type:
+          type: string
+        detail:
+          type: string
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+    Stats:
+      type: object
+      properties:
+        collectionSize:
+          type: string
+        avgRecordSize:
+          type: string
+        totalRecords:
+          type: integer
+          format: int32
+        totalRecordsByType:
+          type: object
+          additionalProperties: {}
+    InvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+x-refined-from:
+- digital-evidence-management-openapi.json
+- signicat-digital-evidence-management-openapi.yml

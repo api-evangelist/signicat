@@ -1,0 +1,400 @@
+openapi: 3.2.0
+info:
+  title: Signicat Passkey management API
+  version: '1.0'
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Passkey management across 2 of this provider''s published API definitions: reuseid-openapi.json, signicat-reuseid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/reuseid/core
+tags:
+- name: Passkey management
+  description: 'You can use the **Passkey management** resource for operations related to managing passkeys for your ReuseID users.
+
+
+    ## Useful information
+
+
+    All passkey management operations require both:
+
+
+    - A ReuseID user, identified by their `userId`.
+
+    - A registered passkey, identified by its `passkeyId`.'
+paths:
+  /credentials/passkeys/{passkeyId}:
+    get:
+      tags:
+      - Passkey management
+      summary: Get passkey
+      description: This operation returns the `passkey` object, which contains information about a ReuseID user's passkey.
+      operationId: getPasskey
+      parameters:
+      - name: passkeyId
+        in: path
+        description: The ID of the ReuseID user's passkey.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user's passkey.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched passkey properties.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyServiceGetPasskeyResponse'
+              example:
+                id: 8812343d3-73c5-4bc6-bb5a-xde38089ce02
+                keyId: M3NQdUxFLWJVaENKOVVXQlNjd2g2UQ
+                accountId: a-sdge-UWPzmkeEVjkxJPkQtm0b
+                name: myPassKeyName
+                publicKey: pQECAyYgASFYIKX7DMSfoBbTydTaBdljbOWJQhfOd+HubLLKU5R1pwV1IlggxEg1nWI6fts1Q8ary2Qtz4Kwd6EAVpsR9BvPKvEXMxk=
+                domain: acme.com
+                created: '2025-06-10T04:12:31.132Z'
+                lastUsed: '2025-06-10T04:12:31.132Z'
+                aaGuid: ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4
+                userVerification: true
+                userPresence: true
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Passkey ID does not exist
+                code: passkey_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot obtain passkey transaction properties for the given passkeyId e0c9183f-a890-41fb-b908-df4817b30957
+    delete:
+      tags:
+      - Passkey management
+      summary: Delete passkey
+      description: This operation deletes a ReuseID user's passkey.
+      operationId: deletePasskey
+      parameters:
+      - name: passkeyId
+        in: path
+        description: The ID of the ReuseID user's passkey.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user's passkey.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '204':
+          description: Successfully deleted the passkey.
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Passkey ID does not exist
+                code: passkey_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot obtain passkey transaction properties for the given passkeyId e0c9183f-a890-41fb-b908-df4817b30957
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+  /credentials/passkeys/{passkeyId}/transactions:
+    get:
+      tags:
+      - Passkey management
+      summary: Get passkey transactions
+      description: This operation returns a list of the transactions that a ReuseID user's passkey has carried out.
+      operationId: getPasskeyTransactions
+      parameters:
+      - name: passkeyId
+        in: path
+        description: The ID of the ReuseID user's passkey.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user's passkey.
+          example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+        example: 7daa489e-6b35-46ca-83a4-1bba2ea35f68
+      - name: userId
+        in: query
+        description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+        required: true
+        schema:
+          type: string
+          description: The ID of the ReuseID user that will carry out the operation, in a valid UUID format.
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      - name: limit
+        in: query
+        description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+          **Allowed values**:
+
+          - It must be a whole number ranging from `1` to `100`.
+
+          - If no value is set, then the default value `100` is used.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the number of objects (transactions) that are shown on each page.
+
+
+            **Allowed values**:
+
+            - It must be a whole number ranging from `1` to `100`.
+
+            - If no value is set, then the default value `100` is used.
+
+            '
+          example: 10
+        example: 10
+      - name: offset
+        in: query
+        description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+          **Allowed values**:
+
+          - You must specify this transaction using its `transactionId`.
+
+          - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'A parameter that determines the first transaction to show in the operation response.
+
+
+            **Allowed values**:
+
+            - You must specify this transaction using its `transactionId`.
+
+            - If no value is set, then the result starts with the first transaction in the ReuseID user''s history.
+
+            '
+          example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+        example: 0e99b25c-abde-4553-973b-8d94d49cd87e
+      responses:
+        '200':
+          description: Successfully fetched passkey transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyTransactionsResponse'
+              example:
+                transactions:
+                - transactionId: 5b5402eb-30d6-4b33-a209-bb2709b41262
+                  ref: /credentials/passkeys/d7e07b27-a32a-4a85-a4ad-23689d651d50?userId=8710745d-18bd-441d-91f8-44fd040323a9
+                  operationType: AUTHENTICATION
+                  state: COMPLETED
+                  created: '2025-06-02T07:44:00.172Z'
+                  passkeyId: d7e07b27-a32a-4a85-a4ad-23689d651d50
+                - transactionId: 99c78bcd-df0d-4f01-a92d-6b62eee0ee62
+                  ref: /credentials/passkeys/d7e07b27-a32a-4a85-a4ad-23689d651d50?userId=8710745d-18bd-441d-91f8-44fd040323a9
+                  operationType: REGISTRATION
+                  state: COMPLETED
+                  created: '2025-06-02T07:42:46.055Z'
+                  passkeyId: d7e07b27-a32a-4a85-a4ad-23689d651d50
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'reuseid:user:read' on the target resource 'a-sdge-c2z0wgHkZjpBnS7uB621'
+                status: 403
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/reuseid/#section/Using-this-API/Errors
+                title: Passkey ID does not exist
+                code: passkey_id_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: Cannot obtain passkey transaction properties for the given passkeyId e0c9183f-a890-41fb-b908-df4817b30957
+    servers:
+    - url: https://api.signicat.com/reuseid/core
+components:
+  schemas:
+    PasskeyServiceGetPasskeyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the passkey, in a valid UUID format.
+        keyId:
+          type: string
+          description: The generated key ID for the ReuseID user's passkey.
+        name:
+          type: string
+          description: 'The name that the ReuseID user gives the passkey.
+
+
+            **Note**:
+
+            - This is a user-friendly name that helps the ReuseID user to identify their passkey in ReuseID.
+
+            - This is not the same as the `name` derived from the user attributes, shown in the overlays for some passkey providers.
+
+            '
+        accountId:
+          type: string
+          description: The ID of the account that carried out the operation.
+        publicKey:
+          type: string
+          description: The public key of the passkey.
+        domain:
+          type: string
+          description: The domain that the passkey is valid for.
+        created:
+          type: string
+          description: 'The timestamp when the passkey was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        lastUsed:
+          type: string
+          description: 'The timestamp when the passkey was last used.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        aaGuid:
+          type: string
+          description: The Authenticator Attestation Global Unique Identifier (AAGUID), which uniquely identifies the make and model of a security key or passkey-providing software.
+        userVerification:
+          type: boolean
+          description: A flag that indicates whether a user verification check was carried out during the creation of a passkey.
+        userPresence:
+          type: boolean
+          description: A flag that indicates whether a user presence check was carried out during the creation of a passkey.
+    PasskeyTransactionsResponse:
+      type: object
+      properties:
+        previous:
+          type: string
+          description: A URI that can be used to get the previous set of transactions.
+          example: /credentials/passkeys/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        next:
+          type: string
+          description: A URI that can be used to get the next set of transactions.
+          example: /credentials/passkeys/6d7783a9-34d7-4f19-8ceb-ada763ffed2a/transactions?limit=10&offset=80a8b98d-7a88-4239-947e-b938ecd55f5b&userId=6f29e1d4-6b36-4b80-9187-52dfc61c4a51
+        limit:
+          type: integer
+          format: int32
+          description: 'The number of objects (transactions) that are shown on each page.
+
+
+            **Possible values**: This is a whole number ranging from `1` to `100`.
+
+            '
+          example: 10
+        transactions:
+          type: array
+          description: A list of passkey transactions.
+          items:
+            $ref: '#/components/schemas/PasskeyTransaction'
+    PasskeyTransaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The ID of the transaction.
+          example: 3c68023d-c524-401c-b632-e495c498e2d0
+        ref:
+          type: string
+          description: A link to the operation object for the transaction.
+          example: /registrations/3c68023d-c524-401c-b632-e495c498e2d0
+        operationType:
+          type: string
+          description: 'The operation type that was used for the transaction.
+
+
+            **Possible values**: See the [Operation types](/apis/reuseid/#section/Common-concepts/Operation-types) table.
+
+            '
+          example: ACTIVATION
+        state:
+          type: string
+          description: The state of the transaction.
+          example: SUCCESS
+        created:
+          type: string
+          description: 'The timestamp when the transaction was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        expires:
+          type: string
+          description: 'The timestamp when the transaction expires.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+        passkeyId:
+          type: string
+          description: 'The ID of the ReuseID user''s credential that was used for the operation.
+
+            '
+x-refined-from:
+- reuseid-openapi.json
+- signicat-reuseid-openapi.yml

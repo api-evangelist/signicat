@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-archive-schema.json",
+  "title": "Archive",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-archive-openapi.yml#/components/schemas/Archive",
+  "type": "object",
+  "deprecated": false,
+  "properties": {
+    "objectId": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "status": {
+      "readOnly": true,
+      "type": "string",
+      "enum": [
+        "created",
+        "running_pipeline",
+        "in_sync",
+        "error",
+        "missing_file",
+        "processing",
+        "failed",
+        "expired",
+        "deleted"
+      ]
+    },
+    "retentionPeriod": {
+      "maxLength": 50,
+      "description": "The time period the resource should be archived. Format: “duration + unit”",
+      "type": "string"
+    },
+    "tags": {
+      "maxItems": 50,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keywords": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "file": {
+      "$ref": "#/$defs/UploadedFileData"
+    },
+    "createdAt": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastUpdatedAt": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "retentionPeriod"
+  ],
+  "$defs": {
+    "UploadedFileData": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,628 @@
+openapi: 3.2.0
+info:
+  title: Signicat Accounts API
+  version: '1.0'
+  description: 'Operations tagged Accounts across 2 of this provider''s published API definitions: mobileid-admin-openapi.json, signicat-mobileid-admin-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/mobileid/admin
+tags:
+- name: Accounts
+  description: 'The MobileID Admin accounts API provides you with operations related to administering your MobileID account, such as adding an account, and fetching information about an account.
+
+
+    -----
+
+
+    **Note**: The request and response samples are for illustrative purposes only,
+
+    and discrepancies can occur between the sample values in request and response objects.
+
+
+    -----'
+paths:
+  /accounts:
+    get:
+      tags:
+      - Accounts
+      summary: Get MobileID account
+      description: The **Get MobileID account** operation returns the properties of a MobileID account.
+      operationId: getAccount
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      - name: statistics
+        in: query
+        description: 'Control whether the statistics (`AccountStatistics`) is returned in the response object. Statistics are returned by default.
+
+
+          **Note**: Returned statistical data is not live data.
+
+          '
+        required: false
+        schema:
+          type: boolean
+          default: true
+          description: 'Control whether the statistics (`AccountStatistics`) is returned in the response object. Statistics are returned by default.
+
+
+            **Note**: Returned statistical data is not live data.
+
+            '
+          example: true
+        example: true
+      responses:
+        '200':
+          description: Successfully fetched the MobileID account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+              examples:
+                Sandbox account.:
+                  description: Response sample when fetching a sandbox account.
+                  value:
+                    created: '2023-09-06T06:47:20.000Z'
+                    modified: '2023-09-06T06:49:23.000Z'
+                    organisationId: o-d-Abcdefgh1234JC4Cczm4
+                    id: a-sdge-abcdefghijk123456789
+                    name: Sample Account
+                    type: SANDBOX
+                    state: ENABLED
+                    sandboxProperties:
+                      sandboxDeviceLimit: '100'
+                      numberOfDevices: '0'
+                    statistics:
+                      numberOfActiveDevices: '0'
+                      numberOfActiveUsers: '0'
+                    configurations:
+                    - description: Created by admin.
+                      default: true
+                      accountId: a-sdge-abcdefghijk123456789
+                      id: 5ecbf73d-90bd-46a7-a58e-9ac56d229e3e
+                      properties:
+                        applicationId: a-sdge-abcdefghijk123456789
+                        inactiveDeviceDeleteRetentionTime: '365'
+                      additionalFeatures:
+                        passportScanEnabled: false
+                    productTimeTrials:
+                      riskIndicatorsRuleBased:
+                        validTo: '2026-09-20'
+                        state: ACTIVE
+                    onboardedForMobileId: true
+                    onboardedForPasskeys: false
+                Production account.:
+                  description: Response sample when fetching a production account.
+                  value:
+                    created: '2023-09-06T08:47:34.000Z'
+                    modified: '2023-09-06T09:33:16.000Z'
+                    organisationId: o-d-Abcdefgh1234JC4Cczm4
+                    id: a-pdge-abcdefghijk123456789
+                    name: Sample Account
+                    type: PRODUCTION
+                    state: ENABLED
+                    statistics:
+                      numberOfActiveDevices: '0'
+                      numberOfActiveUsers: '0'
+                    configurations:
+                    - description: Created by admin.
+                      default: true
+                      accountId: a-pdge-abcdefghijk123456789
+                      id: 5cc3cb57-6e83-4bc2-8d89-608030e850b4
+                      properties:
+                        applicationId: a-pdge-abcdefghijk123456789
+                        inactiveDeviceDeleteRetentionTime: '365'
+                      additionalFeatures:
+                        passportScanEnabled: false
+                    productTimeTrials:
+                      riskIndicatorsRuleBased:
+                        validTo: '2026-09-20'
+                        state: ACTIVE
+                    onboardedForMobileId: true
+                    onboardedForPasskeys: false
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Account does not exist
+                code: account_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching account with ID : a-sdge-abcdefghijk123455555. Account does not exist.'
+      security:
+      - Access token with client with Signicat MobileID Config Admin role:
+        - signicat-api
+    post:
+      tags:
+      - Accounts
+      summary: Add MobileID account
+      description: 'The **Add MobileID account** operation fulfils the onboarding of your account to MobileID by adding an account to the MobileID service.
+
+
+        This is a prerequisite for all other operations.
+
+
+        -----
+
+
+        **Note:** This operation is a part of the onboarding process.
+
+
+        -----'
+      operationId: addAccount
+      parameters:
+      - name: onboardingType
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      responses:
+        '201':
+          description: Successfully added a MobileID account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+              examples:
+                Sandbox account.:
+                  description: Response sample when adding a sandbox account.
+                  value:
+                    created: '2023-09-06T06:54:18.000Z'
+                    organisationId: o-d-Abcdefgh1234JC4Cczm4
+                    id: a-sdge-abcdefghijk123456789
+                    name: Sample Account
+                    type: SANDBOX
+                    state: ENABLED
+                    sandboxProperties:
+                      sandboxDeviceLimit: '100'
+                      numberOfDevices: '0'
+                    statistics:
+                      numberOfActiveDevices: '0'
+                      numberOfActiveUsers: '0'
+                    configurations:
+                    - description: Created by admin.
+                      default: true
+                      accountId: a-sdge-abcdefghijk123456789
+                      id: 02510f61-6faf-44e0-9d58-e62cfc35d5aa
+                      properties:
+                        applicationId: a-sdge-abcdefghijk123456789
+                        inactiveDeviceDeleteRetentionTime: '365'
+                      additionalFeatures:
+                        passportScanEnabled: false
+                    onboardedForMobileId: true
+                    onboardedForPasskeys: false
+                Production account.:
+                  description: Response sample when adding a production account.
+                  value:
+                    created: '2023-09-06T08:47:34.000Z'
+                    organisationId: o-d-Abcdefgh1234JC4Cczm4
+                    id: a-pdge-abcdefghijk123456789
+                    name: Sample Account
+                    type: PRODUCTION
+                    state: ENABLED
+                    statistics:
+                      numberOfActiveDevices: '0'
+                      numberOfActiveUsers: '0'
+                    configurations:
+                    - description: Created by admin.
+                      default: true
+                      accountId: a-pdge-abcdefghijk123456789
+                      id: 5cc3cb57-6e83-4bc2-8d89-608030e850b4
+                      properties:
+                        applicationId: a-pdge-abcdefghijk123456789
+                        inactiveDeviceDeleteRetentionTime: '365'
+                      additionalFeatures:
+                        passportScanEnabled: false
+                    onboardedForMobileId: true
+                    onboardedForPasskeys: false
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Adding new account failed
+                code: add_account_failure
+                status: 409
+                detail: 'Adding account failed. No data has been created in database. Account with ID: a-sdge-abcdefghijk123456789 already exists.'
+                traceId: 465e9b0ed4c340b8a3b673ea8233f54c
+      security:
+      - Access token with client with MobileID Config Editor role:
+        - signicat-api
+    patch:
+      tags:
+      - Accounts
+      summary: Update account
+      description: Updates a specified customer account.
+      operationId: updateAccount
+      parameters:
+      - name: signicat-accountid
+        in: query
+        description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+          **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+          '
+        required: false
+        schema:
+          type: string
+          description: 'The ID of the Signicat account, in a valid UUID format.
+
+
+            **Note**: This is an optional parameter, as the account ID is fetched from the access token that you use when initiating the request.
+
+            '
+          example: a-sdge-abcdefghijk123456789
+        example: a-sdge-abcdefghijk123456789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+            example:
+              state: ENABLED
+        required: true
+      responses:
+        '200':
+          description: The request to update the customer account was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalAccountResponse'
+              example:
+                id: a-sdge-abcdefghijk123456789
+                state: ENABLED
+                organisationId: 1fb22154-8633-417b-a918-cd59a3ccd12f
+                encapApiKey: M2NhZjFmYTItNmUyMi00NGFkLWE0YmUtZTZlMTZ...
+                sandboxDeviceLimit: '200'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              examples:
+                Unknown property.:
+                  description: Unknown property.
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Unknown property
+                    code: unknown_property
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: 'Unknown property: ''naaame'''
+                Could not parse JSON request:
+                  description: Could not parse JSON request
+                  value: "{\n    \"type\": \"https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors\",\n  \"title\": \"Request parsing error property\",\n  \"code\": \"request_parsing_error\",\n  \"status\": 400,\n  \"traceId\": \"4bf239c088089f2bca77d3a413909f1c\",\n  \"detail\": \"Could not parse content. Message: 'Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries'\"\n}\n"
+                Invalid Account ID format:
+                  description: Invalid Account ID format
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    detail: accountId 'a-spge-accountid31234567890xxx' is not in valid format
+                Invalid request parameters:
+                  description: Invalid request parameters
+                  value:
+                    type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                    title: Invalid request
+                    code: invalid_request
+                    status: 400
+                    detail: Your request body parameters have failed validation.
+                    traceId: 4bf239c088089f2bca77d3a413909f1c
+                    invalidParams:
+                    - name: name
+                      reason: name can be omitted, but cannot be empty
+        '403':
+          description: Forbidden. The user is not authorised to perform this operation.
+          content:
+            application/json:
+              example:
+                code: missing_permission
+                detail: The subject with ID 'dev-ghastly-thread-446' does not have the required permission 'mobileid:user:read' on the target resource 'a-sdge-abcdefghijk123456789'
+                status: 403
+                title: You do not have the required permission to perform this operation on the target resource
+                type: https://developer.signicat.com/errors?code=missing_permission
+        '404':
+          description: Not found. The server cannot find the requested resource.
+          content:
+            application/json:
+              example:
+                type: https://developer.signicat.com/apis/mobileid/#section/Using-this-API/Errors
+                title: Account does not exist
+                code: account_does_not_exist
+                status: 404
+                traceId: 4bf239c088089f2bca77d3a413909f1c
+                detail: 'Failed fetching account with ID : a-sdge-abcdefghijk123455555. Account does not exist.'
+      security:
+      - Access token with client with Signicat MobileID Config Admin role:
+        - signicat-api
+    servers:
+    - url: https://api.signicat.com/mobileid/admin
+components:
+  schemas:
+    RiskIndicatorsRuleBasedTimeTrial:
+      type: object
+      properties:
+        validTo:
+          type: string
+          description: 'The date when the time trial expires.
+
+
+            **Format**: `YYYY-MM-DD`.
+
+            '
+        state:
+          type: string
+          description: 'The state of the time trial.
+
+
+            **Possible values**: This is returned as an enum, and can be either `ACTIVE` or `EXPIRED`.
+
+            '
+          enum:
+          - ACTIVE
+          - EXPIRED
+          example: ACTIVE
+    InternalAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Account ID
+          example: a-sdge-abcdefghijk123456789
+        state:
+          type: string
+          description: Account state
+          enum:
+          - ENABLED
+          - DISABLED
+          - DEACTIVATED
+          example: ENABLED
+        organisationId:
+          type: string
+          description: Account's organisation ID
+          example: o-d-Abcdefgh1234JC4Cczm4
+          maxLength: 64
+          minLength: 0
+        sandboxDeviceLimit:
+          type: string
+          description: The maximum number of devices allowed for sandbox account
+          example: '100'
+        encapApiKeyId:
+          type: string
+          description: Account's Encap API key ID
+          example: 1fb22154-8633-417b-a918-cd59a3ccd12f
+    SandboxAccountProperties:
+      type: object
+      properties:
+        sandboxDeviceLimit:
+          type: string
+          description: The maximum number of mobile devices allowed for the sandbox account.
+          example: '100'
+        numberOfDevices:
+          type: string
+          description: The number of mobile device currently registered for the sandbox account.
+          example: '0'
+    ProductTimeTrials:
+      type: object
+      properties:
+        riskIndicatorsRuleBased:
+          $ref: '#/components/schemas/RiskIndicatorsRuleBasedTimeTrial'
+          description: The time trial object for rule based risk indicators.
+    AccountConfigProperties:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          description: The ID of the application configuration.
+          example: a-sdge-abcdefghijk123456789
+        inactiveDeviceDeleteRetentionTime:
+          type: string
+          description: 'The number of days that a device can be inactive before it is deleted. The inactive period starts from the time when the device was last used.
+
+            If not provided, the default value of 365 will be used'
+          example: '365'
+      required:
+      - inactiveDeviceDeleteRetentionTime
+    AccountUpdateRequest:
+      type: object
+      properties:
+        state:
+          type: string
+          description: Account state
+          enum:
+          - ENABLED
+          - DISABLED
+          example: ENABLED
+    AccountConfig:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A description of the configuration.
+          example: Short description of the configuration
+        default:
+          type: boolean
+        accountId:
+          type: string
+          description: The ID of the account which the configuration belongs to.
+          example: a-sdge-abcdefghijk123456789
+        id:
+          type: string
+          description: The ID of the configuration.
+          example: 2e55269a-f191-48ed-83f8-a3c07414a0d0
+        properties:
+          $ref: '#/components/schemas/AccountConfigProperties'
+          description: An object that contains all of the properties for the account.
+        additionalFeatures:
+          $ref: '#/components/schemas/AccountConfigFeatures'
+          description: An object that contains the features of the account configuration.
+    AccountStatistics:
+      type: object
+      properties:
+        numberOfActiveDevices:
+          type: string
+          description: The number of active devices over the last 180 days.
+          example: '0'
+        numberOfActiveUsers:
+          type: string
+          description: The number of active users over the last 180 days.
+          example: '0'
+    AccountConfigFeatures:
+      type: object
+      properties:
+        passportScanEnabled:
+          type: boolean
+          description: Value indicating if passport scan feature is enabled for this account configuration
+          example: false
+    AccountResponse:
+      type: object
+      properties:
+        created:
+          type: string
+          description: 'The timestamp when the MobileID account was created.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-22T21:47:27'
+        modified:
+          type: string
+          description: 'The timestamp when the MobileID account was updated.
+
+
+            **Format**: `yyyy-MM-dd''T''HH:mm:ss.SSSZ`.
+
+            '
+          example: '2021-01-22T21:52:27'
+        organisationId:
+          type: string
+          description: The ID of the account's organisation.
+          example: o-d-Abcdefgh1234JC4Cczm4
+        id:
+          type: string
+          description: The ID of the account.
+          example: a-sdge-abcdefghijk123456789
+        name:
+          type: string
+          description: The name of the account.
+          example: acme
+        type:
+          type: string
+          description: 'The type of account.
+
+
+            This is returned as an enum, and can be either `SANDBOX` or `PRODUCTION`.
+
+            '
+          enum:
+          - SANDBOX
+          - PRODUCTION
+          example: SANDBOX
+        state:
+          type: string
+          description: 'The state of the account.
+
+
+            This is returned as an enum, and can be either `ENABLED`, `DISABLED` or `DEACTIVATED`.
+
+            '
+          enum:
+          - ENABLED
+          - DISABLED
+          - DEACTIVATED
+          example: ENABLED
+        sandboxProperties:
+          $ref: '#/components/schemas/SandboxAccountProperties'
+          description: An object that is returned if the fetched account type is `SANDBOX`, which contains properties of the sandbox account.
+        statistics:
+          $ref: '#/components/schemas/AccountStatistics'
+          description: An object that contains account statistics for the last 180 days.
+        configurations:
+          type: array
+          description: A list containing account configurations.
+          items:
+            $ref: '#/components/schemas/AccountConfig'
+        productTimeTrials:
+          $ref: '#/components/schemas/ProductTimeTrials'
+          description: An object that contains existing product time-trials.
+        onboardedForMobileId:
+          type: boolean
+          description: Flag indicating that this account is onboarded for mobileid
+        onboardedForPasskeys:
+          type: boolean
+          description: Flag indicating that this account is onboarded for passkeys
+  securitySchemes:
+    Access_token_with_client_with_MobileID_Config_Editor_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with MobileID Config Editor role
+    Access_token_with_client_with_Signicat_MobileID_Config_Admin_role:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token with client with Signicat MobileID Config Admin role
+x-refined-from:
+- mobileid-admin-openapi.json
+- signicat-mobileid-admin-openapi.yml

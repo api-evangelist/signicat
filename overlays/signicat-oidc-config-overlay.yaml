@@ -1,0 +1,150 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Signicat OIDC Config API
+  version: 1.0.0
+extends: ../openapi/_original/signicat-oidc-config-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: openapi/signicat-oidc-config-openapi.yml
+actions:
+- target: $
+  description: Link the provider API reference page (listed in https://developer.signicat.com/llms-apis.txt).
+  update:
+    externalDocs:
+      description: Signicat API reference
+      url: https://developer.signicat.com/apis/oidc-config/
+- target: $.paths['/clients'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClients
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postClients
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putClientsClientId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}'].patch
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: patchClientsClientId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteClientsClientId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/lookup'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdLookup
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/clone'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postClientsClientIdClone
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/history'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdHistory
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/history/{version}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdHistoryVersion
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/health'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdHealth
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/custom-claims'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdCustomClaims
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/custom-claims'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postClientsClientIdCustomClaims
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/custom-claims/{customClaimId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdCustomClaimsCustomClaimId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/custom-claims/{customClaimId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putClientsClientIdCustomClaimsCustomClaimId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/custom-claims/{customClaimId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteClientsClientIdCustomClaimsCustomClaimId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/public-keys'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdPublicKeys
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/public-keys'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postClientsClientIdPublicKeys
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/public-keys/{keyId}'].put
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: putClientsClientIdPublicKeysKeyId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/public-keys/{keyId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdPublicKeysKeyId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/public-keys/{keyId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteClientsClientIdPublicKeysKeyId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/secrets'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdSecrets
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/secrets'].post
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: postClientsClientIdSecrets
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/secrets/{secretId}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getClientsClientIdSecretsSecretId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/clients/{clientId}/secrets/{secretId}'].delete
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: deleteClientsClientIdSecretsSecretId
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/errors'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getErrors
+    x-apievangelist-derived-operationId: true
+- target: $.paths['/errors/{errorCode}'].get
+  description: Derived operationId (operation ships without one); x-apievangelist-derived marks it as ours.
+  update:
+    operationId: getErrorsErrorCode
+    x-apievangelist-derived-operationId: true

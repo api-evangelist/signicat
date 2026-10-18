@@ -1,0 +1,1626 @@
+# x-archived-from: signicat-signing-enterprise-openapi.yml
+# x-archived-on: 2026-10-18
+openapi: 3.0.1
+info:
+  title: Signicat Sign API
+  description: '
+
+    - **Base URL**: `https://api.signicat.com/enterprise/sign/`
+
+    - **Documentation**: See the [Enterprise Sign API](https://developer.signicat.com/cs/enterprise/apis/sign/sign-api/) developer documentation.
+
+    - **Support**: [Create a support ticket](https://dashboard.signicat.com/contact-us/tickets/) in the Signicat Dashboard.
+
+
+    # Introduction
+
+
+    The Signicat Enterprise Sign API (v1) is a REST API for managing documents and signing orders as part of Signicat Sign.
+
+
+    This REST API uses the OAuth 2.0 protocol for authorisation. All request and response bodies are formatted in JSON.
+
+
+    # Get started
+
+
+    Before you can start making requests to this API, you need to learn how to connect to it. To do this, see the **Connect to Signicat APIs** [Quick start guide](/docs/dashboard/connect-to-signicat-apis/quick-start-guide/).
+
+
+    ## Audit logs
+
+
+    Use the Signicat **Audit logs** service to see documented evidence of the sequence of activities that have affected a system.
+
+
+    - Access it: **Signicat Dashboard** > **Settings** > [**Audit logs**](https://dashboard.signicat.com/audit)
+
+    - For information generic to all Signicat audit logs, see the general [Audit logs](/docs/dashboard/settings/audit-logs/) documentation.
+
+
+    ## Errors
+
+
+    When you make an API call to Signicat and an error occurs, you will receive a response message with an error code.
+
+
+    - For errors generic to all Signicat APIs, see the general [Error codes](/docs/dashboard/error-codes/) documentation.
+
+
+    ## Events (callback)
+
+
+    Use the Signicat **Events** service to automatically receive information about when something happens in one of our services into your system.
+
+
+    - Access it: Go to **Signicat Dashboard** > **Settings** > [**Events**](https://dashboard.signicat.com/events)
+
+    - For information generic to all Signicat events, see the general [Events](/docs/dashboard/settings/events/) documentation.
+
+
+    > **Note**: This is often referred to as callback.
+
+    '
+  termsOfService: ''
+  contact: ''
+  license: ''
+  version: v1
+servers:
+- url: https://api.signicat.com/enterprise/sign
+tags:
+- name: document
+  description: Documents are stored short-term in Signicat's Session Data Storage. Documents are referenced by a *documentID*.
+- name: archive-document
+  description: Archived documents are stored long-term in Signicat's document archive. Archived documents are referenced by an *archiveID*.
+- name: signing-order
+  description: A signing order represents a single signing process, which can consist of one or more documents and signees
+externalDocs:
+  description: Getting started with electronic signatures
+  url: https://developer.signicat.com/docs/electronic-signing/
+paths:
+  /archive-documents/{archiveId}:
+    get:
+      tags:
+      - archive-document
+      summary: Get archived document
+      description: Get a document from Signicat's document archive
+      operationId: getArchiveDocument
+      parameters:
+      - name: archiveId
+        in: path
+        description: The ID of the document stored in Signicat's document archive.
+        required: true
+        schema:
+          type: string
+        example: 200320193lrce4j85hpgdns4ivbuts5dy7pgarm1e0iozjq4qh2tey77jv
+      responses:
+        '200':
+          description: The archived document was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    delete:
+      tags:
+      - archive-document
+      summary: Delete archived document
+      description: Delete a document from Signicat's document archive
+      operationId: deleteArchivedDocument
+      parameters:
+      - name: archiveId
+        in: path
+        description: The ID of the document stored in Signicat's document archive.
+        required: true
+        schema:
+          type: string
+        example: 200320193lrce4j85hpgdns4ivbuts5dy7pgarm1e0iozjq4qh2tey77jv
+      responses:
+        '204':
+          description: The archived document was successfully deleted.
+        '404':
+          description: The document was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /documents/{documentId}:
+    get:
+      tags:
+      - document
+      summary: Get document
+      description: Get a document from Signicat's document storage backend
+      operationId: getSdsDocument
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/x-ltv-sdo:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The documentID is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    delete:
+      tags:
+      - document
+      summary: Delete document
+      description: Delete a document from Signicat's document storage backend
+      operationId: deleteFileOnSds
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: The document was successfully deleted
+        '400':
+          description: The documentID is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /documents:
+    post:
+      tags:
+      - document
+      summary: Upload session document
+      description: Upload a document to Signicat's session data storage
+      operationId: uploadFileToSds
+      requestBody:
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+          text/plain:
+            schema:
+              type: string
+              format: binary
+          text/bidxml:
+            schema:
+              type: string
+              format: binary
+          application/x-ltv-sdo:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: The session document was succesfully uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentRefId'
+        '400':
+          description: Cannot open or read supplied PDF
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '411':
+          description: The uploaded document cannot be empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '415':
+          description: The uploaded document cannot be password protected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders:
+    post:
+      tags:
+      - signing-order
+      summary: Create signing order
+      description: Create a new signing order
+      operationId: createRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigningOrder'
+        required: true
+      responses:
+        '201':
+          description: The signing order was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigningOrder'
+        '400':
+          description: The signing order is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}:
+    get:
+      tags:
+      - signing-order
+      summary: Get signing order
+      description: Return the signing order with the given ID
+      operationId: getSigningOrder
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The signing order was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigningOrder'
+        '404':
+          description: The signing order was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+    delete:
+      tags:
+      - signing-order
+      summary: Delete signing order
+      description: Delete an existing signing order
+      operationId: deleteSigningOrder
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: The signing order was successfully deleted
+        '400':
+          description: The signing order id is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The signing order was not found
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/packaging-tasks/{packagingTaskId}/result:
+    get:
+      tags:
+      - signing-order
+      summary: Get packaging task result document
+      description: Get the result document of a packaging task
+      operationId: getResultDocument
+      parameters:
+      - name: packagingTaskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The packaging task result document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/x-pades:
+              schema:
+                type: string
+                format: binary
+        '303':
+          description: The document can be downloaded in another endpoint specified by the Location header
+        '400':
+          description: The packagingTaskID is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The document was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/packaging-tasks/{packagingTaskId}/status:
+    get:
+      tags:
+      - signing-order
+      summary: Get packaging task status
+      description: Get the status of a packaging task
+      operationId: getStatus
+      parameters:
+      - name: packagingTaskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The packaging task status was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackagingTaskStatusInfo'
+        '404':
+          description: The packagingTaskID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/artifact:
+    put:
+      tags:
+      - signing-order
+      summary: Get the authentication artifact for a task
+      description: Generate the value of the authentication artifact. Replaces the old artifact if one exists.
+      operationId: createArtifact
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The retrieved artifact along with information about the task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artifact'
+        '400':
+          description: The artifact could not be retireved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/documents/{documentId}/generated:
+    get:
+      tags:
+      - signing-order
+      summary: Get generated document
+      description: Get a generated document from Signicat's document storage
+      operationId: getGeneratedDocument
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The generated document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The documentID is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/documents/{documentId}/original:
+    get:
+      tags:
+      - signing-order
+      summary: Get original document
+      description: Get an original document from Signicat's document storage
+      operationId: getOriginalDocument
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The original document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The documentID is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/documents/{documentId}/result:
+    get:
+      tags:
+      - signing-order
+      summary: Get signed document
+      description: Get a signed document from Signicat's document storage
+      externalDocs:
+        description: The signing result
+        url: https://developer.signicat.com/docs/electronic-signing/4-signed-result.html
+      operationId: getResultDocument_1
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The signed document was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+        '303':
+          description: The signed document is stored in document archive
+        '400':
+          description: The documentID is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+        '404':
+          description: The documentID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/events:
+    get:
+      tags:
+      - signing-order
+      summary: Get a list of task events
+      description: Get a list of events that have occurred on a task
+      operationId: getTaskEvents
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The task's events were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '404':
+          description: The taskID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/forwards:
+    get:
+      tags:
+      - signing-order
+      summary: Get a list describing details on the forwarding of this Task
+      description: Return information related to the forwarding of this task
+      operationId: getTaskForwardingInfos
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The forwarding information was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForwardingInfo'
+        '404':
+          description: The task was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+  /orders/{orderId}/tasks/{taskId}/status:
+    get:
+      tags:
+      - signing-order
+      summary: Get task status
+      description: Get signing order task current status
+      operationId: getStatus_1
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The task status was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusInfo'
+        '404':
+          description: The task was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProblem'
+      security:
+      - signrestOauth2Security:
+        - signicat-api
+components:
+  schemas:
+    ClientProblem:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        type:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    DocumentRefId:
+      type: object
+      properties:
+        documentId:
+          type: string
+          example: 0807201949xfrupvbzx7o07uihsihsx3xllslasvk8qtaojow3792xjucp
+    Authentication:
+      type: object
+      properties:
+        methods:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: One or more methods. The method names should match the method definitions on the service.
+          example:
+          - nbid
+          items:
+            type: string
+            description: One or more methods. The method names should match the method definitions on the service.
+            example: '["nbid"]'
+        artifact:
+          type: boolean
+          description: Set to true if an authentication artifact should be generated
+          example: false
+      description: The Authentication data type describes how an end user may authenticate themselves before being presented with the documents
+    Dialog:
+      required:
+      - message
+      - title
+      type: object
+      properties:
+        title:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The title or header of the dialog message
+          example: Signing request
+        message:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The message text
+          example: Please sign these documents
+      description: The Dialog data type describes a text message that is connected to a task or a specific document. The dialog message is presented on the web to the end user.
+    Document:
+      required:
+      - action
+      - source
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this document in the signing order
+          example: 7f5be5ec-650e-4d6e-9007-e420a7dd81aa
+        description:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: A human readable description of the document. This description is used in the user Interface, and also part of the Signed Data Object for some eIDs.
+          example: Loan agreement
+        action:
+          type: string
+          description: The action that the end user is asked to perform on this document
+          example: SIGN
+          enum:
+          - SIGN
+          - VIEW
+          - UPLOAD
+        source:
+          type: string
+          description: The source of the document
+          example: SESSION
+          enum:
+          - SESSION
+          - UPLOAD
+          - RESULT
+        documentRef:
+          type: string
+          description: A reference to a document. If source is set to SESSION, this is the unique identifier of the document outside the signing order. If source is set to UPLOAD, then this should be omitted.
+          example: 0807201949xfrupvbzx7o07uihsihsx3xllslasvk8qtaojow3792xjucp
+        externalReference:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: Optional information about the document that will be stored in the signed data object as an external reference. Only some SDO formats supports this.
+          example: 427bbe68-a161-11e9-a2a3-2a2ae2dbcce4
+        signTextEntry:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: Optional sign-text information that will be displayed to the end user in the final parts of the signing ceremony. May not be supported by all eID methods and document formats. Meant to be used for relatively short texts. Currently, the max length is 1024 chars.
+          example: 'ID: 134256'
+        sendResultToArchive:
+          type: boolean
+          description: If the signed or uploaded document is to be sent to the archive for permanent storage
+          example: false
+        form:
+          $ref: '#/components/schemas/Form'
+        referenceTaskId:
+          type: string
+        referenceDocId:
+          type: string
+      description: The Document data type is used for describing a document upon which the end user should perform an action
+    Form:
+      type: object
+      properties:
+        interactive:
+          type: boolean
+          description: Set to true if the form should be interactive
+        inputParams:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of parameters to be prefilled in the form
+          items:
+            $ref: '#/components/schemas/FormParam'
+      description: The Form data type is used when requesting an input form. This is only relevant if you are using Signicat Forms.
+    FormParam:
+      required:
+      - name
+      - value
+      type: object
+      properties:
+        name:
+          maxLength: 128
+          minLength: 0
+          type: string
+          description: The name of the parameter. This must match the name of the parameter in the form template.
+        value:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The value of the parameter
+      description: The FormParam data type describes a specific parameter in a form
+    LoginHint:
+      required:
+      - methods
+      - name
+      - value
+      type: object
+      properties:
+        name:
+          maxLength: 128
+          minLength: 0
+          type: string
+          description: The name of the login hint.
+        value:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The value of the login hint.
+        methods:
+          maxItems: 20
+          minItems: 1
+          type: array
+          description: The methods for which to use the login hint.
+          items:
+            type: string
+            description: The methods for which to use the login hint.
+      description: Login hints are supplied as prefilled parameters to methods.
+    Method:
+      type: object
+      properties:
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The name of the eID method. If the name is specified, the type must also be specified.
+          example: nbid-sign
+        type:
+          type: string
+          description: The type of signature to create using the given method
+          example: SIGNED_STATEMENT
+          enum:
+          - AUTHENTICATION_BASED
+          - SIGNED_STATEMENT
+          - THIRD_PARTY
+        handwritten:
+          type: boolean
+          description: Set to true if a handwritten signature should be applied after signing. If set to true with no method name given, only a handwritten signature will be requested.
+          example: false
+      description: The Method data type specifies the name of an eID method to use for signing, the type of the method and if a handwritten signature should be applied or not
+    NotificationTemplateParams:
+      type: object
+      properties:
+        id:
+          maxLength: 190
+          minLength: 1
+          type: string
+          description: A unique id for NotificationTemplateParams in the scope of the signing order.The id must be created by the client when the notification is created.
+          example: c68c7fd4-600c-4e4c-964e-8e8d15a24e61
+        footer:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: The footer text of the email notification. Supports linebreaks. If no footer is supplied, a default footer will be used.
+          example: Footer text \n ©Signicat
+        button:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The button text for email notification. If no button is supplied, no button element will be displayed.
+          example: Click here to sign
+        linkText:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: An alternative linkText, will be followed by the task URL. If no linkText is supplied, no linkText element will be displayed in the email.
+          example: You can also copy this link into your browser
+        logoUrl:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The URL to be used for the logo image in the email notification. If no logoUrl is supplied, a default logo wil be used
+          example: https://developer.signicat.com/wp-content/uploads/2020/03/signicat-logo.png
+      description: The NotificationTemplateParams contains values that will be inserted in stylized HTML email notifications.
+    PackagingTask:
+      required:
+      - documents
+      - method
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this packaging task. The id must be specified by the client that creates the packaging task. The id must be unique among all ids in the Packaging Task list.
+          example: 83241c55-8813-495c-9d2f-390b6a39ea29
+        sendToArchive:
+          type: boolean
+          description: 'Set to true if the result of the packaging task is to be sent to the archive for permanent storage after it is packaged. Default value: false.'
+          example: true
+        method:
+          type: string
+          description: The name of the packaging method to be used in the packaging task. The method name should match the method definition on the service.
+          example: pades
+        notifications:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: Notifications that should be sent out either when this packaging task is created or later (as specified in the notification).
+          items:
+            $ref: '#/components/schemas/PackagingTaskNotification'
+        documents:
+          type: array
+          description: Documents to be used as input to this packaging task. See the documentation of the PackagingTaskDocument data type.
+          items:
+            $ref: '#/components/schemas/PackagingTaskDocument'
+      description: The PackagingTask data type describes a packaging operation to be performed on one or more signed documents, e.g. packaging one or more XAdES documents into a single PAdES document. The input to the operation is a set of signed documents resulting from the regular tasks in the current request. For packaging across document action requests, the PackagingService must be used.
+    PackagingTaskDocument:
+      required:
+      - documentIds
+      type: object
+      properties:
+        taskId:
+          type: string
+          description: The unique identifier of the task
+          example: b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        documentIds:
+          type: array
+          description: List of document IDs to include from the task with the given taskId.
+          example:
+          - 7f5be5ec-650e-4d6e-9007-e420a7dd81aa
+          items:
+            type: string
+            description: List of document IDs to include from the task with the given taskId.
+            example: '["7f5be5ec-650e-4d6e-9007-e420a7dd81aa"]'
+      description: The PackagingTask data type groups together signed documents that belong to the same task in order to be packed into a single PAdES document.
+    PackagingTaskNotification:
+      required:
+      - id
+      - recipient
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created.
+          example: e650b754-21dd-4c82-abc4-6f992bd4c271
+        recipient:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: The address of the recipient of this notification
+          example: noreply@signicat.com
+        sender:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS.
+          example: signicat
+        header:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The header or subject text of the Message. Only relevant if the notification type is EMAIL.
+          example: Packaging task completed.
+        message:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: The message text in the notification. Formatting is not supported in notification messages.
+          example: A packaging task has been completed.
+        type:
+          type: string
+          description: The notification type
+          example: EMAIL
+          enum:
+          - SMS
+          - EMAIL
+          - URL
+        schedule:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of PackagingTaskSchedule objects. See the data type for PackagingTaskSchedule.If this field is missing, the notification will be sent once the packaging task is created.
+          items:
+            $ref: '#/components/schemas/PackagingTaskSchedule'
+      description: The PackagingTaskNotification data type describes a notification to an end user or to a system about a packaging task event in the system
+    PackagingTaskSchedule:
+      required:
+      - triggerStatus
+      type: object
+      properties:
+        triggerStatus:
+          type: string
+          description: The status a packaging task needs to have in order to trigger a notification
+          example: COMPLETED
+          enum:
+          - CREATED
+          - COMPLETED
+          - FAILED
+      description: The PackagingTaskSchedule data type specifies when a packaging task notification should be sent.
+    SigningOrder:
+      required:
+      - tasks
+      type: object
+      properties:
+        id:
+          type: string
+          description: A read-only unique identifier for this SigningOrder. Any value set by the client will be ignored.
+          readOnly: true
+        artifact:
+          type: string
+          description: A read-only artifact for this SigningOrder. Any value set by the client will be ignored.
+          readOnly: true
+          example: 9dda9sv2of79fgbwvwvj09w0a
+        clientReference:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: A client specific reference. This value will not be used by the service, but will be returned to the client.
+          example: b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        tasks:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: One or more tasks. See the documentation of the Task data type.
+          items:
+            $ref: '#/components/schemas/Task'
+        notifications:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: One or more notifications that will be sent when the signing order has been completed
+          items:
+            $ref: '#/components/schemas/SigningOrderNotification'
+        daysUntilDeletion:
+          maximum: 30
+          minimum: 1
+          type: integer
+          description: The number of days before the signing order is automatically deleted from Signicat’s storage, after every task's days-to-live have passed. (see daysToLive on the Task element). Documents in the archive will not be deleted even if the signing order that created the documents is deleted. All documents that are not in the archive will be deleted.
+          format: int32
+          example: 7
+        packagingTasks:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/PackagingTask'
+        notificationTemplateParams:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of template params objects to be used to be used in task notifications of type EMAIL
+          items:
+            $ref: '#/components/schemas/NotificationTemplateParams'
+      description: The SigingOrder data type describes a signing order for an action on one or more documents by one or more subjects.
+    SigningOrderNotification:
+      required:
+      - id
+      - recipient
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created.
+          example: 25e0e0de-a171-11e9-a2a3-2a2ae2dbcce4
+        recipient:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: The address of the recipient of this notification
+          example: noreply@signicat.com
+        sender:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS.
+          example: signicat
+        header:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The header or subject text of the Message. Only relevant if the notification type is EMAIL.
+          example: Signingorder completed
+        message:
+          maxLength: 8000
+          minLength: 1
+          type: string
+          description: The message text in the notification. Formatting is not supported in notification messages. [Supports placeholders.](https://developer.signicat.com/enterprise/apis/sign/sign-api/#placeholders-in-notification-messages)
+          example: Ginny and Tinky have completed their tasks and the signing order with ID ${orderId} is completed.
+        type:
+          type: string
+          description: The notification type
+          example: EMAIL
+          enum:
+          - SMS
+          - EMAIL
+          - URL
+      description: The Notification data type describes a notification to an end user or to a system about an event in the system
+    Subject:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this subject. The id must be specified by the client that creates the task. The id must be unique in the scope of the signing order. An id can only consist of characters A-Z, a-z, 0-9 and '-',i.e. “A”, “1”, “Agreement”, “Task123456” etc. The task id will be used in URLs and must not contain sensitive information.
+          example: u7s9ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        attributes:
+          maxItems: 20
+          minItems: 1
+          type: array
+          description: A list of attributes that are used to validate the signer after the signer has returned from the signing or authentication process
+          items:
+            $ref: '#/components/schemas/SubjectAttribute'
+        loginHints:
+          maxItems: 20
+          minItems: 1
+          type: array
+          description: A list of login hints to be passed as prefilled parameters to the method.
+          items:
+            $ref: '#/components/schemas/LoginHint'
+      description: The subject data type specifies the subject that will be used to validate the signer after the signer has either signed the document(s) or authenticated himself or herself
+    SubjectAttribute:
+      required:
+      - name
+      - value
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The name of the attribute to validate against.
+          example: national-id
+        value:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The value of the attribute to validate against.
+          example: '10109001290'
+        methods:
+          maxItems: 20
+          minItems: 1
+          type: array
+          description: The ID method or methods to use for validating the attribute value. If set, this attribute will override the specified name and will match only the corresponding value for the given method.
+          example:
+          - nbid-sign
+          items:
+            type: string
+            description: The ID method or methods to use for validating the attribute value. If set, this attribute will override the specified name and will match only the corresponding value for the given method.
+            example: '["nbid-sign"]'
+      description: The subject attribute data type specifies the attributes that will be used to validate the signer after the signer has either signed the document(s) or authenticated himself or herself
+    Task:
+      required:
+      - documents
+      - signatureMethods
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this task. The id must be specified by the client that creates the task. The id must be unique in the scope of the signing order. An id can only consist of characters A-Z, a-z, 0-9 and '-',i.e. “A”, “1”, “Agreement”, “Task123456” etc. The task id will be used in URLs and must not contain sensitive information.
+          example: b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        profile:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: The name of the graphical profile to use
+          example: default
+        language:
+          maxLength: 2
+          minLength: 2
+          pattern: '[a-z]*'
+          type: string
+          description: 'A two-letter language code. E.g.: en, nb, sv, fi, da'
+          example: nb
+        daysToLive:
+          maximum: 200
+          minimum: 1
+          type: integer
+          description: The number of days from the task is created until the task times out. The end user will not be allowed to access or perform any operation on the task after this deadline.
+          format: int32
+          example: 7
+        configuration:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The name of a Responsive Signflow configuration
+          example: pades
+        documents:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of the documents in the task
+          items:
+            $ref: '#/components/schemas/Document'
+        signatureMethods:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: Specifies the eID signature methods that the end user may use to sign documents
+          items:
+            $ref: '#/components/schemas/Method'
+        authentication:
+          $ref: '#/components/schemas/Authentication'
+        onTaskPostpone:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: The URL where the end user should be returned if they choose to postpone the task
+          example: https://mydomain.com/postpone
+        onTaskComplete:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: The URL where the end user should be returned when the task is completed
+          example: https://mydomain.com/complete
+        onTaskReject:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: The URL where the end user should be returned if the task is cancelled
+          example: https://mydomain.com/reject
+        dialog:
+          $ref: '#/components/schemas/Dialog'
+        notifications:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of notifications that should be sent out either when the task is created or later (as specified in the notification)
+          items:
+            $ref: '#/components/schemas/TaskNotification'
+        signText:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: The text that will be displayed to the end user as part of the signing process and is intended to describe thedocuments, the context and other information about the documents. If configured this field will override the document->signTextEntry field
+        subject:
+          $ref: '#/components/schemas/Subject'
+        dependsOnTasks:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of Task IDs from this Signing Order that this Task depends on. The current Task will not be started before all Tasks in this list are completed.
+          items:
+            type: string
+            description: A list of Task IDs from this Signing Order that this Task depends on. The current Task will not be started before all Tasks in this list are completed.
+        signingUrl:
+          type: string
+          description: The URL for the end user to initiate signing. May not be present if Artifact Authentication was used.
+          readOnly: true
+          example: https://preprod.signicat.com/std/docaction/demo?request_id=2509202069ye6tqxwsz50m8of4z21zegn2ukxury1bfbgml8v9dvzlzimd&task_id=b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        useLegacyDocumentViewer:
+          type: boolean
+          description: Use legacy document viewer. Highly recommended to leave this 'false' or 'null' for everything but BIDXML documents
+          default: false
+      description: The Task data type describes a specific task for an end user. A task could be to sign one or more documents or to open and view a document. A task can require the end user to log in. A task will always have one and only one end user (subject).
+    TaskNotification:
+      required:
+      - id
+      - recipient
+      - type
+      type: object
+      properties:
+        notificationTemplateParamsId:
+          type: string
+          description: An ID referring to the template params to be used. Only relevant if the notification type is EMAIL. If no notificationTemplateParamsId is supplied, the notification will not be HTML stylized
+        id:
+          type: string
+          description: A unique id for this notification in the scope of the signing order. The id must be created by the client when the notification is created.
+          example: c68c7fd4-600c-4e4c-964e-8e8d15a24e61
+        recipient:
+          maxLength: 1024
+          minLength: 1
+          type: string
+          description: The address of the recipient of this notification
+          example: noreply@signicat.com
+        sender:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The address or name of the sender of this notification. Only relevant if the notification type is EMAIL or SMS.
+          example: signicat
+        header:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The header or subject text of the Message. Only relevant if the notification type is EMAIL.
+          example: Task completed
+        message:
+          maxLength: 8000
+          minLength: 1
+          type: string
+          description: The message text in the notification. Formatting is not supported in notification messages. [Supports placeholders.](https://developer.signicat.com/enterprise/apis/sign/sign-api/#placeholders-in-notification-messages)
+          example: A task belonging to the signing order with ID ${orderId} has been completed.
+        type:
+          type: string
+          description: The notification type
+          example: EMAIL
+          enum:
+          - SMS
+          - EMAIL
+          - URL
+        schedule:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: A list of TaskSchedule objects. See the data type for TaskSchedule.If this field is missing, the notification will be sent once the task is created.
+          items:
+            $ref: '#/components/schemas/TaskSchedule'
+      description: The TaskNotification data type describes a notification to an end user or to a system about a task event in the system
+    TaskSchedule:
+      required:
+      - triggerStatus
+      type: object
+      properties:
+        triggerStatus:
+          type: string
+          description: The status a task needs to have in order to trigger a notification
+          example: COMPLETED
+          enum:
+          - CREATED
+          - STARTED
+          - COMPLETED
+          - REJECTED
+          - EXPIRED
+          - FORWARDED
+        delay:
+          $ref: '#/components/schemas/TaskScheduleDelay'
+      description: The TaskSchedule data type specifies when a task notification should be sent.
+    TaskScheduleDelay:
+      type: object
+      properties:
+        minutes:
+          maximum: 59
+          minimum: 1
+          type: integer
+          description: The number of minutes this notification is delayed when the triggerStatus condition is met. When the signing order gets deleted this notification will become obsolete
+          format: int32
+          example: 30
+        hours:
+          maximum: 23
+          minimum: 1
+          type: integer
+          description: The number of hours this notification is delayed when the triggerStatus condition is met. When the signing order gets deleted this notification will become obsolete
+          format: int32
+          example: 12
+        days:
+          minimum: 1
+          type: integer
+          description: The number of days this notification is delayed when the triggerStatus condition is metWhen the signing order gets deleted this notification will become obsolete
+          format: int32
+          example: 7
+      description: The Task Schedule Delay data type describes the delay before sending a notification after it has entered its scheduled state defined by triggerStatus. The total delay is = days + hours + minutes.
+    PackagingTaskStatusInfo:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier of the signing order
+          example: 05022019298twl5n4wo4soavolfwnxev9rxfghqapyk8junju1wxqamkeq
+        packagingTaskId:
+          type: string
+          description: The unique identifier of the packaging task
+          example: f727d294-a3b9-49c7-af99-4a217fc1d8fd
+        packagingTaskStatus:
+          type: string
+          description: The status of the packaging task
+          example: COMPLETED
+          enum:
+          - CREATED
+          - COMPLETED
+          - FAILED
+        packagingTaskResultUri:
+          type: string
+          description: URI to the result of the packaging operation
+          example: https://api.signicat.com/enterprise/sign/orders/<SIGNINGORDER-ID>/packaging-tasks/<PACKAGING-TASK-ID>/result
+      description: The PackagingTaskStatusInfo data type describes the status of a specific packaging task
+    Artifact:
+      type: object
+      properties:
+        artifact:
+          type: string
+          description: The authentication artifact
+          example: brcbedszcdzl040nuhn9wmh9g
+        orderId:
+          type: string
+          description: The unique identifier of the signing order
+          example: 05022019298twl5n4wo4soavolfwnxev9rxfghqapyk8junju1wxqamkeq
+        taskId:
+          type: string
+          description: The unique identifier of the task (is omitted if task status is “deleted”)
+          example: 537c8bf6-9b02-49d7-97d1-8d7ad2be36bf
+        signingUrl:
+          type: string
+          description: The URL for the end user to initiate signing. May not be present if Artifact Authentication was used.
+          example: https://preprod.signicat.com/std/docaction/demo?request_id=2509202069ye6tqxwsz50m8of4z21zegn2ukxury1bfbgml8v9dvzlzimd&task_id=b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2?artifact=brcbedszcdzl040nuhn9wmh9g
+    Event:
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: The type of the event that has occured
+          example: notification-sent
+          enum:
+          - TASK_CREATED
+          - NOTIFICATION_SENT
+          - TASK_STARTED
+          - TASK_REJECTED
+          - TASK_POSTPONED
+          - TASK_COMPLETED
+          - TASK_FORWARDED
+          - ERROR
+          - DOCUMENT_UPLOADED
+          - DOCUMENT_SIGNED
+          - DOCUMENT_VIEWED
+          - DOCUMENT_SIGN_CANCELLED
+          - DOCUMENT_DELETED
+          - USER_AUTHENTICATED
+          - USER_AUTHENTICATION_CANCELLED
+          - PACKAGING_TASK_CREATED
+          - PACKAGING_TASK_COMPLETED
+          - PACKAGING_TASK_FAILED
+          - INTERNAL
+        eventTime:
+          type: string
+          description: The time of the event. The pattern will be "yyyy-MM-dd'T'HH:mm:ssZ".
+          format: date-time
+        data:
+          type: string
+          description: Some event types define additional data to give more detail about the event that occurred
+          example: Notification by EMAIL was sent to noreply@signicat.com
+      description: The Event data type describes an event that has occurred in the signing order
+    ForwardingInfo:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier of the signing order
+          example: 05022019298twl5n4wo4soavolfwnxev9rxfghqapyk8junju1wxqamkeq
+        taskId:
+          type: string
+          description: The unique identifier of the task created by forwarding the original task
+          example: 537c8bf6-9b02-49d7-97d1-8d7ad2be36bf
+        originalTaskId:
+          type: string
+          description: The unique identifier of the original task that was forwarded
+          example: b8a5ccdc-d79b-412e-a20e-03c2a8c8cdd2
+        forwarderName:
+          type: string
+          description: The name of the person forwarding this task
+          example: Ola Nordmann
+        forwarderEmail:
+          type: string
+          description: The email of the person forwarding this task
+          example: olanordmann@example.com
+        recipientName:
+          type: string
+          description: The name of the person receiving this task
+          example: Kari Nordmann
+        recipientEmail:
+          type: string
+          description: The email of the person receiving this task
+          example: kari@example.com
+        recipientMobile:
+          type: string
+          description: The mobile number of the person receiving this task
+          example: '+4711223344'
+      description: The ForwardingInfo data type describes the status and information related to forwarding of a task
+    DocumentStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the original document in the signing order
+          example: fbcf52a7-a952-41fc-82d9-beefbe094f6f
+        originalUri:
+          type: string
+          description: URI for the original document
+          example: https://api.signicat.com/enterprise/sign/orders/<SIGNINGORDER_ID/tasks/<TASK_ID>/documents/<DOCUMENT-ID>/original
+        generatedUri:
+          type: string
+          description: URI for the generated document
+          example: https://api.signicat.com/enterprise/sign/orders/<SIGNINGORDER-ID>/tasks/<TASK-ID>/documents/<DOCUMENT-ID>/generated
+        resultUri:
+          type: string
+          description: URI for the result document
+          example: https://api.signicat.com/enterprise/sign/orders/<SIGNINGORDER-ID>/tasks/<TASK-ID>/documents/<DOCUMENT-ID>/result
+        formOutputParam:
+          type: array
+          description: Form parameters that were either prefilled and/or filled in by the end user
+          items:
+            $ref: '#/components/schemas/FormParam'
+      description: The DocumentStatus data type describes a document as part of the given task
+    TaskStatusInfo:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier of the signing order
+          example: 05022019298twl5n4wo4soavolfwnxev9rxfghqapyk8junju1wxqamkeq
+        taskId:
+          type: string
+          description: The unique identifier of the task (is omitted if task status is “deleted”)
+          example: 537c8bf6-9b02-49d7-97d1-8d7ad2be36bf
+        taskStatus:
+          type: string
+          description: The status for this task
+          example: COMPLETED
+          enum:
+          - CREATED
+          - COMPLETED
+          - REJECTED
+          - EXPIRED
+          - DELETED
+        clientReference:
+          type: string
+          description: The client reference that was registered with this task, if any
+          example: d8e75ef7-6b3c-4511-b2ee-2b419a0c5cea
+        clientStatus:
+          type: string
+          description: The last client status that was registered on this task, if any
+          example: fbcf52a7-a952-41fc-82d9-beefbe094f6f
+        documents:
+          type: array
+          description: A list with status info for each of the documents in the task, provided the task status is COMPLETED
+          items:
+            $ref: '#/components/schemas/DocumentStatus'
+        rejectReason:
+          type: string
+          description: A reason for rejecting the task, given by the end user
+          example: The document was written in Klingon, while I only speak Sindarin
+      description: The TaskStatusInfo data type describes the status for a specific task
+  securitySchemes:
+    signrestOauth2Security:
+      type: oauth2
+      description: Signicat Oauth security with clientCredentials
+      in: header
+      flows:
+        clientCredentials:
+          tokenUrl: /oidc/token
+          scopes:
+            signicat-api: Manage signing orders
+      openIdConnectUrl: /oidc

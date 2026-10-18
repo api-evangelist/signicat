@@ -1,0 +1,553 @@
+openapi: 3.2.0
+info:
+  title: Signicat Changes API
+  version: ''
+  contact: ''
+  license: ''
+  termsOfService: ''
+  x-meta: Custom metadata
+  description: 'Operations tagged Changes across 2 of this provider''s published API definitions: ongoing-monitoring-person-openapi.json, signicat-ongoing-monitoring-person-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.signicat.com/info/monitor/person
+tags:
+- name: Changes
+  description: Endpoint for retrieving person changes for a specific monitor.
+paths:
+  /monitors/{monitorId}/changes:
+    get:
+      tags:
+      - Changes
+      summary: Retrieve changes
+      description: 'Returns a paginated result containing all changes since the last change marked as read.
+
+        If the `next` response property is missing, there is no more data to retrieve.'
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Optional cursor for pagination, which allows for paging without marking changes as read.
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Optional parameter to set how many results you want per page.
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedCollection_1'
+              example:
+                offset: 0
+                limit: 3
+                size: 6
+                links:
+                  next: https://api.signicat.io/person-monitoring/monitors/4039/changes?limit=3&offset=3
+                  first: https://api.signicat.io/person-monitoring/monitors/4039/changes
+                data:
+                - changeId: 1
+                  status: ok
+                  source: nationalRegistry
+                  changeDetected: '2019-08-01T12:00:00.0Z'
+                  referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                - changeId: 15
+                  status: invalid
+                  source: nationalRegistry
+                  changeDetected: '2019-08-01T12:00:00.0Z'
+                  referenceKey: b25229e4f6024e35931e4edbe4a29009
+                - changeId: 16
+                  status: ok
+                  source: nationalRegistry
+                  changeDetected: '2019-10-01T12:00:00.0Z'
+                  referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                  changes:
+                    firstName: Hedda Hansen
+                    lastName: Tjolstad
+                    address:
+                      address: Åstadbakken 78
+                      zipCode: '1341'
+                      city: SLEPENDEN
+                    screening:
+                      riskLevel: 100
+                      listType: SANCTION
+                      source: EU_GLOBAL
+                - changeId: 17
+                  status: ok
+                  source: nationalRegistry
+                  changeDetected: '2019-10-01T12:00:00.0Z'
+                  referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                  changes:
+                    firstName: Hedda Hansen
+                    lastName: Tjolstad
+                    isAddressProtected: true
+                - changeId: 18
+                  status: ok
+                  source: nationalRegistry
+                  changeDetected: '2019-10-01T12:00:00.0Z'
+                  referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                  changes:
+                    isProtected: true
+      operationId: getMonitorsByMonitorIdChanges
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}/changes/mark:
+    post:
+      tags:
+      - Changes
+      summary: Mark changes as read until the specified changeId
+      description: Calling "Get Changes will retrieve all changes not marked as read
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: changeId
+        in: query
+        description: Set a cursor on the monitor so that only changes after the changeId are returned when querying for changes.
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '202':
+          description: Accepted
+      operationId: postMonitorsByMonitorIdChangesMark
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}/changes/mock:
+    post:
+      tags:
+      - Changes
+      summary: Mock changes
+      description: 'Manually add changes to a monitor that that was created with the `isMock` property set to true.
+
+        The monitor will process and create changes for the persons as if they came from a population registry.'
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Changes that will be mocked.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorMockChange'
+            example:
+              persons:
+              - status: ok
+                changeDetected: '2026-10-11T14:12:58.58Z'
+                referenceKey: b25229e4f6024e35931e4edbe4a29009
+                firstName: Hedda-Olai
+                address:
+                  address: Kirkegata 176
+                isAddressProtected: false
+                isProtected: false
+              - status: ok
+                changeDetected: '2026-10-11T14:12:58.58Z'
+                referenceKey: b25229e4f6024e35931e4edbe4a29019
+                firstName: Hedda-Olai
+                isAddressProtected: true
+                isProtected: false
+              - status: ok
+                changeDetected: '2026-10-11T14:12:58.58Z'
+                referenceKey: b25229e4f6024e35931e4edbe4a29029
+                isAddressProtected: false
+                isProtected: true
+              - status: ok
+                changeDetected: '2026-10-11T14:12:58.58Z'
+                referenceKey: b25229e4f6024e35931e4edbe4a29010
+                isAddressProtected: false
+                screening:
+                  listType: PEP
+                  source: PEP_Edge
+                isProtected: false
+              - status: invalid
+                changeDetected: '2026-10-04T14:12:58.58Z'
+                referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                isAddressProtected: false
+                isProtected: false
+              source: nationalRegistry
+      responses:
+        '202':
+          description: Mock data have been added for processing
+        '403':
+          description: Monitor doesn't allow mocking
+      operationId: postMonitorsByMonitorIdChangesMock
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+  /monitors/{monitorId}/changes/persons/{referenceKey}:
+    get:
+      tags:
+      - Changes
+      summary: Retrieve changes for a person
+      description: Retrieves all changes for a single person, ignoring any cursors.
+      parameters:
+      - name: monitorId
+        in: path
+        description: The monitor ID.
+        required: true
+        schema:
+          type: string
+      - name: referenceKey
+        in: path
+        description: The person's reference key.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The person was found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonChanges'
+              example:
+              - changeId: 1
+                status: ok
+                source: nationalRegistry
+                changeDetected: '2026-10-16T14:12:58.58Z'
+                referenceKey: b25229e4f6024e35931e4edbe4a29009
+                changes:
+                  firstName: Anne
+                  lastName: Olsen
+                  middleName: Lise
+                  dateOfBirth: '1997-10-18'
+                  nationalIdentityNumber: '18109777441'
+                  address:
+                    address: Kveldstuavegen 32
+                    zipCode: '9013'
+                    city: Tromsø
+                    country: 'NO'
+                  screening:
+                    riskLevel: 100
+                    listType: SANCTION
+                    source: EU_GLOBAL
+              - changeId: 2
+                status: ok
+                source: nationalRegistry
+                changeDetected: '2026-10-16T14:12:58.58Z'
+                referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                changes:
+                  firstName: Anne
+                  lastName: Olsen
+                  middleName: Lise
+                  dateOfBirth: '1997-10-18'
+                  nationalIdentityNumber: '18109777441'
+                  isAddressProtected: true
+              - changeId: 3
+                status: ok
+                source: nationalRegistry
+                changeDetected: '2026-10-16T14:12:58.58Z'
+                referenceKey: c2690bae4cbc45b2a84e24de787b22d2
+                changes:
+                  isProtected: true
+        '404':
+          description: Monitor or person doesn't exist
+      operationId: getMonitorsByMonitorIdChangesPersonsByReferenceKey
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.signicat.com/info/monitor/person
+components:
+  schemas:
+    MonitorPersonStatus:
+      enum:
+      - unknown
+      - ok
+      - invalid
+      type: string
+      description: Status of the person
+    PersonScreening:
+      type: object
+      properties:
+        riskLevel:
+          maximum: 5
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          format: int32
+        listType:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+        source:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Attribute providing information about the Screening status of the person
+    MonitorPersonChange:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: The person's new first name.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: The person's new last name.
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: The person's new middle name, if available.
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The person's new date of birth, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        nationalIdentityNumber:
+          type:
+          - string
+          - 'null'
+          description: The person's new national identity number, if available.
+        address:
+          $ref: '#/components/schemas/PersonAddress'
+        isAddressProtected:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the person's address is protected
+        isProtected:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the person's information is protected
+        screening:
+          $ref: '#/components/schemas/PersonScreening'
+        dateOfDeath:
+          type:
+          - string
+          - 'null'
+          description: The person's new date of death, if available.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+      additionalProperties: false
+      description: Relevant person changes. Only changed fields contain data.
+    PersonChanges:
+      type: object
+      properties:
+        changeId:
+          type: integer
+          description: Sequential ID of the change.
+          format: int32
+        status:
+          $ref: '#/components/schemas/MonitorPersonStatus'
+        source:
+          $ref: '#/components/schemas/Source'
+        changeDetected:
+          type: string
+          description: Date and time when the change was detected.
+          format: date-time
+        referenceKey:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Person's reference key.
+        changes:
+          $ref: '#/components/schemas/MonitorPersonChange'
+      additionalProperties: false
+      description: ''
+    PersonAddress:
+      type: object
+      properties:
+        address:
+          maxLength: 400
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Address line.
+        zipCode:
+          maxLength: 20
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Zip code / Postal code.
+        city:
+          maxLength: 200
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: City.
+        country:
+          maxLength: 3
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: Country (ISO 3166-1 alpha-2).
+      additionalProperties: false
+      description: The person's address
+    Source:
+      enum:
+      - nationalRegistry
+      - trapets
+      type: string
+      description: What kind of sources to use for monitoring
+    PagedCollection_1:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The offset of the current page.
+          format: int32
+        limit:
+          type: integer
+          description: The limit of the current paging options.
+          format: int32
+        size:
+          type: integer
+          description: The total size of the collection (irrespective of any paging options).
+          format: int64
+        links:
+          $ref: '#/components/schemas/Links'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PersonChanges'
+      additionalProperties: false
+    Links:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          description: Url of the next page
+        previous:
+          type:
+          - string
+          - 'null'
+          description: Url of the previous page
+        first:
+          type:
+          - string
+          - 'null'
+          description: Url of the first page
+      additionalProperties: false
+    MonitorMockPerson:
+      required:
+      - referenceKey
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/MonitorPersonStatus'
+        changeDetected:
+          type: string
+          description: Date and time when the change was detected.
+          format: date-time
+        referenceKey:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: The person's reference key.
+        nationalIdentityNumber:
+          maxLength: 100
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's national identity number.
+        firstName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's first name.
+        lastName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's last name.
+        middleName:
+          maxLength: 500
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: The person's middle name.
+        address:
+          $ref: '#/components/schemas/PersonAddress'
+        isAddressProtected:
+          type: boolean
+          description: Whether the person's address is protected
+        dateOfBirth:
+          type:
+          - string
+          - 'null'
+          description: The person's date of birth.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        dateOfDeath:
+          type:
+          - string
+          - 'null'
+          description: The person's date of death.
+          format: yyyy-MM-dd
+          example: '2003-04-01'
+        screening:
+          $ref: '#/components/schemas/PersonScreening'
+        isProtected:
+          type: boolean
+          description: Whether the person's information is protected
+      additionalProperties: false
+      description: ''
+    MonitorMockChange:
+      required:
+      - persons
+      type: object
+      properties:
+        persons:
+          maxItems: 1000000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitorMockPerson'
+          description: List of person changes.
+        source:
+          $ref: '#/components/schemas/Source'
+      additionalProperties: false
+      description: ''
+x-refined-from:
+- ongoing-monitoring-person-openapi.json
+- signicat-ongoing-monitoring-person-openapi.yml

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-query-record-response-schema.json",
+  "title": "QueryRecordResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-digital-evidence-management-openapi.yml#/components/schemas/QueryRecordResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "systemMetadata": {
+      "$ref": "#/$defs/SystemMetadata"
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RecordRelationResponse"
+      }
+    },
+    "_links": {
+      "$ref": "#/$defs/Links"
+    }
+  },
+  "$defs": {
+    "Link": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "hreflang": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "deprecation": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "templated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Links": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/Link"
+      }
+    },
+    "RecordRelationResponse": {
+      "type": "object",
+      "properties": {
+        "relationID": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "GDPR",
+            "TRANSACTION",
+            "LOG_IN",
+            "SIGNATURE",
+            "INTERNAL_AUDIT",
+            "OTHER",
+            "KYC",
+            "SENSITIVE",
+            "CONSENT"
+          ]
+        },
+        "_links": {
+          "$ref": "#/$defs/Links"
+        }
+      }
+    },
+    "SystemMetadata": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "GDPR",
+            "TRANSACTION",
+            "LOG_IN",
+            "SIGNATURE",
+            "INTERNAL_AUDIT",
+            "OTHER",
+            "KYC",
+            "SENSITIVE",
+            "CONSENT"
+          ]
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdDateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "auditLevel": {
+          "type": "string",
+          "enum": [
+            "QUALIFIED",
+            "ADVANCED",
+            "SIMPLE"
+          ]
+        }
+      }
+    }
+  }
+}

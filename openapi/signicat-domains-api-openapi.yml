@@ -1,0 +1,589 @@
+openapi: 3.2.0
+info:
+  title: Signicat Domains API
+  version: v1
+  contact: ''
+  license: ''
+  termsOfService: ''
+  description: 'Operations tagged Domains across 2 of this provider''s published API definitions: domain-management-openapi.json, signicat-domain-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /domain-management
+- url: https://api.signicat.com/domain-management
+  description: Signicat API
+tags:
+- name: Domains
+  description: 'Endpoints for managing your domains.
+
+
+    See our documentation in order to become familiar with what domains are used for and what features we support.'
+paths:
+  /domains:
+    get:
+      tags:
+      - Domains
+      summary: List domains
+      description: Returns all domains associated with your account.
+      operationId: list_domains
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainPage'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DomainPage'
+    post:
+      tags:
+      - Domains
+      summary: Add domain
+      description: 'Adds a domain to your account.
+
+
+        For production accounts, domains with property `DomainKind=CustomerManaged` are a paid product.'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DomainCreate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+      operationId: postDomains
+      x-operation-id-source: derived
+    servers:
+    - url: /domain-management
+    - url: https://api.signicat.com/domain-management
+      description: Signicat API
+  /domains/{domainId}:
+    get:
+      tags:
+      - Domains
+      summary: Retrieve domain
+      description: Retrieves information about a domain on your account.
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      operationId: getDomainsByDomainId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Domains
+      summary: Update domain configuration
+      description: 'Only some configuration may be changed.
+
+
+        Null and undefined values in the request body will be ignored.
+
+
+        Changing the domain FQDN, the domain kind or the certificate kind is not possible. For this, a new domain must be created.'
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DomainPatch'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DomainRead'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      operationId: patchDomainsByDomainId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Domains
+      summary: Delete domain
+      description: 'Removes the domain from your account.
+
+
+        If this is a Signicat-managed domain the domain will be immediately available for re-use by another account.'
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      operationId: deleteDomainsByDomainId
+      x-operation-id-source: derived
+    servers:
+    - url: /domain-management
+    - url: https://api.signicat.com/domain-management
+      description: Signicat API
+  /domains/{domainId}/check-dns-setup:
+    get:
+      tags:
+      - Domains
+      summary: Check DNS status
+      description: 'Performs DNS validation for the domain and returns each DNS record and its status.
+
+
+        This is only relevant for customer-managed domains.
+
+
+        All DNS records must be valid before the domain can be used.'
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckDnsSetupResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CheckDnsSetupResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      operationId: getDomainsByDomainIdCheckDnsSetup
+      x-operation-id-source: derived
+    servers:
+    - url: /domain-management
+    - url: https://api.signicat.com/domain-management
+      description: Signicat API
+  /domains/{domainId}/certificate:
+    put:
+      tags:
+      - Domains
+      summary: Change certificate
+      description: 'Only available for customer-managed domains using customer-managed certificates.
+
+
+        The certificate must be uploaded to Certificate Management System under the same account as the domain.'
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ChangeCertificate'
+      responses:
+        '204':
+          description: No Content
+      operationId: putDomainsByDomainIdCertificate
+      x-operation-id-source: derived
+    servers:
+    - url: /domain-management
+    - url: https://api.signicat.com/domain-management
+      description: Signicat API
+  /domains/{domainId}/set-default-domain:
+    post:
+      tags:
+      - Domains
+      summary: Set default domain
+      description: Changes the default domain of the account. Various products using domains may handle this differently.
+      parameters:
+      - name: domainId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SetDefaultDomain'
+      responses:
+        '204':
+          description: No Content
+      operationId: postDomainsByDomainIdSetDefaultDomain
+      x-operation-id-source: derived
+    servers:
+    - url: /domain-management
+    - url: https://api.signicat.com/domain-management
+      description: Signicat API
+components:
+  schemas:
+    DomainKind:
+      enum:
+      - SignicatManaged
+      - CustomerManaged
+      type: string
+    DomainPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainRead'
+          description: The domains
+      additionalProperties: false
+    CustomerManagedParametersPatch:
+      type: object
+      properties:
+        certificateId:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: ID of certificate to use. Required when `CertificateKind=Custom`.
+        acmeEabServerUrl:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.
+        acmeEabKeyId:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.
+        acmeEabHmacKey:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Base64URL encoded HMAC key for ACME EAB. Required when `CertificateKind=AcmeEab`. This field is write-only.
+      additionalProperties: false
+    CustomDomainCertificateKind:
+      enum:
+      - LetsEncrypt
+      - Csr
+      - Custom
+      - AcmeEab
+      type: string
+    CustomerManagedParametersRead:
+      type: object
+      properties:
+        certificateKind:
+          allOf:
+          - $ref: '#/components/schemas/CustomDomainCertificateKind'
+          description: Certificate kind. See docs for further descriptions.
+        certificateId:
+          type:
+          - string
+          - 'null'
+          description: ID of certificate to use. Required when `CertificateKind=Custom`.
+        validTo:
+          type:
+          - string
+          - 'null'
+          description: The date at which the certificate will expire. This field is read-only. Only set when `CertificateKind=Custom`.
+        acmeEabServerUrl:
+          type:
+          - string
+          - 'null'
+          description: Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.
+        acmeEabKeyId:
+          type:
+          - string
+          - 'null'
+          description: Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.
+      additionalProperties: false
+    ChangeCertificate:
+      required:
+      - certificateId
+      type: object
+      properties:
+        certificateId:
+          minLength: 1
+          type: string
+          description: ID of the TLS certificate as seen in Certificate Management System.
+      additionalProperties: false
+    TlsState:
+      enum:
+      - NotReady
+      - WaitingTlsSetup
+      - WaitingCustomerUploadCertificate
+      - Ready
+      - WaitingForCustomerDns
+      - Deleted
+      - TlsError
+      - WaitingCustomerAcmeEabParameters
+      type: string
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    CheckDnsSetupResponseItem:
+      type: object
+      properties:
+        domain:
+          type: string
+          description: The domain for which the DNS record must be added.
+        type:
+          type: string
+          description: What kind of DNS record this is.
+        value:
+          type: string
+          description: The required value of the DNS record.
+        valid:
+          type: boolean
+          description: Whether the DNS record has been setup correctly.
+        dnsCorrect:
+          type: boolean
+          description: True if record is valid on account of the DNS record being correctly configured.
+        dnsValidationOverride:
+          type: boolean
+          description: True if record is valid on account of Signicat having configured a special override.
+        partnerWildcardDns:
+          type: boolean
+          description: True if record is valid of domain being a verified partner DNS domain.
+        pointsToSignicatIdentityBrokerCname:
+          type: boolean
+          description: True if the current DNS record is pointing to Signicat Identity Broker's domain.
+      additionalProperties: false
+    DomainPatch:
+      type: object
+      properties:
+        makeDefault:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this domain should be the default domain for the account.
+        customerManagedParameters:
+          allOf:
+          - $ref: '#/components/schemas/CustomerManagedParametersPatch'
+          description: Additional parameters for when `DomainKind=CustomerManaged`.
+      additionalProperties: false
+    DomainCreate:
+      required:
+      - domain
+      - domainKind
+      type: object
+      properties:
+        domain:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: FQDN of the domain you want to add.
+        domainKind:
+          allOf:
+          - $ref: '#/components/schemas/DomainKind'
+          description: Domain kind. See docs for further descriptions.
+        makeDefault:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this domain should be the default domain for the account.
+        requireMutualTls:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this domain should only be accessible through mTLS.
+        customerManagedParameters:
+          allOf:
+          - $ref: '#/components/schemas/CustomerManagedParametersCreate'
+          description: Additional parameters required when `DomainKind=CustomerManaged`.
+      additionalProperties: false
+    CheckDnsSetupResponse:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckDnsSetupResponseItem'
+          description: Contains the records that must be configured.
+        valid:
+          type: boolean
+          description: True if all `records` are valid. If false, see `records` for errors.
+      additionalProperties: false
+    DnsState:
+      enum:
+      - NotReady
+      - WaitingDnsSetup
+      - WaitingCustomerDnsSetup
+      - Ready
+      type: string
+    DomainRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID of this domain.
+        accountId:
+          type: string
+          description: The Account this domain is connected to.
+        domain:
+          type: string
+          description: FQDN of the domain you want to add.
+        domainKind:
+          allOf:
+          - $ref: '#/components/schemas/DomainKind'
+          description: Domain kind. See docs for further descriptions.
+        requireMutualTls:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this domain should only be accessible through mTLS.
+        customerManagedParameters:
+          allOf:
+          - $ref: '#/components/schemas/CustomerManagedParametersRead'
+          description: Additional parameters for when `DomainKind=CustomerManaged`.
+        tlsState:
+          allOf:
+          - $ref: '#/components/schemas/TlsState'
+          description: Current state of the TLS certificate.
+        dnsState:
+          allOf:
+          - $ref: '#/components/schemas/DnsState'
+          description: Current state of the DNS records.
+        isDefaultDomain:
+          type: boolean
+          description: Whether this domain is the default domain for the account it belongs to.
+        createdAt:
+          type:
+          - string
+          - 'null'
+          description: When the domain was created.
+          format: date-time
+        deletedAt:
+          type:
+          - string
+          - 'null'
+          description: When the domain was deleted.
+          format: date-time
+      additionalProperties: false
+    SetDefaultDomain:
+      type: object
+      additionalProperties: false
+    CustomerManagedParametersCreate:
+      required:
+      - certificateKind
+      type: object
+      properties:
+        certificateKind:
+          allOf:
+          - $ref: '#/components/schemas/CustomDomainCertificateKind'
+          description: Certificate kind. See docs for further descriptions.
+        certificateId:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: ID of certificate to use. Required when `CertificateKind=Custom`.
+        acmeEabServerUrl:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`.
+        acmeEabKeyId:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`.
+        acmeEabHmacKey:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Base64URL encoded HMAC key for ACME EAB. Required when `CertificateKind=AcmeEab`. This field is write-only.
+      additionalProperties: false
+x-refined-from:
+- domain-management-openapi.json
+- signicat-domain-management-openapi.yml

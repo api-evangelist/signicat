@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-person-response-dto-schema.json",
+  "title": "PersonResponseDto",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-ongoing-monitoring-openapi.yml#/components/schemas/PersonResponseDto",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "First name of the person."
+    },
+    "preferredName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Preferred name of the person."
+    },
+    "middleName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Middle name of the person."
+    },
+    "lastName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Last name of the person."
+    },
+    "alias": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Alternative name or nickname associated with the person."
+    },
+    "nationalIdentityNumber": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "National identity number of the person."
+    },
+    "nationality": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Nationality of the person."
+    },
+    "taxCountryCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Tax country code associated with the individual."
+    },
+    "registrationIdCountryCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country code associated with the registration ID."
+    },
+    "gender": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Gender of the person. (e.g., `Male`, `Female`, `Other` or `Unknown`)"
+    },
+    "citizenCountryCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Country code representing the citizenship of the person."
+    },
+    "addresses": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/Address"
+      },
+      "description": "Collection of addresses associated with a person."
+    },
+    "countryAffiliationsList": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CountryAffiliations"
+      },
+      "description": "List of country affiliations associated with the person."
+    },
+    "screenings": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/RiskScreening"
+      },
+      "description": "List of screenings associated with the person."
+    },
+    "deregistrationData": {
+      "$ref": "#/$defs/PersonDeregistrationDto"
+    },
+    "protection": {
+      "$ref": "#/$defs/PersonProtectionDto"
+    },
+    "sourceSpecific": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "description": "Last-known values of the pre-configured source-specific attributes, keyed by source and then by attribute name.\nA source is omitted entirely when it has no source-specific data."
+    },
+    "dateOfBirth": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date of birth of the person.\nThe value is expected to be in a string format and represents only the date portion\n(excluding any time-related information)."
+    },
+    "dateOfDeath": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date of death of the person.\nThe value is expected to be in a string format and represents only the date portion\n(excluding any time-related information)."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the type of the address. The type is used to specify the categorization\nor purpose of the address, such as registered, residential, business, or other.\nThe default value is `Unknown`."
+        },
+        "country": {
+          "pattern": "^$|^[A-Za-z]{2,3}$",
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the country associated with the address. The value must be a valid\nISO 3166 alpha-2 or alpha-3 country code if provided. This property is used\nto specify the country where the address is located."
+        },
+        "postCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the postal code of the address. The postal code is used to identify\nspecific geographic areas within a country or region and is commonly part of\nthe addressing system for mail delivery."
+        },
+        "postPlace": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the postal location or city corresponding to the address.\nTypically used in combination with the postal code to identify the area\nof the address. This property may be null if the information is unavailable."
+        },
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the street name of an address. This property holds the specific street\ninformation associated with the address, such as the road name. It is a part\nof the standard formatting for identifying a location."
+        },
+        "addressLine": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents a specific part or line of the address, often used to provide\nadditional details about the address location. This property may include\ninformation such as building names, apartment numbers, or other\ndescriptive elements that complement the main street or post details."
+        },
+        "startDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the start date associated with the address. This property is\nused to indicate the date from which the address becomes valid or applicable.\nThe value can be `null`, indicating that no specific start date is set.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the last date associated with the validity or applicability\nof the address. This property indicates when the address is no longer\nin use or relevant. If not set, the end date is considered undefined.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApproximateDateDto": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int32"
+        },
+        "month": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int32"
+        },
+        "exactDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CountryAffiliations": {
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the code of a country using its standardized abbreviation."
+        },
+        "affiliation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the type or description of a connection or association to a specific country."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PersonDeregistrationDto": {
+      "type": "object",
+      "properties": {
+        "deregistrationCode": {
+          "$ref": "#/$defs/PersonDeregistrationTypeDto"
+        },
+        "deregistrationDate": {
+          "$ref": "#/$defs/ApproximateDateDto"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PersonDeregistrationTypeDto": {
+      "enum": [
+        "Unknown",
+        "Deceased",
+        "Invalidated",
+        "Emigrated",
+        "Other"
+      ],
+      "type": "string",
+      "description": "The type of deregistration reported for the person."
+    },
+    "PersonProtectionDto": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ProtectionStatus"
+        },
+        "protectedAttributes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "protectedNotificationReceived": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ProtectionStatus": {
+      "enum": [
+        "Partial",
+        "Full"
+      ],
+      "type": "string"
+    },
+    "RiskScreening": {
+      "type": "object",
+      "properties": {
+        "matchStrength": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Represents the strength of a match in risk screening results.",
+          "format": "int32"
+        },
+        "listType": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Specifies the type of list associated with a risk screening process. (e.g., `PEP`, `SANCTION`)"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Represents the source of information used in risk screenings or monitoring processes."
+        },
+        "externalUrls": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": "Represents a collection of external URLs associated with the screening entity."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

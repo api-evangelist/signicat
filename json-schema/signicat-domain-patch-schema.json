@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-domain-patch-schema.json",
+  "title": "DomainPatch",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-domain-management-openapi.yml#/components/schemas/DomainPatch",
+  "type": "object",
+  "properties": {
+    "makeDefault": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Whether this domain should be the default domain for the account."
+    },
+    "customerManagedParameters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CustomerManagedParametersPatch"
+        }
+      ],
+      "description": "Additional parameters for when `DomainKind=CustomerManaged`.",
+      "nullable": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CustomerManagedParametersPatch": {
+      "type": "object",
+      "properties": {
+        "certificateId": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of certificate to use. Required when `CertificateKind=Custom`."
+        },
+        "acmeEabServerUrl": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Server / Issuer URL to use for ACME EAB. Required when `CertificateKind=AcmeEab`."
+        },
+        "acmeEabKeyId": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Key identifier for ACME EAB. Required when `CertificateKind=AcmeEab`."
+        },
+        "acmeEabHmacKey": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Base64URL encoded HMAC key for ACME EAB. Required when `CertificateKind=AcmeEab`. This field is write-only."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

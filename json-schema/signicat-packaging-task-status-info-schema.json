@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-packaging-task-status-info-schema.json",
+  "title": "PackagingTaskStatusInfo",
+  "description": "The PackagingTaskStatusInfo data type describes the status of a specific packaging task",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-signing-enterprise-openapi.yml#/components/schemas/PackagingTaskStatusInfo",
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "The unique identifier of the signing order"
+    },
+    "packagingTaskId": {
+      "type": "string",
+      "description": "The unique identifier of the packaging task"
+    },
+    "packagingTaskStatus": {
+      "type": "string",
+      "description": "The status of the packaging task",
+      "enum": [
+        "CREATED",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "packagingTaskResultUri": {
+      "type": "string",
+      "description": "URI to the result of the packaging operation"
+    }
+  }
+}

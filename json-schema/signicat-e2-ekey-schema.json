@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/signicat/main/json-schema/signicat-e2-ekey-schema.json",
+  "title": "E2EKey",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/signicat-mobileid-admin-openapi.yml#/components/schemas/E2EKey",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The ID of the E2E key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the E2E key."
+    },
+    "algorithm": {
+      "type": "string",
+      "description": "Protocol between mobile SDK and the Server. Possible values `X25519`|`SECT233K1`"
+    },
+    "description": {
+      "type": "string",
+      "description": "The description of the E2E key."
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "The user ID (`userId`) of the creator of the E2E key."
+    },
+    "created": {
+      "type": "string",
+      "description": "The timestamp when the E2E key was created.\n\n**Format**: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.\n"
+    },
+    "sha256Fingerprint": {
+      "type": "string",
+      "description": "The SHA256 hash of the E2E key certificate."
+    },
+    "publicKey": {
+      "type": "string",
+      "description": "The E2E key certificate, which has been Base64 encoded."
+    },
+    "state": {
+      "type": "string",
+      "description": "The E2E key state, can be either `ENABLED` or `DISABLED`"
+    }
+  }
+}
