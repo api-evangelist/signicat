@@ -6,7 +6,6 @@ source:
 - https://composio.dev/toolkits/signicat
 - https://monid.ai/tools/signicat
 - https://tsl.digital.gob.es/TSL.xml
-- https://tsl.digital.gob.es/TSL.xml
 checked:
 - https://composio.dev/toolkits/signicat
 - https://ec.europa.eu/tools/lotl/eu-lotl.xml
